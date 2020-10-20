@@ -143,8 +143,8 @@ public class CommonCohortQueries {
    * (Transferred-out)</b> OR <b>Patient_State.end_date = max(endDate)</b>
    *
    * <p>Except all patients who after the most recent date from <b>1 to 3</b> have a drugs pick up
-   * or consultation <b>EncounterType ID= 6, 9, 18</b> and  encounter_datetime> the most recent
-   * date and <=endDate or Encounter Type ID = 52 and “Data de Levantamento” <b>(Concept Id 23866
+   * or consultation <b>EncounterType ID= 6, 9, 18</b> and  encounter_datetime> the most recent date
+   * and <=endDate or Encounter Type ID = 52 and “Data de Levantamento” <b>(Concept Id 23866
    * value_datetime)</b> > the most recent date and <= endDate
    *
    * </blockquote>

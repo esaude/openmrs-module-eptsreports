@@ -35,9 +35,9 @@ public class Eri2MonthsCohortQueries {
   @Autowired private HivCohortQueries hivCohortQueries;
 
   /**
-   * C
+   * get all patients who returned for 2nd consultation or 2nd drugs pickUp within 33 days
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition
       getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days() {

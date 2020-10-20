@@ -73,7 +73,7 @@ public class BaseQueries {
   /**
    * Find patients who qualifies to be in a set of facilities and state work flows
    *
-   * @retrun String
+   * @return String
    */
   public static String getBaseQueryForDataQuality(int programId) {
     return "SELECT p.patient_id from patient p JOIN patient_program pg ON p.patient_id=pg.patient_id JOIN patient_state ps on pg.patient_program_id=ps.patient_program_id "
@@ -85,7 +85,7 @@ public class BaseQueries {
   /**
    * Find patients who qualifies to be in the EC20 workflow.
    *
-   * @return
+   * @return String
    */
   public static String getBaseQueryForEc20DataQuality(
       int adultoSeguimentoEncounterTypeId,

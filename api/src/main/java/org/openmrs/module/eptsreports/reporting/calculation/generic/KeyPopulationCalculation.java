@@ -33,7 +33,7 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
   enum KeyPopSource {
     PERSON_ATTRIBUTE,
     APSS_FORM,
-    ADULTO_FORM;
+    ADULTO_FORM
   }
 
   public enum KeyPop {
@@ -80,8 +80,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
 
   static class KeyPopAndSource implements Comparable<KeyPopAndSource> {
 
-    private KeyPop keyPop;
-    private KeyPopSource source;
+    private final KeyPop keyPop;
+    private final KeyPopSource source;
 
     KeyPopAndSource(KeyPop keyPop, KeyPopSource source) {
       this.keyPop = keyPop;

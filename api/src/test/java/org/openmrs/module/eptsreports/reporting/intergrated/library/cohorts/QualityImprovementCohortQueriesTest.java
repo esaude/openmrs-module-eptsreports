@@ -115,7 +115,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
 
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(
-        new Parameter("startDate", "Start Date", Date.class), DateUtil.getDateTime(2019, 01, 10));
+        new Parameter("startDate", "Start Date", Date.class), DateUtil.getDateTime(2019, 1, 10));
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
     parameters.put(

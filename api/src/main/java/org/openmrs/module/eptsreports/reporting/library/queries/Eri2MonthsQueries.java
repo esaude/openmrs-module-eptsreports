@@ -11,23 +11,27 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
+
 public class Eri2MonthsQueries {
 
   /**
    * C TODO: merge with allPatientsWhoInitiatedTreatmentDuringReportingPeriod and harmonizez with
    * txNew union query
    *
-   * @param arvPharmaciaEncounter
-   * @param arvAdultoSeguimentoEncounter
-   * @param arvPediatriaSeguimentoEncounter
-   * @param arvPlanConcept
-   * @param startDrugsConcept
-   * @param historicalDrugsConcept
-   * @param artProgram
-   * @param yesConcept
-   * @param artPickupDateConcept
-   * @param mastercardDrugPickupEncounterType
-   * @return
+   * @param arvPharmaciaEncounter - {{@link HivMetadata#getARVPharmaciaEncounterType()}}
+   * @param arvAdultoSeguimentoEncounter - {{@link HivMetadata#getAdultoSeguimentoEncounterType()}
+   *     ()}}
+   * @param arvPediatriaSeguimentoEncounter - {{@link
+   *     HivMetadata#getPediatriaSeguimentoEncounterType()}}
+   * @param arvPlanConcept - ARV Plan Concept
+   * @param startDrugsConcept - Start Drugs Concept
+   * @param historicalDrugsConcept - historical Drugs Concept
+   * @param artProgram - ART Program
+   * @param yesConcept - yes Concept
+   * @param artPickupDateConcept - ART Pickup Date Concept
+   * @param mastercardDrugPickupEncounterType - Mastercard DrugPickup EncounterType
+   * @return String
    */
   public static String getAllPatientsWhoReturnedFor2ndConsultationOR2ndDrugsPickUpWithin33Days(
       int arvPharmaciaEncounter,

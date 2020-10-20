@@ -304,7 +304,7 @@ public class TxPvlsCohortQueries {
    * <b>Description</b>Get patients having viral load suppression and routine for adults and
    * children - Numerator
    *
-   * @retrun CohortDefinition
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientWithViralSuppressionAndOnRoutine() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -326,7 +326,7 @@ public class TxPvlsCohortQueries {
    * <b>Description</b>Get patients having viral load suppression and target for adults and children
    * - Numerator
    *
-   * @retrun CohortDefinition
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientWithViralSuppressionAndOnTarget() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();

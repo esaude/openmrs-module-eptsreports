@@ -942,23 +942,7 @@ public class TxMlCohortQueries {
     return sqlCohortDefinition;
   }
 
-  /**
-   * <b>Description:</b> TRACED PATIENTS AND FOUND
-   *
-   * <p><b>Technical Specs</b>
-   *
-   * <blockquote>
-   *
-   * All Patients with “Patient Visit Card” <b>(encounterType_id 21 or 36 or 37)</b> registered
-   * between the most recent scheduled date (as below) and the reporting end date with the following
-   * information
-   *
-   * <p>With "YES" answer <b>(concept_id = 1067)</b> for Patient Found <b>(concept_id = 2003)</b>
-   *
-   * </blockquote>
-   *
-   * @return {@link CohortDefinition}
-   */
+  // Patients Traced and Found.
   private CohortDefinition getPatientTracedAndFound() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 

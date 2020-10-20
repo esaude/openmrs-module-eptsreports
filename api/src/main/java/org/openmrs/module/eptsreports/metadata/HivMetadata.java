@@ -24,13 +24,9 @@ import org.springframework.stereotype.Component;
 @Component("hivMetadata")
 public class HivMetadata extends ProgramsMetadata {
 
-  private String gpSTarvFarmaciaEncounterTypeUuid = "eptsreports.sTarvFarmaciaEncounterTypeUuid";
-
   private String gpArtProgramUuid = "eptsreports.artProgramUuid";
 
   private String gpPtvEtvProgramUuid = "eptsreports.ptvEtvProgramUuid";
-
-  private String getTBProgramUuid = "eptsreports.tbProgramUuid";
 
   /**
    * <b>concept_id = 307</b>
@@ -2310,6 +2306,7 @@ public class HivMetadata extends ProgramsMetadata {
    * @return {@link EncounterType}
    */
   public EncounterType getARVPharmaciaEncounterType() {
+    String gpSTarvFarmaciaEncounterTypeUuid = "eptsreports.sTarvFarmaciaEncounterTypeUuid";
     String uuid =
         Context.getAdministrationService().getGlobalProperty(gpSTarvFarmaciaEncounterTypeUuid);
     return getEncounterType(uuid);
@@ -2646,9 +2643,7 @@ public class HivMetadata extends ProgramsMetadata {
   public ProgramWorkflowState getArtCareTransferredFromOtherHealthFacilityWorkflowState() {
     Program hivCareProgram = getHIVCareProgram();
     ProgramWorkflow workflow = getPreArtWorkflow();
-    ProgramWorkflowState state =
-        getTransferredFromOtherHealthFacilityWorkflowState(hivCareProgram, workflow);
-    return state;
+    return getTransferredFromOtherHealthFacilityWorkflowState(hivCareProgram, workflow);
   }
 
   // TODO: Duplicated method
@@ -2664,9 +2659,7 @@ public class HivMetadata extends ProgramsMetadata {
   public ProgramWorkflowState getArtTransferredFromOtherHealthFacilityWorkflowState() {
     Program hivCareProgram = getARTProgram();
     ProgramWorkflow workflow = getArtWorkflow();
-    ProgramWorkflowState state =
-        getTransferredFromOtherHealthFacilityWorkflowState(hivCareProgram, workflow);
-    return state;
+    return getTransferredFromOtherHealthFacilityWorkflowState(hivCareProgram, workflow);
   }
 
   /**
@@ -2681,9 +2674,7 @@ public class HivMetadata extends ProgramsMetadata {
   public ProgramWorkflowState getArtCareTransferredOutToAnotherHealthFacilityWorkflowState() {
     Program hivCareProgram = getHIVCareProgram();
     ProgramWorkflow workflow = getPreArtWorkflow();
-    ProgramWorkflowState state =
-        getTransferredOutToAnotherHealthFacilityWorkflowState(hivCareProgram, workflow);
-    return state;
+    return getTransferredOutToAnotherHealthFacilityWorkflowState(hivCareProgram, workflow);
   }
 
   /**
@@ -2698,8 +2689,7 @@ public class HivMetadata extends ProgramsMetadata {
   public ProgramWorkflowState getArtCareActiveOnProgramWorkflowState() {
     Program hivCareProgram = getHIVCareProgram();
     ProgramWorkflow workflow = getPreArtWorkflow();
-    ProgramWorkflowState state = getActiveOnProgramWorkflowState(hivCareProgram, workflow);
-    return state;
+    return getActiveOnProgramWorkflowState(hivCareProgram, workflow);
   }
 
   /**
@@ -2714,8 +2704,7 @@ public class HivMetadata extends ProgramsMetadata {
   public ProgramWorkflowState getArtActiveOnProgramWorkflowState() {
     Program hivCareProgram = getARTProgram();
     ProgramWorkflow workflow = getArtWorkflow();
-    ProgramWorkflowState state = getActiveOnProgramWorkflowState(hivCareProgram, workflow);
-    return state;
+    return getActiveOnProgramWorkflowState(hivCareProgram, workflow);
   }
 
   /**
@@ -2730,8 +2719,7 @@ public class HivMetadata extends ProgramsMetadata {
   public ProgramWorkflowState getArtCareAbandonedWorkflowState() {
     Program hivCareProgram = getHIVCareProgram();
     ProgramWorkflow workflow = getPreArtWorkflow();
-    ProgramWorkflowState state = getAbandonedWorkflowState(hivCareProgram, workflow);
-    return state;
+    return getAbandonedWorkflowState(hivCareProgram, workflow);
   }
 
   /**
@@ -2885,6 +2873,7 @@ public class HivMetadata extends ProgramsMetadata {
    * @return {@link ProgramWorkflowState}
    */
   public ProgramWorkflowState getPatientActiveOnTBProgramWorkflowState() {
+    String getTBProgramUuid = "eptsreports.tbProgramUuid";
     String tbProgramUuid = Context.getAdministrationService().getGlobalProperty(getTBProgramUuid);
     return getProgramWorkflowState(tbProgramUuid, "4", "ACTIVE ON PROGRAM");
   }
@@ -3098,9 +3087,7 @@ public class HivMetadata extends ProgramsMetadata {
   public ProgramWorkflowState getArtTransferredOutToAnotherHealthFacilityWorkflowState() {
     Program artProgram = getARTProgram();
     ProgramWorkflow workflow = getArtWorkflow();
-    ProgramWorkflowState state =
-        getTransferredOutToAnotherHealthFacilityWorkflowState(artProgram, workflow);
-    return state;
+    return getTransferredOutToAnotherHealthFacilityWorkflowState(artProgram, workflow);
   }
 
   // TODO: Duplicated method
@@ -3132,8 +3119,7 @@ public class HivMetadata extends ProgramsMetadata {
   public ProgramWorkflowState getArtAbandonedWorkflowState() {
     Program artProgram = getARTProgram();
     ProgramWorkflow workflow = getArtWorkflow();
-    ProgramWorkflowState state = getAbandonedWorkflowState(artProgram, workflow);
-    return state;
+    return getAbandonedWorkflowState(artProgram, workflow);
   }
 
   /**

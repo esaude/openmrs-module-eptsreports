@@ -81,7 +81,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private GetCustomConfigurationDataset getCustomConfigurationDataset;
 
-  private HivMetadata hivMetadata;
+  private final HivMetadata hivMetadata;
 
   @Autowired
   public SetupDataQualityReport(
@@ -284,7 +284,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
   }
 
   private List<Parameter> getDataParameters() {
-    List<Parameter> parameters = new ArrayList<Parameter>();
+    List<Parameter> parameters = new ArrayList<>();
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
     parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));

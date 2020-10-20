@@ -35,8 +35,8 @@ public class Ec15PatientListDataset extends BaseDataSet {
   }
 
   /**
-   * @param parameterList
-   * @return
+   * @param parameterList - list of parameter
+   * @return DataSetDefinition
    */
   public DataSetDefinition ec15PatientListDataset(List<Parameter> parameterList) {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();

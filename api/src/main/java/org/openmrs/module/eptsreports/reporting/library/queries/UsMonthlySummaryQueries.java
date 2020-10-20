@@ -1,7 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
 public class UsMonthlySummaryQueries {
-  private static String inARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDateQuery =
+  private static final String inARTExcludingNotAnsweredAbandonedIn4WeeksUntilEndDateQuery =
       "-- Encontrar os respectivos pacientes para cada estado  \n"
           + "SELECT patient_id  \n"
           + "FROM  \n"

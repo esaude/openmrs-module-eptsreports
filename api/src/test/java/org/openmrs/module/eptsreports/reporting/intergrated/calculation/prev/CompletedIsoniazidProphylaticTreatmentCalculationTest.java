@@ -33,8 +33,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
 
   @Override
   public CalculationResultMap getResult() {
-    CalculationResultMap map = new CalculationResultMap();
-    return map;
+    return new CalculationResultMap();
   }
 
   @Before
@@ -44,7 +43,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
 
   @Test
   public void evaluateShouldBeTrueIfTreatmentWasWithinPeriodWithEnoughDuration() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
@@ -63,7 +62,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
 
   @Test
   public void evaluateShouldBeNullIfStartDateIsOutsideThePeriod() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
@@ -81,7 +80,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
 
   @Test
   public void evaluateShouldBeNullIfEndDateIsOutsidePeriod() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
@@ -98,7 +97,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
 
   @Test
   public void evaluateShouldBeTrueIfDoesNotHaveEndDateButAnsweredYesEnoughTimes() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 

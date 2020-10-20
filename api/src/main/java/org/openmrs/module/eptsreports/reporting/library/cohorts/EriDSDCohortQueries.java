@@ -12,7 +12,6 @@ import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.NextAndPrevDatesCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.dsd.OnArtForAtleastXmonthsCalculation;
@@ -33,7 +32,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class EriDSDCohortQueries {
-  @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+
   @Autowired private TxNewCohortQueries txNewCohortQueries;
   @Autowired private GenericCohortQueries genericCohortQueries;
   @Autowired private CommonCohortQueries commonCohortQueries;
@@ -41,7 +40,6 @@ public class EriDSDCohortQueries {
   @Autowired private AgeCohortQueries ageCohortQueries;
   @Autowired private HivCohortQueries hivCohortQueries;
   @Autowired private HivMetadata hivMetadata;
-  @Autowired private CommonMetadata commonMetadata;
 
   /**
    * <b>Name: D1</b>

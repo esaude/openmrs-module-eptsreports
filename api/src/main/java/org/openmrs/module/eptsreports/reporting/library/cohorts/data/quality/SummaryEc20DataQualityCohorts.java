@@ -46,7 +46,7 @@ public class SummaryEc20DataQualityCohorts {
   /**
    * Get Patients who are not enrolled in TARV, program ID 2
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientsNotEnrolledOnTARV(List<Integer> encounterList, int programId) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
@@ -71,8 +71,8 @@ public class SummaryEc20DataQualityCohorts {
   /**
    * Get patients with given encounter list
    *
-   * @param encounterList
-   * @return
+   * @param encounterList - list encounters
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientsWithGivenEncounterList(List<Integer> encounterList) {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
@@ -87,8 +87,8 @@ public class SummaryEc20DataQualityCohorts {
   /**
    * Get patients enrolled on TARV, program ID 2
    *
-   * @param programId
-   * @return
+   * @param programId - refers to the program ID
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientsEnrolledOnTARV(int programId) {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();

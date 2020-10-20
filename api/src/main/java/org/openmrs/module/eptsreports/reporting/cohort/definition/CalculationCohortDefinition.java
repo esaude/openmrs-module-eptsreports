@@ -153,7 +153,7 @@ public class CalculationCohortDefinition extends BaseCohortDefinition {
    */
   public void addCalculationParameter(String name, Object value) {
     if (calculationParameters == null) {
-      calculationParameters = new HashMap<String, Object>();
+      calculationParameters = new HashMap<>();
     }
     if (value != null) {
       calculationParameters.put(name, value);

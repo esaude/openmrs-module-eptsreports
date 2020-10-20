@@ -57,8 +57,6 @@ public class GenericCohortQueries {
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
-
   /**
    * Generic Coded Observation cohort
    *
@@ -125,7 +123,7 @@ public class GenericCohortQueries {
     InProgramCohortDefinition inProgram = new InProgramCohortDefinition();
     inProgram.setName(name);
 
-    List<Program> programs = new ArrayList<Program>();
+    List<Program> programs = new ArrayList<>();
     programs.add(program);
 
     inProgram.setPrograms(programs);
@@ -154,7 +152,8 @@ public class GenericCohortQueries {
   /**
    * <b>Description:</b> Get patients states based on program, state and end of reporting period
    *
-   * @param
+   * @param program - program ID
+   * @param state - patient state
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsBasedOnPatientStates(int program, int state) {
@@ -178,9 +177,9 @@ public class GenericCohortQueries {
   /**
    * Get patients states based on program, state and end of reporting period
    *
-   * @param program
-   * @param state
-   * @return
+   * @param program - program ID
+   * @param state - patient state
+   * @return CohortDefinition
    */
   public CohortDefinition getPatientsBasedOnPatientStatesBeforeDate(int program, int state) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -474,12 +473,12 @@ public class GenericCohortQueries {
     map.put("conceptId", conceptId);
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-    return stringSubstitutor.replace(query.toString());
+    return stringSubstitutor.replace(query);
   }
 
   public String getPatientsWithObsBetweenDates(
       EncounterType encounterType, Concept question, List<Concept> answers) {
-    List<Integer> answerIds = new ArrayList<Integer>();
+    List<Integer> answerIds = new ArrayList<>();
     for (Concept concept : answers) {
       answerIds.add(concept.getConceptId());
     }
@@ -505,7 +504,7 @@ public class GenericCohortQueries {
   /**
    * <b>Description:</b> Gets last obs with value coded before enDate
    *
-   * @param encounterTypeId The Obs encounter Type
+   * @param encounterTypes The Obs encounter Type
    * @param question The Obs quetion concept
    * @param answers The third value coded
    * @return String
@@ -534,15 +533,13 @@ public class GenericCohortQueries {
             + "  GROUP BY p.patient_id ) AS last_encounter";
 
     StringSubstitutor sb = new StringSubstitutor(map);
-    String replaced = sb.replace(query);
-
-    return replaced;
+    return sb.replace(query);
   }
 
   /**
    * <b>Description: </b>Gets last obs with value coded before enDate
    *
-   * @param encounterTypeId The Obs encounter Type
+   * @param encounterTypes The Obs encounter Type
    * @param question The Obs quetion concept
    * @param answers The third value coded
    * @return String
@@ -591,8 +588,6 @@ public class GenericCohortQueries {
             + "ORDER BY  p.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(map);
-    String replaced = sb.replace(query);
-
-    return replaced;
+    return sb.replace(query);
   }
 }

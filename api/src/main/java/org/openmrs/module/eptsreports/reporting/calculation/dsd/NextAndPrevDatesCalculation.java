@@ -30,8 +30,9 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
     Concept concept = (Concept) parameterValues.get("conceptId");
     Integer lowerBound = (Integer) parameterValues.get("lowerBound");
     Integer upperBound = (Integer) parameterValues.get("upperBound");
-    List<EncounterType> encounterTypes =
-        (List<EncounterType>) parameterValues.get("encounterTypes");
+    List<EncounterType> encounterTypes;
+
+    encounterTypes = (List<EncounterType>) parameterValues.get("encounterTypes");
 
     // Step 1: Search for last encounter visit for this patient
     CalculationResultMap lastEncounterMap =
@@ -55,7 +56,7 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
       ListResult returnVisitObsResult = (ListResult) lastReturnVisitObsMap.get(pId);
       List<Obs> returnVisitList = EptsCalculationUtils.extractResultValues(returnVisitObsResult);
       Encounter lastEncounter = EptsCalculationUtils.resultForPatient(lastEncounterMap, pId);
-      Obs lastReturnVisitObs = null;
+      Obs lastReturnVisitObs;
 
       /*for another last encounter that may occur in the same date*/
       if (lastEncounter != null) {
@@ -146,10 +147,8 @@ public class NextAndPrevDatesCalculation extends AbstractPatientCalculation {
       Date upperBoundary =
           EptsCalculationUtils.addDays(lastEncounter.getEncounterDatetime(), upperBound);
 
-      if (lastReturnVisitObs.getValueDate().compareTo(lowerBoundary) >= 0
-          && lastReturnVisitObs.getValueDate().compareTo(upperBoundary) <= 0) {
-        return true;
-      }
+      return lastReturnVisitObs.getValueDate().compareTo(lowerBoundary) >= 0
+          && lastReturnVisitObs.getValueDate().compareTo(upperBoundary) <= 0;
     }
     return false;
   }

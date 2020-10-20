@@ -36,12 +36,10 @@ public class TXTBCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
-
-  private String generalParameterMapping =
+  private final String generalParameterMapping =
       "startDate=${startDate},endDate=${endDate},location=${location}";
 
-  private String codedObsParameterMapping =
+  private final String codedObsParameterMapping =
       "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}";
 
   private Mapped<CohortDefinition> map(CohortDefinition cd, String parameterMappings) {
@@ -54,12 +52,6 @@ public class TXTBCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-  }
-
-  private void addCodedObsParameters(CohortDefinition cd) {
-    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Dat", Date.class));
-    cd.addParameter(new Parameter("locationList", "Location", Location.class));
   }
 
   /**
@@ -802,7 +794,7 @@ public class TXTBCohortQueries {
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
-    Map<String, Integer> map = new HashMap<String, Integer>();
+    Map<String, Integer> map = new HashMap<>();
     map.put(
         "adultoSeguimentoEncounterType",
         hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
@@ -1246,7 +1238,7 @@ public class TXTBCohortQueries {
             + " GROUP BY pg.patient_id ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
-    String replacedStrinbg = sb.replace(sql).toString();
+    String replacedStrinbg = sb.replace(sql);
 
     cd.setQuery(replacedStrinbg);
 
@@ -1414,8 +1406,7 @@ public class TXTBCohortQueries {
             tbMetadata.getTBGenexpertTestConcept(),
             tbMetadata.getTestTBLAM(),
             tbMetadata.getCultureTest(),
-            commonMetadata.getPositive(),
-            commonMetadata.getNegative());
+            commonMetadata.getPositive());
     return cd;
   }
 
@@ -1637,11 +1628,10 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * <b>Description:</b> Smear Microscopy - Get patients who have a Basiloscopia Positivo or
-   * Negativo registered in the laboratory form encounter type 13 Except patients identified in
-   * GeneXpert
+   * Smear Microscopy - Get patients who have a Basiloscopia Positivo or Negativo registered in the
+   * laboratory form encounter type 13 Except patients identified in GeneXpert
    *
-   * @return {@link CohortDefinition}
+   * @return CohortDefinition
    */
   public CohortDefinition getSmearMicroscopyOnly(
       EncounterType laboratory, Concept basiloscopiaExam, Concept positive, Concept negative) {
@@ -1737,8 +1727,7 @@ public class TXTBCohortQueries {
       Concept genexpertTest,
       Concept tbLamTest,
       Concept cultureTest,
-      Concept positive,
-      Concept negative) {
+      Concept positive) {
 
     CohortDefinition genexpertTestCohort =
         genericCohortQueries.generalSql(

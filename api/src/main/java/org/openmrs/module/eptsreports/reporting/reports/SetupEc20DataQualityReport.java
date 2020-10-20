@@ -6,10 +6,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryEc20DataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec20PatientListDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.GetCustomConfigurationDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryEc20DataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -32,22 +30,14 @@ public class SetupEc20DataQualityReport extends EptsDataExportManager {
 
   private Ec20PatientListDataset ec20PatientListDataset;
 
-  private HivMetadata hivMetadata;
-
-  private GetCustomConfigurationDataset getCustomConfigurationDataset;
-
   @Autowired
   public SetupEc20DataQualityReport(
       Ec20PatientListDataset ec20PatientListDataset,
       SummaryEc20DataQualityDataset summaryEc20DataQualityDataset,
-      SummaryEc20DataQualityCohorts summaryEc20DataQualityCohorts,
-      GetCustomConfigurationDataset getCustomConfigurationDataset,
-      HivMetadata hivMetadata) {
+      SummaryEc20DataQualityCohorts summaryEc20DataQualityCohorts) {
     this.summaryEc20DataQualityDataset = summaryEc20DataQualityDataset;
     this.summaryEc20DataQualityCohorts = summaryEc20DataQualityCohorts;
     this.ec20PatientListDataset = ec20PatientListDataset;
-    this.hivMetadata = hivMetadata;
-    this.getCustomConfigurationDataset = getCustomConfigurationDataset;
   }
 
   @Override
@@ -127,7 +117,7 @@ public class SetupEc20DataQualityReport extends EptsDataExportManager {
   }
 
   private List<Parameter> getDataParameters() {
-    List<Parameter> parameters = new ArrayList<Parameter>();
+    List<Parameter> parameters = new ArrayList<>();
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
     parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));

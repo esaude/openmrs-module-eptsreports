@@ -15,7 +15,7 @@ public class EptsTransferredInCohortDefinition2 extends BaseCohortDefinition {
 
   public enum ARTProgram {
     PRE_TARV,
-    TARV;
+    TARV
   }
 
   @ConfigurationProperty private Date onOrAfter;

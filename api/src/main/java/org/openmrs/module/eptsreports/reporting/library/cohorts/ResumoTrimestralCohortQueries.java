@@ -9,8 +9,6 @@ import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsQuarterlyCohortDefinition;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition2;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition2.ARTProgram;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -463,20 +461,6 @@ public class ResumoTrimestralCohortQueries {
                 hivMetadata.getTherapeuticLineConcept().getConceptId(),
                 hivMetadata.getSecondLineConcept().getConceptId()));
     return sql;
-  }
-
-  /**
-   * <b>Description:</b> Number of patients transferred-in from another HFs during the current month
-   *
-   * @return {@link CohortDefinition}
-   */
-  private CohortDefinition
-      getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonth() {
-
-    EptsTransferredInCohortDefinition2 cd = new EptsTransferredInCohortDefinition2();
-    cd.addArtProgram(ARTProgram.TARV);
-    cd.addParameters(getParameters());
-    return cd;
   }
 
   private List<Parameter> getParameters() {

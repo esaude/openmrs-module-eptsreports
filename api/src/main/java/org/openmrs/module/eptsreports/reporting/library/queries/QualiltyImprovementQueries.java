@@ -8,7 +8,7 @@ public class QualiltyImprovementQueries {
    * <p>São pacientes que iniciaram TARV dentro do periodo de inclusao, com mínimo de uma consulta
    * após início TARV
    *
-   * @return
+   * @return String
    */
   public static String getPatientStartedTarvInInclusionPeriodWithAtLeastOneEncounter(
       int arvAdultInitialEncounterType,
@@ -27,208 +27,206 @@ public class QualiltyImprovementQueries {
       int transferredOutToAnotherHealthFacilityWorkflowState,
       int pateintTransferedFromOtherFacilityWorkflowState,
       int psPregnant) {
-    String query =
-        "select inicio.patient_id "
-            + "from "
-            + "(               "
-            + "	Select   p.patient_id, e.encounter_datetime data_inicio "
-            + "	from      patient p  "
-            + "	inner join encounter e on p.patient_id=e.patient_id     "
-            + "	inner join obs o on o.encounter_id=e.encounter_id "
-            + "	where e.voided=0 and o.voided=0 and p.voided=0 and  "
-            + "	e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and o.concept_id="
-            + arvPlan
-            + " and o.value_coded="
-            + startDrugsConcept
-            + " and  "
-            + "	e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
-            + " "
-            + "	union "
-            + " "
-            + "	Select   p.patient_id, o.value_datetime data_inicio "
-            + "	from      patient p "
-            + "	inner join encounter e on p.patient_id=e.patient_id "
-            + "	inner join obs o on e.encounter_id=o.encounter_id "
-            + "	where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "	o.concept_id="
-            + arvStartDate
-            + " and o.value_datetime is not null and  "
-            + "	o.value_datetime between :startDate and :endDate and e.location_id=:location "
-            + "		                        "
-            + "	union "
-            + " "
-            + "	select    pg.patient_id, date_enrolled data_inicio "
-            + "	from      patient p  "
-            + "	inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "	inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "	where pg.voided=0 and p.voided=0 and program_id="
-            + arvProgram
-            + " and pg.date_enrolled=ps.start_date and ps.voided=0 and  "
-            + "	date_enrolled between :startDate and :endDate and  "
-            + "	location_id=:location and ps.state="
-            + pStateActivePrioART
-            + " "
-            + " "
-            + ") inicio "
-            + "inner join "
-            + "(               "
-            + "	select    distinct patient_id, max(encounter_datetime) data_consulta "
-            + "	from      encounter "
-            + "	where encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and voided=0 and  "
-            + "	encounter_datetime between :startDate and date_add(:startDate, interval 6 MONTH) and  "
-            + "	location_id=:location "
-            + "	group by patient_id "
-            + ") consulta on consulta.patient_id=inicio.patient_id and timestampdiff(day, inicio.data_inicio,consulta.data_consulta)>0 "
-            + "where inicio.patient_id  "
-            + "not in  "
-            + "( "
-            + "	select    pg.patient_id "
-            + "	from      patient p  "
-            + "	inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "	inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "	where pg.voided=0 and ps.voided=0 and p.voided=0 and  "
-            + "	pg.program_id="
-            + arvProgram
-            + " and ps.state="
-            + transferredOutToAnotherHealthFacilityWorkflowState
-            + "  "
-            + "        and ps.start_date <=:dataFinalAvaliacao  "
-            + "		                       "
-            + "	union "
-            + " "
-            + "	select    pg.patient_id "
-            + "	from      patient p  "
-            + "	inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "	inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "	where pg.voided=0 and ps.voided=0 and p.voided=0 and  "
-            + "	pg.program_id="
-            + arvProgram
-            + " and ps.state="
-            + pateintTransferedFromOtherFacilityWorkflowState
-            + " and ps.start_date<=:dataFinalAvaliacao  "
-            + "	                       "
-            + "	union "
-            + " "
-            + "	Select   p.patient_id "
-            + "	from      patient p  "
-            + "	inner join encounter e on p.patient_id=e.patient_id "
-            + "	inner join obs o on e.encounter_id=o.encounter_id "
-            + "	where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-            + pregnantConcept
-            + " and value_coded="
-            + yesConcept
-            + " and  "
-            + "	e.encounter_type in ("
-            + arvAdultInitialEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ") and e.encounter_datetime <=:dataFinalAvaliacao "
-            + " "
-            + "	union                     "
-            + "		                       "
-            + "	Select   p.patient_id "
-            + "	from      patient p inner join encounter e on p.patient_id=e.patient_id "
-            + "	inner join obs o on e.encounter_id=o.encounter_id "
-            + "	where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-            + numberOfWeekPregnant
-            + " and  "
-            + "	e.encounter_type in ("
-            + arvAdultInitialEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ") and o.value_datetime<=:dataFinalAvaliacao                  "
-            + "		                       "
-            + "	union "
-            + "		                       "
-            + "	select    pp.patient_id "
-            + "	from      patient_program pp  "
-            + "	where pp.program_id="
-            + ptvProgram
-            + " and pp.voided=0 and pp.date_enrolled<=:dataFinalAvaliacao  "
-            + " "
-            + "	union "
-            + " "
-            + "	select    pp.patient_id "
-            + "	from      patient_program pp  "
-            + "	inner join patient_state ps on pp.patient_program_id=ps.patient_program_id "
-            + "	where pp.program_id="
-            + ptvProgram
-            + " and pp.voided=0 and ps.voided=0 and ps.state="
-            + psPregnant
-            + " and ps.end_date is null and  "
-            + "	ps.start_date<=:dataFinalAvaliacao  "
-            + " "
-            + " "
-            + "	union "
-            + " "
-            + " "
-            + "	Select   p.patient_id "
-            + "	from      patient p  "
-            + "	inner join encounter e on p.patient_id=e.patient_id     "
-            + "	inner join obs o on o.encounter_id=e.encounter_id "
-            + "	where e.voided=0 and o.voided=0 and p.voided=0 and  "
-            + "	e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and o.concept_id="
-            + arvPlan
-            + " and o.value_coded="
-            + startDrugsConcept
-            + " and  "
-            + "	e.encounter_datetime<:startDate "
-            + " "
-            + "	union "
-            + " "
-            + "	Select   p.patient_id "
-            + "	from      patient p "
-            + "	inner join encounter e on p.patient_id=e.patient_id "
-            + "	inner join obs o on e.encounter_id=o.encounter_id "
-            + "	where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "	o.concept_id="
-            + arvStartDate
-            + " and o.value_datetime is not null and  "
-            + "	o.value_datetime < :startDate "
-            + "		                        "
-            + "	union "
-            + " "
-            + "	select    pg.patient_id "
-            + "	from      patient p  "
-            + "	inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "	inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "	where pg.voided=0 and p.voided=0 and program_id="
-            + arvProgram
-            + " and pg.date_enrolled=ps.start_date and ps.voided=0 and  "
-            + "	date_enrolled<:startDate and ps.state="
-            + pStateActivePrioART
-            + " "
-            + ")";
 
-    return query;
+    return "select inicio.patient_id "
+        + "from "
+        + "(               "
+        + "	Select   p.patient_id, e.encounter_datetime data_inicio "
+        + "	from      patient p  "
+        + "	inner join encounter e on p.patient_id=e.patient_id     "
+        + "	inner join obs o on o.encounter_id=e.encounter_id "
+        + "	where e.voided=0 and o.voided=0 and p.voided=0 and  "
+        + "	e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and o.concept_id="
+        + arvPlan
+        + " and o.value_coded="
+        + startDrugsConcept
+        + " and  "
+        + "	e.encounter_datetime between :startDate and :endDate and e.location_id=:location "
+        + " "
+        + "	union "
+        + " "
+        + "	Select   p.patient_id, o.value_datetime data_inicio "
+        + "	from      patient p "
+        + "	inner join encounter e on p.patient_id=e.patient_id "
+        + "	inner join obs o on e.encounter_id=o.encounter_id "
+        + "	where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "	o.concept_id="
+        + arvStartDate
+        + " and o.value_datetime is not null and  "
+        + "	o.value_datetime between :startDate and :endDate and e.location_id=:location "
+        + "		                        "
+        + "	union "
+        + " "
+        + "	select    pg.patient_id, date_enrolled data_inicio "
+        + "	from      patient p  "
+        + "	inner join patient_program pg on p.patient_id=pg.patient_id "
+        + "	inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+        + "	where pg.voided=0 and p.voided=0 and program_id="
+        + arvProgram
+        + " and pg.date_enrolled=ps.start_date and ps.voided=0 and  "
+        + "	date_enrolled between :startDate and :endDate and  "
+        + "	location_id=:location and ps.state="
+        + pStateActivePrioART
+        + " "
+        + " "
+        + ") inicio "
+        + "inner join "
+        + "(               "
+        + "	select    distinct patient_id, max(encounter_datetime) data_consulta "
+        + "	from      encounter "
+        + "	where encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and voided=0 and  "
+        + "	encounter_datetime between :startDate and date_add(:startDate, interval 6 MONTH) and  "
+        + "	location_id=:location "
+        + "	group by patient_id "
+        + ") consulta on consulta.patient_id=inicio.patient_id and timestampdiff(day, inicio.data_inicio,consulta.data_consulta)>0 "
+        + "where inicio.patient_id  "
+        + "not in  "
+        + "( "
+        + "	select    pg.patient_id "
+        + "	from      patient p  "
+        + "	inner join patient_program pg on p.patient_id=pg.patient_id "
+        + "	inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+        + "	where pg.voided=0 and ps.voided=0 and p.voided=0 and  "
+        + "	pg.program_id="
+        + arvProgram
+        + " and ps.state="
+        + transferredOutToAnotherHealthFacilityWorkflowState
+        + "  "
+        + "        and ps.start_date <=:dataFinalAvaliacao  "
+        + "		                       "
+        + "	union "
+        + " "
+        + "	select    pg.patient_id "
+        + "	from      patient p  "
+        + "	inner join patient_program pg on p.patient_id=pg.patient_id "
+        + "	inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+        + "	where pg.voided=0 and ps.voided=0 and p.voided=0 and  "
+        + "	pg.program_id="
+        + arvProgram
+        + " and ps.state="
+        + pateintTransferedFromOtherFacilityWorkflowState
+        + " and ps.start_date<=:dataFinalAvaliacao  "
+        + "	                       "
+        + "	union "
+        + " "
+        + "	Select   p.patient_id "
+        + "	from      patient p  "
+        + "	inner join encounter e on p.patient_id=e.patient_id "
+        + "	inner join obs o on e.encounter_id=o.encounter_id "
+        + "	where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + pregnantConcept
+        + " and value_coded="
+        + yesConcept
+        + " and  "
+        + "	e.encounter_type in ("
+        + arvAdultInitialEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ") and e.encounter_datetime <=:dataFinalAvaliacao "
+        + " "
+        + "	union                     "
+        + "		                       "
+        + "	Select   p.patient_id "
+        + "	from      patient p inner join encounter e on p.patient_id=e.patient_id "
+        + "	inner join obs o on e.encounter_id=o.encounter_id "
+        + "	where p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + numberOfWeekPregnant
+        + " and  "
+        + "	e.encounter_type in ("
+        + arvAdultInitialEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ") and o.value_datetime<=:dataFinalAvaliacao                  "
+        + "		                       "
+        + "	union "
+        + "		                       "
+        + "	select    pp.patient_id "
+        + "	from      patient_program pp  "
+        + "	where pp.program_id="
+        + ptvProgram
+        + " and pp.voided=0 and pp.date_enrolled<=:dataFinalAvaliacao  "
+        + " "
+        + "	union "
+        + " "
+        + "	select    pp.patient_id "
+        + "	from      patient_program pp  "
+        + "	inner join patient_state ps on pp.patient_program_id=ps.patient_program_id "
+        + "	where pp.program_id="
+        + ptvProgram
+        + " and pp.voided=0 and ps.voided=0 and ps.state="
+        + psPregnant
+        + " and ps.end_date is null and  "
+        + "	ps.start_date<=:dataFinalAvaliacao  "
+        + " "
+        + " "
+        + "	union "
+        + " "
+        + " "
+        + "	Select   p.patient_id "
+        + "	from      patient p  "
+        + "	inner join encounter e on p.patient_id=e.patient_id     "
+        + "	inner join obs o on o.encounter_id=e.encounter_id "
+        + "	where e.voided=0 and o.voided=0 and p.voided=0 and  "
+        + "	e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and o.concept_id="
+        + arvPlan
+        + " and o.value_coded="
+        + startDrugsConcept
+        + " and  "
+        + "	e.encounter_datetime<:startDate "
+        + " "
+        + "	union "
+        + " "
+        + "	Select   p.patient_id "
+        + "	from      patient p "
+        + "	inner join encounter e on p.patient_id=e.patient_id "
+        + "	inner join obs o on e.encounter_id=o.encounter_id "
+        + "	where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "	o.concept_id="
+        + arvStartDate
+        + " and o.value_datetime is not null and  "
+        + "	o.value_datetime < :startDate "
+        + "		                        "
+        + "	union "
+        + " "
+        + "	select    pg.patient_id "
+        + "	from      patient p  "
+        + "	inner join patient_program pg on p.patient_id=pg.patient_id "
+        + "	inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+        + "	where pg.voided=0 and p.voided=0 and program_id="
+        + arvProgram
+        + " and pg.date_enrolled=ps.start_date and ps.voided=0 and  "
+        + "	date_enrolled<:startDate and ps.state="
+        + pStateActivePrioART
+        + " "
+        + ")";
   }
 
   /**
@@ -289,43 +287,41 @@ public class QualiltyImprovementQueries {
       int adultoSeguimentoEncounterType,
       int arvPediatriaSeguimentoEncounterType,
       int tbScreeningConcept) {
-    String query =
-        "select consulta.patient_id "
-            + "from "
-            + "(Select 	p.patient_id,count(*) consultas "
-            + "from 	patient p inner join encounter e on e.patient_id=p.patient_id "
-            + "where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :endDate and  "
-            + "		e.location_id=:location and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") "
-            + "group by patient_id) consulta "
-            + "inner join "
-            + "(Select 	p.patient_id,count(*) rastreios "
-            + "from 	patient p  "
-            + "		inner join encounter e on e.patient_id=p.patient_id "
-            + "		inner join obs o on o.encounter_id=e.encounter_id "
-            + "where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :endDate and  "
-            + "		e.location_id=:location and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and o.voided=0 and o.concept_id="
-            + tbScreeningConcept
-            + " "
-            + "group by patient_id) rastreio on consulta.patient_id=rastreio.patient_id "
-            + " "
-            + "where rastreio.rastreios>=consulta.consultas ";
 
-    return query;
+    return "select consulta.patient_id "
+        + "from "
+        + "(Select 	p.patient_id,count(*) consultas "
+        + "from 	patient p inner join encounter e on e.patient_id=p.patient_id "
+        + "where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :endDate and  "
+        + "		e.location_id=:location and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") "
+        + "group by patient_id) consulta "
+        + "inner join "
+        + "(Select 	p.patient_id,count(*) rastreios "
+        + "from 	patient p  "
+        + "		inner join encounter e on e.patient_id=p.patient_id "
+        + "		inner join obs o on o.encounter_id=e.encounter_id "
+        + "where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :endDate and  "
+        + "		e.location_id=:location and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and o.voided=0 and o.concept_id="
+        + tbScreeningConcept
+        + " "
+        + "group by patient_id) rastreio on consulta.patient_id=rastreio.patient_id "
+        + " "
+        + "where rastreio.rastreios>=consulta.consultas ";
   }
   /**
    * MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE INCLUSAO (AMOSTRA
    * GRAVIDA) São gravidas inscritas no serviço TARV e que iniciaram tarv e que fazem parte da
    * amostra para a avaliação de qualidade de dados de MQ
    *
-   * @return
+   * @return String
    */
   public static String getPragnantPatientsEnrolledInARVThatStartedInInclusionPeriodPregnantSample(
       int arvAdultInitialEncounterType,
@@ -342,153 +338,150 @@ public class QualiltyImprovementQueries {
       int arvStartDate,
       int yesConcept) {
 
-    String query =
-        "select gravida.patient_id  "
-            + "from								  "
-            + "(  "
-            + "  "
-            + "	Select 	p.patient_id  "
-            + "	from 	patient p   "
-            + "			inner join encounter e on p.patient_id=e.patient_id  "
-            + "			inner join obs o on e.encounter_id=o.encounter_id  "
-            + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-            + pregnantConcept
-            + " and value_coded="
-            + yesConcept
-            + " and   "
-            + "			e.encounter_type in ("
-            + arvAdultInitialEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location  "
-            + "  "
-            + "	union		  "
-            + "			  "
-            + "	Select 	p.patient_id  "
-            + "	from 	patient p inner join encounter e on p.patient_id=e.patient_id  "
-            + "			inner join obs o on e.encounter_id=o.encounter_id  "
-            + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-            + numberOfWeekPregnant
-            + " and   "
-            + "			e.encounter_type in ( "
-            + arvAdultInitialEncounterType
-            + ", "
-            + adultoSeguimentoEncounterType
-            + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location  "
-            + "  "
-            + "  "
-            + "	union		  "
-            + "			  "
-            + "	Select 	p.patient_id  "
-            + "	from 	patient p inner join encounter e on p.patient_id=e.patient_id  "
-            + "			inner join obs o on e.encounter_id=o.encounter_id  "
-            + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-            + pregnancyDueDateConcept
-            + " and   "
-            + "			e.encounter_type in ( "
-            + arvAdultInitialEncounterType
-            + ", "
-            + adultoSeguimentoEncounterType
-            + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location		  "
-            + "			  "
-            + "	union  "
-            + "			  "
-            + "	select 	pp.patient_id  "
-            + "	from 	patient_program pp   "
-            + "	where 	pp.program_id="
-            + ptvEtvProgram
-            + " and pp.voided=0 and   "
-            + "			pp.date_enrolled between :startDate and :endDate and pp.location_id=:location  "
-            + "  "
-            + ") gravida  "
-            + "inner join  "
-            + "(  select   distinct patient_id  "
-            + "   from     encounter  "
-            + "   where 	encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and voided=0 and   "
-            + "			encounter_datetime between :startDate and date_add(:endDate, interval 6 MONTH) and   "
-            + "			location_id=:location  "
-            + ") consulta on consulta.patient_id=gravida.patient_id  "
-            + "inner join   "
-            + "(	select patient_id,data_inicio  "
-            + "	from  "
-            + "	(	Select patient_id,min(data_inicio) data_inicio  "
-            + "		from  "
-            + "				(	Select 	p.patient_id,min(e.encounter_datetime) data_inicio  "
-            + "					from 	patient p   "
-            + "							inner join encounter e on p.patient_id=e.patient_id	  "
-            + "							inner join obs o on o.encounter_id=e.encounter_id  "
-            + "					where 	e.voided=0 and o.voided=0 and p.voided=0 and   "
-            + "							e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and o.concept_id="
-            + arvPlan
-            + " and o.value_coded="
-            + startDrugsConcept
-            + " and   "
-            + "							e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "					group by p.patient_id  "
-            + "			  "
-            + "					union  "
-            + "			  "
-            + "					Select 	p.patient_id,min(value_datetime) data_inicio  "
-            + "					from 	patient p  "
-            + "							inner join encounter e on p.patient_id=e.patient_id  "
-            + "							inner join obs o on e.encounter_id=o.encounter_id  "
-            + "					where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and   "
-            + "							o.concept_id="
-            + arvStartDate
-            + " and o.value_datetime is not null and   "
-            + "							o.value_datetime<=:endDate and e.location_id=:location  "
-            + "					group by p.patient_id  "
-            + "  "
-            + "					union  "
-            + "  "
-            + "					select 	pg.patient_id,date_enrolled data_inicio  "
-            + "					from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "					where 	pg.voided=0 and p.voided=0 and program_id="
-            + artProgram
-            + " and date_enrolled<=:endDate and location_id=:location  "
-            + "					  "
-            + "					union  "
-            + "					  "
-            + "					  "
-            + "				  SELECT 	e.patient_id, MIN(e.encounter_datetime) AS data_inicio   "
-            + "				  FROM 		patient p  "
-            + "							inner join encounter e on p.patient_id=e.patient_id  "
-            + "				  WHERE		p.voided=0 and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + " AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "				  GROUP BY 	p.patient_id				  "
-            + "					  "
-            + "					  "
-            + "				) inicio  "
-            + "			group by patient_id	  "
-            + "	)inicio1  "
-            + "	where data_inicio between :startDate and  :endDate  "
-            + ") inicio_real on inicio_real.patient_id=gravida.patient_id";
-
-    return query;
+    return "select gravida.patient_id  "
+        + "from								  "
+        + "(  "
+        + "  "
+        + "	Select 	p.patient_id  "
+        + "	from 	patient p   "
+        + "			inner join encounter e on p.patient_id=e.patient_id  "
+        + "			inner join obs o on e.encounter_id=o.encounter_id  "
+        + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + pregnantConcept
+        + " and value_coded="
+        + yesConcept
+        + " and   "
+        + "			e.encounter_type in ("
+        + arvAdultInitialEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location  "
+        + "  "
+        + "	union		  "
+        + "			  "
+        + "	Select 	p.patient_id  "
+        + "	from 	patient p inner join encounter e on p.patient_id=e.patient_id  "
+        + "			inner join obs o on e.encounter_id=o.encounter_id  "
+        + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + numberOfWeekPregnant
+        + " and   "
+        + "			e.encounter_type in ( "
+        + arvAdultInitialEncounterType
+        + ", "
+        + adultoSeguimentoEncounterType
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location  "
+        + "  "
+        + "  "
+        + "	union		  "
+        + "			  "
+        + "	Select 	p.patient_id  "
+        + "	from 	patient p inner join encounter e on p.patient_id=e.patient_id  "
+        + "			inner join obs o on e.encounter_id=o.encounter_id  "
+        + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + pregnancyDueDateConcept
+        + " and   "
+        + "			e.encounter_type in ( "
+        + arvAdultInitialEncounterType
+        + ", "
+        + adultoSeguimentoEncounterType
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location		  "
+        + "			  "
+        + "	union  "
+        + "			  "
+        + "	select 	pp.patient_id  "
+        + "	from 	patient_program pp   "
+        + "	where 	pp.program_id="
+        + ptvEtvProgram
+        + " and pp.voided=0 and   "
+        + "			pp.date_enrolled between :startDate and :endDate and pp.location_id=:location  "
+        + "  "
+        + ") gravida  "
+        + "inner join  "
+        + "(  select   distinct patient_id  "
+        + "   from     encounter  "
+        + "   where 	encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and voided=0 and   "
+        + "			encounter_datetime between :startDate and date_add(:endDate, interval 6 MONTH) and   "
+        + "			location_id=:location  "
+        + ") consulta on consulta.patient_id=gravida.patient_id  "
+        + "inner join   "
+        + "(	select patient_id,data_inicio  "
+        + "	from  "
+        + "	(	Select patient_id,min(data_inicio) data_inicio  "
+        + "		from  "
+        + "				(	Select 	p.patient_id,min(e.encounter_datetime) data_inicio  "
+        + "					from 	patient p   "
+        + "							inner join encounter e on p.patient_id=e.patient_id	  "
+        + "							inner join obs o on o.encounter_id=e.encounter_id  "
+        + "					where 	e.voided=0 and o.voided=0 and p.voided=0 and   "
+        + "							e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and o.concept_id="
+        + arvPlan
+        + " and o.value_coded="
+        + startDrugsConcept
+        + " and   "
+        + "							e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "					group by p.patient_id  "
+        + "			  "
+        + "					union  "
+        + "			  "
+        + "					Select 	p.patient_id,min(value_datetime) data_inicio  "
+        + "					from 	patient p  "
+        + "							inner join encounter e on p.patient_id=e.patient_id  "
+        + "							inner join obs o on e.encounter_id=o.encounter_id  "
+        + "					where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and   "
+        + "							o.concept_id="
+        + arvStartDate
+        + " and o.value_datetime is not null and   "
+        + "							o.value_datetime<=:endDate and e.location_id=:location  "
+        + "					group by p.patient_id  "
+        + "  "
+        + "					union  "
+        + "  "
+        + "					select 	pg.patient_id,date_enrolled data_inicio  "
+        + "					from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "					where 	pg.voided=0 and p.voided=0 and program_id="
+        + artProgram
+        + " and date_enrolled<=:endDate and location_id=:location  "
+        + "					  "
+        + "					union  "
+        + "					  "
+        + "					  "
+        + "				  SELECT 	e.patient_id, MIN(e.encounter_datetime) AS data_inicio   "
+        + "				  FROM 		patient p  "
+        + "							inner join encounter e on p.patient_id=e.patient_id  "
+        + "				  WHERE		p.voided=0 and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + " AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "				  GROUP BY 	p.patient_id				  "
+        + "					  "
+        + "					  "
+        + "				) inicio  "
+        + "			group by patient_id	  "
+        + "	)inicio1  "
+        + "	where data_inicio between :startDate and  :endDate  "
+        + ") inicio_real on inicio_real.patient_id=gravida.patient_id";
   }
 
   /**
    * PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO São pacientes inscritos
    * no programa de tuberculose num determinado periodo
    *
-   * @return
+   * @return String
    */
   public static String getPacientsEnrolledInTBProgram(int tbProgram) {
     String query =
@@ -506,60 +499,58 @@ public class QualiltyImprovementQueries {
    * <p>São pacientes que iniciaram a profilaxia com isoniazida no período de inclusão e que já
    * terminaram
    *
-   * @return
+   * @return String
    */
   public static String getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted(
       int isoniazidProphylaxisStartDate,
       int isoniazidProphylaxisEndDate,
       int adultoSeguimentoEncounterType,
       int arvPediatriaSeguimentoEncounterType) {
-    String query =
-        "select inicio.patient_id  "
-            + "from  "
-            + "(	select p.patient_id,min(value_datetime) data_inicio  "
-            + "	from	patient p  "
-            + "	inner join encounter e on p.patient_id=e.patient_id  "
-            + "	inner join obs o on o.encounter_id=e.encounter_id  "
-            + "	where e.voided=0 and p.voided=0 and o.voided=0  "
-            + "	and o.value_datetime between :startDate and :endDate   "
-            + "	and o.concept_id="
-            + isoniazidProphylaxisStartDate
-            + "   "
-            + "	and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ")   "
-            + "	and e.location_id= :location  "
-            + "	group by p.patient_id  "
-            + ") inicio  "
-            + "inner join  "
-            + "(	select p.patient_id,max(value_datetime) data_final  "
-            + "	from	patient p  "
-            + "	inner join encounter e on p.patient_id=e.patient_id  "
-            + "	inner join obs o on o.encounter_id=e.encounter_id  "
-            + "	where e.voided=0 and p.voided=0 and o.voided=0  "
-            + "	and o.value_datetime between :startDate and :dataFinalAvaliacao  "
-            + "	and o.concept_id="
-            + isoniazidProphylaxisEndDate
-            + "	and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ")   "
-            + "	and e.location_id= :location  "
-            + "	group by p.patient_id  "
-            + ") termino  "
-            + "on inicio.patient_id=termino.patient_id  "
-            + "where data_inicio<data_final";
 
-    return query;
+    return "select inicio.patient_id  "
+        + "from  "
+        + "(	select p.patient_id,min(value_datetime) data_inicio  "
+        + "	from	patient p  "
+        + "	inner join encounter e on p.patient_id=e.patient_id  "
+        + "	inner join obs o on o.encounter_id=e.encounter_id  "
+        + "	where e.voided=0 and p.voided=0 and o.voided=0  "
+        + "	and o.value_datetime between :startDate and :endDate   "
+        + "	and o.concept_id="
+        + isoniazidProphylaxisStartDate
+        + "   "
+        + "	and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ")   "
+        + "	and e.location_id= :location  "
+        + "	group by p.patient_id  "
+        + ") inicio  "
+        + "inner join  "
+        + "(	select p.patient_id,max(value_datetime) data_final  "
+        + "	from	patient p  "
+        + "	inner join encounter e on p.patient_id=e.patient_id  "
+        + "	inner join obs o on o.encounter_id=e.encounter_id  "
+        + "	where e.voided=0 and p.voided=0 and o.voided=0  "
+        + "	and o.value_datetime between :startDate and :dataFinalAvaliacao  "
+        + "	and o.concept_id="
+        + isoniazidProphylaxisEndDate
+        + "	and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ")   "
+        + "	and e.location_id= :location  "
+        + "	group by p.patient_id  "
+        + ") termino  "
+        + "on inicio.patient_id=termino.patient_id  "
+        + "where data_inicio<data_final";
   }
   /**
    * MQ_PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA (TPI) NO PERIODO DE INCLUSAO São pacientes
    * que iniciaram a profilaxia com INH no período de inclusão
    *
-   * @return
+   * @return String
    */
   public static String getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriod(
       int adultoSeguimentoEncounterType,
@@ -600,36 +591,34 @@ public class QualiltyImprovementQueries {
       int adultoSeguimentoEncounterType,
       int arvPediatriaSeguimentoEncounterType,
       int screeningForSTIConcept) {
-    String query =
-        "select consulta.patient_id "
-            + "from "
-            + "(Select 	p.patient_id,count(*) consultas "
-            + "from 	patient p inner join encounter e on e.patient_id=p.patient_id "
-            + "where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :endDate and  "
-            + "		e.location_id=:location and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") "
-            + "group by patient_id) consulta "
-            + "inner join "
-            + "(Select 	p.patient_id,count(*) itss "
-            + "from 	patient p  "
-            + "		inner join encounter e on e.patient_id=p.patient_id "
-            + "		inner join obs o on o.encounter_id=e.encounter_id "
-            + "where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :endDate and  "
-            + "		e.location_id=:location and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") "
-            + "and o.voided=0 and o.concept_id="
-            + screeningForSTIConcept
-            + " "
-            + "group by patient_id) its on consulta.patient_id=its.patient_id "
-            + "where its.itss>=consulta.consultas";
 
-    return query;
+    return "select consulta.patient_id "
+        + "from "
+        + "(Select 	p.patient_id,count(*) consultas "
+        + "from 	patient p inner join encounter e on e.patient_id=p.patient_id "
+        + "where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :endDate and  "
+        + "		e.location_id=:location and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") "
+        + "group by patient_id) consulta "
+        + "inner join "
+        + "(Select 	p.patient_id,count(*) itss "
+        + "from 	patient p  "
+        + "		inner join encounter e on e.patient_id=p.patient_id "
+        + "		inner join obs o on o.encounter_id=e.encounter_id "
+        + "where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :endDate and  "
+        + "		e.location_id=:location and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") "
+        + "and o.voided=0 and o.concept_id="
+        + screeningForSTIConcept
+        + " "
+        + "group by patient_id) its on consulta.patient_id=its.patient_id "
+        + "where its.itss>=consulta.consultas";
   }
 
   /**
@@ -696,7 +685,6 @@ public class QualiltyImprovementQueries {
    * @param arvPharmaciaEncounterType
    * @param arvPlan
    * @param startDrugsConcept
-   * @param historicalDrugStartDateConcept
    * @param hivCareProgram
    * @param artProgram
    * @return
@@ -713,114 +701,111 @@ public class QualiltyImprovementQueries {
       int hivCareProgram,
       int artProgram) {
 
-    String query =
-        "select inicio_real.patient_id  "
-            + "from  "
-            + "(	select patient_id,data_inicio  "
-            + "	from  "
-            + "	(	Select patient_id,min(data_inicio) data_inicio  "
-            + "		from  "
-            + "		(	Select p.patient_id,min(e.encounter_datetime) data_inicio  "
-            + "			from patient p   "
-            + "			inner join encounter e on p.patient_id=e.patient_id	  "
-            + "			inner join obs o on o.encounter_id=e.encounter_id  "
-            + "			where e.voided=0 and o.voided=0 and p.voided=0   "
-            + "			and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ")   "
-            + "			and o.concept_id="
-            + arvPlan
-            + "   "
-            + "			and o.value_coded="
-            + startDrugsConcept
-            + "   "
-            + "			and e.encounter_datetime<=:endDate   "
-            + "			and e.location_id=:location  "
-            + "			group by p.patient_id  "
-            + "	  "
-            + "			union  "
-            + "	  "
-            + "			Select p.patient_id,min(value_datetime) data_inicio  "
-            + "			from patient p  "
-            + "			inner join encounter e on p.patient_id=e.patient_id  "
-            + "			inner join obs o on e.encounter_id=o.encounter_id  "
-            + "			where p.voided=0 and e.voided=0 and o.voided=0   "
-            + "			and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ")   "
-            + "			and o.concept_id="
-            + arvStartDateConcept
-            + "   "
-            + "			and o.value_datetime is not null   "
-            + "			and o.value_datetime<=:endDate   "
-            + "			and e.location_id=:location  "
-            + "			group by p.patient_id  "
-            + "  "
-            + "			union  "
-            + "  "
-            + "			select pg.patient_id,date_enrolled data_inicio  "
-            + "			from patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "			where pg.voided=0 and p.voided=0   "
-            + "			and program_id="
-            + artProgram
-            + "   "
-            + "			and date_enrolled<=:endDate   "
-            + "			and location_id=:location  "
-            + "			  "
-            + "			union  "
-            + "			  "
-            + "			select e.patient_id, MIN(e.encounter_datetime) AS data_inicio   "
-            + "			from patient p  "
-            + "			inner join encounter e on p.patient_id=e.patient_id  "
-            + "			where p.voided=0 and e.voided=0   "
-            + "			and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + "  "
-            + "			and e.encounter_datetime<=:endDate   "
-            + "			and e.location_id=:location  "
-            + "			group by p.patient_id  "
-            + "		) inicio  "
-            + "		group by patient_id	  "
-            + "	)inicio1  "
-            + "	where data_inicio between :startDate and :endDate  "
-            + ")inicio_real  "
-            + "inner join  "
-            + "(  "
-            + "	select p.patient_id, e.encounter_datetime as data_inscricao  "
-            + "	from patient p   "
-            + "	inner join encounter e on e.patient_id=p.patient_id  "
-            + "	left join obs o1 on o1.encounter_id=e.encounter_id and o1.concept_id=1611  "
-            + "	where e.voided=0 and p.voided=0   "
-            + "	and e.encounter_type in ("
-            + arvAdultInitialEncounterType
-            + ","
-            + arvPediatriaInitialEncounterType
-            + ")   "
-            + "	and e.encounter_datetime<=:endDate   "
-            + "	and e.location_id = :location  "
-            + "  "
-            + "	union  "
-            + "  "
-            + "	select pg.patient_id, date_enrolled as data_inscricao  "
-            + "	from patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "	where pg.voided=0 and p.voided=0   "
-            + "	and program_id="
-            + hivCareProgram
-            + "   "
-            + "	and date_enrolled<=:endDate   "
-            + "	and location_id=:location  "
-            + ")inscricao on inicio_real.patient_id=inscricao.patient_id  "
-            + "and datediff(data_inicio,data_inscricao)<=15 ";
-
-    return query;
+    return "select inicio_real.patient_id  "
+        + "from  "
+        + "(	select patient_id,data_inicio  "
+        + "	from  "
+        + "	(	Select patient_id,min(data_inicio) data_inicio  "
+        + "		from  "
+        + "		(	Select p.patient_id,min(e.encounter_datetime) data_inicio  "
+        + "			from patient p   "
+        + "			inner join encounter e on p.patient_id=e.patient_id	  "
+        + "			inner join obs o on o.encounter_id=e.encounter_id  "
+        + "			where e.voided=0 and o.voided=0 and p.voided=0   "
+        + "			and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ")   "
+        + "			and o.concept_id="
+        + arvPlan
+        + "   "
+        + "			and o.value_coded="
+        + startDrugsConcept
+        + "   "
+        + "			and e.encounter_datetime<=:endDate   "
+        + "			and e.location_id=:location  "
+        + "			group by p.patient_id  "
+        + "	  "
+        + "			union  "
+        + "	  "
+        + "			Select p.patient_id,min(value_datetime) data_inicio  "
+        + "			from patient p  "
+        + "			inner join encounter e on p.patient_id=e.patient_id  "
+        + "			inner join obs o on e.encounter_id=o.encounter_id  "
+        + "			where p.voided=0 and e.voided=0 and o.voided=0   "
+        + "			and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ")   "
+        + "			and o.concept_id="
+        + arvStartDateConcept
+        + "   "
+        + "			and o.value_datetime is not null   "
+        + "			and o.value_datetime<=:endDate   "
+        + "			and e.location_id=:location  "
+        + "			group by p.patient_id  "
+        + "  "
+        + "			union  "
+        + "  "
+        + "			select pg.patient_id,date_enrolled data_inicio  "
+        + "			from patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "			where pg.voided=0 and p.voided=0   "
+        + "			and program_id="
+        + artProgram
+        + "   "
+        + "			and date_enrolled<=:endDate   "
+        + "			and location_id=:location  "
+        + "			  "
+        + "			union  "
+        + "			  "
+        + "			select e.patient_id, MIN(e.encounter_datetime) AS data_inicio   "
+        + "			from patient p  "
+        + "			inner join encounter e on p.patient_id=e.patient_id  "
+        + "			where p.voided=0 and e.voided=0   "
+        + "			and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + "  "
+        + "			and e.encounter_datetime<=:endDate   "
+        + "			and e.location_id=:location  "
+        + "			group by p.patient_id  "
+        + "		) inicio  "
+        + "		group by patient_id	  "
+        + "	)inicio1  "
+        + "	where data_inicio between :startDate and :endDate  "
+        + ")inicio_real  "
+        + "inner join  "
+        + "(  "
+        + "	select p.patient_id, e.encounter_datetime as data_inscricao  "
+        + "	from patient p   "
+        + "	inner join encounter e on e.patient_id=p.patient_id  "
+        + "	left join obs o1 on o1.encounter_id=e.encounter_id and o1.concept_id=1611  "
+        + "	where e.voided=0 and p.voided=0   "
+        + "	and e.encounter_type in ("
+        + arvAdultInitialEncounterType
+        + ","
+        + arvPediatriaInitialEncounterType
+        + ")   "
+        + "	and e.encounter_datetime<=:endDate   "
+        + "	and e.location_id = :location  "
+        + "  "
+        + "	union  "
+        + "  "
+        + "	select pg.patient_id, date_enrolled as data_inscricao  "
+        + "	from patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "	where pg.voided=0 and p.voided=0   "
+        + "	and program_id="
+        + hivCareProgram
+        + "   "
+        + "	and date_enrolled<=:endDate   "
+        + "	and location_id=:location  "
+        + ")inscricao on inicio_real.patient_id=inscricao.patient_id  "
+        + "and datediff(data_inicio,data_inscricao)<=15 ";
   }
   /**
    * PACIENTES QUE INICIARAM TARV NUM PERIODO E QUE TIVERAM SEGUNDO LEVANTAMENTO OU CONSULTA CLINICA
@@ -833,7 +818,6 @@ public class QualiltyImprovementQueries {
    * @param arvPharmaciaEncounterType
    * @param arvPlan
    * @param startDrugsConcept
-   * @param historicalDrugStartDateConcept
    * @param artProgram
    * @return String
    */
@@ -847,103 +831,100 @@ public class QualiltyImprovementQueries {
       int artProgram,
       int pateintTransferedFromOtherFacilityWorkflowState) {
 
-    String query =
-        "select inicio_real.patient_id  "
-            + "from  "
-            + "(	select patient_id,data_inicio  "
-            + "	from  "
-            + "	(	Select patient_id,min(data_inicio) data_inicio  "
-            + "		from  "
-            + "				(	Select 	p.patient_id,min(e.encounter_datetime) data_inicio  "
-            + "					from 	patient p   "
-            + "							inner join encounter e on p.patient_id=e.patient_id	  "
-            + "							inner join obs o on o.encounter_id=e.encounter_id  "
-            + "					where 	e.voided=0 and o.voided=0 and p.voided=0 and   "
-            + "							e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and o.concept_id="
-            + arvPlan
-            + " and o.value_coded="
-            + startDrugsConcept
-            + " and   "
-            + "							e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "					group by p.patient_id  "
-            + "			  "
-            + "					union  "
-            + "			  "
-            + "					Select 	p.patient_id,min(value_datetime) data_inicio  "
-            + "					from 	patient p  "
-            + "							inner join encounter e on p.patient_id=e.patient_id  "
-            + "							inner join obs o on e.encounter_id=o.encounter_id  "
-            + "					where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and   "
-            + "							o.concept_id="
-            + arvStartDateConcept
-            + " and o.value_datetime is not null and   "
-            + "							o.value_datetime<=:endDate and e.location_id=:location  "
-            + "					group by p.patient_id  "
-            + "  "
-            + "					union  "
-            + "  "
-            + "					select 	pg.patient_id,date_enrolled data_inicio  "
-            + "					from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "					where 	pg.voided=0 and p.voided=0 and program_id="
-            + artProgram
-            + " and date_enrolled<=:endDate and location_id=:location  "
-            + "					  "
-            + "					union  "
-            + "					  "
-            + "					  "
-            + "				  SELECT 	e.patient_id, MIN(e.encounter_datetime) AS data_inicio   "
-            + "				  FROM 		patient p  "
-            + "							inner join encounter e on p.patient_id=e.patient_id  "
-            + "				  WHERE		p.voided=0 and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + " AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "				  GROUP BY 	p.patient_id				  "
-            + "					  "
-            + "					  "
-            + "				) inicio  "
-            + "			group by patient_id	  "
-            + "	)inicio1  "
-            + "	where data_inicio between :startDate and :endDate  "
-            + ") inicio_real  "
-            + "inner join encounter e on e.patient_id=inicio_real.patient_id  "
-            + "where 	e.voided=0 and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ","
-            + arvPharmaciaEncounterType
-            + ") and e.location_id=:location and   "
-            + "		e.encounter_datetime between inicio_real.data_inicio and date_add(inicio_real.data_inicio, interval 33 day) and   "
-            + "		inicio_real.patient_id not in   "
-            + "		(  "
-            + "			select 	pg.patient_id  "
-            + "			from 	patient p   "
-            + "					inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "					inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
-            + "			where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
-            + "					pg.program_id="
-            + artProgram
-            + " and ps.state="
-            + pateintTransferedFromOtherFacilityWorkflowState
-            + " and ps.start_date=pg.date_enrolled and   "
-            + "					ps.start_date between :startDate and :endDate and location_id=:location  "
-            + "		)  "
-            + "group by inicio_real.patient_id  "
-            + "having min(e.encounter_datetime)<max(e.encounter_datetime)";
-
-    return query;
+    return "select inicio_real.patient_id  "
+        + "from  "
+        + "(	select patient_id,data_inicio  "
+        + "	from  "
+        + "	(	Select patient_id,min(data_inicio) data_inicio  "
+        + "		from  "
+        + "				(	Select 	p.patient_id,min(e.encounter_datetime) data_inicio  "
+        + "					from 	patient p   "
+        + "							inner join encounter e on p.patient_id=e.patient_id	  "
+        + "							inner join obs o on o.encounter_id=e.encounter_id  "
+        + "					where 	e.voided=0 and o.voided=0 and p.voided=0 and   "
+        + "							e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and o.concept_id="
+        + arvPlan
+        + " and o.value_coded="
+        + startDrugsConcept
+        + " and   "
+        + "							e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "					group by p.patient_id  "
+        + "			  "
+        + "					union  "
+        + "			  "
+        + "					Select 	p.patient_id,min(value_datetime) data_inicio  "
+        + "					from 	patient p  "
+        + "							inner join encounter e on p.patient_id=e.patient_id  "
+        + "							inner join obs o on e.encounter_id=o.encounter_id  "
+        + "					where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and   "
+        + "							o.concept_id="
+        + arvStartDateConcept
+        + " and o.value_datetime is not null and   "
+        + "							o.value_datetime<=:endDate and e.location_id=:location  "
+        + "					group by p.patient_id  "
+        + "  "
+        + "					union  "
+        + "  "
+        + "					select 	pg.patient_id,date_enrolled data_inicio  "
+        + "					from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "					where 	pg.voided=0 and p.voided=0 and program_id="
+        + artProgram
+        + " and date_enrolled<=:endDate and location_id=:location  "
+        + "					  "
+        + "					union  "
+        + "					  "
+        + "					  "
+        + "				  SELECT 	e.patient_id, MIN(e.encounter_datetime) AS data_inicio   "
+        + "				  FROM 		patient p  "
+        + "							inner join encounter e on p.patient_id=e.patient_id  "
+        + "				  WHERE		p.voided=0 and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + " AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "				  GROUP BY 	p.patient_id				  "
+        + "					  "
+        + "					  "
+        + "				) inicio  "
+        + "			group by patient_id	  "
+        + "	)inicio1  "
+        + "	where data_inicio between :startDate and :endDate  "
+        + ") inicio_real  "
+        + "inner join encounter e on e.patient_id=inicio_real.patient_id  "
+        + "where 	e.voided=0 and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ","
+        + arvPharmaciaEncounterType
+        + ") and e.location_id=:location and   "
+        + "		e.encounter_datetime between inicio_real.data_inicio and date_add(inicio_real.data_inicio, interval 33 day) and   "
+        + "		inicio_real.patient_id not in   "
+        + "		(  "
+        + "			select 	pg.patient_id  "
+        + "			from 	patient p   "
+        + "					inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "					inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
+        + "			where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
+        + "					pg.program_id="
+        + artProgram
+        + " and ps.state="
+        + pateintTransferedFromOtherFacilityWorkflowState
+        + " and ps.start_date=pg.date_enrolled and   "
+        + "					ps.start_date between :startDate and :endDate and location_id=:location  "
+        + "		)  "
+        + "group by inicio_real.patient_id  "
+        + "having min(e.encounter_datetime)<max(e.encounter_datetime)";
   }
   /**
    * MQ_PACIENTES QUE TIVERAM PELO MENOS 3 CONSULTAS CLINICAS OU LEVANTAMENTOS DENTRO DE 3 MESES
@@ -956,7 +937,6 @@ public class QualiltyImprovementQueries {
    * @param arvPharmaciaEncounterType
    * @param arvPlan
    * @param startDrugsConcept
-   * @param historicalDrugStartDateConcept
    * @param artProgram
    * @return
    */
@@ -969,89 +949,86 @@ public class QualiltyImprovementQueries {
       int arvStartDateConcept,
       int artProgram) {
 
-    String query =
-        "select inicio_real.patient_id  "
-            + "from  "
-            + "(	select patient_id,data_inicio  "
-            + "	from  "
-            + "	(	Select patient_id,min(data_inicio) data_inicio  "
-            + "		from  "
-            + "				(	Select 	p.patient_id,min(e.encounter_datetime) data_inicio  "
-            + "					from 	patient p   "
-            + "							inner join encounter e on p.patient_id=e.patient_id	  "
-            + "							inner join obs o on o.encounter_id=e.encounter_id  "
-            + "					where 	e.voided=0 and o.voided=0 and p.voided=0 and   "
-            + "							e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and o.concept_id="
-            + arvPlan
-            + " and o.value_coded="
-            + startDrugsConcept
-            + " and   "
-            + "							e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "					group by p.patient_id  "
-            + "			  "
-            + "					union  "
-            + "			  "
-            + "					Select 	p.patient_id,min(value_datetime) data_inicio  "
-            + "					from 	patient p  "
-            + "							inner join encounter e on p.patient_id=e.patient_id  "
-            + "							inner join obs o on e.encounter_id=o.encounter_id  "
-            + "					where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ") and   "
-            + "							o.concept_id="
-            + arvStartDateConcept
-            + " and o.value_datetime is not null and   "
-            + "							o.value_datetime<=:endDate and e.location_id=:location  "
-            + "					group by p.patient_id  "
-            + "  "
-            + "					union  "
-            + "  "
-            + "					select 	pg.patient_id,date_enrolled data_inicio  "
-            + "					from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "					where 	pg.voided=0 and p.voided=0 and program_id="
-            + artProgram
-            + " and date_enrolled<=:endDate and location_id=:location  "
-            + "					  "
-            + "					union  "
-            + "					  "
-            + "					  "
-            + "				  SELECT 	e.patient_id, MIN(e.encounter_datetime) AS data_inicio   "
-            + "				  FROM 		patient p  "
-            + "							inner join encounter e on p.patient_id=e.patient_id  "
-            + "				  WHERE		p.voided=0 and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + " AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "				  GROUP BY 	p.patient_id				  "
-            + "					  "
-            + "					  "
-            + "				) inicio  "
-            + "			group by patient_id	  "
-            + "	)inicio1  "
-            + "	where data_inicio between :startDate and  :endDate  "
-            + ") inicio_real  "
-            + "inner join encounter e on e.patient_id=inicio_real.patient_id  "
-            + "where 	e.voided=0 and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ","
-            + arvPharmaciaEncounterType
-            + ") and e.location_id=:location and   "
-            + "		e.encounter_datetime between date_add(inicio_real.data_inicio, interval 1 day) and date_add(inicio_real.data_inicio, interval 99 day)  "
-            + "group by inicio_real.patient_id  "
-            + "having count(distinct e.encounter_datetime)>=3";
-
-    return query;
+    return "select inicio_real.patient_id  "
+        + "from  "
+        + "(	select patient_id,data_inicio  "
+        + "	from  "
+        + "	(	Select patient_id,min(data_inicio) data_inicio  "
+        + "		from  "
+        + "				(	Select 	p.patient_id,min(e.encounter_datetime) data_inicio  "
+        + "					from 	patient p   "
+        + "							inner join encounter e on p.patient_id=e.patient_id	  "
+        + "							inner join obs o on o.encounter_id=e.encounter_id  "
+        + "					where 	e.voided=0 and o.voided=0 and p.voided=0 and   "
+        + "							e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and o.concept_id="
+        + arvPlan
+        + " and o.value_coded="
+        + startDrugsConcept
+        + " and   "
+        + "							e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "					group by p.patient_id  "
+        + "			  "
+        + "					union  "
+        + "			  "
+        + "					Select 	p.patient_id,min(value_datetime) data_inicio  "
+        + "					from 	patient p  "
+        + "							inner join encounter e on p.patient_id=e.patient_id  "
+        + "							inner join obs o on e.encounter_id=o.encounter_id  "
+        + "					where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ") and   "
+        + "							o.concept_id="
+        + arvStartDateConcept
+        + " and o.value_datetime is not null and   "
+        + "							o.value_datetime<=:endDate and e.location_id=:location  "
+        + "					group by p.patient_id  "
+        + "  "
+        + "					union  "
+        + "  "
+        + "					select 	pg.patient_id,date_enrolled data_inicio  "
+        + "					from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "					where 	pg.voided=0 and p.voided=0 and program_id="
+        + artProgram
+        + " and date_enrolled<=:endDate and location_id=:location  "
+        + "					  "
+        + "					union  "
+        + "					  "
+        + "					  "
+        + "				  SELECT 	e.patient_id, MIN(e.encounter_datetime) AS data_inicio   "
+        + "				  FROM 		patient p  "
+        + "							inner join encounter e on p.patient_id=e.patient_id  "
+        + "				  WHERE		p.voided=0 and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + " AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "				  GROUP BY 	p.patient_id				  "
+        + "					  "
+        + "					  "
+        + "				) inicio  "
+        + "			group by patient_id	  "
+        + "	)inicio1  "
+        + "	where data_inicio between :startDate and  :endDate  "
+        + ") inicio_real  "
+        + "inner join encounter e on e.patient_id=inicio_real.patient_id  "
+        + "where 	e.voided=0 and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ","
+        + arvPharmaciaEncounterType
+        + ") and e.location_id=:location and   "
+        + "		e.encounter_datetime between date_add(inicio_real.data_inicio, interval 1 day) and date_add(inicio_real.data_inicio, interval 99 day)  "
+        + "group by inicio_real.patient_id  "
+        + "having count(distinct e.encounter_datetime)>=3";
   }
   /**
    * PACIENTES QUE TIVERAM PELO MENOS 3 AVALIAÇÕES DE ADESÃO DENTRO DE 3 MESES DEPOIS DE INICIO DE
@@ -1064,13 +1041,12 @@ public class QualiltyImprovementQueries {
    * @param arvPharmaciaEncounterType
    * @param arvPlan
    * @param startDrugsConcept
-   * @param historicalDrugStartDateConcept
    * @param artProgram
    * @param coucelingActivityConcept
    * @param prevencaoPositivaInicialEncounterType
    * @param prevencaoPositivaSeguimentoEncounterType
    * @param adherenceCounselingConcept
-   * @return
+   * @return String
    */
   public static String getPatientWhoAtLeast3JoiningEvaluationWithin3MothsARIEL(
       int adultoSeguimentoEncounterType,
@@ -1084,107 +1060,105 @@ public class QualiltyImprovementQueries {
       int prevencaoPositivaInicialEncounterType,
       int prevencaoPositivaSeguimentoEncounterType,
       int adherenceCounselingConcept) {
-    String query =
-        "select inicio_real.patient_id  "
-            + "from  "
-            + "(	select patient_id,data_inicio  "
-            + "	from  "
-            + "	(	Select patient_id,min(data_inicio) data_inicio  "
-            + "		from  "
-            + "		(	Select p.patient_id,min(e.encounter_datetime) data_inicio  "
-            + "			from patient p   "
-            + "			inner join encounter e on p.patient_id=e.patient_id	  "
-            + "			inner join obs o on o.encounter_id=e.encounter_id  "
-            + "			where 	e.voided=0 and o.voided=0 and p.voided=0   "
-            + "			and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ")   "
-            + "			and o.concept_id="
-            + arvPlan
-            + "   "
-            + "			and o.value_coded="
-            + startDrugsConcept
-            + "   "
-            + "			and e.encounter_datetime<=:endDate   "
-            + "			and e.location_id=:location  "
-            + "			group by p.patient_id  "
-            + "	  "
-            + "			union  "
-            + "	  "
-            + "			Select p.patient_id,min(value_datetime) data_inicio  "
-            + "			from patient p  "
-            + "			inner join encounter e on p.patient_id=e.patient_id  "
-            + "			inner join obs o on e.encounter_id=o.encounter_id  "
-            + "			where 	p.voided=0 and e.voided=0 and o.voided=0   "
-            + "			and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ")   "
-            + "			and o.concept_id="
-            + arvStartDateConcept
-            + "   "
-            + "			and o.value_datetime is not null   "
-            + "			and o.value_datetime<=:endDate   "
-            + "			and e.location_id=:location  "
-            + "			group by p.patient_id  "
-            + "  "
-            + "			union  "
-            + "  "
-            + "			select pg.patient_id,date_enrolled data_inicio  "
-            + "			from patient p   "
-            + "			inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "			where pg.voided=0 and p.voided=0   "
-            + "			and program_id="
-            + artProgram
-            + "   "
-            + "			and date_enrolled<=:endDate   "
-            + "			and location_id=:location  "
-            + "			  "
-            + "			union  "
-            + "						  "
-            + "			select e.patient_id, MIN(e.encounter_datetime) AS data_inicio   "
-            + "			FROM patient p  "
-            + "			inner join encounter e on p.patient_id=e.patient_id  "
-            + "			where p.voided=0 and e.voided=0   "
-            + "			and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + "    "
-            + "			and e.encounter_datetime<=:endDate   "
-            + "			and e.location_id=:location  "
-            + "			group by p.patient_id	  "
-            + "		) inicio  "
-            + "		group by patient_id	  "
-            + "	)inicio1  "
-            + "	where data_inicio between :startDate and  :endDate  "
-            + ") inicio_real  "
-            + "inner join encounter e on e.patient_id=inicio_real.patient_id  "
-            + "inner join obs o on o.encounter_id=e.encounter_id  "
-            + "where e.voided=0 and o.voided=0   "
-            + "and e.encounter_type in ("
-            + prevencaoPositivaInicialEncounterType
-            + ","
-            + prevencaoPositivaSeguimentoEncounterType
-            + ")   "
-            + "and e.location_id=:location   "
-            + "and o.concept_id="
-            + coucelingActivityConcept
-            + "   "
-            + "and o.value_coded="
-            + adherenceCounselingConcept
-            + "  "
-            + "and e.encounter_datetime between inicio_real.data_inicio and date_add(inicio_real.data_inicio, interval 99 day)   "
-            + "and e.encounter_datetime>inicio_real.data_inicio  "
-            + "group by inicio_real.patient_id  "
-            + "having if(:testStart='true',count(*)>=4,count(*)>=3)";
 
-    return query;
+    return "select inicio_real.patient_id  "
+        + "from  "
+        + "(	select patient_id,data_inicio  "
+        + "	from  "
+        + "	(	Select patient_id,min(data_inicio) data_inicio  "
+        + "		from  "
+        + "		(	Select p.patient_id,min(e.encounter_datetime) data_inicio  "
+        + "			from patient p   "
+        + "			inner join encounter e on p.patient_id=e.patient_id	  "
+        + "			inner join obs o on o.encounter_id=e.encounter_id  "
+        + "			where 	e.voided=0 and o.voided=0 and p.voided=0   "
+        + "			and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ")   "
+        + "			and o.concept_id="
+        + arvPlan
+        + "   "
+        + "			and o.value_coded="
+        + startDrugsConcept
+        + "   "
+        + "			and e.encounter_datetime<=:endDate   "
+        + "			and e.location_id=:location  "
+        + "			group by p.patient_id  "
+        + "	  "
+        + "			union  "
+        + "	  "
+        + "			Select p.patient_id,min(value_datetime) data_inicio  "
+        + "			from patient p  "
+        + "			inner join encounter e on p.patient_id=e.patient_id  "
+        + "			inner join obs o on e.encounter_id=o.encounter_id  "
+        + "			where 	p.voided=0 and e.voided=0 and o.voided=0   "
+        + "			and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ")   "
+        + "			and o.concept_id="
+        + arvStartDateConcept
+        + "   "
+        + "			and o.value_datetime is not null   "
+        + "			and o.value_datetime<=:endDate   "
+        + "			and e.location_id=:location  "
+        + "			group by p.patient_id  "
+        + "  "
+        + "			union  "
+        + "  "
+        + "			select pg.patient_id,date_enrolled data_inicio  "
+        + "			from patient p   "
+        + "			inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "			where pg.voided=0 and p.voided=0   "
+        + "			and program_id="
+        + artProgram
+        + "   "
+        + "			and date_enrolled<=:endDate   "
+        + "			and location_id=:location  "
+        + "			  "
+        + "			union  "
+        + "						  "
+        + "			select e.patient_id, MIN(e.encounter_datetime) AS data_inicio   "
+        + "			FROM patient p  "
+        + "			inner join encounter e on p.patient_id=e.patient_id  "
+        + "			where p.voided=0 and e.voided=0   "
+        + "			and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + "    "
+        + "			and e.encounter_datetime<=:endDate   "
+        + "			and e.location_id=:location  "
+        + "			group by p.patient_id	  "
+        + "		) inicio  "
+        + "		group by patient_id	  "
+        + "	)inicio1  "
+        + "	where data_inicio between :startDate and  :endDate  "
+        + ") inicio_real  "
+        + "inner join encounter e on e.patient_id=inicio_real.patient_id  "
+        + "inner join obs o on o.encounter_id=e.encounter_id  "
+        + "where e.voided=0 and o.voided=0   "
+        + "and e.encounter_type in ("
+        + prevencaoPositivaInicialEncounterType
+        + ","
+        + prevencaoPositivaSeguimentoEncounterType
+        + ")   "
+        + "and e.location_id=:location   "
+        + "and o.concept_id="
+        + coucelingActivityConcept
+        + "   "
+        + "and o.value_coded="
+        + adherenceCounselingConcept
+        + "  "
+        + "and e.encounter_datetime between inicio_real.data_inicio and date_add(inicio_real.data_inicio, interval 99 day)   "
+        + "and e.encounter_datetime>inicio_real.data_inicio  "
+        + "group by inicio_real.patient_id  "
+        + "having if(:testStart='true',count(*)>=4,count(*)>=3)";
   }
 
   /**
@@ -1197,7 +1171,6 @@ public class QualiltyImprovementQueries {
    * @param arvPharmaciaEncounterType
    * @param arvPlan
    * @param startDrugsConcept
-   * @param historicalDrugStartDateConcept
    * @param artProgram
    * @return String
    */
@@ -1210,98 +1183,95 @@ public class QualiltyImprovementQueries {
       int arvStartDateConcept,
       int artProgram) {
 
-    String query =
-        "select domain.patient_id "
-            + "from "
-            + "( "
-            + "	select inicio_real.patient_id, inicio_real.data_inicio "
-            + "	from "
-            + "	(	select patient_id,data_inicio "
-            + "		from "
-            + "			(	Select patient_id,min(data_inicio) data_inicio "
-            + "				from "
-            + "				(	Select 	p.patient_id,min(e.encounter_datetime) data_inicio "
-            + "					from 	patient p  "
-            + "					inner join encounter e on p.patient_id=e.patient_id	 "
-            + "					inner join obs o on o.encounter_id=e.encounter_id "
-            + "					where 	e.voided=0 and o.voided=0 and p.voided=0 and  "
-            + "					e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and o.concept_id="
-            + arvPlan
-            + " and o.value_coded="
-            + startDrugsConcept
-            + " and  "
-            + "					e.encounter_datetime<=:endDate and e.location_id=:location "
-            + "					group by p.patient_id "
-            + "			 "
-            + "					union "
-            + "			 "
-            + "					Select 	p.patient_id,min(value_datetime) data_inicio "
-            + "					from 	patient p "
-            + "					inner join encounter e on p.patient_id=e.patient_id "
-            + "					inner join obs o on e.encounter_id=o.encounter_id "
-            + "					where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "					o.concept_id="
-            + arvStartDateConcept
-            + " and o.value_datetime is not null and  "
-            + "					o.value_datetime<=:endDate and e.location_id=:location "
-            + "					group by p.patient_id "
-            + "	 "
-            + "					union "
-            + "	 "
-            + "					select 	pg.patient_id,date_enrolled data_inicio "
-            + "					from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "					where 	pg.voided=0 and p.voided=0 and program_id="
-            + artProgram
-            + " and date_enrolled<=:endDate and location_id=:location "
-            + "					 "
-            + "					union "
-            + "					 "
-            + "					 "
-            + "					SELECT 	e.patient_id, MIN(e.encounter_datetime) AS data_inicio  "
-            + "					FROM 	patient p "
-            + "					inner join encounter e on p.patient_id=e.patient_id "
-            + "					WHERE	p.voided=0 and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + " AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location "
-            + "					GROUP BY 	p.patient_id "
-            + "						 "
-            + "					 "
-            + "					 "
-            + "				) inicio "
-            + "				group by patient_id	 "
-            + "			)inicio1 "
-            + "		where data_inicio between :startDate and :endDate "
-            + "	)inicio_real "
-            + ""
-            + "	inner join "
-            + "	( "
-            + "		select p.patient_id, e.encounter_datetime data_consulta "
-            + "		from 	patient p  "
-            + "		inner join encounter e on p.patient_id=e.patient_id "
-            + "		where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :dataFinalAvaliacao and  "
-            + "		e.location_id=:location and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") "
-            + "	) consulta on inicio_real.patient_id = consulta.patient_id and consulta.data_consulta > inicio_real.data_inicio "
-            + "	group by inicio_real.patient_id "
-            + "	having count(*)>=round(datediff(:dataFinalAvaliacao,inicio_real.data_inicio)/30)-1 "
-            + ") domain";
-
-    return query;
+    return "select domain.patient_id "
+        + "from "
+        + "( "
+        + "	select inicio_real.patient_id, inicio_real.data_inicio "
+        + "	from "
+        + "	(	select patient_id,data_inicio "
+        + "		from "
+        + "			(	Select patient_id,min(data_inicio) data_inicio "
+        + "				from "
+        + "				(	Select 	p.patient_id,min(e.encounter_datetime) data_inicio "
+        + "					from 	patient p  "
+        + "					inner join encounter e on p.patient_id=e.patient_id	 "
+        + "					inner join obs o on o.encounter_id=e.encounter_id "
+        + "					where 	e.voided=0 and o.voided=0 and p.voided=0 and  "
+        + "					e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and o.concept_id="
+        + arvPlan
+        + " and o.value_coded="
+        + startDrugsConcept
+        + " and  "
+        + "					e.encounter_datetime<=:endDate and e.location_id=:location "
+        + "					group by p.patient_id "
+        + "			 "
+        + "					union "
+        + "			 "
+        + "					Select 	p.patient_id,min(value_datetime) data_inicio "
+        + "					from 	patient p "
+        + "					inner join encounter e on p.patient_id=e.patient_id "
+        + "					inner join obs o on e.encounter_id=o.encounter_id "
+        + "					where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "					o.concept_id="
+        + arvStartDateConcept
+        + " and o.value_datetime is not null and  "
+        + "					o.value_datetime<=:endDate and e.location_id=:location "
+        + "					group by p.patient_id "
+        + "	 "
+        + "					union "
+        + "	 "
+        + "					select 	pg.patient_id,date_enrolled data_inicio "
+        + "					from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
+        + "					where 	pg.voided=0 and p.voided=0 and program_id="
+        + artProgram
+        + " and date_enrolled<=:endDate and location_id=:location "
+        + "					 "
+        + "					union "
+        + "					 "
+        + "					 "
+        + "					SELECT 	e.patient_id, MIN(e.encounter_datetime) AS data_inicio  "
+        + "					FROM 	patient p "
+        + "					inner join encounter e on p.patient_id=e.patient_id "
+        + "					WHERE	p.voided=0 and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + " AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location "
+        + "					GROUP BY 	p.patient_id "
+        + "						 "
+        + "					 "
+        + "					 "
+        + "				) inicio "
+        + "				group by patient_id	 "
+        + "			)inicio1 "
+        + "		where data_inicio between :startDate and :endDate "
+        + "	)inicio_real "
+        + ""
+        + "	inner join "
+        + "	( "
+        + "		select p.patient_id, e.encounter_datetime data_consulta "
+        + "		from 	patient p  "
+        + "		inner join encounter e on p.patient_id=e.patient_id "
+        + "		where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :dataFinalAvaliacao and  "
+        + "		e.location_id=:location and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") "
+        + "	) consulta on inicio_real.patient_id = consulta.patient_id and consulta.data_consulta > inicio_real.data_inicio "
+        + "	group by inicio_real.patient_id "
+        + "	having count(*)>=round(datediff(:dataFinalAvaliacao,inicio_real.data_inicio)/30)-1 "
+        + ") domain";
   }
 
   /**
@@ -1316,7 +1286,6 @@ public class QualiltyImprovementQueries {
    * @param arvPharmaciaEncounterType
    * @param arvPlan
    * @param startDrugsConcept
-   * @param historicalDrugStartDateConcept
    * @param artProgram
    * @param coucelingActivityConcept
    * @param prevencaoPositivaInicialEncounterType
@@ -1337,139 +1306,136 @@ public class QualiltyImprovementQueries {
       int prevencaoPositivaSeguimentoEncounterType,
       int adherenceCounselingConcept) {
 
-    String query =
-        "select patient_id  "
-            + "from(  "
-            + "	select inicio_real.patient_id, inicio_real.data_inicio,pe.birthdate  "
-            + "	from  "
-            + "	(	select patient_id,data_inicio  "
-            + "		from  "
-            + "		(	Select patient_id,min(data_inicio) data_inicio  "
-            + "			from  "
-            + "			(	Select p.patient_id,min(e.encounter_datetime) data_inicio  "
-            + "				from patient p   "
-            + "				inner join encounter e on p.patient_id=e.patient_id	  "
-            + "				inner join obs o on o.encounter_id=e.encounter_id  "
-            + "				where 	e.voided=0 and o.voided=0 and p.voided=0   "
-            + "				and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ")   "
-            + "				and o.concept_id="
-            + arvPlan
-            + "  "
-            + "				and o.value_coded="
-            + startDrugsConcept
-            + "   "
-            + "				and e.encounter_datetime<=:endDate  "
-            + "				and e.location_id=:location  "
-            + "				group by p.patient_id  "
-            + "		  "
-            + "				union  "
-            + "		  "
-            + "				Select p.patient_id,min(value_datetime) data_inicio  "
-            + "				from patient p  "
-            + "				inner join encounter e on p.patient_id=e.patient_id  "
-            + "				inner join obs o on e.encounter_id=o.encounter_id  "
-            + "				where 	p.voided=0 and e.voided=0 and o.voided=0   "
-            + "				and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ")   "
-            + "				and o.concept_id="
-            + arvStartDateConcept
-            + "   "
-            + "				and o.value_datetime is not null   "
-            + "				and o.value_datetime<=:endDate  "
-            + "				and e.location_id=:location  "
-            + "				group by p.patient_id  "
-            + "	  "
-            + "				union  "
-            + "	  "
-            + "				select pg.patient_id,date_enrolled data_inicio  "
-            + "				from patient p   "
-            + "				inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "				where pg.voided=0 and p.voided=0   "
-            + "				and program_id="
-            + artProgram
-            + "   "
-            + "				and date_enrolled<=:endDate  "
-            + "				and location_id=:location  "
-            + "				  "
-            + "				union  "
-            + "							  "
-            + "				select e.patient_id, min(e.encounter_datetime) AS data_inicio   "
-            + "				from patient p  "
-            + "				inner join encounter e on p.patient_id=e.patient_id  "
-            + "				where p.voided=0 and e.voided=0   "
-            + "				and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + "    "
-            + "				and e.encounter_datetime<=:endDate   "
-            + "				and e.location_id=:location  "
-            + "				group by p.patient_id	  "
-            + "			) inicio  "
-            + "			group by patient_id	  "
-            + "		)inicio1  "
-            + "		where data_inicio between :startDate and  :endDate  "
-            + "	) inicio_real  "
-            + "	inner join person pe on inicio_real.patient_id=pe.person_id  "
-            + "	left join  "
-            + "	(  "
-            + "		Select p.patient_id, e.encounter_datetime data_consulta  "
-            + "		from patient p  "
-            + "		inner join encounter e on e.patient_id=p.patient_id  "
-            + "		inner join obs o on o.encounter_id=e.encounter_id  "
-            + "		where p.voided=0 and e.voided=0 and o.voided=0  "
-            + "		and e.encounter_type in ("
-            + prevencaoPositivaInicialEncounterType
-            + ","
-            + prevencaoPositivaSeguimentoEncounterType
-            + ")  "
-            + "		and o.concept_id="
-            + coucelingActivityConcept
-            + "   "
-            + "		and o.value_coded="
-            + adherenceCounselingConcept
-            + "   "
-            + "		and e.location_id=:location  "
-            + "	) seguimentos3 on inicio_real.patient_id=seguimentos3.patient_id   "
-            + "		and seguimentos3.data_consulta between date_add(inicio_real.data_inicio, interval 1 day) and date_add(inicio_real.data_inicio, interval 99 day)  "
-            + "		and round(datediff(inicio_real.data_inicio,pe.birthdate)/365)>2  "
-            + "	left join  "
-            + "	(  "
-            + "		select p.patient_id, e.encounter_datetime data_consulta  "
-            + "		from patient p   "
-            + "		inner join encounter e on p.patient_id=e.patient_id  "
-            + "		inner join obs o on o.encounter_id=e.encounter_id  "
-            + "		where p.voided=0 and e.voided=0 and o.voided=0  "
-            + "		and e.encounter_type in ("
-            + prevencaoPositivaInicialEncounterType
-            + ","
-            + prevencaoPositivaSeguimentoEncounterType
-            + ")  "
-            + "		and o.concept_id="
-            + coucelingActivityConcept
-            + "   "
-            + "		and o.value_coded="
-            + adherenceCounselingConcept
-            + "   "
-            + "		and e.location_id=:location  "
-            + "	) seguimentos_mensais on inicio_real.patient_id=seguimentos_mensais.patient_id   "
-            + "		and seguimentos_mensais.data_consulta between date_add(inicio_real.data_inicio, interval 1 day) and :dataFinalAvaliacao  "
-            + "		and round(datediff(data_inicio,pe.birthdate)/365)<=2  "
-            + "	group by inicio_real.patient_id  "
-            + "	having count(seguimentos3.data_consulta)>=3  "
-            + "		or count(seguimentos_mensais.data_consulta)>=round(datediff(:dataFinalAvaliacao,inicio_real.data_inicio)/30)-1  "
-            + ") domain";
-
-    return query;
+    return "select patient_id  "
+        + "from(  "
+        + "	select inicio_real.patient_id, inicio_real.data_inicio,pe.birthdate  "
+        + "	from  "
+        + "	(	select patient_id,data_inicio  "
+        + "		from  "
+        + "		(	Select patient_id,min(data_inicio) data_inicio  "
+        + "			from  "
+        + "			(	Select p.patient_id,min(e.encounter_datetime) data_inicio  "
+        + "				from patient p   "
+        + "				inner join encounter e on p.patient_id=e.patient_id	  "
+        + "				inner join obs o on o.encounter_id=e.encounter_id  "
+        + "				where 	e.voided=0 and o.voided=0 and p.voided=0   "
+        + "				and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ")   "
+        + "				and o.concept_id="
+        + arvPlan
+        + "  "
+        + "				and o.value_coded="
+        + startDrugsConcept
+        + "   "
+        + "				and e.encounter_datetime<=:endDate  "
+        + "				and e.location_id=:location  "
+        + "				group by p.patient_id  "
+        + "		  "
+        + "				union  "
+        + "		  "
+        + "				Select p.patient_id,min(value_datetime) data_inicio  "
+        + "				from patient p  "
+        + "				inner join encounter e on p.patient_id=e.patient_id  "
+        + "				inner join obs o on e.encounter_id=o.encounter_id  "
+        + "				where 	p.voided=0 and e.voided=0 and o.voided=0   "
+        + "				and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ")   "
+        + "				and o.concept_id="
+        + arvStartDateConcept
+        + "   "
+        + "				and o.value_datetime is not null   "
+        + "				and o.value_datetime<=:endDate  "
+        + "				and e.location_id=:location  "
+        + "				group by p.patient_id  "
+        + "	  "
+        + "				union  "
+        + "	  "
+        + "				select pg.patient_id,date_enrolled data_inicio  "
+        + "				from patient p   "
+        + "				inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "				where pg.voided=0 and p.voided=0   "
+        + "				and program_id="
+        + artProgram
+        + "   "
+        + "				and date_enrolled<=:endDate  "
+        + "				and location_id=:location  "
+        + "				  "
+        + "				union  "
+        + "							  "
+        + "				select e.patient_id, min(e.encounter_datetime) AS data_inicio   "
+        + "				from patient p  "
+        + "				inner join encounter e on p.patient_id=e.patient_id  "
+        + "				where p.voided=0 and e.voided=0   "
+        + "				and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + "    "
+        + "				and e.encounter_datetime<=:endDate   "
+        + "				and e.location_id=:location  "
+        + "				group by p.patient_id	  "
+        + "			) inicio  "
+        + "			group by patient_id	  "
+        + "		)inicio1  "
+        + "		where data_inicio between :startDate and  :endDate  "
+        + "	) inicio_real  "
+        + "	inner join person pe on inicio_real.patient_id=pe.person_id  "
+        + "	left join  "
+        + "	(  "
+        + "		Select p.patient_id, e.encounter_datetime data_consulta  "
+        + "		from patient p  "
+        + "		inner join encounter e on e.patient_id=p.patient_id  "
+        + "		inner join obs o on o.encounter_id=e.encounter_id  "
+        + "		where p.voided=0 and e.voided=0 and o.voided=0  "
+        + "		and e.encounter_type in ("
+        + prevencaoPositivaInicialEncounterType
+        + ","
+        + prevencaoPositivaSeguimentoEncounterType
+        + ")  "
+        + "		and o.concept_id="
+        + coucelingActivityConcept
+        + "   "
+        + "		and o.value_coded="
+        + adherenceCounselingConcept
+        + "   "
+        + "		and e.location_id=:location  "
+        + "	) seguimentos3 on inicio_real.patient_id=seguimentos3.patient_id   "
+        + "		and seguimentos3.data_consulta between date_add(inicio_real.data_inicio, interval 1 day) and date_add(inicio_real.data_inicio, interval 99 day)  "
+        + "		and round(datediff(inicio_real.data_inicio,pe.birthdate)/365)>2  "
+        + "	left join  "
+        + "	(  "
+        + "		select p.patient_id, e.encounter_datetime data_consulta  "
+        + "		from patient p   "
+        + "		inner join encounter e on p.patient_id=e.patient_id  "
+        + "		inner join obs o on o.encounter_id=e.encounter_id  "
+        + "		where p.voided=0 and e.voided=0 and o.voided=0  "
+        + "		and e.encounter_type in ("
+        + prevencaoPositivaInicialEncounterType
+        + ","
+        + prevencaoPositivaSeguimentoEncounterType
+        + ")  "
+        + "		and o.concept_id="
+        + coucelingActivityConcept
+        + "   "
+        + "		and o.value_coded="
+        + adherenceCounselingConcept
+        + "   "
+        + "		and e.location_id=:location  "
+        + "	) seguimentos_mensais on inicio_real.patient_id=seguimentos_mensais.patient_id   "
+        + "		and seguimentos_mensais.data_consulta between date_add(inicio_real.data_inicio, interval 1 day) and :dataFinalAvaliacao  "
+        + "		and round(datediff(data_inicio,pe.birthdate)/365)<=2  "
+        + "	group by inicio_real.patient_id  "
+        + "	having count(seguimentos3.data_consulta)>=3  "
+        + "		or count(seguimentos_mensais.data_consulta)>=round(datediff(:dataFinalAvaliacao,inicio_real.data_inicio)/30)-1  "
+        + ") domain";
   }
   /**
    * PACIENTES INSCRITOS NO GAAC NUM PERIODO Sao pacientes que foram inscritos num grupo GAAC
@@ -1478,12 +1444,10 @@ public class QualiltyImprovementQueries {
    * @return
    */
   public static String getPatientsEnrolledInGaacInAPeriod() {
-    String query =
-        "Select gm.member_id "
-            + "from gaac g inner join gaac_member gm on g.gaac_id=gm.gaac_id "
-            + "where gm.start_date between :startDate and :endDate and gm.voided=0 and g.voided=0 and location_id=:location";
 
-    return query;
+    return "Select gm.member_id "
+        + "from gaac g inner join gaac_member gm on g.gaac_id=gm.gaac_id "
+        + "where gm.start_date between :startDate and :endDate and gm.voided=0 and g.voided=0 and location_id=:location";
   }
   /**
    * PACIENTES COM CD4>200 OU CV<1000 NOS ULTIMOS 12 MESES São pacientes com último CD4>200 ou
@@ -1504,62 +1468,60 @@ public class QualiltyImprovementQueries {
       int cd4AbsoluteConcept,
       int cd4AbsoluteOBSConcept,
       int hivViralLoadConcept) {
-    String query =
-        "Select ultima_carga.patient_id "
-            + "from "
-            + "(	Select 	p.patient_id,max(o.obs_datetime) data_carga "
-            + "	from 	patient p "
-            + "	inner join encounter e on p.patient_id=e.patient_id "
-            + "	inner join obs o on e.encounter_id=o.encounter_id "
-            + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + misauLaboratorioEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "	o.concept_id in ("
-            + cd4AbsoluteConcept
-            + ","
-            + cd4AbsoluteOBSConcept
-            + ") and o.value_numeric is not null and  "
-            + "	e.encounter_datetime between date_add(:startDate, interval -12 MONTH) and :startDate and e.location_id=:location "
-            + "	group by p.patient_id "
-            + ") ultima_carga "
-            + "inner join obs on obs.person_id=ultima_carga.patient_id and obs.obs_datetime=ultima_carga.data_carga "
-            + "where 	obs.voided=0 and obs.concept_id in ("
-            + cd4AbsoluteConcept
-            + ","
-            + cd4AbsoluteOBSConcept
-            + ") and obs.location_id=:location and obs.value_numeric>200 "
-            + " "
-            + "union "
-            + " "
-            + "Select ultima_carga.patient_id "
-            + "from "
-            + "(	Select 	p.patient_id,max(o.obs_datetime) data_carga "
-            + "	from 	patient p "
-            + "	inner join encounter e on p.patient_id=e.patient_id "
-            + "	inner join obs o on e.encounter_id=o.encounter_id "
-            + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + misauLaboratorioEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "	o.concept_id="
-            + hivViralLoadConcept
-            + " and o.value_numeric is not null and  "
-            + "	e.encounter_datetime between date_add(:startDate, interval -12 MONTH) and :startDate and e.location_id=:location "
-            + "	group by p.patient_id "
-            + ") ultima_carga "
-            + "inner join obs on obs.person_id=ultima_carga.patient_id and obs.obs_datetime=ultima_carga.data_carga "
-            + "where 	obs.voided=0 and obs.concept_id="
-            + hivViralLoadConcept
-            + " and obs.location_id=:location and obs.value_numeric<1000";
 
-    return query;
+    return "Select ultima_carga.patient_id "
+        + "from "
+        + "(	Select 	p.patient_id,max(o.obs_datetime) data_carga "
+        + "	from 	patient p "
+        + "	inner join encounter e on p.patient_id=e.patient_id "
+        + "	inner join obs o on e.encounter_id=o.encounter_id "
+        + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + misauLaboratorioEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "	o.concept_id in ("
+        + cd4AbsoluteConcept
+        + ","
+        + cd4AbsoluteOBSConcept
+        + ") and o.value_numeric is not null and  "
+        + "	e.encounter_datetime between date_add(:startDate, interval -12 MONTH) and :startDate and e.location_id=:location "
+        + "	group by p.patient_id "
+        + ") ultima_carga "
+        + "inner join obs on obs.person_id=ultima_carga.patient_id and obs.obs_datetime=ultima_carga.data_carga "
+        + "where 	obs.voided=0 and obs.concept_id in ("
+        + cd4AbsoluteConcept
+        + ","
+        + cd4AbsoluteOBSConcept
+        + ") and obs.location_id=:location and obs.value_numeric>200 "
+        + " "
+        + "union "
+        + " "
+        + "Select ultima_carga.patient_id "
+        + "from "
+        + "(	Select 	p.patient_id,max(o.obs_datetime) data_carga "
+        + "	from 	patient p "
+        + "	inner join encounter e on p.patient_id=e.patient_id "
+        + "	inner join obs o on e.encounter_id=o.encounter_id "
+        + "	where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + misauLaboratorioEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "	o.concept_id="
+        + hivViralLoadConcept
+        + " and o.value_numeric is not null and  "
+        + "	e.encounter_datetime between date_add(:startDate, interval -12 MONTH) and :startDate and e.location_id=:location "
+        + "	group by p.patient_id "
+        + ") ultima_carga "
+        + "inner join obs on obs.person_id=ultima_carga.patient_id and obs.obs_datetime=ultima_carga.data_carga "
+        + "where 	obs.voided=0 and obs.concept_id="
+        + hivViralLoadConcept
+        + " and obs.location_id=:location and obs.value_numeric<1000";
   }
   /**
    * PACIENTES QUE ESTAO HA MAIS DE 6 MESES EM TARV Sao pacientes que iniciaram tarv ha mais de 6
@@ -1570,7 +1532,6 @@ public class QualiltyImprovementQueries {
    * @param arvPharmaciaEncounterType
    * @param arvPlan
    * @param startDrugsConcept
-   * @param historicalDrugStartDateConcept
    * @param artProgram
    * @return query
    */
@@ -1582,73 +1543,71 @@ public class QualiltyImprovementQueries {
       int startDrugsConcept,
       int arvStartDateConcept,
       int artProgram) {
-    String query =
-        "select patient_id  "
-            + "from  "
-            + "(	select patient_id,min(data_inicio) data_inicio  "
-            + "		from  "
-            + "		(  "
-            + "			Select 	p.patient_id,min(e.encounter_datetime) data_inicio  "
-            + "			from 	patient p   "
-            + "					inner join encounter e on p.patient_id=e.patient_id	  "
-            + "					inner join obs o on o.encounter_id=e.encounter_id  "
-            + "			where 	e.voided=0 and o.voided=0 and p.voided=0 and   "
-            + "					e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and o.concept_id="
-            + arvPlan
-            + " and o.value_coded="
-            + startDrugsConcept
-            + " and   "
-            + "					e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "			group by p.patient_id  "
-            + "			  "
-            + "			union  "
-            + "		  "
-            + "			Select p.patient_id,min(value_datetime) data_inicio  "
-            + "			from 	patient p  "
-            + "					inner join encounter e on p.patient_id=e.patient_id  "
-            + "					inner join obs o on e.encounter_id=o.encounter_id  "
-            + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and   "
-            + "					o.concept_id="
-            + arvStartDateConcept
-            + " and o.value_datetime is not null and   "
-            + "					o.value_datetime<=:endDate and e.location_id=:location  "
-            + "			group by p.patient_id  "
-            + "			  "
-            + "			union  "
-            + "			  "
-            + "			select 	pg.patient_id,date_enrolled as data_inicio  "
-            + "			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "			where 	pg.voided=0 and p.voided=0 and program_id="
-            + artProgram
-            + " and   "
-            + "					pg.date_enrolled<=:endDate and pg.location_id=:location  "
-            + "  "
-            + "			union  "
-            + "  "
-            + "			select 	p.patient_id,min(encounter_datetime) as data_inicio  "
-            + "			from 	patient p inner join encounter e on p.patient_id=e.patient_id  "
-            + "			where 	p.voided=0 and e.voided=0 and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + " and e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "			group by p.patient_id  "
-            + "		) inicio  "
-            + "	group by patient_id  "
-            + ")inicio_real  "
-            + "where timestampdiff (MONTH,data_inicio,:endDate)>=6;";
 
-    return query;
+    return "select patient_id  "
+        + "from  "
+        + "(	select patient_id,min(data_inicio) data_inicio  "
+        + "		from  "
+        + "		(  "
+        + "			Select 	p.patient_id,min(e.encounter_datetime) data_inicio  "
+        + "			from 	patient p   "
+        + "					inner join encounter e on p.patient_id=e.patient_id	  "
+        + "					inner join obs o on o.encounter_id=e.encounter_id  "
+        + "			where 	e.voided=0 and o.voided=0 and p.voided=0 and   "
+        + "					e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and o.concept_id="
+        + arvPlan
+        + " and o.value_coded="
+        + startDrugsConcept
+        + " and   "
+        + "					e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "			group by p.patient_id  "
+        + "			  "
+        + "			union  "
+        + "		  "
+        + "			Select p.patient_id,min(value_datetime) data_inicio  "
+        + "			from 	patient p  "
+        + "					inner join encounter e on p.patient_id=e.patient_id  "
+        + "					inner join obs o on e.encounter_id=o.encounter_id  "
+        + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and   "
+        + "					o.concept_id="
+        + arvStartDateConcept
+        + " and o.value_datetime is not null and   "
+        + "					o.value_datetime<=:endDate and e.location_id=:location  "
+        + "			group by p.patient_id  "
+        + "			  "
+        + "			union  "
+        + "			  "
+        + "			select 	pg.patient_id,date_enrolled as data_inicio  "
+        + "			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "			where 	pg.voided=0 and p.voided=0 and program_id="
+        + artProgram
+        + " and   "
+        + "					pg.date_enrolled<=:endDate and pg.location_id=:location  "
+        + "  "
+        + "			union  "
+        + "  "
+        + "			select 	p.patient_id,min(encounter_datetime) as data_inicio  "
+        + "			from 	patient p inner join encounter e on p.patient_id=e.patient_id  "
+        + "			where 	p.voided=0 and e.voided=0 and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + " and e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "			group by p.patient_id  "
+        + "		) inicio  "
+        + "	group by patient_id  "
+        + ")inicio_real  "
+        + "where timestampdiff (MONTH,data_inicio,:endDate)>=6;";
   }
 
   /**
@@ -1718,103 +1677,101 @@ public class QualiltyImprovementQueries {
       int suspendedTreatmentWorkflowState,
       int abandonedWorkflowState,
       int patientHasDiedWorkflowState) {
-    String query =
-        "select patient_id  "
-            + "from  "
-            + "		(	Select 	p.patient_id,max(encounter_datetime) encounter_datetime  "
-            + "			from 	patient p   "
-            + "					inner join encounter e on e.patient_id=p.patient_id  "
-            + "			where 	p.voided=0 and e.voided=0 and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + " and   "
-            + "					e.location_id=:location and e.encounter_datetime<=:endDate  "
-            + "			group by p.patient_id  "
-            + "		) max_frida   "
-            + "		inner join obs o on o.person_id=max_frida.patient_id  "
-            + "where 	max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
-            + returnVisitDateForArvDrugConcept
-            + " and o.location_id=:location and   "
-            + "		patient_id not in 	  "
-            + "		(	select 	pg.patient_id  "
-            + "			from 	patient p   "
-            + "					inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "					inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
-            + "			where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
-            + "					pg.program_id="
-            + artProgram
-            + " and ps.state in ("
-            + transferredOutToAnotherHealthFacilityWorkflowState
-            + ","
-            + suspendedTreatmentWorkflowState
-            + ","
-            + abandonedWorkflowState
-            + ","
-            + patientHasDiedWorkflowState
-            + ") and ps.end_date is null and   "
-            + "					ps.start_date<=:endDate and location_id=:location  "
-            + "  "
-            + "		) and patient_id not in(  "
-            + "			  "
-            + "			select patient_id  "
-            + "			from  "
-            + "				(	Select 	p.patient_id,max(encounter_datetime) encounter_datetime  "
-            + "					from 	patient p   "
-            + "							inner join encounter e on e.patient_id=p.patient_id  "
-            + "					where 	p.voided=0 and e.voided=0 and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "							e.location_id=:location and e.encounter_datetime<=:endDate  "
-            + "					group by p.patient_id  "
-            + "				) max_mov  "
-            + "				inner join obs o on o.person_id=max_mov.patient_id  "
-            + "			where 	max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and   "
-            + "				o.concept_id="
-            + returnVisitDateConcept
-            + " and o.location_id=:location and datediff(:endDate,o.value_datetime)<=60  "
-            + "				  "
-            + "		) and patient_id not in(			  "
-            + "			  "
-            + "			select abandono.patient_id  "
-            + "			from   "
-            + "			(		  "
-            + "				select 	pg.patient_id  "
-            + "				from 	patient p   "
-            + "						inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "						inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
-            + "				where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
-            + "						pg.program_id="
-            + artProgram
-            + " and ps.state="
-            + abandonedWorkflowState
-            + " and ps.end_date is null and   "
-            + "						ps.start_date<=:endDate and location_id=:location  "
-            + "			)abandono  "
-            + "			inner join 	  "
-            + "			(	  "
-            + "				select max_frida.patient_id,max_frida.encounter_datetime,o.value_datetime  "
-            + "				from  "
-            + "				(	Select 	p.patient_id,max(encounter_datetime) encounter_datetime  "
-            + "					from 	patient p   "
-            + "							inner join encounter e on e.patient_id=p.patient_id  "
-            + "					where 	p.voided=0 and e.voided=0 and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + " and   "
-            + "							e.location_id=:location and e.encounter_datetime<=:endDate  "
-            + "					group by p.patient_id  "
-            + "				) max_frida   "
-            + "				inner join obs o on o.person_id=max_frida.patient_id  "
-            + "				where 	max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
-            + returnVisitDateForArvDrugConcept
-            + " and o.location_id=:location  "
-            + "			) ultimo_fila on abandono.patient_id=ultimo_fila.patient_id  "
-            + "			where datediff(:endDate,ultimo_fila.value_datetime)<60  "
-            + "			  "
-            + "		)  "
-            + "		and datediff(:endDate,o.value_datetime)>=60;";
 
-    return query;
+    return "select patient_id  "
+        + "from  "
+        + "		(	Select 	p.patient_id,max(encounter_datetime) encounter_datetime  "
+        + "			from 	patient p   "
+        + "					inner join encounter e on e.patient_id=p.patient_id  "
+        + "			where 	p.voided=0 and e.voided=0 and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + " and   "
+        + "					e.location_id=:location and e.encounter_datetime<=:endDate  "
+        + "			group by p.patient_id  "
+        + "		) max_frida   "
+        + "		inner join obs o on o.person_id=max_frida.patient_id  "
+        + "where 	max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
+        + returnVisitDateForArvDrugConcept
+        + " and o.location_id=:location and   "
+        + "		patient_id not in 	  "
+        + "		(	select 	pg.patient_id  "
+        + "			from 	patient p   "
+        + "					inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "					inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
+        + "			where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
+        + "					pg.program_id="
+        + artProgram
+        + " and ps.state in ("
+        + transferredOutToAnotherHealthFacilityWorkflowState
+        + ","
+        + suspendedTreatmentWorkflowState
+        + ","
+        + abandonedWorkflowState
+        + ","
+        + patientHasDiedWorkflowState
+        + ") and ps.end_date is null and   "
+        + "					ps.start_date<=:endDate and location_id=:location  "
+        + "  "
+        + "		) and patient_id not in(  "
+        + "			  "
+        + "			select patient_id  "
+        + "			from  "
+        + "				(	Select 	p.patient_id,max(encounter_datetime) encounter_datetime  "
+        + "					from 	patient p   "
+        + "							inner join encounter e on e.patient_id=p.patient_id  "
+        + "					where 	p.voided=0 and e.voided=0 and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "							e.location_id=:location and e.encounter_datetime<=:endDate  "
+        + "					group by p.patient_id  "
+        + "				) max_mov  "
+        + "				inner join obs o on o.person_id=max_mov.patient_id  "
+        + "			where 	max_mov.encounter_datetime=o.obs_datetime and o.voided=0 and   "
+        + "				o.concept_id="
+        + returnVisitDateConcept
+        + " and o.location_id=:location and datediff(:endDate,o.value_datetime)<=60  "
+        + "				  "
+        + "		) and patient_id not in(			  "
+        + "			  "
+        + "			select abandono.patient_id  "
+        + "			from   "
+        + "			(		  "
+        + "				select 	pg.patient_id  "
+        + "				from 	patient p   "
+        + "						inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "						inner join patient_state ps on pg.patient_program_id=ps.patient_program_id  "
+        + "				where 	pg.voided=0 and ps.voided=0 and p.voided=0 and   "
+        + "						pg.program_id="
+        + artProgram
+        + " and ps.state="
+        + abandonedWorkflowState
+        + " and ps.end_date is null and   "
+        + "						ps.start_date<=:endDate and location_id=:location  "
+        + "			)abandono  "
+        + "			inner join 	  "
+        + "			(	  "
+        + "				select max_frida.patient_id,max_frida.encounter_datetime,o.value_datetime  "
+        + "				from  "
+        + "				(	Select 	p.patient_id,max(encounter_datetime) encounter_datetime  "
+        + "					from 	patient p   "
+        + "							inner join encounter e on e.patient_id=p.patient_id  "
+        + "					where 	p.voided=0 and e.voided=0 and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + " and   "
+        + "							e.location_id=:location and e.encounter_datetime<=:endDate  "
+        + "					group by p.patient_id  "
+        + "				) max_frida   "
+        + "				inner join obs o on o.person_id=max_frida.patient_id  "
+        + "				where 	max_frida.encounter_datetime=o.obs_datetime and o.voided=0 and o.concept_id="
+        + returnVisitDateForArvDrugConcept
+        + " and o.location_id=:location  "
+        + "			) ultimo_fila on abandono.patient_id=ultimo_fila.patient_id  "
+        + "			where datediff(:endDate,ultimo_fila.value_datetime)<60  "
+        + "			  "
+        + "		)  "
+        + "		and datediff(:endDate,o.value_datetime)>=60;";
   }
 
   /**
@@ -1838,61 +1795,59 @@ public class QualiltyImprovementQueries {
       int adultoSeguimentoEncounterType,
       int ptvEtvProgram,
       int yesConcept) {
-    String query =
-        "Select 	p.patient_id  "
-            + "from 	patient p   "
-            + "		inner join encounter e on p.patient_id=e.patient_id  "
-            + "		inner join obs o on e.encounter_id=o.encounter_id  "
-            + "where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-            + pregnantConcept
-            + " and value_coded="
-            + yesConcept
-            + " and   "
-            + "		e.encounter_type in ("
-            + arvAdultInitialEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location  "
-            + "  "
-            + "union		  "
-            + "		  "
-            + "Select 	p.patient_id  "
-            + "from 	patient p inner join encounter e on p.patient_id=e.patient_id  "
-            + "		inner join obs o on e.encounter_id=o.encounter_id  "
-            + "where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-            + numberOfWeekPregnant
-            + " and   "
-            + "		e.encounter_type in ("
-            + arvAdultInitialEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location  "
-            + "  "
-            + "  "
-            + "union		  "
-            + "		  "
-            + "Select 	p.patient_id  "
-            + "from 	patient p inner join encounter e on p.patient_id=e.patient_id  "
-            + "		inner join obs o on e.encounter_id=o.encounter_id  "
-            + "where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
-            + pregnancyDueDateConcept
-            + " and   "
-            + "		e.encounter_type in ("
-            + arvAdultInitialEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location		  "
-            + "		  "
-            + "union  "
-            + "		  "
-            + "select 	pp.patient_id  "
-            + "from 	patient_program pp   "
-            + "where 	pp.program_id="
-            + ptvEtvProgram
-            + " and pp.voided=0 and   "
-            + "		pp.date_enrolled between :startDate and :endDate and pp.location_id=:location";
 
-    return query;
+    return "Select 	p.patient_id  "
+        + "from 	patient p   "
+        + "		inner join encounter e on p.patient_id=e.patient_id  "
+        + "		inner join obs o on e.encounter_id=o.encounter_id  "
+        + "where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + pregnantConcept
+        + " and value_coded="
+        + yesConcept
+        + " and   "
+        + "		e.encounter_type in ("
+        + arvAdultInitialEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location  "
+        + "  "
+        + "union		  "
+        + "		  "
+        + "Select 	p.patient_id  "
+        + "from 	patient p inner join encounter e on p.patient_id=e.patient_id  "
+        + "		inner join obs o on e.encounter_id=o.encounter_id  "
+        + "where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + numberOfWeekPregnant
+        + " and   "
+        + "		e.encounter_type in ("
+        + arvAdultInitialEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location  "
+        + "  "
+        + "  "
+        + "union		  "
+        + "		  "
+        + "Select 	p.patient_id  "
+        + "from 	patient p inner join encounter e on p.patient_id=e.patient_id  "
+        + "		inner join obs o on e.encounter_id=o.encounter_id  "
+        + "where 	p.voided=0 and e.voided=0 and o.voided=0 and concept_id="
+        + pregnancyDueDateConcept
+        + " and   "
+        + "		e.encounter_type in ("
+        + arvAdultInitialEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ") and e.encounter_datetime between :startDate and :endDate and e.location_id=:location		  "
+        + "		  "
+        + "union  "
+        + "		  "
+        + "select 	pp.patient_id  "
+        + "from 	patient_program pp   "
+        + "where 	pp.program_id="
+        + ptvEtvProgram
+        + " and pp.voided=0 and   "
+        + "		pp.date_enrolled between :startDate and :endDate and pp.location_id=:location";
   }
 
   /**
@@ -1951,72 +1906,70 @@ public class QualiltyImprovementQueries {
       int tbDrugTreatmentStartDate,
       int tbDgrusTreatmentEndDateConcept,
       int tbProgram) {
-    String query =
-        "select inicio_tb.patient_id  "
-            + "from  "
-            + "(	Select 	p.patient_id,max(o.value_datetime) data_inicio_tb  "
-            + "	from 	patient p   "
-            + "	inner join encounter e on e.patient_id=p.patient_id  "
-            + "	inner join obs o on o.encounter_id=e.encounter_id  "
-            + "	where 	p.voided=0 and e.voided=0 and o.value_datetime <= :endDate and "
-            + "	e.location_id=:location and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ","
-            + tbLivroEncounterType
-            + ","
-            + tbRastreioEncounterType
-            + ") and o.voided=0 and o.concept_id="
-            + tbDrugTreatmentStartDate
-            + "  "
-            + "	group by patient_id  "
-            + "  "
-            + "	union  "
-            + "  "
-            + "	select 	pg.patient_id,max(date_enrolled) data_inicio_tb  "
-            + "	from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "	where 	pg.voided=0 and p.voided=0 and program_id="
-            + tbProgram
-            + " and date_enrolled <= :endDate and location_id=:location  "
-            + "	group by patient_id  "
-            + ") inicio_tb  "
-            + "where inicio_tb.patient_id not in  "
-            + "(  "
-            + "	select fim_tb.patient_id  "
-            + "	from  "
-            + "	(	Select 	p.patient_id,max(o.value_datetime) data_fim_tb  "
-            + "		from 	patient p   "
-            + "		inner join encounter e on e.patient_id=p.patient_id  "
-            + "		inner join obs o on o.encounter_id=e.encounter_id  "
-            + "		where 	p.voided=0 and e.voided=0 and o.value_datetime <= :endDate and "
-            + "	e.location_id=:location and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ","
-            + tbLivroEncounterType
-            + ","
-            + tbRastreioEncounterType
-            + ") and o.voided=0 and o.concept_id="
-            + tbDgrusTreatmentEndDateConcept
-            + "  "
-            + "		group by patient_id  "
-            + "	  "
-            + "		union  "
-            + "	  "
-            + "		select 	pg.patient_id,max(date_completed) data_fim_tb  "
-            + "		from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
-            + "		where 	pg.voided=0 and p.voided=0 and program_id="
-            + tbProgram
-            + " and date_enrolled is not null and   "
-            + "		date_completed is not null and date_completed <= :endDate and location_id=:location  "
-            + "		group by patient_id  "
-            + "	) fim_tb  "
-            + "	where inicio_tb.data_inicio_tb < fim_tb.data_fim_tb  "
-            + ")";
 
-    return query;
+    return "select inicio_tb.patient_id  "
+        + "from  "
+        + "(	Select 	p.patient_id,max(o.value_datetime) data_inicio_tb  "
+        + "	from 	patient p   "
+        + "	inner join encounter e on e.patient_id=p.patient_id  "
+        + "	inner join obs o on o.encounter_id=e.encounter_id  "
+        + "	where 	p.voided=0 and e.voided=0 and o.value_datetime <= :endDate and "
+        + "	e.location_id=:location and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ","
+        + tbLivroEncounterType
+        + ","
+        + tbRastreioEncounterType
+        + ") and o.voided=0 and o.concept_id="
+        + tbDrugTreatmentStartDate
+        + "  "
+        + "	group by patient_id  "
+        + "  "
+        + "	union  "
+        + "  "
+        + "	select 	pg.patient_id,max(date_enrolled) data_inicio_tb  "
+        + "	from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "	where 	pg.voided=0 and p.voided=0 and program_id="
+        + tbProgram
+        + " and date_enrolled <= :endDate and location_id=:location  "
+        + "	group by patient_id  "
+        + ") inicio_tb  "
+        + "where inicio_tb.patient_id not in  "
+        + "(  "
+        + "	select fim_tb.patient_id  "
+        + "	from  "
+        + "	(	Select 	p.patient_id,max(o.value_datetime) data_fim_tb  "
+        + "		from 	patient p   "
+        + "		inner join encounter e on e.patient_id=p.patient_id  "
+        + "		inner join obs o on o.encounter_id=e.encounter_id  "
+        + "		where 	p.voided=0 and e.voided=0 and o.value_datetime <= :endDate and "
+        + "	e.location_id=:location and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ","
+        + tbLivroEncounterType
+        + ","
+        + tbRastreioEncounterType
+        + ") and o.voided=0 and o.concept_id="
+        + tbDgrusTreatmentEndDateConcept
+        + "  "
+        + "		group by patient_id  "
+        + "	  "
+        + "		union  "
+        + "	  "
+        + "		select 	pg.patient_id,max(date_completed) data_fim_tb  "
+        + "		from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id  "
+        + "		where 	pg.voided=0 and p.voided=0 and program_id="
+        + tbProgram
+        + " and date_enrolled is not null and   "
+        + "		date_completed is not null and date_completed <= :endDate and location_id=:location  "
+        + "		group by patient_id  "
+        + "	) fim_tb  "
+        + "	where inicio_tb.data_inicio_tb < fim_tb.data_fim_tb  "
+        + ")";
   }
 
   /**
@@ -2126,88 +2079,86 @@ public class QualiltyImprovementQueries {
       int artProgram,
       int hivViralLoadConcept) {
 
-    String query =
-        "select inicio_real.patient_id "
-            + "from "
-            + "(	select patient_id,data_inicio "
-            + "	from "
-            + "	(	Select patient_id,min(data_inicio) data_inicio "
-            + "		from "
-            + "				(	Select 	p.patient_id,min(e.encounter_datetime) data_inicio "
-            + "					from 	patient p  "
-            + "							inner join encounter e on p.patient_id=e.patient_id	 "
-            + "							inner join obs o on o.encounter_id=e.encounter_id "
-            + "					where 	e.voided=0 and o.voided=0 and p.voided=0 and  "
-            + "							e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and o.concept_id="
-            + arvPlan
-            + " and o.value_coded="
-            + startDrugsConcept
-            + " and  "
-            + "							e.encounter_datetime<=:endDate and e.location_id=:location "
-            + "					group by p.patient_id "
-            + "			 "
-            + "					union "
-            + "			 "
-            + "					Select 	p.patient_id,min(value_datetime) data_inicio "
-            + "					from 	patient p "
-            + "							inner join encounter e on p.patient_id=e.patient_id "
-            + "							inner join obs o on e.encounter_id=o.encounter_id "
-            + "					where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "							o.concept_id="
-            + arvStartDateConcept
-            + " and o.value_datetime is not null and  "
-            + "							o.value_datetime<=:endDate and e.location_id=:location "
-            + "					group by p.patient_id "
-            + " "
-            + "					union "
-            + " "
-            + "					select 	pg.patient_id,date_enrolled data_inicio "
-            + "					from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "					where 	pg.voided=0 and p.voided=0 and program_id="
-            + artProgram
-            + " and date_enrolled<=:endDate and location_id=:location "
-            + "					 "
-            + "					union "
-            + "					 "
-            + "					 "
-            + "				  SELECT 	e.patient_id, MIN(e.encounter_datetime) AS data_inicio  "
-            + "				  FROM 		patient p "
-            + "							inner join encounter e on p.patient_id=e.patient_id "
-            + "				  WHERE		p.voided=0 and e.encounter_type="
-            + arvPharmaciaEncounterType
-            + " AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location "
-            + "				  GROUP BY 	p.patient_id				 "
-            + "					 "
-            + "					 "
-            + "				) inicio "
-            + "			group by patient_id	 "
-            + "	)inicio1 "
-            + "	where data_inicio between date_add(date_add(:endDate, interval -12 month), interval 1 day) and  date_add(:endDate, interval -9 month) "
-            + ") inicio_real "
-            + "inner join encounter e on e.patient_id=inicio_real.patient_id "
-            + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where 	e.voided=0 and e.encounter_type in ("
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and e.location_id=:location and  "
-            + "		o.voided=0 and o.concept_id="
-            + hivViralLoadConcept
-            + " and  "
-            + "		e.encounter_datetime between date_add(inicio_real.data_inicio, interval 6 month) and date_add(inicio_real.data_inicio, interval 9 month)";
-    return query;
+    return "select inicio_real.patient_id "
+        + "from "
+        + "(	select patient_id,data_inicio "
+        + "	from "
+        + "	(	Select patient_id,min(data_inicio) data_inicio "
+        + "		from "
+        + "				(	Select 	p.patient_id,min(e.encounter_datetime) data_inicio "
+        + "					from 	patient p  "
+        + "							inner join encounter e on p.patient_id=e.patient_id	 "
+        + "							inner join obs o on o.encounter_id=e.encounter_id "
+        + "					where 	e.voided=0 and o.voided=0 and p.voided=0 and  "
+        + "							e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and o.concept_id="
+        + arvPlan
+        + " and o.value_coded="
+        + startDrugsConcept
+        + " and  "
+        + "							e.encounter_datetime<=:endDate and e.location_id=:location "
+        + "					group by p.patient_id "
+        + "			 "
+        + "					union "
+        + "			 "
+        + "					Select 	p.patient_id,min(value_datetime) data_inicio "
+        + "					from 	patient p "
+        + "							inner join encounter e on p.patient_id=e.patient_id "
+        + "							inner join obs o on e.encounter_id=o.encounter_id "
+        + "					where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "							o.concept_id="
+        + arvStartDateConcept
+        + " and o.value_datetime is not null and  "
+        + "							o.value_datetime<=:endDate and e.location_id=:location "
+        + "					group by p.patient_id "
+        + " "
+        + "					union "
+        + " "
+        + "					select 	pg.patient_id,date_enrolled data_inicio "
+        + "					from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
+        + "					where 	pg.voided=0 and p.voided=0 and program_id="
+        + artProgram
+        + " and date_enrolled<=:endDate and location_id=:location "
+        + "					 "
+        + "					union "
+        + "					 "
+        + "					 "
+        + "				  SELECT 	e.patient_id, MIN(e.encounter_datetime) AS data_inicio  "
+        + "				  FROM 		patient p "
+        + "							inner join encounter e on p.patient_id=e.patient_id "
+        + "				  WHERE		p.voided=0 and e.encounter_type="
+        + arvPharmaciaEncounterType
+        + " AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location "
+        + "				  GROUP BY 	p.patient_id				 "
+        + "					 "
+        + "					 "
+        + "				) inicio "
+        + "			group by patient_id	 "
+        + "	)inicio1 "
+        + "	where data_inicio between date_add(date_add(:endDate, interval -12 month), interval 1 day) and  date_add(:endDate, interval -9 month) "
+        + ") inicio_real "
+        + "inner join encounter e on e.patient_id=inicio_real.patient_id "
+        + "inner join obs o on o.encounter_id=e.encounter_id "
+        + "where 	e.voided=0 and e.encounter_type in ("
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and e.location_id=:location and  "
+        + "		o.voided=0 and o.concept_id="
+        + hivViralLoadConcept
+        + " and  "
+        + "		e.encounter_datetime between date_add(inicio_real.data_inicio, interval 6 month) and date_add(inicio_real.data_inicio, interval 9 month)";
   }
 
   /** FALHAS IMUNOLOGICAS - SQL */
@@ -2219,151 +2170,148 @@ public class QualiltyImprovementQueries {
       int startDrugsConcept,
       int arvStartDateConcept,
       int cd4AbsoluteConcept,
-      int cd4AbsoluteOBSConcept,
       int artProgram) {
-    String query =
-        "Select CD41.patient_id "
-            + "from "
-            + " "
-            + "	(Select CD4_ANTES.patient_id,CD4_ANTES.data_inicio,CD4_ANTES.data_cd4_antes,obs.value_numeric as valor_cd4_antes "
-            + "	from "
-            + "	(select patient_id,max(data_inicio) data_inicio,max(obs_datetime) as data_cd4_antes "
-            + " "
-            + "	from "
-            + " "
-            + "		(	Select 	p.patient_id,min(encounter_datetime)  data_inicio "
-            + "			from 	patient p  "
-            + "					inner join encounter e on p.patient_id=e.patient_id "
-            + "					inner join obs o on e.encounter_id=o.encounter_id "
-            + "			where 	o.concept_id="
-            + arvPlan
-            + " and o.value_coded="
-            + startDrugsConcept
-            + " and "
-            + "					e.voided=0 and o.voided=0 and p.voided=0 and  "
-            + "					e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "			group by p.patient_id "
-            + "			 "
-            + "			union "
-            + "			 "
-            + "			Select p.patient_id,min(value_datetime) data_inicio "
-            + "			from 	patient p "
-            + "					inner join encounter e on p.patient_id=e.patient_id "
-            + "					inner join obs o on e.encounter_id=o.encounter_id "
-            + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "					o.concept_id="
-            + arvStartDateConcept
-            + " and o.value_datetime is not null and  "
-            + "					o.value_datetime<=:endDate and e.location_id=:location "
-            + "			group by p.patient_id "
-            + "			 "
-            + "			union "
-            + "			 "
-            + "			select 	pg.patient_id,date_enrolled data_inicio "
-            + "			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "			where 	pg.voided=0 and p.voided=0 and program_id="
-            + artProgram
-            + " and date_enrolled<=:endDate and location_id=:location "
-            + "			 "
-            + "			 "
-            + "		) inicio, "
-            + "		(	Select 	o.person_id,o.obs_datetime,o.value_numeric "
-            + "			from 	obs o "
-            + "			where 	o.concept_id="
-            + cd4AbsoluteConcept
-            + " and o.voided=0 and o.obs_datetime<=:endDate and o.location_id=:location "
-            + "		) cd4 "
-            + " "
-            + "	where 	cd4.person_id=inicio.patient_id and cd4.obs_datetime<inicio.data_inicio "
-            + "	group by patient_id) CD4_ANTES, "
-            + "	obs "
-            + "	where obs.person_id=CD4_ANTES.patient_id and obs.concept_id="
-            + cd4AbsoluteConcept
-            + " and obs.obs_datetime=CD4_ANTES.data_cd4_antes and obs.voided=0 and obs.location_id=:location "
-            + "	) CD41,	 "
-            + "	(Select CD4_DEPOIS.patient_id,CD4_DEPOIS.data_inicio,CD4_DEPOIS.data_cd4_depois,obs.value_numeric as valor_cd4_depois,CD4_DEPOIS.cd4_pico "
-            + "	from "
-            + "	(select patient_id,max(data_inicio) as data_inicio,max(obs_datetime) data_cd4_depois,max(value_numeric) cd4_pico "
-            + "	from "
-            + "		(	Select 	p.patient_id,min(encounter_datetime)  data_inicio "
-            + "			from 	patient p  "
-            + "					inner join encounter e on p.patient_id=e.patient_id "
-            + "					inner join obs o on e.encounter_id=o.encounter_id "
-            + "			where 	o.concept_id="
-            + arvPlan
-            + " and o.value_coded="
-            + startDrugsConcept
-            + " and "
-            + "					e.voided=0 and o.voided=0 and p.voided=0 and  "
-            + "					e.encounter_type="
-            + arvPharmaciaEncounterType
-            + " and e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "			group by p.patient_id "
-            + "			 "
-            + "			union "
-            + "			 "
-            + "			Select p.patient_id,min(value_datetime) data_inicio "
-            + "			from 	patient p "
-            + "					inner join encounter e on p.patient_id=e.patient_id "
-            + "					inner join obs o on e.encounter_id=o.encounter_id "
-            + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "					o.concept_id="
-            + arvStartDateConcept
-            + " and o.value_datetime is not null and  "
-            + "					o.value_datetime<=:endDate and e.location_id=:location "
-            + "			group by p.patient_id "
-            + "			 "
-            + "			union "
-            + "			 "
-            + "			select 	pg.patient_id,date_enrolled data_inicio "
-            + "			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "			where 	pg.voided=0 and p.voided=0 and program_id="
-            + artProgram
-            + " and date_enrolled<=:endDate and location_id=:location "
-            + "			 "
-            + "		) inicio, "
-            + "		(	Select 	o.person_id,o.obs_datetime,o.value_numeric "
-            + "			from 	obs o "
-            + "			where 	o.concept_id="
-            + cd4AbsoluteConcept
-            + " and o.voided=0 and o.obs_datetime<=:endDate and o.location_id=:location "
-            + "		) cd4 "
-            + "		where cd4.person_id=inicio.patient_id and cd4.obs_datetime>date_add(inicio.data_inicio,interval 6 month) "
-            + "		group by patient_id "
-            + "		) CD4_DEPOIS, "
-            + "		obs "
-            + "		where obs.person_id=CD4_DEPOIS.patient_id and obs.concept_id="
-            + cd4AbsoluteConcept
-            + " and obs.obs_datetime=CD4_DEPOIS.data_cd4_depois and obs.voided=0 and obs.location_id=:location "
-            + "		) CD42, "
-            + "		person "
-            + "		where CD41.patient_id=CD42.patient_id and person.person_id=CD41.patient_id and  "
-            + "		 "
-            + "		( "
-            + "			(round(datediff(:endDate,birthdate)/365)<=4 and valor_cd4_antes<200 and valor_cd4_depois<200) or "
-            + "			(round(datediff(:endDate,birthdate)/365) between 5 and 14 and ((valor_cd4_antes<100 and valor_cd4_depois<100) or (valor_cd4_depois<valor_cd4_antes))) or "
-            + "			(round(datediff(:endDate,birthdate)/365)>=15 and ((valor_cd4_antes<100 and valor_cd4_depois<100) or (valor_cd4_depois<valor_cd4_antes) or (valor_cd4_depois<(cd4_pico/2)))) "
-            + "		)";
 
-    return query;
+    return "Select CD41.patient_id "
+        + "from "
+        + " "
+        + "	(Select CD4_ANTES.patient_id,CD4_ANTES.data_inicio,CD4_ANTES.data_cd4_antes,obs.value_numeric as valor_cd4_antes "
+        + "	from "
+        + "	(select patient_id,max(data_inicio) data_inicio,max(obs_datetime) as data_cd4_antes "
+        + " "
+        + "	from "
+        + " "
+        + "		(	Select 	p.patient_id,min(encounter_datetime)  data_inicio "
+        + "			from 	patient p  "
+        + "					inner join encounter e on p.patient_id=e.patient_id "
+        + "					inner join obs o on e.encounter_id=o.encounter_id "
+        + "			where 	o.concept_id="
+        + arvPlan
+        + " and o.value_coded="
+        + startDrugsConcept
+        + " and "
+        + "					e.voided=0 and o.voided=0 and p.voided=0 and  "
+        + "					e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "			group by p.patient_id "
+        + "			 "
+        + "			union "
+        + "			 "
+        + "			Select p.patient_id,min(value_datetime) data_inicio "
+        + "			from 	patient p "
+        + "					inner join encounter e on p.patient_id=e.patient_id "
+        + "					inner join obs o on e.encounter_id=o.encounter_id "
+        + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "					o.concept_id="
+        + arvStartDateConcept
+        + " and o.value_datetime is not null and  "
+        + "					o.value_datetime<=:endDate and e.location_id=:location "
+        + "			group by p.patient_id "
+        + "			 "
+        + "			union "
+        + "			 "
+        + "			select 	pg.patient_id,date_enrolled data_inicio "
+        + "			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
+        + "			where 	pg.voided=0 and p.voided=0 and program_id="
+        + artProgram
+        + " and date_enrolled<=:endDate and location_id=:location "
+        + "			 "
+        + "			 "
+        + "		) inicio, "
+        + "		(	Select 	o.person_id,o.obs_datetime,o.value_numeric "
+        + "			from 	obs o "
+        + "			where 	o.concept_id="
+        + cd4AbsoluteConcept
+        + " and o.voided=0 and o.obs_datetime<=:endDate and o.location_id=:location "
+        + "		) cd4 "
+        + " "
+        + "	where 	cd4.person_id=inicio.patient_id and cd4.obs_datetime<inicio.data_inicio "
+        + "	group by patient_id) CD4_ANTES, "
+        + "	obs "
+        + "	where obs.person_id=CD4_ANTES.patient_id and obs.concept_id="
+        + cd4AbsoluteConcept
+        + " and obs.obs_datetime=CD4_ANTES.data_cd4_antes and obs.voided=0 and obs.location_id=:location "
+        + "	) CD41,	 "
+        + "	(Select CD4_DEPOIS.patient_id,CD4_DEPOIS.data_inicio,CD4_DEPOIS.data_cd4_depois,obs.value_numeric as valor_cd4_depois,CD4_DEPOIS.cd4_pico "
+        + "	from "
+        + "	(select patient_id,max(data_inicio) as data_inicio,max(obs_datetime) data_cd4_depois,max(value_numeric) cd4_pico "
+        + "	from "
+        + "		(	Select 	p.patient_id,min(encounter_datetime)  data_inicio "
+        + "			from 	patient p  "
+        + "					inner join encounter e on p.patient_id=e.patient_id "
+        + "					inner join obs o on e.encounter_id=o.encounter_id "
+        + "			where 	o.concept_id="
+        + arvPlan
+        + " and o.value_coded="
+        + startDrugsConcept
+        + " and "
+        + "					e.voided=0 and o.voided=0 and p.voided=0 and  "
+        + "					e.encounter_type="
+        + arvPharmaciaEncounterType
+        + " and e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "			group by p.patient_id "
+        + "			 "
+        + "			union "
+        + "			 "
+        + "			Select p.patient_id,min(value_datetime) data_inicio "
+        + "			from 	patient p "
+        + "					inner join encounter e on p.patient_id=e.patient_id "
+        + "					inner join obs o on e.encounter_id=o.encounter_id "
+        + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "					o.concept_id="
+        + arvStartDateConcept
+        + " and o.value_datetime is not null and  "
+        + "					o.value_datetime<=:endDate and e.location_id=:location "
+        + "			group by p.patient_id "
+        + "			 "
+        + "			union "
+        + "			 "
+        + "			select 	pg.patient_id,date_enrolled data_inicio "
+        + "			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
+        + "			where 	pg.voided=0 and p.voided=0 and program_id="
+        + artProgram
+        + " and date_enrolled<=:endDate and location_id=:location "
+        + "			 "
+        + "		) inicio, "
+        + "		(	Select 	o.person_id,o.obs_datetime,o.value_numeric "
+        + "			from 	obs o "
+        + "			where 	o.concept_id="
+        + cd4AbsoluteConcept
+        + " and o.voided=0 and o.obs_datetime<=:endDate and o.location_id=:location "
+        + "		) cd4 "
+        + "		where cd4.person_id=inicio.patient_id and cd4.obs_datetime>date_add(inicio.data_inicio,interval 6 month) "
+        + "		group by patient_id "
+        + "		) CD4_DEPOIS, "
+        + "		obs "
+        + "		where obs.person_id=CD4_DEPOIS.patient_id and obs.concept_id="
+        + cd4AbsoluteConcept
+        + " and obs.obs_datetime=CD4_DEPOIS.data_cd4_depois and obs.voided=0 and obs.location_id=:location "
+        + "		) CD42, "
+        + "		person "
+        + "		where CD41.patient_id=CD42.patient_id and person.person_id=CD41.patient_id and  "
+        + "		 "
+        + "		( "
+        + "			(round(datediff(:endDate,birthdate)/365)<=4 and valor_cd4_antes<200 and valor_cd4_depois<200) or "
+        + "			(round(datediff(:endDate,birthdate)/365) between 5 and 14 and ((valor_cd4_antes<100 and valor_cd4_depois<100) or (valor_cd4_depois<valor_cd4_antes))) or "
+        + "			(round(datediff(:endDate,birthdate)/365)>=15 and ((valor_cd4_antes<100 and valor_cd4_depois<100) or (valor_cd4_depois<valor_cd4_antes) or (valor_cd4_depois<(cd4_pico/2)))) "
+        + "		)";
   }
   /** FALHAS CLINICAS - SQL */
   public static String getPatientWithClinicFailtures(
@@ -2373,228 +2321,168 @@ public class QualiltyImprovementQueries {
       int arvPlan,
       int startDrugsConcept,
       int arvStartDateConcept,
-      int cd4AbsoluteConcept,
-      int cd4AbsoluteOBSConcept,
       int artProgram,
       int transferredFromOtherHealthFacilityWorkflowState,
       int currentWhoHivStageConcept,
       int who2AdultStageConcept,
       int who3AdultStageConcept,
       int who4AdultStageConcept) {
-    String query =
-        "Select ESTADIO1.patient_id "
-            + "from "
-            + "(	Select estadio_antes.patient_id,estadio_antes.data_inicio,estadio_antes.data_estadio_antes,obs.value_coded as valor_estadio_antes "
-            + "	from "
-            + "	(select patient_id,max(data_inicio) as data_inicio,max(obs_datetime) data_estadio_antes "
-            + " "
-            + "	from "
-            + " "
-            + "		(	Select 	p.patient_id,min(encounter_datetime)  data_inicio "
-            + "			from 	patient p  "
-            + "					inner join encounter e on p.patient_id=e.patient_id "
-            + "					inner join obs o on e.encounter_id=o.encounter_id "
-            + "			where 	o.concept_id="
-            + arvPlan
-            + " and o.value_coded in ("
-            + startDrugsConcept
-            + ","
-            + transferredFromOtherHealthFacilityWorkflowState
-            + ") and "
-            + "					e.voided=0 and o.voided=0 and p.voided=0 and  "
-            + "					e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "			group by p.patient_id "
-            + "			 "
-            + "			union "
-            + "			 "
-            + "			Select p.patient_id,min(value_datetime) data_inicio "
-            + "			from 	patient p "
-            + "					inner join encounter e on p.patient_id=e.patient_id "
-            + "					inner join obs o on e.encounter_id=o.encounter_id "
-            + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "					o.concept_id="
-            + arvStartDateConcept
-            + " and o.value_datetime is not null and  "
-            + "					o.value_datetime<=:endDate and e.location_id=:location "
-            + "			group by p.patient_id "
-            + "			 "
-            + "			union "
-            + "			 "
-            + "			select 	pg.patient_id,date_enrolled data_inicio "
-            + "			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "			where 	pg.voided=0 and p.voided=0 and program_id="
-            + artProgram
-            + " and date_enrolled<=:endDate and location_id=:location "
-            + "			 "
-            + "		) inicio, "
-            + "		(	Select 	o.person_id,o.obs_datetime "
-            + "			from 	obs o "
-            + "			where 	o.concept_id="
-            + currentWhoHivStageConcept
-            + " and o.voided=0 and o.obs_datetime<=:endDate and o.location_id=:location "
-            + "		) estadio "
-            + " "
-            + "	where 	estadio.person_id=inicio.patient_id and estadio.obs_datetime<inicio.data_inicio "
-            + "	group by patient_id "
-            + "	) estadio_antes, "
-            + "	obs  "
-            + "	where obs.person_id=estadio_antes.patient_id and obs.concept_id="
-            + currentWhoHivStageConcept
-            + " and obs.obs_datetime=estadio_antes.data_estadio_antes and obs.voided=0 and obs.location_id=:location "
-            + "	) ESTADIO1,	 "
-            + "	(select estadio_depois.patient_id,estadio_depois.data_inicio,estadio_depois.data_estadio_depois,obs.value_coded as valor_estadio_depois "
-            + "	from "
-            + "	(select patient_id,max(data_inicio) as data_inicio,max(obs_datetime) data_estadio_depois "
-            + "	from "
-            + "		(	Select 	p.patient_id,min(encounter_datetime)  data_inicio "
-            + "			from 	patient p  "
-            + "					inner join encounter e on p.patient_id=e.patient_id "
-            + "					inner join obs o on e.encounter_id=o.encounter_id "
-            + "			where 	o.concept_id="
-            + arvPlan
-            + " and o.value_coded in ("
-            + startDrugsConcept
-            + ","
-            + transferredFromOtherHealthFacilityWorkflowState
-            + ") and "
-            + "					e.voided=0 and o.voided=0 and p.voided=0 and  "
-            + "					e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and e.encounter_datetime<=:endDate and e.location_id=:location  "
-            + "			group by p.patient_id "
-            + "			 "
-            + "			union "
-            + "			 "
-            + "			Select p.patient_id,min(value_datetime) data_inicio "
-            + "			from 	patient p "
-            + "					inner join encounter e on p.patient_id=e.patient_id "
-            + "					inner join obs o on e.encounter_id=o.encounter_id "
-            + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
-            + arvPharmaciaEncounterType
-            + ","
-            + adultoSeguimentoEncounterType
-            + ","
-            + arvPediatriaSeguimentoEncounterType
-            + ") and  "
-            + "					o.concept_id="
-            + arvStartDateConcept
-            + " and o.value_datetime is not null and  "
-            + "					o.value_datetime<=:endDate and e.location_id=:location "
-            + "			group by p.patient_id "
-            + "			 "
-            + "			union "
-            + "			 "
-            + "			select 	pg.patient_id,date_enrolled data_inicio "
-            + "			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "			where 	pg.voided=0 and p.voided=0 and program_id="
-            + artProgram
-            + " and date_enrolled<=:endDate and location_id=:location "
-            + "			 "
-            + "			 "
-            + "		) inicio, "
-            + "		(	Select 	o.person_id,o.obs_datetime "
-            + "			from 	obs o "
-            + "			where 	o.concept_id="
-            + currentWhoHivStageConcept
-            + " and o.voided=0 and o.obs_datetime<=:endDate and o.location_id=:location "
-            + "		) estadio "
-            + "		where estadio.person_id=inicio.patient_id and estadio.obs_datetime>date_add(inicio.data_inicio,interval 6 month) "
-            + "		group by patient_id "
-            + "		) estadio_depois, "
-            + "		obs "
-            + "		where obs.person_id=estadio_depois.patient_id and obs.concept_id="
-            + currentWhoHivStageConcept
-            + " and obs.obs_datetime=estadio_depois.data_estadio_depois and obs.voided=0 and obs.location_id=:location "
-            + "	) ESTADIO2, "
-            + "	person  "
-            + "	where  "
-            + "	ESTADIO1.patient_id=ESTADIO2.patient_id and  "
-            + "	ESTADIO1.patient_id=person.person_id and  "
-            + "	( "
-            + "		(round(datediff(:endDate,birthdate)/365)<=14 and valor_estadio_antes<="
-            + who2AdultStageConcept
-            + " and valor_estadio_depois>="
-            + who3AdultStageConcept
-            + ") or "
-            + "		(round(datediff(:endDate,birthdate)/365)>=15 and valor_estadio_antes<="
-            + who3AdultStageConcept
-            + " and valor_estadio_depois="
-            + who4AdultStageConcept
-            + ") "
-            + "	) and valor_estadio_depois>valor_estadio_antes";
 
-    return query;
-  }
-
-  /*PACIENTES INSCRITOS NO SERVICO TARV - PERIODO FINAL (SQL)*/
-  public static String getPatientsEnrolledInTARVServiceFinalPeriodoSQL(
-      int arvAdultInitialEncounterType,
-      int arvPediatriaInitialEncounterType,
-      int tarvService,
-      int artProgram,
-      int pateintTransferedFromOtherFacilityHIVCareWorkflowState,
-      int pateintTransferedFromOtherFacilityWorkflowState) {
-    String query =
-        "select p.patient_id  "
-            + "from patient p inner join encounter e on e.patient_id=p.patient_id  "
-            + "where e.voided=0 and p.voided=0 and e.encounter_type in ("
-            + arvAdultInitialEncounterType
-            + ","
-            + arvPediatriaInitialEncounterType
-            + ") and e.encounter_datetime<=:endDate and e.location_id = :location "
-            + " "
-            + "union "
-            + " "
-            + "select 	pg.patient_id "
-            + "from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "where 	pg.voided=0 and p.voided=0 and program_id="
-            + tarvService
-            + " and date_enrolled<=:endDate and location_id=:location "
-            + " "
-            + "union "
-            + " "
-            + "select 	pg.patient_id "
-            + "from 	patient p  "
-            + "		inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "		inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "where 	pg.voided=0 and ps.voided=0 and p.voided=0 and  "
-            + "		pg.program_id="
-            + tarvService
-            + " and ps.state="
-            + pateintTransferedFromOtherFacilityHIVCareWorkflowState
-            + " and ps.start_date=pg.date_enrolled and  "
-            + "		ps.start_date<=:endDate and location_id=:location "
-            + "		 "
-            + "union "
-            + "		 "
-            + "select 	pg.patient_id "
-            + "from 	patient p  "
-            + "		inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "		inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "where 	pg.voided=0 and ps.voided=0 and p.voided=0 and  "
-            + "		pg.program_id="
-            + artProgram
-            + " and ps.state="
-            + pateintTransferedFromOtherFacilityWorkflowState
-            + " and  "
-            + "		ps.start_date<=:endDate and location_id=:location";
-
-    return query;
+    return "Select ESTADIO1.patient_id "
+        + "from "
+        + "(	Select estadio_antes.patient_id,estadio_antes.data_inicio,estadio_antes.data_estadio_antes,obs.value_coded as valor_estadio_antes "
+        + "	from "
+        + "	(select patient_id,max(data_inicio) as data_inicio,max(obs_datetime) data_estadio_antes "
+        + " "
+        + "	from "
+        + " "
+        + "		(	Select 	p.patient_id,min(encounter_datetime)  data_inicio "
+        + "			from 	patient p  "
+        + "					inner join encounter e on p.patient_id=e.patient_id "
+        + "					inner join obs o on e.encounter_id=o.encounter_id "
+        + "			where 	o.concept_id="
+        + arvPlan
+        + " and o.value_coded in ("
+        + startDrugsConcept
+        + ","
+        + transferredFromOtherHealthFacilityWorkflowState
+        + ") and "
+        + "					e.voided=0 and o.voided=0 and p.voided=0 and  "
+        + "					e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "			group by p.patient_id "
+        + "			 "
+        + "			union "
+        + "			 "
+        + "			Select p.patient_id,min(value_datetime) data_inicio "
+        + "			from 	patient p "
+        + "					inner join encounter e on p.patient_id=e.patient_id "
+        + "					inner join obs o on e.encounter_id=o.encounter_id "
+        + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "					o.concept_id="
+        + arvStartDateConcept
+        + " and o.value_datetime is not null and  "
+        + "					o.value_datetime<=:endDate and e.location_id=:location "
+        + "			group by p.patient_id "
+        + "			 "
+        + "			union "
+        + "			 "
+        + "			select 	pg.patient_id,date_enrolled data_inicio "
+        + "			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
+        + "			where 	pg.voided=0 and p.voided=0 and program_id="
+        + artProgram
+        + " and date_enrolled<=:endDate and location_id=:location "
+        + "			 "
+        + "		) inicio, "
+        + "		(	Select 	o.person_id,o.obs_datetime "
+        + "			from 	obs o "
+        + "			where 	o.concept_id="
+        + currentWhoHivStageConcept
+        + " and o.voided=0 and o.obs_datetime<=:endDate and o.location_id=:location "
+        + "		) estadio "
+        + " "
+        + "	where 	estadio.person_id=inicio.patient_id and estadio.obs_datetime<inicio.data_inicio "
+        + "	group by patient_id "
+        + "	) estadio_antes, "
+        + "	obs  "
+        + "	where obs.person_id=estadio_antes.patient_id and obs.concept_id="
+        + currentWhoHivStageConcept
+        + " and obs.obs_datetime=estadio_antes.data_estadio_antes and obs.voided=0 and obs.location_id=:location "
+        + "	) ESTADIO1,	 "
+        + "	(select estadio_depois.patient_id,estadio_depois.data_inicio,estadio_depois.data_estadio_depois,obs.value_coded as valor_estadio_depois "
+        + "	from "
+        + "	(select patient_id,max(data_inicio) as data_inicio,max(obs_datetime) data_estadio_depois "
+        + "	from "
+        + "		(	Select 	p.patient_id,min(encounter_datetime)  data_inicio "
+        + "			from 	patient p  "
+        + "					inner join encounter e on p.patient_id=e.patient_id "
+        + "					inner join obs o on e.encounter_id=o.encounter_id "
+        + "			where 	o.concept_id="
+        + arvPlan
+        + " and o.value_coded in ("
+        + startDrugsConcept
+        + ","
+        + transferredFromOtherHealthFacilityWorkflowState
+        + ") and "
+        + "					e.voided=0 and o.voided=0 and p.voided=0 and  "
+        + "					e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and e.encounter_datetime<=:endDate and e.location_id=:location  "
+        + "			group by p.patient_id "
+        + "			 "
+        + "			union "
+        + "			 "
+        + "			Select p.patient_id,min(value_datetime) data_inicio "
+        + "			from 	patient p "
+        + "					inner join encounter e on p.patient_id=e.patient_id "
+        + "					inner join obs o on e.encounter_id=o.encounter_id "
+        + "			where 	p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in ("
+        + arvPharmaciaEncounterType
+        + ","
+        + adultoSeguimentoEncounterType
+        + ","
+        + arvPediatriaSeguimentoEncounterType
+        + ") and  "
+        + "					o.concept_id="
+        + arvStartDateConcept
+        + " and o.value_datetime is not null and  "
+        + "					o.value_datetime<=:endDate and e.location_id=:location "
+        + "			group by p.patient_id "
+        + "			 "
+        + "			union "
+        + "			 "
+        + "			select 	pg.patient_id,date_enrolled data_inicio "
+        + "			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id "
+        + "			where 	pg.voided=0 and p.voided=0 and program_id="
+        + artProgram
+        + " and date_enrolled<=:endDate and location_id=:location "
+        + "			 "
+        + "			 "
+        + "		) inicio, "
+        + "		(	Select 	o.person_id,o.obs_datetime "
+        + "			from 	obs o "
+        + "			where 	o.concept_id="
+        + currentWhoHivStageConcept
+        + " and o.voided=0 and o.obs_datetime<=:endDate and o.location_id=:location "
+        + "		) estadio "
+        + "		where estadio.person_id=inicio.patient_id and estadio.obs_datetime>date_add(inicio.data_inicio,interval 6 month) "
+        + "		group by patient_id "
+        + "		) estadio_depois, "
+        + "		obs "
+        + "		where obs.person_id=estadio_depois.patient_id and obs.concept_id="
+        + currentWhoHivStageConcept
+        + " and obs.obs_datetime=estadio_depois.data_estadio_depois and obs.voided=0 and obs.location_id=:location "
+        + "	) ESTADIO2, "
+        + "	person  "
+        + "	where  "
+        + "	ESTADIO1.patient_id=ESTADIO2.patient_id and  "
+        + "	ESTADIO1.patient_id=person.person_id and  "
+        + "	( "
+        + "		(round(datediff(:endDate,birthdate)/365)<=14 and valor_estadio_antes<="
+        + who2AdultStageConcept
+        + " and valor_estadio_depois>="
+        + who3AdultStageConcept
+        + ") or "
+        + "		(round(datediff(:endDate,birthdate)/365)>=15 and valor_estadio_antes<="
+        + who3AdultStageConcept
+        + " and valor_estadio_depois="
+        + who4AdultStageConcept
+        + ") "
+        + "	) and valor_estadio_depois>valor_estadio_antes";
   }
 }

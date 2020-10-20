@@ -31,13 +31,12 @@ public class StartedArtBeforeDateCalculationTest extends BasePatientCalculationT
 
   @Override
   public CalculationResultMap getResult() {
-    CalculationResultMap map = new CalculationResultMap();
-    return map;
+    return new CalculationResultMap();
   }
 
   @Test
   public void evaluateShouldBeTrueIfStartDateIsTheSameAsBeforeDate() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
     calendar.set(2008, Calendar.AUGUST, 1);
@@ -52,7 +51,7 @@ public class StartedArtBeforeDateCalculationTest extends BasePatientCalculationT
 
   @Test
   public void evaluateShouldBeNullIfStartDateOneDayAfterBeforeDate() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
     calendar.set(2008, Calendar.JULY, 31);
@@ -66,7 +65,7 @@ public class StartedArtBeforeDateCalculationTest extends BasePatientCalculationT
 
   @Test
   public void evaluateShouldBeNullIfThereIsNoStartDate() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
     calendar.set(2008, Calendar.JULY, 31);
@@ -80,7 +79,7 @@ public class StartedArtBeforeDateCalculationTest extends BasePatientCalculationT
 
   @Test(expected = IllegalArgumentException.class)
   public void shouldRaiseExceptionIfBeforeDateIsNotSpecified() {
-    Map<String, Object> parameterValues = new HashMap<String, Object>();
+    Map<String, Object> parameterValues = new HashMap<>();
     PatientCalculationContext context = getEvaluationContext();
     context.removeFromCache("onOrBefore");
     final int patientId = 1777006;

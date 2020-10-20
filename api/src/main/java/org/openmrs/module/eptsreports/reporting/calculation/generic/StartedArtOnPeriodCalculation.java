@@ -21,11 +21,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.springframework.stereotype.Component;
 
-/**
- * Returns the patients that have started ART
- *
- * @return a CalculationResultMap
- */
+/** Returns the patients that have started ART */
 @Component
 public class StartedArtOnPeriodCalculation extends AbstractPatientCalculation {
 

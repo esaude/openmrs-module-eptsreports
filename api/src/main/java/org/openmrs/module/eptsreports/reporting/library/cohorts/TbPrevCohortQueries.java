@@ -44,8 +44,6 @@ public class TbPrevCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
-
   public CohortDefinition getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod() {
     Concept treatmentStartConcept = hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept();
     String encounterTypesList =
