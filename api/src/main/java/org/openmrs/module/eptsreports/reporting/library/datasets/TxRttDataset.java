@@ -47,6 +47,11 @@ public class TxRttDataset extends BaseDataSet {
     this.eptsCommonDimension = eptsCommonDimension;
   }
 
+  /**
+   * Construction of the TX retention dataset
+   *
+   * @return @{@link DataSetDefinition}
+   */
   public DataSetDefinition constructTxRttDataset() {
 
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();

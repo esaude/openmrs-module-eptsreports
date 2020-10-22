@@ -45,6 +45,11 @@ public class TxRetDataset extends BaseDataSet {
     return cohortIndicator;
   }
 
+  /**
+   * Construction of dataset definition to handle TX ret
+   *
+   * @return @{@link DataSetDefinition}
+   */
   public DataSetDefinition constructTxRetDataset() {
     String mappings =
         "startDate=${startDate},endDate=${endDate},location=${location},months=${months}";
