@@ -2071,6 +2071,16 @@
 			UUID for THERAPEUTIC LINE concept
 		</description>
 	</globalProperty>
+
+
+	<!-- 23886 -->
+	<globalProperty>
+		<property>eptsreports.preARTCounselingConceptUuid</property>
+		<defaultValue>8a412754-eeb1-4b05-ab81-8d463eff2dd9</defaultValue>
+		<description>
+			Pre-ART Counseling concept
+		</description>
+	</globalProperty>
 	
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
