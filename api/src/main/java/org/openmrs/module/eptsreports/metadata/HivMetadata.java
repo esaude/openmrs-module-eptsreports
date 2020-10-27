@@ -3212,4 +3212,21 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.therapeuticLineConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 23886</b>
+   *
+   * <p><b>Name:</b> Pre-ART Counseling
+   *
+   * <p><b>Description: Aconselhamento Pré-TARV </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPreARTCounselingConcept() {
+
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.preARTCounselingConceptUuid");
+    return getConcept(uuid);
+  }
 }

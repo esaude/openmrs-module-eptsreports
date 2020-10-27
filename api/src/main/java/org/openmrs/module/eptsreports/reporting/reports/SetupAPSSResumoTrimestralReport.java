@@ -74,7 +74,7 @@ public class SetupAPSSResumoTrimestralReport extends EptsDataExportManager {
     rd.addParameters(aPSSResumoTrimestralDataSetDefinition.getParameters());
     rd.addDataSetDefinition("HF", mapStraightThrough(new LocationDataSetDefinition()));
     rd.addDataSetDefinition(
-        "R",
+        "APSS",
         mapStraightThrough(
             aPSSResumoTrimestralDataSetDefinition.constructAPSSResumoTrimestralDataset()));
     rd.setBaseCohortDefinition(

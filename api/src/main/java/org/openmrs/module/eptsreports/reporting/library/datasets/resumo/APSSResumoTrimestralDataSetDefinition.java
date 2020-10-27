@@ -80,7 +80,7 @@ public class APSSResumoTrimestralDataSetDefinition extends BaseDataSet {
     dsd.addColumn("A1TG", "Total patients - Total Geral", getA1(), "");
 
     // B1
-    /*addRow(
+    addRow(
         dsd,
         "B1",
         "Nº de pacientes que iniciou cuidados HIV e que receberam aconselhamento Pré-TARV",
@@ -90,7 +90,7 @@ public class APSSResumoTrimestralDataSetDefinition extends BaseDataSet {
     dsd.addColumn("B1TG", "Total patients - Total Geral", getB1(), "");
 
     // C1
-    addRow(
+    /*addRow(
         dsd,
         "C1",
         "Nº total de pacientes activos em TARV que receberam seguimento de adesão",
