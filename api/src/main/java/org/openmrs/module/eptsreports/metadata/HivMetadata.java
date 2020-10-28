@@ -3229,4 +3229,111 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.preARTCounselingConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 6317</b>
+   *
+   * <p><b>Name:</b> PP1 concept - MESSAGE OF SEXUAL BEHAVIOR AND SUPPLY OF CONDOMS
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPP1Concept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pp1ConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 6318</b>
+   *
+   * <p><b>Name:</b> PP2 concept - MESSAGE DISCLOSING THEIR SEROSTATUS AND KNOWLEDGE / CALL FOR
+   * TESTING THE PARTNER
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPP2Concept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pp2ConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 6319</b>
+   *
+   * <p><b>Name:</b> PP3 concept - MESSAGE OF ADHERENCE OF CARE AND TREATMENT
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPP3Concept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pp3ConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 6320 </b>
+   *
+   * <p><b>Name:</b> PP4 concept - MESSAGE OF SEXUALLY TRANSMITTED INFECTION
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPP4Concept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pp4ConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 5271</b>
+   *
+   * <p><b>Name:</b> FAMILY PLANNING
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getfamilyPlanningConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.familyPlanningConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 6321</b>
+   *
+   * <p><b>Name:</b> PP6 concept - MESSAGE OF CONSUMPTION OF ALCOHOL AND OTHER DRUGS
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPP6Concept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pp6ConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 6322</b>
+   *
+   * <p><b>Name:</b> PP7 concept - MESSAGE OF THE NEED FOR COMMUNITY SUPPORT SERVICES
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPP7Concept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.pp7ConceptUuid");
+    return getConcept(uuid);
+  }
 }
