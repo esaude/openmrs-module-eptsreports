@@ -97,20 +97,20 @@ public class APSSResumoTrimestralDataSetDefinition extends BaseDataSet {
         getC1(),
         getAPSSPPDisagg());
 
-    dsd.addColumn("C1TG", "Total patients - Total Geral", getC1(), "");
+    dsd.addColumn("C1TG", "Total patients - Total Geral", getC1(), "");*/
 
     // D1
     addRow(
         dsd,
         "D1",
-        "Nº de pacientes adultos que iniciou TARV e que receberam o pacote completo de prevenção positiva",
+        " Número de pacientes que iniciaram TARV (15/+ anos) nesta unidade sanitária no trimestre anterior e que receberam o pacote completo de prevenção positiva até ao período de reporte",
         getD1(),
         getAPSSPPDisagg());
 
     dsd.addColumn("D1TG", "Total patients - Total Geral", getD1(), "");
 
     // E1
-    addRow(
+    /* addRow(
         dsd,
         "E1",
         "Nº pacientes faltosos e abandonos referidos para chamadas e/ou visitas de reintegração",

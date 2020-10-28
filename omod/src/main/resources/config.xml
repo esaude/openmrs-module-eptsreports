@@ -2081,7 +2081,71 @@
 			Pre-ART Counseling concept
 		</description>
 	</globalProperty>
-	
+
+	<!-- 6317 -->
+	<globalProperty>
+		<property>eptsreports.pp1ConceptUuid</property>
+		<defaultValue>b7c1d7b4-1e7b-44db-873e-6c96118969ce</defaultValue>
+		<description>
+			PP1 concept - MESSAGE OF SEXUAL BEHAVIOR AND SUPPLY OF CONDOMS
+		</description>
+	</globalProperty>
+
+	<!-- 6318 -->
+	<globalProperty>
+		<property>eptsreports.pp2ConceptUuid</property>
+		<defaultValue>6354587f-b2f2-4024-8afd-16179e2a5100</defaultValue>
+		<description>
+			PP2 concept - MESSAGE DISCLOSING THEIR SEROSTATUS AND KNOWLEDGE / CALL FOR TESTING THE PARTNER
+		</description>
+	</globalProperty>
+
+	<!-- 6319 -->
+	<globalProperty>
+		<property>eptsreports.pp3ConceptUuid</property>
+		<defaultValue>109b7590-14bb-449d-8c5c-b323180ec63e</defaultValue>
+		<description>
+			PP3 concept - MESSAGE OF ADHERENCE OF CARE AND TREATMENT
+		</description>
+	</globalProperty>
+
+	<!-- 6320 -->
+	<globalProperty>
+		<property>eptsreports.pp4ConceptUuid</property>
+		<defaultValue>1efdf913-c516-4a40-b094-cfdb88fbd762</defaultValue>
+		<description>
+			PP4 concept - MESSAGE OF SEXUALLY TRANSMITTED INFECTION
+		</description>
+	</globalProperty>
+
+
+	<!-- 5271 -->
+	<globalProperty>
+		<property>eptsreports.familyPlanningConceptUuid</property>
+		<defaultValue>e1e481ea-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			FAMILY PLANNING
+		</description>
+	</globalProperty>
+
+	<!-- 6321 -->
+	<globalProperty>
+		<property>eptsreports.pp6ConceptUuid</property>
+		<defaultValue>546f76d8-b181-4818-bfa4-a417122b2247</defaultValue>
+		<description>
+			PP6 concept - MESSAGE OF CONSUMPTION OF ALCOHOL AND OTHER DRUGS
+		</description>
+	</globalProperty>
+
+	<!-- 6322 -->
+	<globalProperty>
+		<property>eptsreports.pp7ConceptUuid</property>
+		<defaultValue>ab58ab89-c6b3-4e3f-9915-b33678c16930</defaultValue>
+		<description>
+			PP7 concept - MESSAGE OF THE NEED FOR COMMUNITY SUPPORT SERVICES
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
