@@ -20,6 +20,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
+import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -27,7 +28,6 @@ import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
-import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -65,20 +65,36 @@ public class APSSResumoTrimestralCohortQueries {
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getA1() {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
-    sqlCohortDefinition.setName("A1");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setName("A1");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    // This query is just a placeholder until user story for A1 is finalized
-    sqlCohortDefinition.setQuery(
-        ResumoMensalQueries.getAllPatientsWithPreArtStartDateLessThanReportingStartDate(
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getPreArtStartDate().getConceptId()));
+    CohortDefinition patientsRegisteredInEncounterFichaAPSSANDPP =
+        getAllPatientsRegisteredInEncounterFichaAPSSANDPP(
+            hivMetadata.getDisclosureOfHIVDiagnosisToChildrenAdolescentsConcept(),
+            hivMetadata.getRevealdConcept());
 
-    return sqlCohortDefinition;
+    CohortDefinition patientAtAgeBetween8And14 =
+        genericCohortQueries.getAgeOnReportEndDate(8, 14, false);
+
+    cd.addSearch(
+        "revealded",
+        EptsReportUtils.map(
+            patientsRegisteredInEncounterFichaAPSSANDPP,
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "patientAtAgeBetween8And14",
+        EptsReportUtils.map(
+            patientAtAgeBetween8And14,
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("revealded AND patientAtAgeBetween8And14");
+
+    return cd;
   }
 
   /**
@@ -114,10 +130,13 @@ public class APSSResumoTrimestralCohortQueries {
 
     cd.addSearch("A1", map(a1, "startDate=${startDate},location=${location}"));
 
+    Concept preARTCounselingConceptQuestion = hivMetadata.getPreARTCounselingConcept();
+    Concept patientFoundYesConceptAnswer = hivMetadata.getPatientFoundYesConcept();
     cd.addSearch(
         "APSSANDPP",
         map(
-            getAllPatientsRegisteredInEncounterFichaAPSSANDPP(),
+            getAllPatientsRegisteredInEncounterFichaAPSSANDPP(
+                preARTCounselingConceptQuestion, patientFoundYesConceptAnswer),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("A1 AND APSSANDPP");
@@ -193,7 +212,7 @@ public class APSSResumoTrimestralCohortQueries {
 
     CohortDefinition startedART = this.getPatientsWhoStartedArtByEndOfPreviousMonthB10();
     CohortDefinition patientAtAge15OrOlder =
-        genericCohortQueries.getAgeOnArtStartDate(15, null, false);
+        genericCohortQueries.getAgeOnReportEndDate(15, null, false);
     CohortDefinition registeredInFichaAPSSPP = this.getPatientsRegisteredInFichaAPSSPP();
 
     cd.addSearch(
@@ -266,7 +285,8 @@ public class APSSResumoTrimestralCohortQueries {
     return sqlCohortDefinition;
   }
 
-  public SqlCohortDefinition getAllPatientsRegisteredInEncounterFichaAPSSANDPP() {
+  public SqlCohortDefinition getAllPatientsRegisteredInEncounterFichaAPSSANDPP(
+      Concept question, Concept answer) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("All Patients Registered In Encounter Ficha APSS AND PP");
 
@@ -278,8 +298,8 @@ public class APSSResumoTrimestralCohortQueries {
     map.put(
         "prevencaoPositivaSeguimentoEncounterType",
         hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
-    map.put("preARTCounselingConcept", hivMetadata.getPreARTCounselingConcept().getConceptId());
-    map.put("patientFoundYesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
+    map.put("question", question.getConceptId());
+    map.put("answer", answer.getConceptId());
 
     String query =
         " SELECT p.patient_id "
@@ -292,8 +312,8 @@ public class APSSResumoTrimestralCohortQueries {
             + "    AND e.voided = 0 "
             + "    AND o.voided = 0 "
             + "    AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType} "
-            + "    AND o.concept_id = ${preARTCounselingConcept} "
-            + "    AND o.value_coded = ${patientFoundYesConcept} "
+            + "    AND o.concept_id = ${question} "
+            + "    AND o.value_coded = ${answer} "
             + "    AND encounter_datetime "
             + "        BETWEEN :startDate AND  :endDate"
             + "    AND e.location_id = :location "

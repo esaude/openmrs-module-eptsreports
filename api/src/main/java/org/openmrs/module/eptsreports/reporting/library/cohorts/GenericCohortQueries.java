@@ -29,10 +29,7 @@ import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.NewlyOrPreviouslyEnrolledOnARTCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.*;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
@@ -589,5 +586,21 @@ public class GenericCohortQueries {
 
     StringSubstitutor sb = new StringSubstitutor(map);
     return sb.replace(query);
+  }
+
+  public CohortDefinition getAgeOnReportEndDate(
+      Integer minAge, Integer maxAge, boolean considerPatientThatStartedBeforeWasBorn) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(AgeOnReportEndDateDateCalculation.class).get(0));
+    cd.setName("Age on ART start date");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addCalculationParameter("minAge", minAge);
+    cd.addCalculationParameter("maxAge", maxAge);
+    cd.addCalculationParameter(
+        "considerPatientThatStartedBeforeWasBorn", considerPatientThatStartedBeforeWasBorn);
+    return cd;
   }
 }

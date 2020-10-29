@@ -2146,7 +2146,30 @@
 		</description>
 	</globalProperty>
 
-	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
+
+	<!-- 6337 -->
+	<globalProperty>
+		<property>eptsreports.revealedConcept</property>
+		<defaultValue>6e96f5a2-05bd-4183-809d-e554b853db3c</defaultValue>
+		<description>
+			REVELADO
+		</description>
+	</globalProperty>
+
+	<!-- 6340 -->
+	<globalProperty>
+		<property>eptsreports.disclosureOfHIVDiagnosisToChildrenAdolescentsConcept</property>
+		<defaultValue>e2297477-2ca5-4eae-8abf-6b69b5c351b0</defaultValue>
+		<description>
+			REVELAÇÃO DO DIAGNOSTICO A CRIANÇA / ADOLESCENTE
+		</description>
+	</globalProperty>
+
+
+
+
+
+	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
 		@MODULE_PACKAGE@.web.DWRFormEntryService; DWRFormEntryService.enterForm(Integer 
