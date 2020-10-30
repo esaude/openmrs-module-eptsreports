@@ -62,6 +62,26 @@ public class APSSResumoTrimestralCohortQueries {
    * <p><b>Description:</b> Nº de crianças e adolescente de 8 -14 anos que receberam revelação total
    * do diagnóstico durante o trimestre
    *
+   * <p><b>Normal Flow of Events:</b>
+   *
+   * <ul>
+   *   <li>Select all patients registered in encounter “Ficha APSS&PP” (encounter_type = 35) who
+   *       have the following conditions:
+   *       <ul>
+   *         <li>“ESTADO DA REVELAÇÃO DO DIAGNÓSTICO a criança/adolescente” (concept_id = 6340) with
+   *             value_coded “REVELADO”(concept_id= 6337)
+   *         <li>And “encounter_datetime” Between StartDate and EndDate
+   *       </ul>
+   *   <li>Filter patients with age between 8 and 14 years, calculated at reporting endDate (endDate
+   *       minus birthdate);
+   * </ul>
+   *
+   * <p><b>Note 1:</b> <i> Exclude all patients who have “ESTADO DA REVELAÇÃO DO DIAGNÓSTICO a
+   * criança/adolescente” (concept_id = 6340) with value_coded “REVELADO” (concept_id= 6337) before
+   * startDate </i>
+   *
+   * <p><b>Note 2:</b><i> patients without birthdate information should not be included.</i>
+   *
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getA1() {
@@ -77,8 +97,7 @@ public class APSSResumoTrimestralCohortQueries {
             hivMetadata.getDisclosureOfHIVDiagnosisToChildrenAdolescentsConcept(),
             hivMetadata.getRevealdConcept());
 
-    CohortDefinition patientAtAgeBetween8And14 =
-        genericCohortQueries.getAgeOnReportEndDate(8, 14, false);
+    CohortDefinition patientAtAgeBetween8And14 = genericCohortQueries.getAgeOnReportEndDate(8, 14);
 
     cd.addSearch(
         "revealded",
@@ -125,10 +144,12 @@ public class APSSResumoTrimestralCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.setName("B1");
-    CohortDefinition a1 =
-        resumoMensalCohortQueries.getNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1();
 
-    cd.addSearch("A1", map(a1, "startDate=${startDate},location=${location}"));
+    CohortDefinition resumoMensalA2 =
+        resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
+
+    cd.addSearch(
+        "resumoMensalA2", map(resumoMensalA2, "startDate=${startDate},location=${location}"));
 
     Concept preARTCounselingConceptQuestion = hivMetadata.getPreARTCounselingConcept();
     Concept patientFoundYesConceptAnswer = hivMetadata.getPatientFoundYesConcept();
@@ -139,7 +160,7 @@ public class APSSResumoTrimestralCohortQueries {
                 preARTCounselingConceptQuestion, patientFoundYesConceptAnswer),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("A1 AND APSSANDPP");
+    cd.setCompositionString("resumoMensalA2 AND APSSANDPP");
 
     return cd;
   }
@@ -150,14 +171,55 @@ public class APSSResumoTrimestralCohortQueries {
    * <p><b>Description:</b> Nº total de pacientes activos em TARV que receberam seguimento de adesão
    * durante o trimestre
    *
+   * <p>Normal Flow of Events:
+   *
+   * <ul>
+   *   <li>Select all active patients in TARV at end of reporting period ( endDate) from:
+   *       <ul>
+   *         <li>Pacientes activos em TARV no fim do mês (B13 indicator from Resumo Mensal only
+   *             changes the period to quarterly)
+   *       </ul>
+   *   <li>And FILTER all patients registered in encounter “Ficha APSS&PP” (encounter_type = 35) who
+   *       have the following conditions:
+   *       <ul>
+   *         <li>“PLANO DE ADESÃO - Horário; Esquecimento da dose; viagem” (concept_id =23716) with
+   *             value_coded “SIM”/”NAO” [concept_id IN (1065, 1066)] OR
+   *         <li>“EFEITOS SECUNDÁRIOS - O que pode ocorrer; Como manejar efeitos secundários”
+   *             (concept_id =23887) with value_coded “SIM”/”NAO” [concept_id IN (1065, 1066)] OR
+   *         <li>“ADESÃO ao TARV - Boa, Risco, Má, Dias de atraso na toma ARVs) = “B” ou “R” ou “M””
+   *             (concept_id=6223) with value_coded “BOM” or “RISCO” or “MAU” [concept_id IN (1383,
+   *             1749, 1385)]
+   *       </ul>
+   *   <li>AND “encounter_datetime” between (Patient ARTStartDate+30Days) and reporting endDate
+   * </ul>
+   *
+   * <p><b>Note:</b> Patient ARTStartDate is the oldest date from the following dates: <br>
+   * <i>Inclusion criteria of B10 Indicator from Resumo Mensal</i>
+   *
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getC1() {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    sqlCohortDefinition.setName("C1");
+    cd.setName("C1");
 
-    return sqlCohortDefinition;
+    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    CohortDefinition activeInART =
+        this.resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth();
+
+    cd.addSearch("activeInART", EptsReportUtils.map(activeInART, mapping));
+
+    cd.addSearch(
+        "minArtStartDate",
+        map(getFichaAPSSAndMinArtStartDate(), "endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("activeInART AND minArtStartDate");
+
+    return cd;
   }
 
   /**
@@ -211,8 +273,7 @@ public class APSSResumoTrimestralCohortQueries {
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART = this.getPatientsWhoStartedArtByEndOfPreviousMonthB10();
-    CohortDefinition patientAtAge15OrOlder =
-        genericCohortQueries.getAgeOnReportEndDate(15, null, false);
+    CohortDefinition patientAtAge15OrOlder = genericCohortQueries.getAgeOnReportEndDate(15, null);
     CohortDefinition registeredInFichaAPSSPP = this.getPatientsRegisteredInFichaAPSSPP();
 
     cd.addSearch(
@@ -439,6 +500,170 @@ public class APSSResumoTrimestralCohortQueries {
             + "    AND encounter_datetime "
             + "        BETWEEN :startDate AND :endDate "
             + "    AND e.location_id = :location ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String replacedQuery = sb.replace(query);
+    cd.setQuery(replacedQuery);
+
+    return cd;
+  }
+
+  private CohortDefinition getFichaAPSSAndMinArtStartDate() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("All Patients Registered In Encounter Ficha APSS AND PP");
+
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put(
+        "prevencaoPositivaSeguimentoEncounterType",
+        hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("yesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
+    map.put("noConcept", hivMetadata.getNoConcept().getConceptId());
+    map.put("memberShipPlanConcept", hivMetadata.getMemberShipPlanConcept().getConceptId());
+    map.put(
+        "counseledOnSideEffectsOfArtConcept",
+        hivMetadata.getCounseledOnSideEffectsOfArtConcept().getConceptId());
+    map.put(
+        "adherenceEvaluationConcept", hivMetadata.getAdherenceEvaluationConcept().getConceptId());
+    map.put("goodConcept", hivMetadata.getPatientIsDead().getConceptId());
+    map.put("arvAdherenceRiskConcept", hivMetadata.getArvAdherenceRiskConcept().getConceptId());
+    map.put("badConcept", hivMetadata.getBadConcept().getConceptId());
+    map.put("artProgram", hivMetadata.getARTProgram().getProgramId());
+    map.put(
+        "transferredFromOtherHealthFacilityWorkflowState",
+        hivMetadata
+            .getTransferredFromOtherHealthFacilityWorkflowState()
+            .getProgramWorkflowStateId());
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "pediatriaSeguimentoEncounterType",
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "arvPharmaciaEncounterType",
+        hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put(
+        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("arvStartDateConcept", hivMetadata.getARVStartDateConcept().getConceptId());
+    map.put("arvPlanConcept", hivMetadata.getARVPlanConcept().getConceptId());
+    map.put("startDrugs", hivMetadata.getStartDrugs().getConceptId());
+    map.put(
+        "masterCardDrugPickupEncounterType",
+        hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("artPickupConcept", hivMetadata.getArtPickupConcept().getConceptId());
+    map.put("artDatePickupMasterCard", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+
+    String query =
+        ""
+            + "SELECT external.patient_id "
+            + "FROM patient external "
+            + "     INNER JOIN encounter e "
+            + "        ON e.patient_id = external.patient_id "
+            + "     INNER JOIN obs o "
+            + "        ON o.encounter_id=e.encounter_id "
+            + "WHERE external.voided = 0 "
+            + "    AND e.voided = 0 "
+            + "    AND o.voided = 0 "
+            + "    AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType} "
+            + "    AND (o.concept_id = ${memberShipPlanConcept} AND o.value_coded IN (${yesConcept},${noConcept}) "
+            + "        OR "
+            + "        o.concept_id = ${counseledOnSideEffectsOfArtConcept} AND o.value_coded IN (${yesConcept},${noConcept}) "
+            + "        OR "
+            + "        o.concept_id = ${adherenceEvaluationConcept} AND o.value_coded IN (${goodConcept}, ${arvAdherenceRiskConcept}, ${badConcept}) "
+            + "        ) "
+            + "    AND encounter_datetime "
+            + "        BETWEEN (SELECT DATE_ADD(min(art_startdate.min_date), INTERVAL 30 DAY) as min_min_date  "
+            + "FROM  "
+            + "(  "
+            + "    SELECT  p.patient_id as patient_id, min(pp.date_enrolled) AS min_date  "
+            + "    FROM patient p  "
+            + "        INNER JOIN patient_program pp  "
+            + "            ON pp.patient_id = p.patient_id  "
+            + "        INNER JOIN program pgr  "
+            + "            ON pgr.program_id=pp.program_id  "
+            + "        INNER JOIN patient_state ps  "
+            + "            ON  ps.patient_program_id = pp.patient_program_id  "
+            + "    WHERE   "
+            + "        p.voided = 0  "
+            + "        AND ps.voided = 0  "
+            + "        AND pp.voided = 0  "
+            + "        AND pgr.program_id = ${artProgram}   "
+            + "        AND ps.state = ${transferredFromOtherHealthFacilityWorkflowState}   "
+            + "    GROUP BY p.patient_id  "
+            + "    UNION  "
+            + "    SELECT p.patient_id as patient_id, min(o.value_datetime)  AS min_date  "
+            + "    FROM patient p  "
+            + "        INNER JOIN encounter e  "
+            + "            ON e.patient_id = p.patient_id  "
+            + "        INNER JOIN obs o  "
+            + "            ON o.encounter_id=e.encounter_id  "
+            + "    WHERE p.voided = 0  "
+            + "        AND e.voided = 0  "
+            + "        AND o.voided = 0  "
+            + "        AND e.encounter_type IN (${adultoSeguimentoEncounterType}, ${pediatriaSeguimentoEncounterType}, ${arvPharmaciaEncounterType}, ${masterCardEncounterType})  "
+            + "        AND o.concept_id = ${arvStartDateConcept}  "
+            + "        GROUP BY p.patient_id  "
+            + "    UNION  "
+            + "    SELECT p.patient_id as patient_id,  min(e.encounter_datetime) AS min_date  "
+            + "    FROM patient p  "
+            + "        INNER JOIN encounter e  "
+            + "            ON e.patient_id = p.patient_id  "
+            + "    WHERE p.voided = 0  "
+            + "        AND e.voided = 0  "
+            + "        AND e.encounter_type  = ${arvPharmaciaEncounterType}  "
+            + "        AND e.encounter_datetime <= :endDate  "
+            + "        GROUP BY p.patient_id  "
+            + "    UNION  "
+            + "    SELECT p.patient_id as patient_id, min(e.encounter_datetime)   "
+            + "    FROM patient p  "
+            + "        INNER JOIN encounter e  "
+            + "            ON e.patient_id = p.patient_id  "
+            + "        INNER JOIN obs o  "
+            + "            ON o.encounter_id=e.encounter_id  "
+            + "    WHERE p.voided = 0  "
+            + "        AND e.voided = 0  "
+            + "        AND o.voided = 0  "
+            + "        AND e.encounter_type  IN (${adultoSeguimentoEncounterType},${pediatriaSeguimentoEncounterType},${arvPharmaciaEncounterType})  "
+            + "        AND e.encounter_datetime <= :endDate  "
+            + "        AND o.concept_id = ${arvPlanConcept} AND o.value_coded = ${startDrugs}  "
+            + "        GROUP BY p.patient_id  "
+            + "    UNION  "
+            + "    SELECT p.patient_id as patient_id, min(e.encounter_datetime) AS min_date  "
+            + "    FROM patient p  "
+            + "        INNER JOIN encounter e  "
+            + "            ON e.patient_id = p.patient_id  "
+            + "        INNER JOIN obs o  "
+            + "            ON o.encounter_id=e.encounter_id  "
+            + "    WHERE p.voided = 0  "
+            + "        AND e.voided = 0  "
+            + "        AND o.voided = 0  "
+            + "        AND e.encounter_type  IN (${adultoSeguimentoEncounterType},${pediatriaSeguimentoEncounterType},${arvPharmaciaEncounterType})  "
+            + "        AND e.encounter_datetime <= :endDate  "
+            + "        AND o.concept_id = ${arvPlanConcept} AND o.value_coded = ${startDrugs}  "
+            + "        GROUP BY p.patient_id  "
+            + "    UNION  "
+            + "    SELECT p.patient_id as patient_id,  min(o2.value_datetime) AS min_date  "
+            + "    FROM patient p  "
+            + "        INNER JOIN encounter e  "
+            + "            ON e.patient_id = p.patient_id  "
+            + "        INNER JOIN obs o1  "
+            + "            ON o1.encounter_id=e.encounter_id  "
+            + "        INNER JOIN obs o2  "
+            + "            ON o2.encounter_id=e.encounter_id  "
+            + "    WHERE p.voided = 0  "
+            + "        AND e.voided = 0  "
+            + "        AND o1.voided = 0  "
+            + "        AND o2.voided = 0  "
+            + "        AND e.encounter_type = ${masterCardDrugPickupEncounterType}  "
+            + "        AND o1.concept_id = ${artPickupConcept} AND o1.value_coded = ${yesConcept}  "
+            + "        AND o2.concept_id = ${artDatePickupMasterCard} AND o2.value_datetime <= :endDate  "
+            + "        GROUP BY p.patient_id  "
+            + ") art_startdate   "
+            + "    WHERE art_startdate.patient_id=external.patient_id ) AND :endDate "
+            + "    AND e.location_id = :location";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     String replacedQuery = sb.replace(query);

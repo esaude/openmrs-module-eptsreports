@@ -3367,4 +3367,81 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.disclosureOfHIVDiagnosisToChildrenAdolescentsConcept");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 23716</b>
+   *
+   * <p><b>Name:</b> MEMBERSHIP PLAN / PLANO DE ADESÃO
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getMemberShipPlanConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.memberShipPlanConcept");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23887</b>
+   *
+   * <p><b>Name:</b> COUNSELED ON SIDE EFFECTS OF ART / ACONSELHADO SOBRE EFEITOS SECUNDÁRIOS DE
+   * TARV
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getCounseledOnSideEffectsOfArtConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.counseledOnSideEffectsOfArtConcept");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 6223</b>
+   *
+   * <p><b>Name:</b> ADHERENCE EVALUATION / AVALIACAO DE ADESAO
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getAdherenceEvaluationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.adherenceEvaluationConcept");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 1749</b>
+   *
+   * <p><b>Name:</b> ARV ADHERENCE RISK / TEM ALGUM RISCO DE POBRE ADERÊNCIA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getArvAdherenceRiskConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.arvAdherenceRiskConcept");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 1385</b>
+   *
+   * <p><b>Name:</b> BAD / MAU
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getBadConcept() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.badConcept");
+    return getConcept(uuid);
+  }
 }

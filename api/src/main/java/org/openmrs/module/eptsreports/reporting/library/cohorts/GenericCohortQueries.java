@@ -588,8 +588,7 @@ public class GenericCohortQueries {
     return sb.replace(query);
   }
 
-  public CohortDefinition getAgeOnReportEndDate(
-      Integer minAge, Integer maxAge, boolean considerPatientThatStartedBeforeWasBorn) {
+  public CohortDefinition getAgeOnReportEndDate(Integer minAge, Integer maxAge) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(AgeOnReportEndDateDateCalculation.class).get(0));
@@ -599,8 +598,7 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("minAge", minAge);
     cd.addCalculationParameter("maxAge", maxAge);
-    cd.addCalculationParameter(
-        "considerPatientThatStartedBeforeWasBorn", considerPatientThatStartedBeforeWasBorn);
+
     return cd;
   }
 }
