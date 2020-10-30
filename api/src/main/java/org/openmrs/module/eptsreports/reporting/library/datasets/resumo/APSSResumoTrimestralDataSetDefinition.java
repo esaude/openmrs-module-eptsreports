@@ -90,14 +90,14 @@ public class APSSResumoTrimestralDataSetDefinition extends BaseDataSet {
     dsd.addColumn("B1TG", "Total patients - Total Geral", getB1(), "");
 
     // C1
-    /*addRow(
+    addRow(
         dsd,
         "C1",
         "Nº total de pacientes activos em TARV que receberam seguimento de adesão",
         getC1(),
         getAPSSPPDisagg());
 
-    dsd.addColumn("C1TG", "Total patients - Total Geral", getC1(), "");*/
+    dsd.addColumn("C1TG", "Total patients - Total Geral", getC1(), "");
 
     // D1
     addRow(
