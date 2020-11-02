@@ -1219,8 +1219,8 @@ public class TxMlCohortQueries {
   }
 
   /**
-   * <b>Description:</b> “Interruption In Treatment for >3 months” will have the
-   * following combination:
+   * <b>Description:</b> “Interruption In Treatment for >3 months” will have the following
+   * combination:
    *
    * <ul>
    *   <li>((A OR B) AND C2) AND NOT Dead AND NOT Transferred-Out AND NOT Refused
@@ -1237,41 +1237,40 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-            "missedAppointment",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "missedAppointment",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
-            "C2",
-            EptsReportUtils.map(
-                    getPatientsOnARTForLessOrMoreThan90Days(false),
-                    "onOrBefore=${endDate},location=${location}"));
+        "C2",
+        EptsReportUtils.map(
+            getPatientsOnARTForLessOrMoreThan90Days(false),
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
-            "dead",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "dead",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "transferredOut",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndTransferredOut(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "transferredOut",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndTransferredOut(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "refusedOrStopped",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "refusedOrStopped",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-            "(missedAppointment AND C2) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
+        "(missedAppointment AND C2) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
     return cd;
   }
 
   /**
-   * <b>Description:</b> “Interruption In Treatment for <3 months” will have the
-   * following combination: ((A OR B) AND C1) AND NOT DEAD AND NOT TRANSFERRED OUT AND NOT REFUSED
-   *
+   * <b>Description:</b> “Interruption In Treatment for <3 months” will have the following
+   * combination: ((A OR B) AND C1) AND NOT DEAD AND NOT TRANSFERRED OUT AND NOT REFUSED
    *
    * @return {@link CohortDefinition}
    */
@@ -1284,34 +1283,34 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-            "missedAppointment",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "missedAppointment",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
-            "C1",
-            EptsReportUtils.map(
-                    getPatientsOnARTForLessOrMoreThan90Days(true),
-                    "onOrBefore=${endDate},location=${location}"));
+        "C1",
+        EptsReportUtils.map(
+            getPatientsOnARTForLessOrMoreThan90Days(true),
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
-            "dead",
-            EptsReportUtils.map(
-                    getDeadPatientsComposition(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "dead",
+        EptsReportUtils.map(
+            getDeadPatientsComposition(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "transferredOut",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndTransferredOut(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "transferredOut",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndTransferredOut(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-            "refusedOrStopped",
-            EptsReportUtils.map(
-                    getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}"));
+        "refusedOrStopped",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-            "(missedAppointment AND C1) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
+        "(missedAppointment AND C1) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
 
     return cd;
   }
