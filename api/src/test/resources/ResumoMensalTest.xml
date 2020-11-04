@@ -218,6 +218,61 @@
 					 <global_property property="eptsreports.isoniazidUseConceptUuid"
                      property_value="be4a76ca-662a-4c39-903b-71983f5f67c9"
                      description="UUID for the Uso de Isoniazida concept" uuid="7a24b039-a3f2-4a53-bdf0-584011db4f42"/>
+
+					 <global_property
+		property="eptsreports.buscaActivaEncounterTypeUuid"
+		property_value="e27916d4-1d5f-11e0-b929-000c29ad1d07"
+		description="UUID for the S.TARV: BUSCA ACTIVA encounter type"
+		uuid="8e41b6f6-a652-498b-a58e-08067d8d93b1" />
+
+		<global_property
+		property="eptsreports.visitaApoioReintegracaoParteA"
+		property_value="5362bbf3-10e7-11e5-9009-0242ac110012"
+		description="Fake for encounter 36"
+		uuid="c82e9b98-ffd5-11e9-a51e-5f033dd9e1d2" />
+		
+		<global_property
+		property="eptsreports.visitaApoioReintegracaoParteB"
+		property_value="9cf2aabe-10e8-11e5-9009-0242ac110012"
+		description="Fake for encounter 37"
+		uuid="cebbc530-ffd5-11e9-8aae-077936534b6c" />
+
+		<global_property
+		property="eptsreports.reasonPatientNotFound"
+		property_value="e1e09396-1d5f-11e0-b929-000c29ad1d07"
+		description="Fake for concept 2031"
+		uuid="4e54d95c-ffd7-11e9-bea9-6731c57238f3" />
+
+			<global_property
+		property="eptsreports.reasonPatientNotFoundByActivist2ndVisitConceptUuid"
+		property_value="1ca778cc-509f-4ca3-ad97-f719e36f7b05"
+		description=" UUID for reason Patient Not Found By Activist 2nd Visit "
+		uuid="668ea3dc-472a-11ea-94ad-87ec1077a1b9" />
+		
+		
+		<global_property
+		property="eptsreports.reasonPatientNotFoundByActivist3rdVisitConceptUuid"
+		property_value="15906fed-6dd3-4e4c-bb8b-21ba5ff96011"
+		description=" UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (3rd Visit) concept "
+		uuid="9a628470-472b-11ea-8826-7ff98c298bc7" />
+
+		<global_property
+		property="eptsreports.stateOfStayPriorArtPatientConceptUuid"
+		property_value="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8"
+		description=" UUID for the ESTADO DE PERMANENCIA DO PACIENTE PRE-TARV concept "
+		uuid="3f8e2435-281e-45d6-b9c8-5e28dbebb495" />
+
+		<global_property
+		property="eptsreports.defaultingMotive"
+		property_value="e1e07fc8-1d5f-11e0-b929-000c29ad1d07"
+		description=" UUID for the REASON PATIENT MISSED VISIT concept "
+		uuid="8de95500-0fa5-4f54-9e11-4474a75ca285" />
+
+		<global_property
+		property="eptsreports.autoTransferConceptUuid"
+		property_value="de2c4ec6-c68e-4d4a-993d-23eba2de8267"
+		description="UUID for the AUTO TRANSFER concept "
+		uuid="58eed846-7495-446c-8dfc-33658e16dadd" />
 					 
 	<concept concept_id="23808" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="f69b1fe0-a657-4225-a996-20b599132508" />
 
@@ -306,6 +361,36 @@
       <concept concept_id="23758" retired="0" datatype_id="2" class_id="4" is_set="0" creator="1" date_created="2018-10-24 09:22:44" changed_by="1" date_changed="2019-01-07 23:01:13" uuid="2eab4e55-d0d0-4fa8-8d23-b40eaaee44c8" />
 
 	<concept concept_id="23866" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2019-07-09 13:00:20" uuid="74f6c17f-9819-41da-ba34-5910f67d24d0"/>
+
+	<concept concept_id="2031" retired="0" 
+		  is_set="0"   class_id="11" datatype_id="4"
+		date_created="2008-10-13 05:58:15" creator="1"
+		uuid="e1e09396-1d5f-11e0-b929-000c29ad1d07" />
+
+			<concept concept_id="23944" retired="0" 
+		  is_set="0"   class_id="7" datatype_id="2"
+		date_created="2019-10-24 17:16:23" creator="1"
+		uuid="1ca778cc-509f-4ca3-ad97-f719e36f7b05" />
+
+		<concept concept_id="23945" retired="0" 
+		  is_set="0"   class_id="7" datatype_id="2"
+		date_created="2019-10-24 17:23:07" creator="1"
+		uuid="15906fed-6dd3-4e4c-bb8b-21ba5ff96011" />
+
+		<concept concept_id="6272" retired="0" 
+		  is_set="0"   class_id="7" datatype_id="2"
+		date_created="2019-10-24 17:23:07" creator="1"
+		uuid="3bd7a5d1-afc0-478d-9aa6-c7bdd9a050c8" />
+
+		<concept concept_id="2016" retired="0" 
+		  is_set="0"   class_id="7" datatype_id="2"
+		date_created="2019-10-24 17:23:07" creator="1"
+		uuid="e1e07fc8-1d5f-11e0-b929-000c29ad1d07" />
+
+		<concept concept_id="23863" retired="0" 
+		  is_set="0"   class_id="7" datatype_id="2"
+		date_created="2019-10-24 17:23:07" creator="1"
+		uuid="de2c4ec6-c68e-4d4a-993d-23eba2de8267" />
 
  <concept_name concept_id="1781" name="ARV SERVICE - CARE" locale="en" creator="1" date_created="2008-10-13 05:58:15"
                   concept_name_id="7172" voided="0" uuid="c953fdcc-e049-4c30-b847-a86eb1851f51"
@@ -426,6 +511,24 @@
 
   <encounter_type encounter_type_id="53" name="Master Card - Ficha Resumo" description="Ficha resumo no master card" creator="1"
                     date_created="2019-07-31 14:23:47" retired="0" uuid="e422ecf9-75dd-4367-b21e-54bccabc4763"/>
+
+						<encounter_type encounter_type_id="21"
+		name="S.TARV: BUSCA ACTIVA" 
+		description="Busca Activa" creator="1"
+		date_created="2019-07-09 13:03:45" retired="0"
+		uuid="e27916d4-1d5f-11e0-b929-000c29ad1d07" />
+
+		<encounter_type encounter_type_id="36"
+		name="REG" 
+		description="Registration encounter" creator="1"
+		date_created="2019-07-09 13:03:45" retired="0"
+		uuid="5362bbf3-10e7-11e5-9009-0242ac110012" />
+		
+		<encounter_type encounter_type_id="37"
+		name="ADMISSION" 
+		description="ADMISSION encounter" creator="1"
+		date_created="2019-07-09 13:03:45" retired="0"
+		uuid="9cf2aabe-10e8-11e5-9009-0242ac110012" />
 
 			   <encounter encounter_id="52673" encounter_type="18" patient_id="1021" encounter_datetime="2019-09-30 00:00:00"
                creator="1" date_created="2018-09-30 00:00:00" voided="0"

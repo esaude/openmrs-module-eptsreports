@@ -652,4 +652,19 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     assertEquals(3, evaluatedCohort.getMemberIds().size());
     assertTrue(evaluatedCohort.getMemberIds().contains(25000));
   }
+
+  @Test
+  public void getNumberOfPatientsTransferredInOnPeriodShouldReturn() throws EvaluationException {
+    CohortDefinition cd = resumoMensalCohortQueries.getTransferredInPatients(false);
+
+    HashMap<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("onOrAfter", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("onOrBefore", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
+
+    assertEquals(1, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(12475));
+  }
 }
