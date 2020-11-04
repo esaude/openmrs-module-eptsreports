@@ -2,7 +2,6 @@
 package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
 import java.util.Date;
-
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.KeyPopType;
@@ -51,12 +50,11 @@ public class KeyPopulationDimension {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     dimension.addCohortDefinition(
-            "drug-user",
-            EptsReportUtils.map(
-                this.genericCohortQueries.generalSql(
-                    "drug-user", MisauKeyPopQuery.findPatientsWhoAreKeyPop(KeyPopType.DRUGUSER)),
-                mappings));
-
+        "drug-user",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "drug-user", MisauKeyPopQuery.findPatientsWhoAreKeyPop(KeyPopType.DRUGUSER)),
+            mappings));
 
     return dimension;
   }
@@ -72,11 +70,11 @@ public class KeyPopulationDimension {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     dimension.addCohortDefinition(
-            "prisioner",
-            EptsReportUtils.map(
-                this.genericCohortQueries.generalSql(
-                    "prisioner", MisauKeyPopQuery.findPatientsWhoAreKeyPop(KeyPopType.PRISIONER)),
-                mappings));
+        "prisioner",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "prisioner", MisauKeyPopQuery.findPatientsWhoAreKeyPop(KeyPopType.PRISIONER)),
+            mappings));
 
     return dimension;
   }
@@ -92,11 +90,11 @@ public class KeyPopulationDimension {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     dimension.addCohortDefinition(
-            "sex-worker",
-            EptsReportUtils.map(
-                this.genericCohortQueries.generalSql(
-                    "sex-worker", MisauKeyPopQuery.findPatientsWhoAreKeyPop(KeyPopType.SEXWORKER)),
-                mappings));
+        "sex-worker",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "sex-worker", MisauKeyPopQuery.findPatientsWhoAreKeyPop(KeyPopType.SEXWORKER)),
+            mappings));
 
     return dimension;
   }
