@@ -18,9 +18,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.*;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TransferredInDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
@@ -42,7 +42,7 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
 
   private TxCurrDataset txCurrDataset;
 
-  private TxMlDataset txMlDataset;
+  private TxMlDataset25 txMlDataset25;
 
   private TxRttDataset txRttDataset;
 
@@ -55,14 +55,14 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
       TxPvlsDataset txPvlsDataset,
       TxNewDataset txNewDataset,
       TxCurrDataset txCurrDataset,
-      TxMlDataset txMlDataset,
+      TxMlDataset25 txMlDataset25,
       TxRttDataset txRttDataset,
       GenericCohortQueries genericCohortQueries,
       TransferredInDataset transferredInDataset) {
     this.txPvlsDataset = txPvlsDataset;
     this.txNewDataset = txNewDataset;
     this.txCurrDataset = txCurrDataset;
-    this.txMlDataset = txMlDataset;
+    this.txMlDataset25 = txMlDataset25;
     this.txRttDataset = txRttDataset;
     this.genericCohortQueries = genericCohortQueries;
     this.transferredInDataset = transferredInDataset;
@@ -104,7 +104,8 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
     rd.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
-    rd.addDataSetDefinition("TXML", Mapped.mapStraightThrough(txMlDataset.constructtxMlDataset()));
+    rd.addDataSetDefinition(
+        "TXML", Mapped.mapStraightThrough(txMlDataset25.constructtxMlDataset()));
     rd.addDataSetDefinition("R", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
     rd.addDataSetDefinition(
         "TRFIN", Mapped.mapStraightThrough(transferredInDataset.constructTransferInDataset()));
