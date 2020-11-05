@@ -76,6 +76,26 @@ public class TxRttCohortQueries {
             hivMetadata.getArtDatePickupMasterCard().getConceptId()));
   }
 
+  /**
+   * The TX _RTT indicator reports the number of ART patients with no clinical contact (or ARV drug
+   * pick-up) for greater than 28 days since their last expected contact (who experienced an
+   * interruption in Treatment – IIT) during any previous reporting period, who successfully
+   * restarted ARVs within the reporting period and remained on treatment until the end of reporting
+   * period.
+   *
+   * <ul>
+   *   <li>Select all patients patients who initiated ART by end of previous reporting period
+   *       (startDate -1 day) following the criterias defined in the common queries:
+   *   <li>Filter all patients who experienced IIT by end of previous reporting period (startDate -1
+   *       day) following the criterias defined in the common queries:
+   *   <li>Filter all patients who returned to the treatment during the reporting period following
+   *       the criterias below: {@link
+   *       TxRttCohortQueries#getPatientsReturnedTreatmentDuringReportingPeriod() }
+   *   <li>Filter all patients who remained on TX CURR by the end of the reporting period.
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
   public CohortDefinition getRTTComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -109,7 +129,24 @@ public class TxRttCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getPatientsReturnedTreatmentDuringReportingPeriod() {
+  /**
+   * Filter all patients who returned to the treatment during the reporting period following the
+   * criterias below:
+   *
+   * <ul>
+   *   <li>At least one Ficha Clinica registered during the reporting period (Encounter Type 6 or 9,
+   *       and encounter_datetime>= startDate and <=endDate) OR
+   *   <li>At least one Drugs Pick up registered in FILA during the reporting period (Encounter Type
+   *       18, and encounter_datetime>= startDate and <=endDate) OR
+   *   <li>At least one Drugs Pick up registered in MasterCard-Recepção/Levantoy ARV, during the
+   *       reporting period (Encounter Type 52, and “Levantou ARV”- concept ID 23865”= “Yes”
+   *       (concept id 1065) and “Data de Levantamento” (concept Id 23866 value_datetime>= startDate
+   *       and <=endDate)
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsReturnedTreatmentDuringReportingPeriod() {
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -166,7 +203,7 @@ public class TxRttCohortQueries {
     }
     builder.append(" WHERE  ");
     builder.append("    p.voided = 0  ");
-    builder.append("    e.voided = 0  ");
+    builder.append(" AND   e.voided = 0  ");
     if (encounterTypes.size() > 1) {
       builder.append("   AND e.encounter_type IN (%s,%s) ");
     } else {
