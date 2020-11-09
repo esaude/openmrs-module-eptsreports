@@ -15,14 +15,13 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 
 @Component
 public class TransferredInCohortQueries {
@@ -44,7 +43,6 @@ public class TransferredInCohortQueries {
     this.commonCohortQueries = commonCohortQueries;
     this.txRttCohortQueries = txRttCohortQueries;
   }
-
 
   /**
    * <b>Technical Specs</b>
@@ -74,17 +72,21 @@ public class TransferredInCohortQueries {
 
     CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort("txCurr", true);
 
-    CohortDefinition transferredOut = commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod();
+    CohortDefinition transferredOut =
+        commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod();
 
-    CohortDefinition homeVisitTrfOut = txCurrCohortQueries.getPatientsTransferedOutInLastHomeVisitCard();
+    CohortDefinition homeVisitTrfOut =
+        txCurrCohortQueries.getPatientsTransferedOutInLastHomeVisitCard();
 
-    CohortDefinition clinicalVisit = txRttCohortQueries.getPatientsReturnedTreatmentDuringReportingPeriod();
+    CohortDefinition clinicalVisit =
+        txRttCohortQueries.getPatientsReturnedTreatmentDuringReportingPeriod();
 
     String mappingsTrfIn = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}";
     String mappingsCurr = "onOrBefore=${onOrBefore-3m},location=${location}";
     String mappingsTrfOut = "onOrBefore=${onOrBefore-1d},location=${location}";
     String mappingsHomeVisitTrfOut = "onOrBefore=${onOrBefore},location=${location}";
-    String mappingsClinicalVisit = "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
+    String mappingsClinicalVisit =
+        "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
 
     cd.addSearch("transferredIn", EptsReportUtils.map(transferredIn, mappingsTrfIn));
     cd.addSearch("txCurr", EptsReportUtils.map(txCurr, mappingsCurr));
@@ -92,7 +94,8 @@ public class TransferredInCohortQueries {
     cd.addSearch("homeVisitTrfOut", EptsReportUtils.map(homeVisitTrfOut, mappingsHomeVisitTrfOut));
     cd.addSearch("clinicalVisit", EptsReportUtils.map(clinicalVisit, mappingsClinicalVisit));
 
-    cd.setCompositionString("(transferredIn OR transferredOut OR homeVisitTrfOut) AND clinicalVisit AND NOT txCurr");
+    cd.setCompositionString(
+        "(transferredIn OR transferredOut OR homeVisitTrfOut) AND clinicalVisit AND NOT txCurr");
 
     return cd;
   }
