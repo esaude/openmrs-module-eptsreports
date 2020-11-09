@@ -92,17 +92,24 @@ public class APSSResumoTrimestralCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition patientsRegisteredInEncounterFichaAPSSANDPP =
+    CohortDefinition reveladoInReportingPeriod =
         getAllPatientsRegisteredInEncounterFichaAPSSANDPP(
             hivMetadata.getDisclosureOfHIVDiagnosisToChildrenAdolescentsConcept(),
-            hivMetadata.getRevealdConcept());
+            hivMetadata.getRevealdConcept(),
+            false);
 
     CohortDefinition patientAtAgeBetween8And14 = genericCohortQueries.getAgeOnReportEndDate(8, 14);
+
+    CohortDefinition reveladoBeforeStartDate =
+        getAllPatientsRegisteredInEncounterFichaAPSSANDPP(
+            hivMetadata.getDisclosureOfHIVDiagnosisToChildrenAdolescentsConcept(),
+            hivMetadata.getRevealdConcept(),
+            true);
 
     cd.addSearch(
         "revealded",
         EptsReportUtils.map(
-            patientsRegisteredInEncounterFichaAPSSANDPP,
+            reveladoInReportingPeriod,
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -111,7 +118,13 @@ public class APSSResumoTrimestralCohortQueries {
             patientAtAgeBetween8And14,
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("revealded AND patientAtAgeBetween8And14");
+    cd.addSearch(
+        "reveladoBeforeStartDate",
+        EptsReportUtils.map(
+            reveladoBeforeStartDate, "startDate=${startDate},location=${location}"));
+
+    cd.setCompositionString(
+        "(revealded AND patientAtAgeBetween8And14) AND NOT reveladoBeforeStartDate");
 
     return cd;
   }
@@ -157,7 +170,7 @@ public class APSSResumoTrimestralCohortQueries {
         "APSSANDPP",
         map(
             getAllPatientsRegisteredInEncounterFichaAPSSANDPP(
-                preARTCounselingConceptQuestion, patientFoundYesConceptAnswer),
+                preARTCounselingConceptQuestion, patientFoundYesConceptAnswer, false),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("resumoMensalA2 AND APSSANDPP");
@@ -347,7 +360,7 @@ public class APSSResumoTrimestralCohortQueries {
   }
 
   public SqlCohortDefinition getAllPatientsRegisteredInEncounterFichaAPSSANDPP(
-      Concept question, Concept answer) {
+      Concept question, Concept answer, boolean beforeStartDate) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("All Patients Registered In Encounter Ficha APSS AND PP");
 
@@ -361,24 +374,27 @@ public class APSSResumoTrimestralCohortQueries {
         hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
     map.put("question", question.getConceptId());
     map.put("answer", answer.getConceptId());
+    StringBuilder query = new StringBuilder();
 
-    String query =
-        " SELECT p.patient_id "
-            + "FROM patient p "
-            + "     INNER JOIN encounter e "
-            + "        ON e.patient_id = p.patient_id "
-            + "     INNER JOIN obs o "
-            + "        ON o.encounter_id=e.encounter_id "
-            + "WHERE p.voided = 0 "
-            + "    AND e.voided = 0 "
-            + "    AND o.voided = 0 "
-            + "    AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType} "
-            + "    AND o.concept_id = ${question} "
-            + "    AND o.value_coded = ${answer} "
-            + "    AND encounter_datetime "
-            + "        BETWEEN :startDate AND  :endDate"
-            + "    AND e.location_id = :location "
-            + "    ";
+    query.append(" SELECT p.patient_id ");
+    query.append(" FROM patient p ");
+    query.append("     INNER JOIN encounter e ");
+    query.append("        ON e.patient_id = p.patient_id ");
+    query.append("     INNER JOIN obs o ");
+    query.append("        ON o.encounter_id=e.encounter_id ");
+    query.append(" WHERE p.voided = 0 ");
+    query.append("    AND e.voided = 0 ");
+    query.append("    AND o.voided = 0 ");
+    query.append("    AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType} ");
+    query.append("    AND o.concept_id = ${question} ");
+    query.append("    AND o.value_coded = ${answer} ");
+    query.append("    AND encounter_datetime ");
+    if (beforeStartDate) {
+      query.append(" < :startDate ");
+    } else {
+      query.append("  BETWEEN :startDate AND  :endDate");
+    }
+    query.append(" AND e.location_id = :location ");
 
     StringSubstitutor sb = new StringSubstitutor(map);
     String replacedQuery = sb.replace(query);
