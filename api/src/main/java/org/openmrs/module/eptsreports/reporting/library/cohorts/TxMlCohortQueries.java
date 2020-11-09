@@ -30,6 +30,8 @@ public class TxMlCohortQueries {
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
+  @Autowired private HivCohortQueries hivCohortQueries;
+
   /**
    * <b>Description:</b> Patients started ART and missed Next Appointment or Next Drug Pickup (A and
    * B)
@@ -48,6 +50,10 @@ public class TxMlCohortQueries {
     CohortDefinition noScheduled = getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup();
     CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
 
+    CohortDefinition transferredOut = hivCohortQueries.getPatientsTransferredOut();
+
+    CohortDefinition dead = getDeadPatientsComposition();
+
     cd.addSearch("missedAppointment", Mapped.mapStraightThrough(missedAppointment));
 
     String mappings = "onOrBefore=${endDate},location=${location}";
@@ -55,7 +61,13 @@ public class TxMlCohortQueries {
     cd.addSearch("noScheduled", EptsReportUtils.map(noScheduled, mappings2));
     cd.addSearch("startedArt", EptsReportUtils.map(startedArt, mappings));
 
-    cd.setCompositionString("(missedAppointment OR noScheduled) AND startedArt");
+    cd.addSearch(
+        "transferredOut",
+        EptsReportUtils.map(transferredOut, "onOrBefore=${startDate-1d},location=${location}"));
+    cd.addSearch("dead", EptsReportUtils.map(dead, "endDate=${startDate-1d},location=${location}"));
+
+    cd.setCompositionString(
+        "((missedAppointment OR noScheduled) AND startedArt) AND NOT (dead OR transferredOut)");
     return cd;
   }
   /**
