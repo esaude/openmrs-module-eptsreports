@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.calculation.generic;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
@@ -139,8 +141,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
 
     ListMap<Date, KeyPopAndSource> keyPopByDate = new ListMap<>(true);
 
-    if (!adultoSeguimento.isEmpty(pId)) {
-      Obs obs = adultoSeguimento.get(pId).asType(Obs.class);
+    if (adultoSeguimento != null && adultoSeguimento.containsKey(pId)) {
+      Obs obs = getRequiredObservation(adultoSeguimento, pId);
       Date date;
       KeyPop keypop;
       if (obs != null
@@ -164,8 +166,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
       }
     }
 
-    if (!apssPrevencaoPositiva.isEmpty(pId)) {
-      Obs obs = apssPrevencaoPositiva.get(pId).asType(Obs.class);
+    if (apssPrevencaoPositiva != null && apssPrevencaoPositiva.containsKey(pId)) {
+      Obs obs = getRequiredObservation(apssPrevencaoPositiva, pId);
       Date date;
       KeyPop keypop;
       if (obs != null
@@ -209,8 +211,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     ArrayList<EncounterType> encounterTypes = new ArrayList<>();
     encounterTypes.add(hivMetadata.getAdultoSeguimentoEncounterType());
     Concept keyPop = hivMetadata.getKeyPopulationConcept();
-    return eptsCalculationService.lastObs(
-        encounterTypes, keyPop, location, null, endDate, cohort, context);
+    return eptsCalculationService.allObservations(
+        keyPop, null, encounterTypes, location, cohort, context);
   }
 
   private CalculationResultMap getApssPrevencaoPositiva(
@@ -224,7 +226,52 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     ArrayList<EncounterType> encounterTypes = new ArrayList<>();
     encounterTypes.add(hivMetadata.getPrevencaoPositivaSeguimentoEncounterType());
     Concept keyPop = hivMetadata.getKeyPopulationConcept();
-    return eptsCalculationService.lastObs(
-        encounterTypes, keyPop, location, null, endDate, cohort, context);
+    return eptsCalculationService.allObservations(
+        keyPop, null, encounterTypes, location, cohort, context);
+  }
+
+  private List<Obs> sortObsByObsDatetime(List<Obs> obs) {
+    Collections.sort(
+        obs,
+        new Comparator<Obs>() {
+          @Override
+          public int compare(Obs a, Obs b) {
+            return a.getObsDatetime().compareTo(b.getObsDatetime());
+          }
+        });
+    return obs;
+  }
+
+  private Obs getRequiredObservation(CalculationResultMap map, Integer pId) {
+    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+    Obs requiredObs = null;
+    ListResult listResult = (ListResult) map.get(pId);
+    List<Obs> obsList = EptsCalculationUtils.extractResultValues(listResult);
+    List<Obs> sortedObs;
+    if (obsList.size() > 0) {
+      sortedObs = sortObsByObsDatetime(obsList);
+      // get the first obs in the list
+      requiredObs = sortedObs.get(0);
+      // loop through all the obs collected for each patient per the encounter type and check if
+      // there is any that occurred on same date
+      for (Obs obs : sortedObs) {
+        if (requiredObs != null
+            && obs.getObsDatetime().compareTo(requiredObs.getObsDatetime()) >= 0) {
+          if (obs.getValueCoded().equals(hivMetadata.getDrugUseConcept())) {
+            requiredObs = obs;
+
+          } else if (obs.getValueCoded().equals(hivMetadata.getHomosexualConcept())) {
+            requiredObs = obs;
+
+          } else if (obs.getValueCoded().equals(hivMetadata.getSexWorkerConcept())) {
+            requiredObs = obs;
+
+          } else if (obs.getValueCoded().equals(hivMetadata.getImprisonmentConcept())) {
+            requiredObs = obs;
+          }
+        }
+      }
+    }
+    return requiredObs;
   }
 }
