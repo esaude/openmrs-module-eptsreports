@@ -48,7 +48,7 @@ public class TxRttDataset extends BaseDataSet {
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-    final CohortDefinition patientsOnRttDefinition = this.txRTTCohortQueries.findPatientsOnRTT();
+    final CohortDefinition patientsOnRttDefinition = this.txRTTCohortQueries.getPatientsOnRTT();
 
     final CohortIndicator patientOnRttIndicator =
         this.eptsGeneralIndicator.getIndicator(
@@ -159,6 +159,28 @@ public class TxRttDataset extends BaseDataSet {
         "Sex Worker",
         EptsReportUtils.map(patientOnRttIndicator, mappings),
         "sex-worker=sex-worker");
+
+    definition.addColumn(
+        "PLHIVLESS12MONTH",
+        "PLHIV <12 months",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "patients with viral load",
+                EptsReportUtils.map(
+                    this.txRTTCohortQueries.getPLHIVLess12MonthCalculation(), mappings)),
+            mappings),
+        "");
+
+    definition.addColumn(
+        "PLHIVGREATER12MONTH",
+        "PLHIV >=12 months",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "patients with viral load",
+                EptsReportUtils.map(
+                    this.txRTTCohortQueries.getPLHIVGreaterOrEqual12Month(), mappings)),
+            mappings),
+        "");
 
     return definition;
   }

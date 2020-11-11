@@ -13,21 +13,17 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
-
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.KeyPopulationDimension;
 import org.openmrs.module.eptsreports.reporting.library.disaggregations.ResumoMensalAandBdisaggregations;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -43,6 +39,7 @@ public class MisauKeyPopDataSetDefinition extends BaseDataSet {
   private TxNewCohortQueries txNewCohortQueries;
 
   private TxCurrCohortQueries txCurrCohortQueries;
+  private TxRTTCohortQueries txRTTCohortQueries;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -56,12 +53,14 @@ public class MisauKeyPopDataSetDefinition extends BaseDataSet {
       ResumoMensalAandBdisaggregations resumoMensalAandBdisaggregations,
       TxNewCohortQueries txNewCohortQueries,
       TxCurrCohortQueries txCurrCohortQueries,
+      TxRTTCohortQueries txRTTCohortQueries,
       KeyPopulationDimension keyPopulationDimension) {
     this.eptsCommonDimension = eptsCommonDimension;
     this.eptsGeneralIndicator = eptsGeneralIndicator;
     this.txNewCohortQueries = txNewCohortQueries;
     this.txCurrCohortQueries = txCurrCohortQueries;
     this.keyPopulationDimension = keyPopulationDimension;
+    this.txRTTCohortQueries = txRTTCohortQueries;
   }
 
   public DataSetDefinition constructMisauKeyPopDataset() {
@@ -72,96 +71,114 @@ public class MisauKeyPopDataSetDefinition extends BaseDataSet {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     final String mappingEndDate = "endDate=${endDate},location=${location}";
 
-    final CohortDefinition patientEnrolledInART =
-        this.txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART");
-    final CohortIndicator patientEnrolledInHIVStartedARTIndicator =
-        this.eptsGeneralIndicator.getIndicator(
-            "patientNewlyEnrolledInHIVIndicator",
-            EptsReportUtils.map(patientEnrolledInART, mappings));
+    // CohortDefinition patientsWhoExperiencedIIT = txRTTCohortQueries.getTxRTTIndicatorNumerator();
 
-    final CohortDefinition patientCurrentOnART =
-        this.txCurrCohortQueries.findPatientsWhoAreActiveOnART();
+    // final CohortDefinition patientEnrolledInART = this.txNewCohortQueries
+    // .getTxNewCompositionCohort("patientEnrolledInART");
+    //
+    // final CohortIndicator patientEnrolledInHIVStartedARTIndicator =
+    // this.eptsGeneralIndicator.getIndicator(
+    // "patientNewlyEnrolledInHIVIndicator",
+    // EptsReportUtils.map(patientEnrolledInART,
+    // mappings));
+    //
+    // final CohortDefinition patientCurrentOnART =
+    // this.txCurrCohortQueries.findPatientsWhoAreActiveOnART();
 
-    final CohortIndicator patientCurrentOnARTIndicator =
-        this.eptsGeneralIndicator.getIndicator(
-            "findPatientsWhoAreActiveOnART",
-            EptsReportUtils.map(patientCurrentOnART, mappingEndDate));
+    // final CohortIndicator patientCurrentOnARTIndicator =
+    // this.eptsGeneralIndicator.getIndicator(
+    // "findPatientsWhoAreActiveOnART", EptsReportUtils.map(patientCurrentOnART,
+    // mappingEndDate));
 
-    dataSetDefinition.addDimension("gender", map(eptsCommonDimension.gender(), ""));
-    dataSetDefinition.addDimension(
-        "age", map(eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
-    dataSetDefinition.addDimension(
-        "homosexual",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreHomosexual(), mappings));
-    dataSetDefinition.addDimension(
-        "drug-user",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoUseDrugs(), mappings));
-    dataSetDefinition.addDimension(
-        "prisioner",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreInPrison(), mappings));
-    dataSetDefinition.addDimension(
-        "sex-worker",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreSexWorker(), mappings));
+    //    final CohortIndicator rttNumeratorIndicator =
+    //        this.eptsGeneralIndicator.getIndicator(
+    //            "findPatientsWhoAreInIIT", EptsReportUtils.map(patientsWhoExperiencedIIT,
+    // mappings));
+    //
+    // dataSetDefinition.addDimension("gender", map(eptsCommonDimension.gender(),
+    // ""));
+    // dataSetDefinition.addDimension(
+    // "age", map(eptsCommonDimension.age(ageDimensionCohort),
+    // "effectiveDate=${endDate}"));
+    // dataSetDefinition.addDimension(
+    // "homosexual",
+    // EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreHomosexual(),
+    // mappings));
+    // dataSetDefinition.addDimension(
+    // "drug-user",
+    // EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoUseDrugs(),
+    // mappings));
+    // dataSetDefinition.addDimension(
+    // "prisioner",
+    // EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreInPrison(),
+    // mappings));
+    // dataSetDefinition.addDimension(
+    // "sex-worker",
+    // EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreSexWorker(),
+    // mappings));
+    //
+    // dataSetDefinition.addColumn(
+    // "E1",
+    // "Numero adultos que iniciaram TARV - Total",
+    // EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+    // "age=15+");
+    //
+    // dataSetDefinition.addColumn(
+    // "E1-MSM",
+    // "Homosexual",
+    // EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+    // "age=15+|homosexual=homosexual");
+    //
+    // dataSetDefinition.addColumn(
+    // "E1-PWID",
+    // "Drugs User",
+    // EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+    // "age=15+|drug-user=drug-user");
+    //
+    // dataSetDefinition.addColumn(
+    // "E1-PRI",
+    // "Prisioners",
+    // EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+    // "age=15+|prisioner=prisioner");
+    //
+    // dataSetDefinition.addColumn(
+    // "E1-FSW",
+    // "Sex Worker",
+    // EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+    // "age=15+|sex-worker=sex-worker");
+    //
+    // dataSetDefinition.addColumn(
+    // "E2",
+    // "Numero adultos actualmente em TARV - Total",
+    // EptsReportUtils.map(patientCurrentOnARTIndicator, mappingEndDate),
+    // "age=15+");
 
-    dataSetDefinition.addColumn(
-        "E1",
-        "Numero adultos que iniciaram TARV - Total",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "age=15+");
+    //    dataSetDefinition.addColumn(
+    //        "E3", "RTT- Total", EptsReportUtils.map(rttNumeratorIndicator, mappings), "");
 
-    dataSetDefinition.addColumn(
-        "E1-MSM",
-        "Homosexual",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "age=15+|homosexual=homosexual");
-
-    dataSetDefinition.addColumn(
-        "E1-PWID",
-        "Drugs User",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "age=15+|drug-user=drug-user");
-
-    dataSetDefinition.addColumn(
-        "E1-PRI",
-        "Prisioners",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "age=15+|prisioner=prisioner");
-
-    dataSetDefinition.addColumn(
-        "E1-FSW",
-        "Sex Worker",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "age=15+|sex-worker=sex-worker");
-
-    dataSetDefinition.addColumn(
-        "E2",
-        "Numero adultos actualmente em TARV - Total",
-        EptsReportUtils.map(patientCurrentOnARTIndicator, mappingEndDate),
-        "age=15+");
-
-    dataSetDefinition.addColumn(
-        "E2-MSM",
-        "Homosexual",
-        EptsReportUtils.map(patientCurrentOnARTIndicator, mappingEndDate),
-        "age=15+|homosexual=homosexual");
-
-    dataSetDefinition.addColumn(
-        "E2-PWID",
-        "Drugs User",
-        EptsReportUtils.map(patientCurrentOnARTIndicator, mappingEndDate),
-        "age=15+|drug-user=drug-user");
-
-    dataSetDefinition.addColumn(
-        "E2-PRI",
-        "Prisioners",
-        EptsReportUtils.map(patientCurrentOnARTIndicator, mappingEndDate),
-        "age=15+|prisioner=prisioner");
-
-    dataSetDefinition.addColumn(
-        "E2-FSW",
-        "Sex Worker",
-        EptsReportUtils.map(patientCurrentOnARTIndicator, mappingEndDate),
-        "age=15+|sex-worker=sex-worker");
+    // dataSetDefinition.addColumn(
+    // "E2-MSM",
+    // "Homosexual",
+    // EptsReportUtils.map(patientCurrentOnARTIndicator, mappingEndDate),
+    // "age=15+|homosexual=homosexual");
+    //
+    // dataSetDefinition.addColumn(
+    // "E2-PWID",
+    // "Drugs User",
+    // EptsReportUtils.map(patientCurrentOnARTIndicator, mappingEndDate),
+    // "age=15+|drug-user=drug-user");
+    //
+    // dataSetDefinition.addColumn(
+    // "E2-PRI",
+    // "Prisioners",
+    // EptsReportUtils.map(patientCurrentOnARTIndicator, mappingEndDate),
+    // "age=15+|prisioner=prisioner");
+    //
+    // dataSetDefinition.addColumn(
+    // "E2-FSW",
+    // "Sex Worker",
+    // EptsReportUtils.map(patientCurrentOnARTIndicator, mappingEndDate),
+    // "age=15+|sex-worker=sex-worker");
 
     return dataSetDefinition;
   }
