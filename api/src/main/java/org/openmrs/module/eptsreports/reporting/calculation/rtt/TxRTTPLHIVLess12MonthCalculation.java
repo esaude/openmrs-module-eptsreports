@@ -31,130 +31,152 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxRTTPLHIVLess12MonthCalculation extends BaseFghCalculation {
 
-	private static final int CHUNK_SIZE = 1000;
+  private static final int CHUNK_SIZE = 1000;
 
-	private static int DAYS_OF_YEAR = 365;
+  private static int DAYS_OF_YEAR = 365;
 
-	@Autowired
-	private TxRTTCohortQueries txRTTCohortQueries;
+  @Autowired private TxRTTCohortQueries txRTTCohortQueries;
 
-	@Override
-	public CalculationResultMap evaluate(Map<String, Object> parameterValues, EvaluationContext context) {
+  @Override
+  public CalculationResultMap evaluate(
+      Map<String, Object> parameterValues, EvaluationContext context) {
 
-		CalculationResultMap resultMap = new CalculationResultMap();
+    CalculationResultMap resultMap = new CalculationResultMap();
 
-		try {
-			Set<Integer> cohort = Context.getService(CohortDefinitionService.class)
-					.evaluate(txRTTCohortQueries.getPatientsOnRTT(), context).getMemberIds();
+    try {
+      Set<Integer> cohort =
+          Context.getService(CohortDefinitionService.class)
+              .evaluate(txRTTCohortQueries.getPatientsOnRTT(), context)
+              .getMemberIds();
 
-			Location location = (Location) context.getParameterValues().get("location");
-			Date startDate = (Date) context.getParameterValues().get("startDate");
-			Map<String, Object> parameters = new HashMap<>();
+      Location location = (Location) context.getParameterValues().get("location");
+      Date startDate = (Date) context.getParameterValues().get("startDate");
+      Map<String, Object> parameters = new HashMap<>();
 
-			parameters.put("startDate", DateUtil.adjustDate(startDate, -1, DurationUnit.DAYS));
-			parameters.put("endDate", DateUtil.adjustDate(startDate, -1, DurationUnit.DAYS));
-			parameters.put("location", location);
+      parameters.put("startDate", DateUtil.adjustDate(startDate, -1, DurationUnit.DAYS));
+      parameters.put("endDate", DateUtil.adjustDate(startDate, -1, DurationUnit.DAYS));
+      parameters.put("location", location);
 
-			CalculationResultMap iiTPatients = Context
-					.getRegisteredComponents(TxRTTPatientsWhoExperiencedIITCalculation.class).get(0)
-					.evaluate(parameters, this.getNewEvaluationContext(parameters));
+      CalculationResultMap iiTPatients =
+          Context.getRegisteredComponents(TxRTTPatientsWhoExperiencedIITCalculation.class)
+              .get(0)
+              .evaluate(parameters, this.getNewEvaluationContext(parameters));
 
-			this.calculateLessThan12MonthsDates(context, new ArrayList<>(cohort), iiTPatients, resultMap);
+      this.calculateLessThan12MonthsDates(context, new ArrayList<>(cohort), iiTPatients, resultMap);
 
-		} catch (EvaluationException e) {
-			throw new APIException(e);
-		}
-		return resultMap;
-	}
+    } catch (EvaluationException e) {
+      throw new APIException(e);
+    }
+    return resultMap;
+  }
 
-	private void calculateLessThan12MonthsDates(EvaluationContext context, List<Integer> cohort,
-			CalculationResultMap iiTPatients, CalculationResultMap resultMap) {
+  private void calculateLessThan12MonthsDates(
+      EvaluationContext context,
+      List<Integer> cohort,
+      CalculationResultMap iiTPatients,
+      CalculationResultMap resultMap) {
 
-		Map<Integer, Date> mapTxCurrMinDate = processPatientsByMinTxCurrDateInReportingPeriod(context, cohort);
-		for (Entry<Integer, Date> entry : mapTxCurrMinDate.entrySet()) {
+    Map<Integer, Date> mapTxCurrMinDate =
+        processPatientsByMinTxCurrDateInReportingPeriod(context, cohort);
+    for (Entry<Integer, Date> entry : mapTxCurrMinDate.entrySet()) {
 
-			Integer patientId = entry.getKey();
-			Date minTxCurrDate = entry.getValue();
+      Integer patientId = entry.getKey();
+      Date minTxCurrDate = entry.getValue();
 
-			CalculationResult calculationResult = iiTPatients.get(patientId);
+      CalculationResult calculationResult = iiTPatients.get(patientId);
 
-			if (calculationResult != null && calculationResult.getValue() != null) {
-				Date iitDate = (Date) calculationResult.getValue();
-				Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-				if (DateUtil.getDaysBetween(iiDatePlus29, minTxCurrDate) < DAYS_OF_YEAR) {
-					resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-				}
-			}
-		}
+      if (calculationResult != null && calculationResult.getValue() != null) {
+        Date iitDate = (Date) calculationResult.getValue();
+        Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
+        if (DateUtil.getDaysBetween(iiDatePlus29, minTxCurrDate) < DAYS_OF_YEAR) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        }
+      }
+    }
 
-		cohort.removeAll(mapTxCurrMinDate.keySet());
-		Map<Integer, Date> mapTxCurrMaxDate = processPatientsByMaxTxCurrDateInPreviousReportingPeriod(context, cohort);
+    cohort.removeAll(mapTxCurrMinDate.keySet());
+    Map<Integer, Date> mapTxCurrMaxDate =
+        processPatientsByMaxTxCurrDateInPreviousReportingPeriod(context, cohort);
 
-		for (Entry<Integer, Date> entry : mapTxCurrMaxDate.entrySet()) {
+    for (Entry<Integer, Date> entry : mapTxCurrMaxDate.entrySet()) {
 
-			Integer patientId = entry.getKey();
-			Date maxTxCurrDate = entry.getValue();
+      Integer patientId = entry.getKey();
+      Date maxTxCurrDate = entry.getValue();
 
-			CalculationResult calculationResult = iiTPatients.get(patientId);
+      CalculationResult calculationResult = iiTPatients.get(patientId);
 
-			if (calculationResult != null && calculationResult.getValue() != null) {
-				Date iitDate = (Date) calculationResult.getValue();
-				Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-				if (DateUtil.getDaysBetween(iiDatePlus29, maxTxCurrDate) < DAYS_OF_YEAR) {
-					resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-				}
-			}
-		}
-	}
+      if (calculationResult != null && calculationResult.getValue() != null) {
+        Date iitDate = (Date) calculationResult.getValue();
+        Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
+        if (DateUtil.getDaysBetween(iiDatePlus29, maxTxCurrDate) < DAYS_OF_YEAR) {
+          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        }
+      }
+    }
+  }
 
-	private Map<Integer, Date> processPatientsByMinTxCurrDateInReportingPeriod(EvaluationContext context,
-			List<Integer> cohort) {
-		Map<Integer, Date> mapTxCurrMinDate = new HashMap<>();
-		final int slices = EptsListUtils.listSlices(cohort, CHUNK_SIZE);
-		for (int position = 0; position < slices; position++) {
+  private Map<Integer, Date> processPatientsByMinTxCurrDateInReportingPeriod(
+      EvaluationContext context, List<Integer> cohort) {
+    Map<Integer, Date> mapTxCurrMinDate = new HashMap<>();
+    final int slices = EptsListUtils.listSlices(cohort, CHUNK_SIZE);
+    for (int position = 0; position < slices; position++) {
 
-			final List<Integer> subList = cohort.subList(position * CHUNK_SIZE,
-					(((position * CHUNK_SIZE) + CHUNK_SIZE) < cohort.size() ? (position * CHUNK_SIZE) + CHUNK_SIZE
-							: cohort.size()));
-			final SqlQueryBuilder queryBuilder = new SqlQueryBuilder(
-					TxRttQueries.QUERY.findMinEncounterDateByPatientInReportingPeriod, context.getParameterValues());
-			queryBuilder.addParameter("patientIds", subList);
+      final List<Integer> subList =
+          cohort.subList(
+              position * CHUNK_SIZE,
+              (((position * CHUNK_SIZE) + CHUNK_SIZE) < cohort.size()
+                  ? (position * CHUNK_SIZE) + CHUNK_SIZE
+                  : cohort.size()));
+      final SqlQueryBuilder queryBuilder =
+          new SqlQueryBuilder(
+              TxRttQueries.QUERY.findMinEncounterDateByPatientInReportingPeriod,
+              context.getParameterValues());
+      queryBuilder.addParameter("patientIds", subList);
 
-			Map<Integer, Date> mapIter = Context.getRegisteredComponents(EvaluationService.class).get(0)
-					.evaluateToMap(queryBuilder, Integer.class, Date.class, context);
-			mapTxCurrMinDate.putAll(mapIter);
-		}
-		return mapTxCurrMinDate;
-	}
+      Map<Integer, Date> mapIter =
+          Context.getRegisteredComponents(EvaluationService.class)
+              .get(0)
+              .evaluateToMap(queryBuilder, Integer.class, Date.class, context);
+      mapTxCurrMinDate.putAll(mapIter);
+    }
+    return mapTxCurrMinDate;
+  }
 
-	private Map<Integer, Date> processPatientsByMaxTxCurrDateInPreviousReportingPeriod(EvaluationContext context,
-			List<Integer> cohort) {
+  private Map<Integer, Date> processPatientsByMaxTxCurrDateInPreviousReportingPeriod(
+      EvaluationContext context, List<Integer> cohort) {
 
-		Map<Integer, Date> mapTxCurrMinDate = new HashMap<>();
+    Map<Integer, Date> mapTxCurrMinDate = new HashMap<>();
 
-		final int slices = EptsListUtils.listSlices(cohort, CHUNK_SIZE);
-		for (int position = 0; position < slices; position++) {
+    final int slices = EptsListUtils.listSlices(cohort, CHUNK_SIZE);
+    for (int position = 0; position < slices; position++) {
 
-			final List<Integer> subList = cohort.subList(position * CHUNK_SIZE,
-					(((position * CHUNK_SIZE) + CHUNK_SIZE) < cohort.size() ? (position * CHUNK_SIZE) + CHUNK_SIZE
-							: cohort.size()));
+      final List<Integer> subList =
+          cohort.subList(
+              position * CHUNK_SIZE,
+              (((position * CHUNK_SIZE) + CHUNK_SIZE) < cohort.size()
+                  ? (position * CHUNK_SIZE) + CHUNK_SIZE
+                  : cohort.size()));
 
-			final SqlQueryBuilder queryBuilder = new SqlQueryBuilder(
-					TxRttQueries.QUERY.findMaxEncounterDateByPatientInReportingPeriod, context.getParameterValues());
-			queryBuilder.addParameter("patientIds", subList);
+      final SqlQueryBuilder queryBuilder =
+          new SqlQueryBuilder(
+              TxRttQueries.QUERY.findMaxEncounterDateByPatientInReportingPeriod,
+              context.getParameterValues());
+      queryBuilder.addParameter("patientIds", subList);
 
-			Map<Integer, Date> mapIter = Context.getRegisteredComponents(EvaluationService.class).get(0)
-					.evaluateToMap(queryBuilder, Integer.class, Date.class, context);
-			mapTxCurrMinDate.putAll(mapIter);
-		}
-		return mapTxCurrMinDate;
-	}
+      Map<Integer, Date> mapIter =
+          Context.getRegisteredComponents(EvaluationService.class)
+              .get(0)
+              .evaluateToMap(queryBuilder, Integer.class, Date.class, context);
+      mapTxCurrMinDate.putAll(mapIter);
+    }
+    return mapTxCurrMinDate;
+  }
 
-	private EvaluationContext getNewEvaluationContext(Map<String, Object> parameters) {
-		EvaluationContext context = new EvaluationContext();
-		for (Entry<String, Object> entry : parameters.entrySet()) {
-			context.addParameterValue(entry.getKey(), entry.getValue());
-		}
-		return context;
-	}
+  private EvaluationContext getNewEvaluationContext(Map<String, Object> parameters) {
+    EvaluationContext context = new EvaluationContext();
+    for (Entry<String, Object> entry : parameters.entrySet()) {
+      context.addParameterValue(entry.getKey(), entry.getValue());
+    }
+    return context;
+  }
 }
