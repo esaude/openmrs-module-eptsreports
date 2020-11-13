@@ -33,7 +33,9 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.KeyPopulatio
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -47,6 +49,8 @@ public class HivCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private GenericCohortQueries genericCohortQueires;
+
+  @Autowired private GenderCohortQueries genderCohortQueries;
 
   /**
    * Adult and pediatric patients on ART with suppressed viral load results (<1,000 copies/ml)
@@ -242,6 +246,28 @@ public class HivCohortQueries {
     return cd;
   }
 
+  /**
+   * Get male patients who have sex with men
+   *
+   * @return @{@link CohortDefinition}
+   */
+  public CohortDefinition getMaleHomosexualKeyPopDefinition() {
+
+    CompositionCohortDefinition comp = new CompositionCohortDefinition();
+    comp.setName("Only men who have sex with men");
+    comp.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    comp.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    comp.addParameter(new Parameter("location", "location", Location.class));
+    comp.addSearch(
+        "1",
+        EptsReportUtils.map(
+            getHomosexualKeyPopCohort(),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    comp.addSearch("M", EptsReportUtils.map(genderCohortQueries.maleCohort(), ""));
+    comp.setCompositionString("1 AND M");
+    return comp;
+  }
+
   public CohortDefinition getDrugUserKeyPopCohort() {
     CalculationCohortDefinition cd = new CalculationCohortDefinition();
     cd.setCalculation(Context.getRegisteredComponents(KeyPopulationCalculation.class).get(0));
@@ -273,6 +299,27 @@ public class HivCohortQueries {
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addCalculationParameter(TYPE, SEX_WORKER);
     return cd;
+  }
+
+  /**
+   * Get only female patients who are sex workers
+   *
+   * @return @{@link CohortDefinition}
+   */
+  public CohortDefinition getFemaleSexWorkersKeyPopCohortDefinition() {
+    CompositionCohortDefinition comp = new CompositionCohortDefinition();
+    comp.setName("Only female sext workers");
+    comp.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    comp.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    comp.addParameter(new Parameter("location", "location", Location.class));
+    comp.addSearch(
+        "2",
+        EptsReportUtils.map(
+            getSexWorkerKeyPopCohort(),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    comp.addSearch("F", EptsReportUtils.map(genderCohortQueries.femaleCohort(), ""));
+    comp.setCompositionString("2 AND F");
+    return comp;
   }
 
   public CohortDefinition getPatientsTransferredOut() {

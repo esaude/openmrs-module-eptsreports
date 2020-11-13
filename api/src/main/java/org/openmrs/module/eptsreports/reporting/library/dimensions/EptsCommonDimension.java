@@ -299,9 +299,10 @@ public class EptsCommonDimension {
     dim.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
     dim.addParameter(new Parameter("location", "Location", Location.class));
     CohortDefinition drugUserKeyPopCohort = hivCohortQueries.getDrugUserKeyPopCohort();
-    CohortDefinition homosexualKeyPopCohort = hivCohortQueries.getHomosexualKeyPopCohort();
+    CohortDefinition homosexualKeyPopCohort = hivCohortQueries.getMaleHomosexualKeyPopDefinition();
     CohortDefinition imprisonmentKeyPopCohort = hivCohortQueries.getImprisonmentKeyPopCohort();
-    CohortDefinition sexWorkerKeyPopCohort = hivCohortQueries.getSexWorkerKeyPopCohort();
+    CohortDefinition sexWorkerKeyPopCohort =
+        hivCohortQueries.getFemaleSexWorkersKeyPopCohortDefinition();
     dim.addCohortDefinition("PID", mapStraightThrough(drugUserKeyPopCohort));
     dim.addCohortDefinition("MSM", mapStraightThrough(homosexualKeyPopCohort));
     dim.addCohortDefinition("CSW", mapStraightThrough(sexWorkerKeyPopCohort));

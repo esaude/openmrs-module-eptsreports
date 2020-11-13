@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.unit.calculation.generic;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyCollectionOf;
 import static org.mockito.Matchers.anyMapOf;
@@ -103,7 +104,7 @@ public class KeyPopulationCalculationTest extends PowerMockBaseContextTest {
     apssEncounter.setEncounterDatetime(date);
     appsObs.setEncounter(apssEncounter);
 
-    KeyPopulationCalculation.KeyPop expected = KeyPopulationCalculation.KeyPop.SEX_WORKER;
+    KeyPopulationCalculation.KeyPop expected = KeyPopulationCalculation.KeyPop.PRISONER;
     CalculationResultMap resultMap =
         getResultMap(patient, expected, personAttribute, adultoObs, appsObs);
 
@@ -138,8 +139,8 @@ public class KeyPopulationCalculationTest extends PowerMockBaseContextTest {
     CalculationResultMap resultMap =
         getResultMap(patient, expected, personAttribute, adultoObs, appsObs);
 
-    assertFalse(resultMap.isEmpty(patient.getId()));
-    assertEquals(true, resultMap.get(patient.getId()).getValue());
+    assertTrue(resultMap.isEmpty(patient.getId()));
+    assertEquals(false, resultMap.get(patient.getId()).getValue());
   }
 
   private CalculationResultMap getResultMap(
@@ -176,12 +177,11 @@ public class KeyPopulationCalculationTest extends PowerMockBaseContextTest {
     when(hivMetadata.getKeyPopulationConcept()).thenReturn(keyPop);
     CalculationResultMap adultoResultMap = new CalculationResultMap();
     adultoResultMap.put(patient.getId(), new ObsResult(adultoObs, null));
-    when(eptsCalculationService.lastObs(
-            eq(Arrays.asList(adultoSeguimento)),
+    when(eptsCalculationService.allObservations(
             eq(keyPop),
+            eq(Arrays.asList(sexWorkerConcept)),
+            eq(Arrays.asList(adultoSeguimento)),
             any(Location.class),
-            any(Date.class),
-            any(Date.class),
             eq(cohort),
             eq(calculationContext)))
         .thenReturn(adultoResultMap);
@@ -191,12 +191,11 @@ public class KeyPopulationCalculationTest extends PowerMockBaseContextTest {
     when(hivMetadata.getKeyPopulationConcept()).thenReturn(keyPop);
     CalculationResultMap apssResultMap = new CalculationResultMap();
     apssResultMap.put(patient.getId(), new ObsResult(appsObs, null));
-    when(eptsCalculationService.lastObs(
-            eq(Arrays.asList(apss)),
+    when(eptsCalculationService.allObservations(
             eq(keyPop),
+            eq(Arrays.asList(sexWorkerConcept)),
+            eq(Arrays.asList(adultoSeguimento)),
             any(Location.class),
-            any(Date.class),
-            any(Date.class),
             eq(cohort),
             eq(calculationContext)))
         .thenReturn(apssResultMap);
