@@ -35,6 +35,7 @@ public class MISAUKeyPopsDataSetDefinition extends BaseDataSet {
 
   private EptsCommonDimension eptsCommonDimension;
 
+  @Autowired
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
 
