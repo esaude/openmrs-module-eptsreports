@@ -83,8 +83,8 @@ public class TransferredInCohortQueries {
 
     String mappingsTrfIn = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}";
     String mappingsCurr = "onOrBefore=${onOrBefore-3m},location=${location}";
-    String mappingsTrfOut = "onOrBefore=${onOrBefore-1d},location=${location}";
-    String mappingsHomeVisitTrfOut = "onOrBefore=${onOrBefore},location=${location}";
+    String mappingsTrfOut = "onOrBefore=${onOrAfter-1d},location=${location}";
+    String mappingsHomeVisitTrfOut = "onOrBefore=${onOrAfter-1d},location=${location}";
     String mappingsClinicalVisit =
         "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
 
