@@ -126,7 +126,7 @@ public class Ec5Queries {
             + "INNER JOIN location l on l.location_id=e.location_id "
             + "WHERE e.encounter_type=51 AND o.concept_id=23821  AND o.voided=0 AND e.voided=0 and o.value_datetime between :startDate and :endDate "
             + ")colheitaFSRDate on colheitaFSRDate.patient_id=pe.person_id	 "
-            + "left join  patient_program pg ON pe.person_id=pg.patient_id and pg.program_id=2 and pg.location_id IN(399) "
+            + "left join  patient_program pg ON pe.person_id=pg.patient_id and pg.program_id=2 and pg.location_id IN(:location) "
             + "left join  patient_state ps ON pg.patient_program_id=ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " LEFT JOIN encounter e1 on e1.patient_id =pe.person_id "
             + " LEFT JOIN location l on l.location_id=e1.location_id "
