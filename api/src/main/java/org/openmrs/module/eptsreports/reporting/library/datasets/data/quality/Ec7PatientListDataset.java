@@ -14,37 +14,24 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import java.util.List;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
+
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec7Queries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Ec7PatientListDataset extends BaseDataSet {
 
-  private HivMetadata hivMetadata;
-
-  @Autowired
-  public Ec7PatientListDataset(HivMetadata hivMetadata) {
-    this.hivMetadata = hivMetadata;
-  }
 
   public DataSetDefinition ec7PatientListDataset(List<Parameter> parameterList) {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC7");
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
-        Ec7Queries.getEc7CombinedQuery(
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+        Ec7Queries.getEc7CombinedQuery());
 
     return dsd;
   }

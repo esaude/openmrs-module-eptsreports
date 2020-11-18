@@ -20,8 +20,7 @@ public class Ec7Queries {
    *
    * @return String
    */
-  public static String getEc7CombinedQuery(
-      int programId, int stateId, int adultFollowUp, int childFollowUp) {
+  public static String getEc7CombinedQuery() {
     String query = "SELECT  "
     		+ "f_ec7.patient_id patient_id,"
     		+ "f_ec7.NID NID,"
