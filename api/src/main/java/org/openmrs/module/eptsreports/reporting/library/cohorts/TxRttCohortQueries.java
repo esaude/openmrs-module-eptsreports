@@ -111,7 +111,7 @@ public class TxRttCohortQueries {
     cd.addSearch(
         "LTFU",
         EptsReportUtils.map(
-            txCurrCohortQueries.getPatientHavingLastScheduledDrugPickupDateDaysBeforeEndDate(28),
+            genericCohortQueries.getPatientsWhoToLostToFollowUp(28),
             "onOrBefore=${startDate-1d},location=${location}"));
 
     cd.addSearch(

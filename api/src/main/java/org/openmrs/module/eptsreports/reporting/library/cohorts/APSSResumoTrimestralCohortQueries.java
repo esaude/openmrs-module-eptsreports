@@ -162,7 +162,8 @@ public class APSSResumoTrimestralCohortQueries {
         resumoMensalCohortQueries.getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
 
     cd.addSearch(
-        "resumoMensalA2", map(resumoMensalA2, "startDate=${startDate},location=${location}"));
+        "resumoMensalA2",
+        map(resumoMensalA2, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     Concept preARTCounselingConceptQuestion = hivMetadata.getPreARTCounselingConcept();
     Concept patientFoundYesConceptAnswer = hivMetadata.getPatientFoundYesConcept();
