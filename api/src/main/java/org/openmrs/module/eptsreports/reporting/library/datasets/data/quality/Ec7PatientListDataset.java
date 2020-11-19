@@ -14,7 +14,6 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import java.util.List;
-
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec7Queries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -25,13 +24,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class Ec7PatientListDataset extends BaseDataSet {
 
-
   public DataSetDefinition ec7PatientListDataset(List<Parameter> parameterList) {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC7");
     dsd.addParameters(parameterList);
-    dsd.setSqlQuery(
-        Ec7Queries.getEc7CombinedQuery());
+    dsd.setSqlQuery(Ec7Queries.getEc7CombinedQuery());
 
     return dsd;
   }
