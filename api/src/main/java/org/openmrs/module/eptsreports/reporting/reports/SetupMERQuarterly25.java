@@ -50,6 +50,8 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
 
   private TransferredInDataset transferredInDataset;
 
+  private TxRTTPLHIVDataset txRTTPLHIVDateset;
+
   @Autowired
   public SetupMERQuarterly25(
       TxPvlsDataset txPvlsDataset,
@@ -58,7 +60,8 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
       TxMlDataset25 txMlDataset25,
       TxRttDataset txRttDataset,
       GenericCohortQueries genericCohortQueries,
-      TransferredInDataset transferredInDataset) {
+      TransferredInDataset transferredInDataset,
+      TxRTTPLHIVDataset txRTTPLHIVDateset) {
     this.txPvlsDataset = txPvlsDataset;
     this.txNewDataset = txNewDataset;
     this.txCurrDataset = txCurrDataset;
@@ -66,6 +69,7 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
     this.txRttDataset = txRttDataset;
     this.genericCohortQueries = genericCohortQueries;
     this.transferredInDataset = transferredInDataset;
+    this.txRTTPLHIVDateset = txRTTPLHIVDateset;
   }
 
   @Override
@@ -109,6 +113,8 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
     rd.addDataSetDefinition("R", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
     rd.addDataSetDefinition(
         "TRFIN", Mapped.mapStraightThrough(transferredInDataset.constructTransferInDataset()));
+    rd.addDataSetDefinition(
+        "PL", Mapped.mapStraightThrough(txRTTPLHIVDateset.constructTxRTTPLHIVDateset()));
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
