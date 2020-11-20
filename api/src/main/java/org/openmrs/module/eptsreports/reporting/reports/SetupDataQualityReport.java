@@ -208,7 +208,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "S",
         Mapped.mapStraightThrough(
-            summaryDataQualityDataset.constructSummaryDataQualityDatset(getDataParameters())));
+            summaryDataQualityDataset.constructSummaryDataQualityDatset(getDataParametersEC20())));
 
     rd.addDataSetDefinition(
         "S20",

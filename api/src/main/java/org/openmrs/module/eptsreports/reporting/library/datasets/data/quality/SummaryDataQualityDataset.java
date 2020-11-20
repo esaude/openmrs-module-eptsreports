@@ -71,15 +71,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patient’s vital status is dead and the patient has an ART pick up date after the date of death or death notification",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
-                        hivMetadata.getARTProgram().getProgramId(),
-                        hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
-                        Arrays.asList(
-                            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId())),
-                    "location=${location}"),
-                Arrays.asList(
-                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            "location=${location}"),
+                    summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfterEC3(),
+                    "location=${location},startDate=${startDate},endDate=${endDate}")),
+            "location=${location},startDate=${startDate},endDate=${endDate}"),
         "");
 
     dsd.addColumn(
@@ -209,18 +203,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
-                        hivMetadata.getARTProgram().getProgramId(),
-                        hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
-                        Arrays.asList(
-                            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                            hivMetadata
-                                .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId())),
-                    "location=${location}"),
-                Arrays.asList(
-                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            "location=${location}"),
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncountersEC10(),
+                    "location=${location},startDate=${startDate},endDate=${endDate}")),
+            "location=${location},startDate=${startDate},endDate=${endDate}"),
         "");
 
     dsd.addColumn(
@@ -268,16 +253,14 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC14",
-        "The patients birth, estimated date of birth or age indicates they are > 100 years of age",
+        "The value of a date field registered on any form, with the exception of consultation date, is before 1985 ",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "The patients birth, estimated date of birth or age indicates they are > 100 years of age",
+                "The value of a date field registered on any form, with the exception of consultation date, is before 1985 ",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWithAgeHigherThanXyears(100),
-                    "endDate=${endDate}"),
-                Arrays.asList(
-                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            "endDate=${endDate}"),
+                    summaryDataQualityCohorts.getCountPatientsWithExceptionConsultation(),
+                    "location=${location},startDate=${startDate},endDate=${endDate}")),
+            "location=${location},startDate=${startDate},endDate=${endDate}"),
         "");
 
     dsd.addColumn(

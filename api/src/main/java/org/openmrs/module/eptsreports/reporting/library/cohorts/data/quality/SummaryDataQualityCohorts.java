@@ -102,6 +102,16 @@ public class SummaryDataQualityCohorts {
     return cd;
   }
 
+  public CohortDefinition getPatientsWithStatesAndEncountersEC10() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients who have state that is before an encounter");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(SummaryQueries.getPatientsWithStateThatIsBeforeAnEncounterEC10());
+    return cd;
+  }
+
   /**
    * Patients with a birth date that is before 1920 The patient’s date of birth, estimated date of
    * birth or entered age indicate the patient was born before 1920
@@ -137,6 +147,17 @@ public class SummaryDataQualityCohorts {
     cd.setName("The patients birth, estimated date of birth or age indicates they are > " + years);
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.setQuery(SummaryQueries.getPatientsWithMoreThanXyears(years));
+    return cd;
+  }
+
+  public CohortDefinition getCountPatientsWithExceptionConsultation() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName(
+        "The value of a date field registered on any form, with the exception of consultation date, is before 1985 ");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(SummaryQueries.getCountPatientsEC14());
     return cd;
   }
 
@@ -179,6 +200,16 @@ public class SummaryDataQualityCohorts {
     cd.addSearch("deceased", EptsReportUtils.map(sql, "location=${location}"));
     cd.setCompositionString("dead OR deceased");
     return cd;
+  }
+
+  public CohortDefinition getDeadOrDeceasedPatientsHavingEncountersAfterEC3() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Deceased and have encounters after deceased date");
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.setQuery(SummaryQueries.getPatientsMarkedAsDeceasedAndHaveAnEncounterEC3());
+    return sql;
   }
 
   /**
