@@ -31,7 +31,26 @@ public class QualityImprovement2020CohortQueries {
     this.commonMetadata = commonMetadata;
   }
 
-  public CohortDefinition getPatientsWhoInitiatedARTDuringTheInclusionPeriod() {
+  /**
+   * <b>MQC3D1</b>: Melhoria de Qualidade Category 3 Deniminator 1 <br>
+   * <i> A and not B</i> <br>
+   *
+   * <ul>
+   *   <li>A - Select all patients who initiated ART during the Inclusion Period (startDateRevision
+   *       and endDateInclusion)
+   *   <li>B - Exclude all transferred in patients as following:
+   *       <ul>
+   *         <li>All patients registered in Ficha Resumo (Encounter Type Id= 53) and marked as
+   *             Transferred-in (“Transfer from other facility” concept Id 1369 = “Yes” concept id
+   *             1065) in TARV (“Type of Patient Transferred from” concept id 6300 = “ART” concept
+   *             id 6276)
+   *             <p>< Note: the both concepts 1369 and 6300 should be recorded in the same encounter
+   *       </ul>
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQC3D1() {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName("Patients Who Initiated ART During The Inclusion Period");
@@ -44,14 +63,13 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition transferredIn = this.getTransferredInPatients();
 
     compositionCohortDefinition.addSearch(
-        "ART",
+        "A",
         EptsReportUtils.map(
             startedART, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
-    compositionCohortDefinition.addSearch(
-        "TRANSFERREDIN", EptsReportUtils.map(transferredIn, MAPPING));
+    compositionCohortDefinition.addSearch("B", EptsReportUtils.map(transferredIn, MAPPING));
 
-    compositionCohortDefinition.setCompositionString("ART AND NOT TRANSFERREDIN");
+    compositionCohortDefinition.setCompositionString("A AND NOT B");
 
     return compositionCohortDefinition;
   }
