@@ -1386,7 +1386,7 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   * <b>concept_id = 23866</b>
+   * <b>concept_id = 6300</b>
    *
    * <p><b>Name:</b> TYPE OF PATIENT TRANSFERRED FROM
    *
