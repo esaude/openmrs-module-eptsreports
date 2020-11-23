@@ -229,4 +229,22 @@ public class SummaryDataQualityCohorts {
 
     return sqlCohortDefinition;
   }
+
+  public CohortDefinition getPatientsWhoseEncounterIsBeforeEC18() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("patients whose date of drug pick up is before 1985");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(SummaryQueries.getPatientsWhoseEncounterIsBeforeEC18());
+
+    return sqlCohortDefinition;
+  }
+
+  public CohortDefinition getPatientsWhoseEncounterIsBeforeEC17() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("patients whose date of drug pick up is before 1985");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(SummaryQueries.getPatientsWhoseEncounterIsBeforeEC17());
+
+    return sqlCohortDefinition;
+  }
 }
