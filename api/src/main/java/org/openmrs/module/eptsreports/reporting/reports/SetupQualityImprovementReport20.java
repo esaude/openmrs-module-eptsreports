@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.QualityImprovementDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.QualityImprovement2020DataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -15,12 +15,14 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component
 public class SetupQualityImprovementReport20 extends EptsDataExportManager {
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
-  @Autowired private QualityImprovementDataSet initQltyImpDataSet;
+  @Autowired private QualityImprovement2020DataSet initQltyImpDataSet;
 
   @Override
   public String getUuid() {
@@ -55,7 +57,8 @@ public class SetupQualityImprovementReport20 extends EptsDataExportManager {
     reportDefinition.setDescription(getDescription());
     reportDefinition.setParameters(getParameters());
     reportDefinition.addDataSetDefinition(
-        "ALL", Mapped.mapStraightThrough(initQltyImpDataSet.constructInitQltyImpDataSet()));
+        "ALL",
+        Mapped.mapStraightThrough(initQltyImpDataSet.constructQualityImprovement2020DataSet()));
 
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
