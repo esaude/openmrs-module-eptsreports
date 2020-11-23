@@ -53,7 +53,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "initiatedART",
             EptsReportUtils.map(
                 this.qualityImprovement2020CohortQueries
-                    .getPatientsWhoInitiatedARTDuringTheInclusionPeriod(),
+                    .getMQC3D1(),
                 "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     addRow(
