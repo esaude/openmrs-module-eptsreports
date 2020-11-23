@@ -62,8 +62,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private SummaryDataQualityDataset summaryDataQualityDataset;
 
-  private SummaryDataQualityCohorts summaryDataQualityCohorts;
-
   private Ec1PatientListDataset ec1PatientListDataset;
 
   private Ec2PatientListDataset ec2PatientListDataset;
@@ -102,8 +100,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec19PatientListDataset ec19PatientListDataset;
 
-  private SummaryEc20DataQualityCohorts summaryEc20DataQualityCohorts;
-
   private SummaryEc20DataQualityDataset summaryEc20DataQualityDataset;
 
   private Ec20PatientListDataset ec20PatientListDataset;
@@ -141,7 +137,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       GetCustomConfigurationDataset getCustomConfigurationDataset,
       HivMetadata hivMetadata) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
-    this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.ec1PatientListDataset = ec1PatientListDataset;
     this.ec2PatientListDataset = ec2PatientListDataset;
     this.ec3PatientListDataset = ec3PatientListDataset;
@@ -163,7 +158,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec19PatientListDataset = ec19PatientListDataset;
     this.ec20PatientListDataset = ec20PatientListDataset;
     this.summaryEc20DataQualityDataset = summaryEc20DataQualityDataset;
-    this.summaryEc20DataQualityCohorts = summaryEc20DataQualityCohorts;
 
     this.hivMetadata = hivMetadata;
     this.getCustomConfigurationDataset = getCustomConfigurationDataset;
@@ -196,14 +190,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.addParameters(getDataParameters());
-
-    // add a base cohort here to help in calculations running
-    rd.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            summaryDataQualityCohorts.getQualityDataReportBaseCohort(),
-            "startDate=${startDate},endDate=${endDate},location=${location},state=${state}"));
-    // adding a data set to help us get configuration parameters
-    // adding respective data sets for the reports
 
     rd.addDataSetDefinition(
         "S",
@@ -300,12 +286,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "EC01",
         Mapped.mapStraightThrough(
             getCustomConfigurationDataset.configDataSetDefinition(getDataParameters())));
-
-    rd.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            summaryEc20DataQualityCohorts.getEc20DataQualityReportBaseCohort(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
     return rd;
   }
 
