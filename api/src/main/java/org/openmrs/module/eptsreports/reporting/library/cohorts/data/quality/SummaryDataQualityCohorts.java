@@ -248,6 +248,15 @@ public class SummaryDataQualityCohorts {
     return sqlCohortDefinition;
   }
 
+  public CohortDefinition getPatientsSexNotDefinedEC22() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("The Patient’s date of birth is not defined");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(SummaryQueries.getPatientsBirthNotDefinedEC22());
+
+    return sqlCohortDefinition;
+  }
+
   public CohortDefinition getPatientsWhoseEncounterIsBeforeEC17() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("patients whose date of drug pick up is before 1985");
