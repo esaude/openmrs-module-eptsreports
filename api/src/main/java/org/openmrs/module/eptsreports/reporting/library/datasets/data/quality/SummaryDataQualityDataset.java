@@ -338,6 +338,18 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             "location=${location},endDate=${endDate}"),
         "");
 
+    dsd.addColumn(
+        "EC21",
+        "The Patient’s sex is not defined",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "The Patient’s sex is not defined",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsSexNotDefinedEC21(),
+                    "location=${location}")),
+            "location=${location}"),
+        "");
+
     return dsd;
   }
 }
