@@ -42,7 +42,7 @@ public class TRFINCohortQueries {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     compositionDefinition.addSearch(
-        "TRF-IN", EptsReportUtils.map(this.getPatientsWhoAreTransferredIn(), mappings));
+        "TRF-IN", EptsReportUtils.map(this.getPatientsWhoAreTransferredInCalculation(), mappings));
 
     compositionDefinition.addSearch(
         "TX-CURR-PREVIOUS-PERIOD",
@@ -56,7 +56,7 @@ public class TRFINCohortQueries {
   }
 
   @DocumentedDefinition(value = "trfInPatientsWhoAreTransferedIn")
-  private CohortDefinition getPatientsWhoAreTransferredIn() {
+  public CohortDefinition getPatientsWhoAreTransferredInCalculation() {
     BaseFghCalculationCohortDefinition cd =
         new BaseFghCalculationCohortDefinition(
             "trfInPatientsWhoAreTransferedInCalculation",

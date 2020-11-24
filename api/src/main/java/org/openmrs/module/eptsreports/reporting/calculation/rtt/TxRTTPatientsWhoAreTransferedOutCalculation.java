@@ -29,10 +29,11 @@ public class TxRTTPatientsWhoAreTransferedOutCalculation extends BaseFghCalculat
         Context.getRegisteredComponents(QueryDisaggregationProcessor.class).get(0);
 
     Map<Integer, Date> transferedOutByProgram =
-        queryDisaggregation.findMapMaxPatientStateDateByProgramAndPatientStateAndEndDate(
-            context,
-            hivMetadata.getARTProgram(),
-            hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState());
+        queryDisaggregation
+            .findMapMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullAndEndDate(
+                context,
+                hivMetadata.getARTProgram(),
+                hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState());
 
     Map<Integer, Date> transferrdOutInFichaClinica =
         queryDisaggregation

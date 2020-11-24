@@ -30,8 +30,9 @@ public class TxMLPatientsWhoAreDeadCalculation extends BaseFghCalculation {
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
 
     Map<Integer, Date> patientsDeadInArtProgram =
-        queryDisaggregation.findMapMaxPatientStateDateByProgramAndPatientStateAndEndDate(
-            context, hivMetadata.getARTProgram(), hivMetadata.getPatientHasDiedWorkflowState());
+        queryDisaggregation
+            .findMapMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullAndEndDate(
+                context, hivMetadata.getARTProgram(), hivMetadata.getPatientHasDiedWorkflowState());
 
     Map<Integer, Date> deadInHomeVisitForm =
         queryDisaggregation.findMapMaxObsDatetimeByEncounterAndQuestionsAndAnswersInPeriod(

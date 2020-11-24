@@ -25,8 +25,8 @@ public class TRFINCalculationTest extends DefinitionsFGHLiveTest {
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(208);
-    final Date startDate = DateUtil.getDateTime(2019, 9, 21);
-    final Date endDate = DateUtil.getDateTime(2019, 12, 20);
+    final Date startDate = DateUtil.getDateTime(2019, 3, 21);
+    final Date endDate = DateUtil.getDateTime(2019, 6, 20);
 
     System.out.println(startDate);
     System.out.println(endDate);
@@ -37,7 +37,7 @@ public class TRFINCalculationTest extends DefinitionsFGHLiveTest {
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
     CohortDefinition patientsWhoAreTransferredIn =
-        txTrfInCohortQueries.getPatiensWhoAreTransferredIn();
+        txTrfInCohortQueries.getPatientsWhoAreTransferredInCalculation();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(patientsWhoAreTransferredIn, parameters);

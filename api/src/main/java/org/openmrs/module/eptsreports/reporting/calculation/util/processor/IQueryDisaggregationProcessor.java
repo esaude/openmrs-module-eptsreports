@@ -4,13 +4,23 @@ public interface IQueryDisaggregationProcessor {
 
   class QUERY {
 
-    public static final String findMaxPatientStateDateByProgramAndPatientStateAndReportingPeriod =
-        "select pg.patient_id, max(ps.start_date) data_estado from patient p "
-            + "	   inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "	   inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "  where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s "
-            + "    and ps.state= %s and ps.end_date is null and ps.start_date<= :endDate "
-            + "    and location_id= :location group by pg.patient_id";
+    public static final String
+        findMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullInReportingPeriod =
+            "select pg.patient_id, max(ps.start_date) data_estado from patient p "
+                + "	   inner join patient_program pg on p.patient_id=pg.patient_id "
+                + "	   inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+                + "  where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s "
+                + "    and ps.state= %s and ps.end_date is null and ps.start_date<= :endDate "
+                + "    and location_id= :location group by pg.patient_id";
+
+    public static final String
+        findMaxPatientStateDateByProgramAndPatientStateAndPatientStateInReportingPeriod =
+            "select pg.patient_id, max(ps.start_date) data_estado from patient p "
+                + "	   inner join patient_program pg on p.patient_id=pg.patient_id "
+                + "	   inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+                + "  where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s "
+                + "    and ps.state= %s and ps.start_date<= :endDate "
+                + "    and location_id= :location group by pg.patient_id";
 
     public static final String findMaxObsDatetimeByEncounterTypeAndConceptsAndAnsweresInPeriod =
         "select p.patient_id, max(baseObs.obs_datetime) data_estado from patient p "
