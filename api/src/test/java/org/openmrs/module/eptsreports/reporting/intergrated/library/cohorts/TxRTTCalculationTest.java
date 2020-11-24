@@ -40,7 +40,8 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
     CohortDefinition patientsWhoExperiencedIIT = txRTTCohortQueries.getPatientsOnRTT();
 
-    CohortDefinition misauKeyPops = misauKeyPopReportCohortQueries.getPatientsCoort12CurrentOnArt();
+    CohortDefinition misauKeyPops =
+        misauKeyPopReportCohortQueries.getPatientsCurrentOnTarvMisauDefinition();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(misauKeyPops, parameters);

@@ -54,12 +54,12 @@ public class SetupMisauKeyPopReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Relatorio de Populacao Chave - MISAU MOH";
+    return "Relatorio de Populacao Chave - MISAU  Reporting Module";
   }
 
   @Override
   public String getDescription() {
-    return "Relatorio de Populacao Chave - MISAU MOH";
+    return "Relatorio de Populacao Chave - MISAU  Reporting Module";
   }
 
   @Override

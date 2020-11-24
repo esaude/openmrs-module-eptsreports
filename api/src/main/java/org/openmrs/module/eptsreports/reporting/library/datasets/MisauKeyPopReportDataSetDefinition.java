@@ -15,7 +15,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MisauKeyPopReportCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -41,8 +40,6 @@ public class MisauKeyPopReportDataSetDefinition extends BaseDataSet {
 
   private TxNewCohortQueries txNewCohortQueries;
 
-  private TxCurrCohortQueries txCurrCohortQueries;
-
   private MisauKeyPopReportCohortQueries misauKeyPopReportCohortQueries;
 
   @Autowired
@@ -56,13 +53,11 @@ public class MisauKeyPopReportDataSetDefinition extends BaseDataSet {
       ResumoMensalCohortQueries resumoMensalCohortQueries,
       ResumoMensalAandBdisaggregations resumoMensalAandBdisaggregations,
       TxNewCohortQueries txNewCohortQueries,
-      TxCurrCohortQueries txCurrCohortQueries,
       KeyPopulationDimension keyPopulationDimension,
       MisauKeyPopReportCohortQueries misauKeyPopReportCohortQueries) {
     this.eptsCommonDimension = eptsCommonDimension;
     this.eptsGeneralIndicator = eptsGeneralIndicator;
     this.txNewCohortQueries = txNewCohortQueries;
-    this.txCurrCohortQueries = txCurrCohortQueries;
     this.keyPopulationDimension = keyPopulationDimension;
     this.misauKeyPopReportCohortQueries = misauKeyPopReportCohortQueries;
   }
@@ -77,8 +72,10 @@ public class MisauKeyPopReportDataSetDefinition extends BaseDataSet {
 
     CohortDefinition txNewPatientsEnrolledInARTDefinition =
         this.txNewCohortQueries.getTxNewCompositionCohort("patientEnrolledInART");
-    final CohortDefinition txCurrPatientCurrentOnARTDefinition =
-        this.txCurrCohortQueries.findPatientsWhoAreActiveOnART();
+
+    CohortDefinition txCurrPatientCurrentOnARTDefinition =
+        this.misauKeyPopReportCohortQueries.getPatientsCurrentOnTarvMisauDefinition();
+
     CohortDefinition txCurrWithVLResultDefinition =
         this.misauKeyPopReportCohortQueries.getPatientsCurrentlyOnTarvWhoReceicevedVLResults();
     CohortDefinition currentlyOnTarvWhitSuppressedVLResultsDefinition =
@@ -138,7 +135,7 @@ public class MisauKeyPopReportDataSetDefinition extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "E1",
-        "Numero adultos que iniciaram TARV - Total",
+        "Nr. Adultos que iniciaram TARV - Total",
         EptsReportUtils.map(txNewPatientEnrolledInArtIndicator, mappings),
         "age=15+");
 
@@ -168,7 +165,7 @@ public class MisauKeyPopReportDataSetDefinition extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "E2",
-        "Numero adultos actualmente em TARV - Total",
+        "Nr. Adultos actualmente em TARV - Total",
         EptsReportUtils.map(txCurrPatientCurrentOnARTIndicator, mappingEndDate),
         "age=15+");
 
@@ -198,7 +195,7 @@ public class MisauKeyPopReportDataSetDefinition extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "E3",
-        "Numero adultos actualmente em TARV - Total",
+        "Nr. Adultos com um teste de Carga Viral (CV) Durante o trimestre - Total",
         EptsReportUtils.map(txCurrWithVLResultIndicator, mappings),
         "age=15+");
 
@@ -228,7 +225,7 @@ public class MisauKeyPopReportDataSetDefinition extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "E4",
-        "Numero adultos actualmente em TARV - Total",
+        "Nr. Adultos com supressao de CV (<1000 cópias/mL) - Total",
         EptsReportUtils.map(currentlyOnTarvWhitSuppressedVLResultsIndicator, mappings),
         "age=15+");
 
@@ -259,7 +256,7 @@ public class MisauKeyPopReportDataSetDefinition extends BaseDataSet {
     //
     dataSetDefinition.addColumn(
         "E5",
-        "Numero adultos actualmente em TARV - Total",
+        "Nr. Adultos na coorte 12 - inicio de TARV - Total",
         EptsReportUtils.map(patientsCoort12StartArtIndicator, mappings),
         "age=15+");
 
@@ -290,7 +287,7 @@ public class MisauKeyPopReportDataSetDefinition extends BaseDataSet {
     //
     dataSetDefinition.addColumn(
         "E6",
-        "Numero adultos actualmente em TARV - Total",
+        "Nr. Adultos na coorte 12 meses - Activos em TARV - Total",
         EptsReportUtils.map(patientsCoort12CurrentOnArtIndicator, mappings),
         "age=15+");
 

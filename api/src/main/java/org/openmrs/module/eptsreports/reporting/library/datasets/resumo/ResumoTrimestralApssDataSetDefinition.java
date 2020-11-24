@@ -60,7 +60,7 @@ public class ResumoTrimestralApssDataSetDefinition extends BaseDataSet {
   public DataSetDefinition constructResumoTrimestralApssDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 
-    dsd.setName("Resumo Trimestral APSS");
+    dsd.setName("Resumo Trimestral APSS e PP");
     dsd.addParameters(getParameters());
 
     dsd.addDimension("gender", map(eptsCommonDimension.gender(), ""));

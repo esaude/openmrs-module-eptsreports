@@ -54,7 +54,7 @@ public class SetupTRFIN extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "TRF-IN REPORT";
+    return "TRF-IN REPORT  Reporting Module";
   }
 
   @Override

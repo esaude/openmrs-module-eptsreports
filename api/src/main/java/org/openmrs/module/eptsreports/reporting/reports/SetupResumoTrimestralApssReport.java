@@ -56,12 +56,12 @@ public class SetupResumoTrimestralApssReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Resumo Trimestral das APSS e PP";
+    return "Resumo Trimestral das APSS e PP Reporting Module";
   }
 
   @Override
   public String getDescription() {
-    return "Resumo Trimestral das APSS e PP";
+    return "Resumo Trimestral das APSS e PP Reporting Module";
   }
 
   @Override
