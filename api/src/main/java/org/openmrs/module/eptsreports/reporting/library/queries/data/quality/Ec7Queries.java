@@ -57,7 +57,7 @@ public class Ec7Queries {
             + "DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, "
             + "MIN(DATE_FORMAT(Seguimento.encounter_datetime, '%d-%m-%Y')) AS encounter_date, "
             + "DATE_FORMAT(Seguimento.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created, "
-            + "Seguimento.location_name AS location_name FROM  person pe  "
+            + "l.name AS location_name FROM  person pe  "
             + "LEFT JOIN  ( "
             + "SELECT p.patient_id patient_id, ps.start_date trasfered_date FROM patient p "
             + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id  "
@@ -90,10 +90,53 @@ public class Ec7Queries {
             + ") Seguimento on Seguimento.patient_id = pe.person_id "
             + "left join  patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = 2 and pg.location_id IN (:location) "
             + "left join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + "left join location l on l.location_id=pid.location_id "
             + "where pe.voided = 0 and (trasferedOut.patient_id is not null) and (Seguimento.encounter_datetime>trasferedOut.trasfered_date) "
             + "GROUP BY pe.person_id "
             + ") f_ec7 "
             + " GROUP BY f_ec7.patient_id ";
+
+    return query;
+  }
+
+  public static String getEc7Total() {
+    String query =
+        "SELECT pe.person_id as patient_id FROM  person pe  "
+            + "LEFT JOIN  ( "
+            + "SELECT p.patient_id patient_id, ps.start_date trasfered_date FROM patient p "
+            + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id  "
+            + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id  "
+            + " WHERE  ps.state=7  AND pg.voided=0  AND ps.voided=0  AND pg.program_id=2 AND ps.start_date IS NOT NULL AND ps.end_date IS NULL  "
+            + ") trasferedOut  on pe.person_id=trasferedOut.patient_id "
+            + "left join ( "
+            + "select pid1.* from patient_identifier pid1 "
+            + "inner join ( "
+            + "select patient_id,min(patient_identifier_id) id from patient_identifier "
+            + "where voided=0 "
+            + "group by patient_id "
+            + ") pid2 "
+            + "where pid1.patient_id=pid2.patient_id and pid1.patient_identifier_id=pid2.id "
+            + ") pid on pid.patient_id=pe.person_id "
+            + "left join ( select pn1.* from person_name pn1 "
+            + "inner join ( "
+            + "select person_id,min(person_name_id) id from person_name "
+            + "where voided=0 "
+            + "group by person_id "
+            + ") pn2 "
+            + "where pn1.person_id=pn2.person_id and pn1.person_name_id=pn2.id "
+            + ") pn on pn.person_id=pe.person_id    "
+            + "left join ( "
+            + "Select p.patient_id, e.encounter_datetime, l.name  location_name, e.date_created from  patient p "
+            + "inner join encounter e on p.patient_id = e.patient_id "
+            + "inner join location l on l.location_id = e.location_id "
+            + "where p.voided = 0 and e.voided = 0 and e.encounter_type in (6,9) and e.location_id IN (:location) "
+            + "AND e.encounter_datetime between :startDate AND :endDate "
+            + ") Seguimento on Seguimento.patient_id = pe.person_id "
+            + "left join  patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = 2 and pg.location_id IN (:location) "
+            + "left join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + "left join location l on l.location_id=pid.location_id "
+            + "where pe.voided = 0 and (trasferedOut.patient_id is not null) and (Seguimento.encounter_datetime>trasferedOut.trasfered_date) "
+            + "GROUP BY pe.person_id ";
 
     return query;
   }

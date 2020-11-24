@@ -35,6 +35,7 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec19PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec1PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec20PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec23PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec2PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec3PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec4PatientListDataset;
@@ -104,6 +105,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec20PatientListDataset ec20PatientListDataset;
 
+  private Ec23PatientListDataset ec23PatientListDataset;
+
   private GetCustomConfigurationDataset getCustomConfigurationDataset;
 
   private HivMetadata hivMetadata;
@@ -135,7 +138,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       SummaryEc20DataQualityDataset summaryEc20DataQualityDataset,
       SummaryEc20DataQualityCohorts summaryEc20DataQualityCohorts,
       GetCustomConfigurationDataset getCustomConfigurationDataset,
-      HivMetadata hivMetadata) {
+      HivMetadata hivMetadata,
+      Ec23PatientListDataset ec23PatientListDataset) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
     this.ec1PatientListDataset = ec1PatientListDataset;
     this.ec2PatientListDataset = ec2PatientListDataset;
@@ -157,6 +161,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec18PatientListDataset = ec18PatientListDataset;
     this.ec19PatientListDataset = ec19PatientListDataset;
     this.ec20PatientListDataset = ec20PatientListDataset;
+    this.ec23PatientListDataset = ec23PatientListDataset;
     this.summaryEc20DataQualityDataset = summaryEc20DataQualityDataset;
 
     this.hivMetadata = hivMetadata;
@@ -281,6 +286,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         "EC20",
         Mapped.mapStraightThrough(
             ec20PatientListDataset.ec20PatientListDatset(getDataParametersEC20())));
+    rd.addDataSetDefinition(
+        "EC23",
+        Mapped.mapStraightThrough(
+            ec23PatientListDataset.ec23PatientListDatset(getDataParametersEC20())));
 
     rd.addDataSetDefinition(
         "EC01",
@@ -308,7 +317,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Properties props = new Properties();
       props.put(
           "repeatingSections",
-          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6 | sheet:8,row:7,dataset:EC7 | sheet:9,row:7,dataset:EC8 | sheet:10,row:7,dataset:EC9 | sheet:11,row:7,dataset:EC10 | sheet:12,row:7,dataset:EC11 | sheet:13,row:7,dataset:EC12 | sheet:14,row:7,dataset:EC13 | sheet:15,row:7,dataset:EC14 | sheet:16,row:7,dataset:EC15 | sheet:17,row:7,dataset:EC16 | sheet:18,row:7,dataset:EC17 | sheet:19,row:7,dataset:EC18 | sheet:20,row:7,dataset:EC19 |sheet:21,row:7,dataset:EC20");
+          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6 | sheet:8,row:7,dataset:EC7 | sheet:9,row:7,dataset:EC8 | sheet:10,row:7,dataset:EC9 | sheet:11,row:7,dataset:EC10 | sheet:12,row:7,dataset:EC11 | sheet:13,row:7,dataset:EC12 | sheet:14,row:7,dataset:EC13 | sheet:15,row:7,dataset:EC14 | sheet:16,row:7,dataset:EC15 | sheet:17,row:7,dataset:EC16 | sheet:18,row:7,dataset:EC17 | sheet:19,row:7,dataset:EC18 | sheet:20,row:7,dataset:EC19 |sheet:21,row:7,dataset:EC20 |sheet:23,row:7,dataset:EC23");
+      props.put("sortWeight", "5000");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {

@@ -1,21 +1,21 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec20Queries;
+import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.EC23Queries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class Ec20PatientListDataset extends BaseDataSet {
+public class Ec23PatientListDataset {
 
-  public DataSetDefinition ec20PatientListDatset(List<Parameter> parameterList) {
+  public DataSetDefinition ec23PatientListDatset(List<Parameter> parameterList) {
+
     SqlDataSetDefinition sqlDataSetDefinition = new SqlDataSetDefinition();
-    sqlDataSetDefinition.setName("EC20");
+    sqlDataSetDefinition.setName("EC23");
     sqlDataSetDefinition.addParameters(parameterList);
-    sqlDataSetDefinition.setSqlQuery(Ec20Queries.getEc20CombinedQuery());
+    sqlDataSetDefinition.setSqlQuery(EC23Queries.getEc23CombinedQuery());
 
     return sqlDataSetDefinition;
   }
