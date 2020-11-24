@@ -20,7 +20,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.MisauKeyPopReportDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoTrimestralApssDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -31,35 +32,36 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupMisauKeyPopReport extends EptsDataExportManager {
+public class SetupResumoTrimestralApssReport extends EptsDataExportManager {
 
-  private MisauKeyPopReportDataSetDefinition misauKeyPopDataSetDefinition;
+  private ResumoTrimestralApssDataSetDefinition resumoMensTrimestralApssDataSetDefinition;
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
   @Autowired
-  public SetupMisauKeyPopReport(MisauKeyPopReportDataSetDefinition misauKeyPopDataSetDefinition) {
-    this.misauKeyPopDataSetDefinition = misauKeyPopDataSetDefinition;
+  public SetupResumoTrimestralApssReport(
+      ResumoTrimestralApssDataSetDefinition resumoMensTrimestralApssDataSetDefinition) {
+    this.resumoMensTrimestralApssDataSetDefinition = resumoMensTrimestralApssDataSetDefinition;
   }
 
   @Override
   public String getExcelDesignUuid() {
-    return "9d9afa2f-d107-48e7-bd0a-c82a24fecdec";
+    return "225c3224-a928-4b70-98ac-c71627366c14";
   }
 
   @Override
   public String getUuid() {
-    return "5de5a817-000e-4572-80a1-61ab83a49461";
+    return "1a50f7ec-0355-4c02-b8ad-2faebd35eb6f";
   }
 
   @Override
   public String getName() {
-    return "Relatorio de Populacao Chave - MISAU MOH";
+    return "Resumo Trimestral das APSS e PP";
   }
 
   @Override
   public String getDescription() {
-    return "Relatorio de Populacao Chave - MISAU MOH";
+    return "Resumo Trimestral das APSS e PP";
   }
 
   @Override
@@ -68,9 +70,12 @@ public class SetupMisauKeyPopReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.addParameters(misauKeyPopDataSetDefinition.getParameters());
+    rd.addParameters(resumoMensTrimestralApssDataSetDefinition.getParameters());
+    rd.addDataSetDefinition("HF", mapStraightThrough(new LocationDataSetDefinition()));
     rd.addDataSetDefinition(
-        "M", mapStraightThrough(misauKeyPopDataSetDefinition.constructMisauKeyPopDataset()));
+        "R",
+        mapStraightThrough(
+            resumoMensTrimestralApssDataSetDefinition.constructResumoTrimestralApssDataset()));
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
@@ -91,8 +96,8 @@ public class SetupMisauKeyPopReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Relatorio_de_Populacao_Chave_MISAU.xls",
-              "Relatorio de Populacao Chave - MISAU",
+              "Relatorio_trimestral_apss.xls",
+              "Relatorio Trimestral APSS Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
@@ -101,6 +106,7 @@ public class SetupMisauKeyPopReport extends EptsDataExportManager {
     } catch (IOException e) {
       throw new ReportingException(e.toString());
     }
+
     return Arrays.asList(reportDesign);
   }
 }

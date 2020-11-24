@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.MisauKeyPopReportCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -20,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
   @Autowired private TxRTTCohortQueries txRTTCohortQueries;
+  @Autowired private MisauKeyPopReportCohortQueries misauKeyPopReportCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
@@ -38,8 +40,10 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
     CohortDefinition patientsWhoExperiencedIIT = txRTTCohortQueries.getPatientsOnRTT();
 
+    CohortDefinition misauKeyPops = misauKeyPopReportCohortQueries.getPatientsCoort12CurrentOnArt();
+
     final EvaluatedCohort evaluateCohortDefinition =
-        this.evaluateCohortDefinition(patientsWhoExperiencedIIT, parameters);
+        this.evaluateCohortDefinition(misauKeyPops, parameters);
 
     System.out.println(evaluateCohortDefinition.getMemberIds().size());
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
