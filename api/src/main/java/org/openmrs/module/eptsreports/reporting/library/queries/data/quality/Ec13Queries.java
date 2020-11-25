@@ -22,7 +22,7 @@ public class Ec13Queries {
    */
   public static String getEc13CombinedQuery(int programId) {
     String query =
-        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state, l.name AS location_name FROM patient pa "
+        "SELECT DISTINCT(pa.patient_id), pi.identifier AS NID, CONCAT(pn.given_name, ' ', pn.family_name ) AS Name, DATE_FORMAT(pe.birthdate, '%d-%m-%Y') AS birthdate, IF(pe.birthdate_estimated = 1, 'Yes','No') AS Estimated_dob, pe.gender AS Sex, DATE_FORMAT(pa.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, DATE_FORMAT(pa.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, case when ps.state = 9 then 'DROPPED FROM TREATMENT' when ps.state = 6 then 'ACTIVE ON PROGRAM' when ps.state = 10 then 'PATIENT HAS DIED' when ps.state = 8 then 'SUSPENDED TREATMENT' when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state,  DATE_FORMAT(ps.start_date, '%d-%m-%Y %H:%i:%s') AS state_date, l.name AS location_name FROM patient pa "
             + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id"
             + " INNER JOIN person pe ON pa.patient_id=pe.person_id"
             + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
@@ -39,7 +39,10 @@ public class Ec13Queries {
             + " WHERE pe.birthdate IS NULL "
             + " UNION "
             + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
-            + " WHERE pe.birthdate IS NOT NULL AND pe.birthdate > pe.date_created)";
+            + " WHERE pe.birthdate IS NOT NULL AND pe.birthdate > pe.date_created"
+            + " UNION "
+            + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
+            + " WHERE YEAR(CURRENT_TIMESTAMP) - YEAR(pe.birthdate) - (RIGHT(CURRENT_TIMESTAMP, 5) < RIGHT(pe.birthdate, 5))<0) ";
     return query;
   }
 }

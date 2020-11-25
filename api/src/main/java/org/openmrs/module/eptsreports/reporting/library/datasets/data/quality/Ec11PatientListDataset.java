@@ -42,7 +42,17 @@ public class Ec11PatientListDataset extends BaseDataSet {
         Ec11Queries.getEc11CombinedQuery(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
-            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId()));
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+            51
+            // hivMetadata.getFSREncounterType().getEncounterTypeId()
+            ,
+            23821
+            // hivMetadata.getSampleDateCollectionConceptId().getConceptId()
+            ,
+            6246
+            // hivMetadata.getDateApplicationLaboratoryConceptId().getConceptId()
+
+            ));
 
     return dsd;
   }

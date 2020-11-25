@@ -89,18 +89,25 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patient’s vital status is dead and the patient has a clinical consultation after date of death or death notification",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
+                    summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfterEC4(
                         hivMetadata.getARTProgram().getProgramId(),
                         hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
+                        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                        hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                        hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
+                        hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+                        hivMetadata.getPatientHasDiedConcept().getConceptId(),
                         Arrays.asList(
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                             hivMetadata
                                 .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId())),
-                    "location=${location}"),
+                                .getEncounterTypeId(),
+                            hivMetadata.getMasterCardEncounterType().getEncounterTypeId())),
+                    "location=${location},startDate=${startDate},endDate=${endDate}"),
                 Arrays.asList(
                     EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            "location=${location}"),
+            "location=${location},startDate=${startDate},endDate=${endDate}"),
         "");
 
     dsd.addColumn(
@@ -230,12 +237,20 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as abandoned but has an laboratory results(specimen collection date or report date) after the abandoned date",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncountersEC11(
                         hivMetadata.getARTProgram().getProgramId(),
                         hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
-                        Arrays.asList(
-                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
-                    "location=${location}"),
+                        hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                        51
+                        // hivMetadata.getFSREncounterType().getEncounterTypeId()
+                        ,
+                        23821
+                        // hivMetadata.getSampleDateCollectionConceptId().getConceptId()
+                        ,
+                        6246
+                        // hivMetadata.getDateApplicationLaboratoryConceptId().getConceptId()
+                        ),
+                    "location=${location},endDate=${endDate},startDate=${startDate}"),
                 Arrays.asList(
                     EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
             "location=${location}"),
@@ -357,9 +372,13 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patients' whose date of laboratory test specimen collection date or results report date is before 1985",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985(
-                        Arrays.asList(
-                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
+                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985EC19(
+                        hivMetadata.getARTProgram().getProgramId(),
+                        hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                        51, // hivMetadata.getFSREncounterType().getEncounterTypeId(),
+                        hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()),
                     "location=${location},endDate=${endDate}"),
                 Arrays.asList(
                     EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),

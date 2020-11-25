@@ -103,6 +103,67 @@ public class SummaryDataQualityCohorts {
   }
 
   /**
+   * Get patients with states and a list of encounters
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWithStatesAndEncountersEC11(
+      int programId,
+      int stateId,
+      int labEncounterType,
+      int fsrLabEncounterType,
+      int sampleCollectionDateConceptId,
+      int requestLaboratoryDateConceptId) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients who have state that is before an encounter - EC11");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        SummaryQueries.getPatientsWithStateThatIsBeforeAnEncounterEC11(
+            programId,
+            stateId,
+            labEncounterType,
+            fsrLabEncounterType,
+            sampleCollectionDateConceptId,
+            requestLaboratoryDateConceptId));
+    return cd;
+  }
+
+  /**
+   * Get patients with states and a list of encounters
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWithStatesAndEncountersEC4(
+      int programId,
+      int stateId,
+      int adultFollowUp,
+      int childFollowUp,
+      int fichaResumo,
+      int stateOfStayPriorArtPatient,
+      int stateOfStayOfArtPatient,
+      int patientHasDiedConcept,
+      List<Integer> encounterList) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients who have state that is before an encounter");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(
+        SummaryQueries.getPatientsWithStateThatIsBeforeAnEncounterEC4(
+            programId,
+            stateId,
+            adultFollowUp,
+            childFollowUp,
+            fichaResumo,
+            stateOfStayPriorArtPatient,
+            stateOfStayOfArtPatient,
+            patientHasDiedConcept));
+    return cd;
+  }
+
+  /**
    * Patients with a birth date that is before 1920 The patient’s date of birth, estimated date of
    * birth or entered age indicate the patient was born before 1920
    *
@@ -182,6 +243,64 @@ public class SummaryDataQualityCohorts {
   }
 
   /**
+   * The patients who are marked as dead in the patient states or those marked as deceased in the
+   * person object
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getDeadOrDeceasedPatientsHavingEncountersAfterEC4(
+      int programId,
+      int stateId,
+      int adultFollowUp,
+      int childFollowUp,
+      int fichaResumo,
+      int stateOfStayPriorArtPatient,
+      int stateOfStayOfArtPatient,
+      int patientHasDiedConcept,
+      List<Integer> encounterList) {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Deceased and have encounters after deceased date");
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.setQuery(
+        SummaryQueries.getPatientsWithStateThatIsBeforeAnEncounterEC4(
+            programId,
+            stateId,
+            adultFollowUp,
+            childFollowUp,
+            fichaResumo,
+            stateOfStayPriorArtPatient,
+            stateOfStayOfArtPatient,
+            patientHasDiedConcept));
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Dead or deceased patients");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            getPatientsWithStatesAndEncountersEC4(
+                programId,
+                stateId,
+                adultFollowUp,
+                childFollowUp,
+                fichaResumo,
+                stateOfStayPriorArtPatient,
+                stateOfStayOfArtPatient,
+                patientHasDiedConcept,
+                encounterList),
+            "location=${location},startDate=${startDate},endDate=${endDate}"));
+    cd.addSearch(
+        "deceased",
+        EptsReportUtils.map(sql, "location=${location},startDate=${startDate},endDate=${endDate}"));
+    cd.setCompositionString("dead OR deceased");
+    return cd;
+  }
+
+  /**
    * The patients whose date of drug pick up is before 1985 The date of clinical consultation is
    * before 1985
    *
@@ -195,6 +314,36 @@ public class SummaryDataQualityCohorts {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.setQuery(
         SummaryQueries.getPatientsWhoseEncounterIsBefore1985(encounterList));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * The patients whose date of drug pick up is before 1985 The date of clinical consultation is
+   * before 1985
+   *
+   * @param encounterList
+   * @return
+   */
+  public CohortDefinition getPatientsWhoseEncounterIsBefore1985EC19(
+      int programId,
+      int labEncounterType,
+      int FSREncounterType,
+      int masterCardEncounterType,
+      int adultoSeguimentoEncounterType,
+      int aRVPediatriaSeguimentoEncounterType) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("patients whose date of drug pick up is before 1985");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.setQuery(
+        SummaryQueries.getPatientsWhoseEncounterIsBefore1985EC19(
+            programId,
+            labEncounterType,
+            FSREncounterType,
+            masterCardEncounterType,
+            adultoSeguimentoEncounterType,
+            aRVPediatriaSeguimentoEncounterType));
 
     return sqlCohortDefinition;
   }
