@@ -62,6 +62,29 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             initiatedART, "startDate=${startDate},endDate=${endDate},location=${location}"),
         getDisagregateAdultsAndChildrenSColumn());
+    // Category 4 denominator indicators
+    dataSetDefinition.addColumn(
+        "MCC4D1",
+        "Crianças em TARV com estado (grau) da avaliação nutricional registado na última consulta clínica",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MCC4D1",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC4D1(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+    dataSetDefinition.addColumn(
+        "MCC4D2",
+        "MG em TARV com o estado (grau) da avaliação nutricional registado na última consulta clínica",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MCC4D2",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC4D2(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
 
     return dataSetDefinition;
   }
