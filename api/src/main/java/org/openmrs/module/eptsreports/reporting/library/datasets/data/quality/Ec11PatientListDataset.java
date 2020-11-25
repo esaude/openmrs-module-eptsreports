@@ -51,7 +51,6 @@ public class Ec11PatientListDataset extends BaseDataSet {
             ,
             6246
             // hivMetadata.getDateApplicationLaboratoryConceptId().getConceptId()
-
             ));
 
     return dsd;

@@ -209,7 +209,7 @@ public class SummaryQueries {
             + " AND e.location_id IN(:location) AND pa.voided = 0 and e.voided=0 "
             + " AND pe.birthdate > e.encounter_datetime ";
     return String.format(query, str2);
-  } 
+  }
 
   /**
    * Get patients who have a given state before an encounter

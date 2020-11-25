@@ -375,7 +375,8 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                     summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985EC19(
                         hivMetadata.getARTProgram().getProgramId(),
                         hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-                        51, // hivMetadata.getFSREncounterType().getEncounterTypeId(),
+                        51, 
+                        // hivMetadata.getFSREncounterType().getEncounterTypeId(),
                         hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
                         hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                         hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()),

@@ -10,7 +10,7 @@ public class Ec16Queries {
    * @param adultoSeguimentoEncounterType
    * @return
    */
-  public static String getEc16CombinedQuery( 
+  public static String getEc16CombinedQuery(
       int programId, int arvPediatriaSeguimentoEncounterType, int adultoSeguimentoEncounterType) {
     String query =
         "SELECT patient_id, NID, Name, birthdate, Estimated_dob, Sex, First_entry_date, Last_updated, date_enrolled,  MIN(encounter_date) AS encounter_date, encounter_date_created, state, state_date, location_name FROM("

@@ -25,7 +25,7 @@ import org.springframework.stereotype.Component;
 public class HivMetadata extends ProgramsMetadata {
 
   private final String gpSTarvFarmaciaEncounterTypeUuid =
-      "eptsreports.sTarvFarmaciaEncounterTypeUuid";
+      "eptsreports.sTarvFarmaciaEncounterTypeUuid"; 
 
   private final String gpArtProgramUuid = "eptsreports.artProgramUuid";
 
