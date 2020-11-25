@@ -36,7 +36,7 @@ public class Ec11PatientListDataset extends BaseDataSet {
 
   public DataSetDefinition ec11PatientListDataset(List<Parameter> parameterList) {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
-    dsd.setName("EC11");
+    dsd.setName("EC11"); 
     dsd.addParameters(parameterList);
     dsd.setSqlQuery( 
         Ec11Queries.getEc11CombinedQuery(

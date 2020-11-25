@@ -198,7 +198,7 @@ public class SummaryQueries {
    *
    * @return String
    */
-  public static String getPatientsWhoseBirthdateIsAfterDrugPickup(List<Integer> encounterList) {
+  public static String getPatientsWhoseBirthdateIsAfterDrugPickup(List<Integer> encounterList){
     String str1 = String.valueOf(encounterList).replaceAll("\\[", "");
     String str2 = str1.replaceAll("]", "");
     String query =

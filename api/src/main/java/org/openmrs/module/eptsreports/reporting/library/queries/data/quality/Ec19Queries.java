@@ -16,7 +16,7 @@ public class Ec19Queries {
       int masterCardEncounterType,
       int adultoSeguimentoEncounterType,
       int aRVPediatriaSeguimentoEncounterType,
-      int year) {
+      int year) { 
     String query =
         "SELECT 	pe.person_id As patient_id, "
             + "		pid.identifier AS NID, "
