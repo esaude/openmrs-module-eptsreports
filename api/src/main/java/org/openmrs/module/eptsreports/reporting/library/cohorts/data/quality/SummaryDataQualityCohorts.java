@@ -102,6 +102,16 @@ public class SummaryDataQualityCohorts {
     return cd;
   }
 
+  public CohortDefinition getPatientsWithStatesAndEncountersEC10() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients who have state that is before an encounter");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(SummaryQueries.getPatientsWithStateThatIsBeforeAnEncounterEC10());
+    return cd;
+  }
+
   /**
    * Patients with a birth date that is before 1920 The patient’s date of birth, estimated date of
    * birth or entered age indicate the patient was born before 1920
@@ -137,6 +147,17 @@ public class SummaryDataQualityCohorts {
     cd.setName("The patients birth, estimated date of birth or age indicates they are > " + years);
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.setQuery(SummaryQueries.getPatientsWithMoreThanXyears(years));
+    return cd;
+  }
+
+  public CohortDefinition getCountPatientsWithExceptionConsultation() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName(
+        "The value of a date field registered on any form, with the exception of consultation date, is before 1985 ");
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.setQuery(SummaryQueries.getCountPatientsEC14());
     return cd;
   }
 
@@ -181,6 +202,16 @@ public class SummaryDataQualityCohorts {
     return cd;
   }
 
+  public CohortDefinition getDeadOrDeceasedPatientsHavingEncountersAfterEC3() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("Deceased and have encounters after deceased date");
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.setQuery(SummaryQueries.getPatientsMarkedAsDeceasedAndHaveAnEncounterEC3());
+    return sql;
+  }
+
   /**
    * The patients whose date of drug pick up is before 1985 The date of clinical consultation is
    * before 1985
@@ -195,6 +226,42 @@ public class SummaryDataQualityCohorts {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.setQuery(
         SummaryQueries.getPatientsWhoseEncounterIsBefore1985(encounterList));
+
+    return sqlCohortDefinition;
+  }
+
+  public CohortDefinition getPatientsWhoseEncounterIsBeforeEC18() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("patients whose date of drug pick up is before 1985");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(SummaryQueries.getPatientsWhoseEncounterIsBeforeEC18());
+
+    return sqlCohortDefinition;
+  }
+
+  public CohortDefinition getPatientsSexNotDefinedEC21() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("The Patient’s sex is not defined");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(SummaryQueries.getPatientsSexNotDefinedEC21());
+
+    return sqlCohortDefinition;
+  }
+
+  public CohortDefinition getPatientsSexNotDefinedEC22() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("The Patient’s date of birth is not defined");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(SummaryQueries.getPatientsBirthNotDefinedEC22());
+
+    return sqlCohortDefinition;
+  }
+
+  public CohortDefinition getPatientsWhoseEncounterIsBeforeEC17() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("patients whose date of drug pick up is before 1985");
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    sqlCohortDefinition.setQuery(SummaryQueries.getPatientsWhoseEncounterIsBeforeEC17());
 
     return sqlCohortDefinition;
   }
