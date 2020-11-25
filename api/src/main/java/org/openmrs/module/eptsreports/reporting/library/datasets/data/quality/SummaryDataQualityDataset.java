@@ -369,7 +369,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
         "EC19",
         "The patients' whose date of laboratory test specimen collection date or results report date is before 1985",
         EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator( 
+            eptsGeneralIndicator.getIndicator(
                 "The patients' whose date of laboratory test specimen collection date or results report date is before 1985",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985EC19(

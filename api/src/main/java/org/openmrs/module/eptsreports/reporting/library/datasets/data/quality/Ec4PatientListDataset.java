@@ -38,7 +38,7 @@ public class Ec4PatientListDataset extends BaseDataSet {
     dsd.setName("EC4");
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(
-        Ec4Queries.getEc4CombinedQuery( 
+        Ec4Queries.getEc4CombinedQuery(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),

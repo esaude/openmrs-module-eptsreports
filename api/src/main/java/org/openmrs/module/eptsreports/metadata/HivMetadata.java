@@ -22,7 +22,7 @@ import org.openmrs.api.context.Context;
 import org.springframework.stereotype.Component;
 
 @Component("hivMetadata")
-public class HivMetadata extends ProgramsMetadata {
+public class HivMetadata extends ProgramsMetadata { 
 
   private final String gpSTarvFarmaciaEncounterTypeUuid =
       "eptsreports.sTarvFarmaciaEncounterTypeUuid"; 

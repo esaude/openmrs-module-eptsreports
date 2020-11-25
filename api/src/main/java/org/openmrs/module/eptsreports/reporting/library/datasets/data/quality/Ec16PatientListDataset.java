@@ -30,7 +30,7 @@ public class Ec16PatientListDataset extends BaseDataSet {
     sqlDataSetDefinition.setName("EC16");
     sqlDataSetDefinition.addParameters(parameterList);
     sqlDataSetDefinition.setSqlQuery(
-        Ec16Queries.getEc16CombinedQuery( 
+        Ec16Queries.getEc16CombinedQuery(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
