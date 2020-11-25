@@ -38,7 +38,7 @@ public class Ec11PatientListDataset extends BaseDataSet {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC11");
     dsd.addParameters(parameterList);
-    dsd.setSqlQuery(
+    dsd.setSqlQuery( 
         Ec11Queries.getEc11CombinedQuery(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),

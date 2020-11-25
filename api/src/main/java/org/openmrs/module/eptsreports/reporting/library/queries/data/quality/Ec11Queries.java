@@ -23,7 +23,7 @@ public class Ec11Queries {
    */
   public static String getEc11CombinedQuery(
       int programId,
-      int stateId,
+      int stateId, 
       int labEncounterType,
       int fsrLabEncounterType,
       int sampleCollectionDateConceptId,

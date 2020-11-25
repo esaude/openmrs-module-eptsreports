@@ -20,7 +20,7 @@ public class Ec4Queries {
    *
    * @return String
    */
-  public static String getEc4CombinedQuery(
+  public static String getEc4CombinedQuery( 
       int programId,
       int stateId,
       int adultFollowUp,

@@ -14,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SummaryDataQualityDataset extends BaseDataSet {
+public class SummaryDataQualityDataset extends BaseDataSet { 
 
   private EptsGeneralIndicator eptsGeneralIndicator;
 

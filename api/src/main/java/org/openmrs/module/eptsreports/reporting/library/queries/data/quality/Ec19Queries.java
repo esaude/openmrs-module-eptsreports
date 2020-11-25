@@ -9,7 +9,7 @@ public class Ec19Queries {
    * @param labEncounterType
    * @return
    */
-  public static String getEc19CombinedQuery(
+  public static String getEc19CombinedQuery( 
       int programId,
       int labEncounterType,
       int FSREncounterType,
