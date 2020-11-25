@@ -19,18 +19,24 @@ import org.springframework.stereotype.Component;
 public class SummaryDataQualityDataset extends BaseDataSet {
 
   private EptsGeneralIndicator eptsGeneralIndicator;
-
   private SummaryDataQualityCohorts summaryDataQualityCohorts;
-  @Autowired private SummaryCohortQuery summaryCohortQuery;
   private HivMetadata hivMetadata;
+
+  public static int ENCONTER_TYPE_FSR = 51;
+  public static int SAMPLE_COLLECTION_DATE = 23821;
+  public static int DATE_OF_APPLICATION_OF_LABORATORY_TESTS = 6246;
+
+  private SummaryCohortQuery summaryCohortQuery;
 
   @Autowired
   public SummaryDataQualityDataset(
       EptsGeneralIndicator eptsGeneralIndicator,
       SummaryDataQualityCohorts summaryDataQualityCohorts,
-      HivMetadata hivMetadata) {
+      HivMetadata hivMetadata,
+      SummaryCohortQuery summaryCohortQuery) {
     this.eptsGeneralIndicator = eptsGeneralIndicator;
     this.summaryDataQualityCohorts = summaryDataQualityCohorts;
+    this.summaryCohortQuery = summaryCohortQuery;
     this.hivMetadata = hivMetadata;
   }
 
@@ -79,8 +85,8 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                 "The patient’s vital status is dead and the patient has an ART pick up date after the date of death or death notification",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfterEC3(),
-                    "location=${location},startDate=${startDate},endDate=${endDate}")),
-            "location=${location},startDate=${startDate},endDate=${endDate}"),
+                    mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -90,18 +96,23 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patient’s vital status is dead and the patient has a clinical consultation after date of death or death notification",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfter(
+                    summaryDataQualityCohorts.getDeadOrDeceasedPatientsHavingEncountersAfterEC4(
                         hivMetadata.getARTProgram().getProgramId(),
                         hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
+                        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+                        hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                        hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
+                        hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+                        hivMetadata.getPatientHasDiedConcept().getConceptId(),
                         Arrays.asList(
                             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                             hivMetadata
                                 .getARVPediatriaSeguimentoEncounterType()
-                                .getEncounterTypeId())),
-                    "location=${location}"),
-                Arrays.asList(
-                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            "location=${location}"),
+                                .getEncounterTypeId(),
+                            hivMetadata.getMasterCardEncounterType().getEncounterTypeId())),
+                    mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -161,9 +172,8 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as abandoned but has an clinical consultation date after the abandoned date",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWithStatesAndEncountersEC10(),
-                    "location=${location},startDate=${startDate},endDate=${endDate}")),
-            "location=${location},startDate=${startDate},endDate=${endDate}"),
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncountersEC10(), mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -173,15 +183,15 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patient has been identified as abandoned but has an laboratory results(specimen collection date or report date) after the abandoned date",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWithStatesAndEncounters(
+                    summaryDataQualityCohorts.getPatientsWithStatesAndEncountersEC11(
                         hivMetadata.getARTProgram().getProgramId(),
                         hivMetadata.getAbandonedWorkflowState().getProgramWorkflowStateId(),
-                        Arrays.asList(
-                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
-                    "location=${location}"),
-                Arrays.asList(
-                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            "location=${location}"),
+                        hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                        ENCONTER_TYPE_FSR,
+                        SAMPLE_COLLECTION_DATE,
+                        DATE_OF_APPLICATION_OF_LABORATORY_TESTS),
+                    mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -191,10 +201,9 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patient’s date of birth, estimated date of birth or entered age indicate the patient was born before 1920",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWhoseBirthdateIsBeforeYear(1920), ""),
-                Arrays.asList(
-                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            ""),
+                    summaryDataQualityCohorts.getPatientsWhoseBirthdateIsBeforeYear(1920),
+                    mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -202,11 +211,10 @@ public class SummaryDataQualityDataset extends BaseDataSet {
         "The patients date of birth, estimated date of birth or age is negative",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "The patients date of birth, estimated date of birth or age is negative ",
-                EptsReportUtils.map(summaryDataQualityCohorts.getPatientsWithNegativeAge(), ""),
-                Arrays.asList(
-                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            ""),
+                "The patients date of birth, estimated date of birth or age is negative",
+                EptsReportUtils.map(
+                    summaryDataQualityCohorts.getPatientsWithNegativeAge(), mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -217,8 +225,8 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                 "The value of a date field registered on any form, with the exception of consultation date, is before 1985 ",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getCountPatientsWithExceptionConsultation(),
-                    "location=${location},startDate=${startDate},endDate=${endDate}")),
-            "location=${location},startDate=${startDate},endDate=${endDate}"),
+                    mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -244,10 +252,8 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                             hivMetadata
                                 .getARVPediatriaSeguimentoEncounterType()
                                 .getEncounterTypeId())),
-                    "location=${location},endDate=${endDate}"),
-                Arrays.asList(
-                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            "location=${location},endDate=${endDate}"),
+                    mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -257,9 +263,8 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patients whose date of drug pick up is before 1985",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBeforeEC17(),
-                    "location=${location}")),
-            "location=${location}"),
+                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBeforeEC17(), mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -269,9 +274,8 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patients' whose date of clinical consultation is before 1985",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBeforeEC18(),
-                    "location=${location}")),
-            "location=${location}"),
+                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBeforeEC18(), mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -281,13 +285,15 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The patients' whose date of laboratory test specimen collection date or results report date is before 1985",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985(
-                        Arrays.asList(
-                            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId())),
-                    "location=${location},endDate=${endDate}"),
-                Arrays.asList(
-                    EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()))),
-            "location=${location},endDate=${endDate}"),
+                    summaryDataQualityCohorts.getPatientsWhoseEncounterIsBefore1985EC19(
+                        hivMetadata.getARTProgram().getProgramId(),
+                        hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                        ENCONTER_TYPE_FSR,
+                        hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                        hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()),
+                    mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -307,17 +313,18 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             this.eptsGeneralIndicator.getIndicator(
                 "summaryCohortQueryEC23Indicator",
                 EptsReportUtils.map(summaryCohortQueryEC23, mappings)),
-            mappings),"");
-      
-        dsd.addColumn("EC21",
+            mappings),
+        "");
+
+    dsd.addColumn(
+        "EC21",
         "The Patient’s sex is not defined",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "The Patient’s sex is not defined",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsSexNotDefinedEC21(),
-                    "location=${location}")),
-            "location=${location}"),
+                    summaryDataQualityCohorts.getPatientsSexNotDefinedEC21(), mappings)),
+            mappings),
         "");
 
     dsd.addColumn(
@@ -327,9 +334,8 @@ public class SummaryDataQualityDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "The Patient’s date of birth is not defined",
                 EptsReportUtils.map(
-                    summaryDataQualityCohorts.getPatientsSexNotDefinedEC22(),
-                    "location=${location}")),
-            "location=${location}"),
+                    summaryDataQualityCohorts.getPatientsSexNotDefinedEC22(), mappings)),
+            mappings),
         "");
 
     return dsd;

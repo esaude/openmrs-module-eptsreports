@@ -406,6 +406,245 @@ public class SummaryQueries {
   }
 
   /**
+   * Get patients who have a given state before an encounter
+   *
+   * @return String
+   */
+  public static String getPatientsWithStateThatIsBeforeAnEncounterEC11(
+      int programId,
+      int stateId,
+      int labEncounterType, // 13
+      int fsrLabEncounterType, // 51
+      int sampleCollectionDateConceptId, // 23821
+      int requestLaboratoryDateConceptId // 6246
+      ) {
+
+    String query =
+        "SELECT pe.person_id As patient_id "
+            + "FROM "
+            + "person pe "
+            + "inner join "
+            + "( "
+            + "	 SELECT pg.patient_id AS patient_id, ps.start_date As abandoned_date, l.name as location_name "
+            + "	 FROM patient p "
+            + "	 INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
+            + "	 INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
+            + "    INNER JOIN location l on l.location_id = pg.location_id "
+            + "	 WHERE p.voided = 0 "
+            + "	 AND pg.program_id = "
+            + programId
+            + "	 AND pg.voided = 0 "
+            + "	 AND ps.voided = 0 "
+            + "	 AND ps.state = "
+            + stateId
+            + "	 AND pg.location_id IN (:location) "
+            + "	 AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + "	 AND ps.start_date<=:endDate "
+            + ") abandonedPrograma on pe.person_id = abandonedPrograma.patient_id "
+            + "left join "
+            + "( "
+            + "	SELECT p.patient_id AS patient_id, o.obs_datetime as DataColheita "
+            + "	FROM patient p "
+            + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id ="
+            + sampleCollectionDateConceptId
+            + "	AND e.encounter_type = "
+            + labEncounterType
+            + "	AND e.location_id IN (:location) "
+            + "	AND o.value_datetime BETWEEN :startDate AND :endDate "
+            + ") colheitaLaboratorio on pe.person_id = colheitaLaboratorio.patient_id "
+            + "left join "
+            + "( "
+            + "	SELECT p.patient_id AS patient_id, o.obs_datetime as DataPedido, e.encounter_datetime, e.date_created "
+            + "	FROM patient p "
+            + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id ="
+            + requestLaboratoryDateConceptId
+            + "	AND e.encounter_type = "
+            + labEncounterType
+            + "	AND e.location_id IN (:location) "
+            + "	AND o.value_datetime  BETWEEN :startDate AND :endDate "
+            + ") pedidoLaboratorio on pe.person_id = pedidoLaboratorio.patient_id "
+            + "left join "
+            + "( "
+            + "SELECT p.patient_id AS patient_id, o.value_datetime as DataColheita, e.date_created "
+            + "	FROM patient p "
+            + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id ="
+            + sampleCollectionDateConceptId
+            + "	AND e.encounter_type = "
+            + fsrLabEncounterType
+            + "	AND e.location_id IN (:location) "
+            + "	AND o.value_datetime BETWEEN :startDate AND :endDate "
+            + ") fsr on pe.person_id = fsr.patient_id "
+            + "left join "
+            + "(	select pn1.* "
+            + "	from person_name pn1 "
+            + "	inner join "
+            + "	( "
+            + "		select person_id, min(person_name_id) id "
+            + "		from person_name "
+            + "		where voided = 0 "
+            + "		group by person_id "
+            + "	) pn2 "
+            + "	where pn1.person_id = pn2.person_id and pn1.person_name_id = pn2.id "
+            + ") pn on pn.person_id = pe.person_id "
+            + "left join "
+            + "(   select pid1.* "
+            + "	from patient_identifier pid1 "
+            + "	inner join "
+            + "	( "
+            + "		select patient_id, min(patient_identifier_id) id "
+            + "		from patient_identifier "
+            + "		where voided = 0 "
+            + "		group by patient_id "
+            + "	) pid2 "
+            + "	where pid1.patient_id = pid2.patient_id and pid1.patient_identifier_id = pid2.id "
+            + ") pid on pid.patient_id = pe.person_id "
+            + "inner join  patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = "
+            + programId
+            + " and pg.location_id IN (:location) "
+            + "inner join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + "where 	pe.voided = 0 and "
+            + "		( "
+            + "			colheitaLaboratorio.patient_id is not null or "
+            + "			pedidoLaboratorio.patient_id is not null or "
+            + "			fsr.patient_id is not null "
+            + "		) and "
+            + "			( "
+            + "				colheitaLaboratorio.DataColheita>abandonedPrograma.abandoned_date or "
+            + "				pedidoLaboratorio.DataPedido>abandonedPrograma.abandoned_date or "
+            + "				fsr.DataColheita>abandonedPrograma.abandoned_date "
+            + "			) "
+            + "GROUP BY pe.person_id; ";
+    return query;
+  }
+
+  public static String getPatientsWithStateThatIsBeforeAnEncounterEC4(
+      int programId,
+      int stateId,
+      int adultFollowUp,
+      int childFollowUp,
+      int fichaResumo,
+      int stateOfStayPriorArtPatient,
+      int stateOfStayOfArtPatient,
+      int patientHasDiedConcept) {
+
+    String query =
+        "SELECT pe.person_id As patient_id "
+            + "FROM "
+            + "person pe "
+            + "left join person peObito on pe.person_id = peObito.person_id and peObito.voided = 0 and peObito.death_date IS NOT NULL "
+            + "left join "
+            + "( "
+            + "	 SELECT pg.patient_id AS patient_id, ps.start_date As death_date "
+            + "	 FROM patient p "
+            + "	 INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
+            + "	 INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
+            + "	 WHERE p.voided = 0 "
+            + "	 AND pg.program_id = "
+            + programId
+            + "	 AND pg.voided = 0 "
+            + "	 AND ps.voided = 0 "
+            + "	 AND ps.state = "
+            + stateId
+            + "	 AND pg.location_id IN (:location) "
+            + "	 AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + ") deadPrograma on pe.person_id = deadPrograma.patient_id "
+            + "left join "
+            + "( "
+            + "	SELECT p.patient_id AS patient_id, o.obs_datetime AS death_date, e.encounter_datetime "
+            + "	FROM patient p "
+            + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = "
+            + stateOfStayPriorArtPatient
+            + "	AND o.value_coded = "
+            + patientHasDiedConcept
+            + "	AND e.encounter_type = "
+            + fichaResumo
+            + "	AND e.location_id IN (:location) "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + ") deadFichaResumo on pe.person_id = deadFichaResumo.patient_id "
+            + " left join "
+            + "( "
+            + "	SELECT p.patient_id AS patient_id, o.obs_datetime AS death_date, e.date_created, e.encounter_datetime "
+            + "	FROM patient p "
+            + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = "
+            + stateOfStayOfArtPatient
+            + "	AND value_coded = "
+            + patientHasDiedConcept
+            + "	AND e.encounter_type = "
+            + adultFollowUp
+            + "	AND e.location_id IN (:location) "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + ") deadFichaClinica on pe.person_id = deadFichaClinica.patient_id "
+            + "left join "
+            + "(	select pn1.* "
+            + "	from person_name pn1 "
+            + "	inner join "
+            + "	( "
+            + "		select person_id, min(person_name_id) id "
+            + "		from person_name "
+            + "		where voided = 0 "
+            + "		group by person_id "
+            + "	) pn2 "
+            + "	where pn1.person_id = pn2.person_id and pn1.person_name_id = pn2.id "
+            + ") pn on pn.person_id = pe.person_id "
+            + "left join "
+            + "(   select pid1.* "
+            + "	from patient_identifier pid1 "
+            + "	inner join "
+            + "	( "
+            + "		select patient_id, min(patient_identifier_id) id "
+            + "		from patient_identifier "
+            + "		where voided = 0 "
+            + "		group by patient_id "
+            + "	) pid2 "
+            + "	where pid1.patient_id = pid2.patient_id and pid1.patient_identifier_id = pid2.id "
+            + ") pid on pid.patient_id = pe.person_id "
+            + "left join "
+            + "( "
+            + "	Select p.patient_id, e.encounter_datetime, l.name  location_name, e.date_created "
+            + "	from patient p "
+            + "			inner join encounter e on p.patient_id = e.patient_id "
+            + "			inner join location l on l.location_id = e.location_id "
+            + "	where 	p.voided = 0 and e.voided = 0 and e.encounter_type in ("
+            + childFollowUp
+            + ","
+            + adultFollowUp
+            + ")and e.location_id IN (:location) "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + ") seguimento on seguimento.patient_id = pe.person_id "
+            + "left join  patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = "
+            + programId
+            + " and pg.location_id IN (:location) "
+            + "left join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + "where 	pe.voided = 0 and "
+            + "		( "
+            + "			peObito.person_id is not null or "
+            + "			deadPrograma.patient_id is not null or "
+            + "			deadFichaResumo.patient_id is not null or "
+            + "			deadFichaClinica.patient_id is not null "
+            + "		) and "
+            + " "
+            + "			( "
+            + "				seguimento.encounter_datetime>peObito.death_date or "
+            + "				seguimento.encounter_datetime>deadPrograma.death_date or "
+            + "				seguimento.encounter_datetime>deadFichaResumo.death_date or "
+            + "				seguimento.encounter_datetime>deadFichaClinica.death_date "
+            + "			) "
+            + "GROUP BY pe.person_id; ";
+
+    return query;
+  }
+
+  /**
    * Get patients who are marked as deceased and have a consultation after deceased date
    *
    * @return String
@@ -774,6 +1013,116 @@ public class SummaryQueries {
             + " ) AS programState ON pe.person_id = programState.patient_id "
             + " where 	pe.voided = 0";
     return String.format(query);
+  }
+  /**
+   * The patients whose date of Encounter is before 1985 - for EC19
+   *
+   * @return String
+   */
+  public static String getPatientsWhoseEncounterIsBefore1985EC19(
+      int programId,
+      int labEncounterType,
+      int FSREncounterType,
+      int masterCardEncounterType,
+      int adultoSeguimentoEncounterType,
+      int aRVPediatriaSeguimentoEncounterType) {
+    String query =
+        "SELECT pe.person_id As patient_id "
+            + "FROM "
+            + "person pe "
+            + "left join "
+            + "( "
+            + "	SELECT p.patient_id AS patient_id, e.encounter_datetime as encounter_date, e.date_created , l.name "
+            + "	FROM patient p "
+            + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "	inner join location l on l.location_id = e.location_id "
+            + "	WHERE p.voided = 0 AND e.voided = 0 "
+            + "	AND e.encounter_type in ("
+            + labEncounterType
+            + ","
+            + FSREncounterType
+            + ")"
+            + "	AND e.location_id IN (:location) "
+            + "	AND e.encounter_datetime < '1985-01-01' "
+            + ") registo_laboratorio on pe.person_id = registo_laboratorio.patient_id "
+            + "left join "
+            + "( "
+            + "	SELECT p.patient_id AS patient_id, o.obs_datetime as encounter_date, e.date_created , l.name "
+            + "	FROM patient p "
+            + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "		inner join location l on l.location_id = e.location_id "
+            + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id in (23821,6246) "
+            + "	AND e.encounter_type = "
+            + labEncounterType
+            + "	AND e.location_id IN (:location) "
+            + "	AND o.obs_datetime < '1985-01-01' "
+            + ") pedido_colheita_laboratorio on pe.person_id = pedido_colheita_laboratorio.patient_id "
+            + "left join "
+            + "( "
+            + "	SELECT p.patient_id AS patient_id, o.obs_datetime as encounter_date, e.date_created, l.name "
+            + "	FROM patient p "
+            + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "     inner join location l on l.location_id = e.location_id "
+            + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id in (23826,23827) "
+            + "	AND e.encounter_type = "
+            + FSREncounterType
+            + "	AND e.location_id IN (:location) "
+            + "	AND o.obs_datetime < '1985-01-01' "
+            + ") pedido_colheita_fsr on pe.person_id = pedido_colheita_laboratorio.patient_id "
+            + "left join ( "
+            + "	SELECT p.patient_id AS patient_id, e.encounter_datetime as encounter_date, e.date_created, l.name "
+            + "	FROM patient p "
+            + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "	inner join location l on l.location_id = e.location_id "
+            + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + "	AND e.encounter_type in ("
+            + adultoSeguimentoEncounterType
+            + ","
+            + aRVPediatriaSeguimentoEncounterType
+            + ","
+            + masterCardEncounterType
+            + ") AND e.location_id IN (:location) "
+            + "	and o.concept_id in (1695, 856, 1690, 1691, 1692, 1693, 857, 1299, 729, 730, 678, 1022, 1021, 1694, 887, 1011, 45, 1655) "
+            + "	and o.obs_datetime < '1985-01-01' ) seguimento on pe.person_id = seguimento.patient_id "
+            + "left join "
+            + " (	select pn1.* "
+            + "	from person_name pn1 "
+            + "	inner join "
+            + "	( "
+            + "		select person_id, min(person_name_id) id "
+            + "		from person_name "
+            + "		where voided = 0 "
+            + "		group by person_id "
+            + "	) pn2 "
+            + "	where pn1.person_id = pn2.person_id and pn1.person_name_id = pn2.id "
+            + ") pn on pn.person_id = pe.person_id "
+            + "left join "
+            + "(   select pid1.* "
+            + "	from patient_identifier pid1 "
+            + "	inner join "
+            + "	( "
+            + "		select patient_id, min(patient_identifier_id) id "
+            + "		from patient_identifier "
+            + "		where voided = 0 "
+            + "		group by patient_id "
+            + "	) pid2 "
+            + "	where pid1.patient_id = pid2.patient_id and pid1.patient_identifier_id = pid2.id "
+            + ") pid on pid.patient_id = pe.person_id "
+            + "left join  patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = "
+            + programId
+            + " and pg.location_id IN (:location) "
+            + " inner join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + " where pe.voided = 0 "
+            + " and (registo_laboratorio.encounter_date is not null "
+            + " or pedido_colheita_laboratorio.encounter_date is not null or "
+            + " pedido_colheita_fsr.encounter_date is not null or "
+            + " seguimento.encounter_date is not null "
+            + " ) "
+            + " GROUP BY pe.person_id; ";
+    return query;
   }
 
   public static String getPatientsWithGivenEncounterList(List<Integer> encounterList) {
