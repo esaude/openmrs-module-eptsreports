@@ -160,10 +160,10 @@ public class ResumoMensalCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(
-      String mappings) {
+  public CohortDefinition getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     cd.setName("Number of patientes who initiated TARV at this HF End Date");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -427,7 +427,7 @@ public class ResumoMensalCohortQueries {
     definition.addSearch(
         "B1",
         EptsReportUtils.map(
-            getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(mappings), mappings));
+            getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(), mappings));
 
     definition.addSearch("B10", EptsReportUtils.map(getTxNewEndDateB10(), mappings));
 

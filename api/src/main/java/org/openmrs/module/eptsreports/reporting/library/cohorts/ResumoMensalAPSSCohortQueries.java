@@ -14,11 +14,14 @@
 
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoTrimestralAPSSQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -145,9 +148,7 @@ public class ResumoMensalAPSSCohortQueries {
     compsitionDefinition.addSearch(
         "B1",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(
-                mappings),
-            mappings));
+            getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(mappings), mappings));
 
     compsitionDefinition.addSearch(
         "PREVENCAOPOSETIVA",
@@ -161,5 +162,62 @@ public class ResumoMensalAPSSCohortQueries {
     compsitionDefinition.setCompositionString("B1 AND PREVENCAOPOSETIVA");
 
     return compsitionDefinition;
+  }
+
+  private CohortDefinition getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(
+      String mappings) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Number of patientes who initiated TARV at this HF End Date");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "B1",
+        map(
+            getTxNewCompositionCohort("Number of patientes who initiated TARV", mappings),
+            mappings));
+    cd.setCompositionString("B1");
+    return cd;
+  }
+
+  private CohortDefinition getTxNewCompositionCohort(final String cohortName, String mappings) {
+    final CompositionCohortDefinition txNewCompositionCohort = new CompositionCohortDefinition();
+
+    txNewCompositionCohort.setName(cohortName);
+    txNewCompositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    txNewCompositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
+    txNewCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
+
+    txNewCompositionCohort.addSearch(
+        "START-ART",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "findPatientsWhoAreNewlyEnrolledOnART",
+                TxNewQueries.QUERY.findPatientsWhoAreNewlyEnrolledOnART),
+            mappings));
+
+    txNewCompositionCohort.addSearch(
+        "TRANSFERED-IN",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod",
+                TxNewQueries.QUERY.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
+            mappings));
+
+    txNewCompositionCohort.addSearch(
+        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard",
+                TxNewQueries.QUERY
+                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
+            mappings));
+
+    txNewCompositionCohort.setCompositionString(
+        "START-ART NOT (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD)");
+
+    return txNewCompositionCohort;
   }
 }

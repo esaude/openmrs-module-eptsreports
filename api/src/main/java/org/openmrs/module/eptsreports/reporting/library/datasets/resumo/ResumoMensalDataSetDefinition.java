@@ -521,13 +521,12 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
   }
 
   private Mapped<CohortIndicator> getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1() {
-    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     return mapStraightThrough(
         eptsGeneralIndicator.getIndicator(
             "Tx New For Month",
             mapStraightThrough(
                 resumoMensalCohortQueries
-                    .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(mappings))));
+                    .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1())));
   }
 
   private Mapped<CohortIndicator>

@@ -52,10 +52,8 @@ public class ResumoMensalLiveTest extends DefinitionsFGHLiveTest {
 
   @Test
   public void B1() throws EvaluationException {
-    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     CohortDefinition cd =
-        resumoMensalCohortQueries.getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(
-            mappings);
+        resumoMensalCohortQueries.getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd);
     assertEquals(1, evaluatedCohort.size());
     assertTrue(evaluatedCohort.contains(1002));
