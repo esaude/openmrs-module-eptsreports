@@ -59,7 +59,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC1",
-        "EC1",
+        "EC1: The patient’s sex is male and the patient is pregnant.",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
                 "summaryCohortQueryEC1Indicator",
@@ -69,7 +69,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC2",
-        "EC2",
+        "EC2:The patient’s sex is male and the patient is breastfeeding.",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
                 "summaryCohortQueryEC2Indicator",
@@ -117,7 +117,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC5",
-        "EC5",
+        "EC5:The patient’s vital status is dead and the patient has a laboratory result (specimen collection date or test order date) after the date of death  or death notification ",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
                 "summaryCohortQueryEC5Indicator",
@@ -127,7 +127,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC6",
-        "EC6",
+        "EC6:The patient has been identified as transferred out but has an ART pick up date after the transfer out date",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
                 "summaryCohortQueryEC6Indicator",
@@ -137,7 +137,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC7",
-        "EC7",
+        "EC7:The patient has been identified as transferred out but has an clinical consultation date after the transfer out date",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
                 "summaryCohortQueryEC7Indicator",
@@ -147,7 +147,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC8",
-        "EC8",
+        "EC8:The patient has been identified as transferred out but has an laboratory results(specimen collection date or report date) after the transfer out date ",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
                 "summaryCohortQueryEC8Indicator",
@@ -157,7 +157,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC9",
-        "EC9",
+        "EC9:The patient has been identified as abandoned  but has an ART pick up date after the abandoned date",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
                 "summaryCohortQueryEC9Indicator",
@@ -231,7 +231,7 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC15",
-        "EC15",
+        "EC15:The patient’s date of birth is after any drug pick up date",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
                 "summaryCohortQueryEC15Indicator",
@@ -298,21 +298,11 @@ public class SummaryDataQualityDataset extends BaseDataSet {
 
     dsd.addColumn(
         "EC20",
-        "EC20",
+        "EC20:Patients that are not enrolled in TARV but has a consultation or drugs pick up recorded in the system",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
                 "summaryCohortQueryEC23Indicator",
                 EptsReportUtils.map(summaryCohortQueryEC20, mappings)),
-            mappings),
-        "");
-
-    dsd.addColumn(
-        "EC23",
-        "EC23",
-        EptsReportUtils.map(
-            this.eptsGeneralIndicator.getIndicator(
-                "summaryCohortQueryEC23Indicator",
-                EptsReportUtils.map(summaryCohortQueryEC23, mappings)),
             mappings),
         "");
 
@@ -335,6 +325,16 @@ public class SummaryDataQualityDataset extends BaseDataSet {
                 "The Patient’s date of birth is not defined",
                 EptsReportUtils.map(
                     summaryDataQualityCohorts.getPatientsSexNotDefinedEC22(), mappings)),
+            mappings),
+        "");
+
+    dsd.addColumn(
+        "EC23",
+        "EC23:The patient is female and has a last menstrual period date but is not pregnant",
+        EptsReportUtils.map(
+            this.eptsGeneralIndicator.getIndicator(
+                "summaryCohortQueryEC23Indicator",
+                EptsReportUtils.map(summaryCohortQueryEC23, mappings)),
             mappings),
         "");
 
