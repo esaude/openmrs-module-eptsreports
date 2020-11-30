@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.*;
 import org.apache.commons.text.StringSubstitutor;
+import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -18,7 +19,10 @@ public class QualityImprovement2020CohortQueries {
   private HivMetadata hivMetadata;
 
   private CommonMetadata commonMetadata;
+
   private GenderCohortQueries genderCohortQueries;
+
+  private ResumoMensalCohortQueries resumoMensalCohortQueries;
 
   private final String MAPPING = "startDate=${startDate},endDate=${endDate},location=${location}";
 
@@ -27,11 +31,13 @@ public class QualityImprovement2020CohortQueries {
       GenericCohortQueries genericCohortQueries,
       HivMetadata hivMetadata,
       CommonMetadata commonMetadata,
-      GenderCohortQueries genderCohortQueries) {
+      GenderCohortQueries genderCohortQueries,
+      ResumoMensalCohortQueries resumoMensalCohortQueries) {
     this.genericCohortQueries = genericCohortQueries;
     this.hivMetadata = hivMetadata;
     this.commonMetadata = commonMetadata;
     this.genderCohortQueries = genderCohortQueries;
+    this.resumoMensalCohortQueries = resumoMensalCohortQueries;
   }
 
   /**
@@ -264,5 +270,92 @@ public class QualityImprovement2020CohortQueries {
 
     return genericCohortQueries.generalSql(
         "Pregnant or breastfeeding females", stringSubstitutor.replace(query));
+  }
+
+  public CohortDefinition getMQC4N1() {
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+    compositionCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "Location", Date.class));
+
+    compositionCohortDefinition.setName("Numerator for Category 4");
+
+    compositionCohortDefinition.addSearch(
+        "E", EptsReportUtils.map(getLastClinicalConsultationClassficacaoDesnutricao(), MAPPING));
+
+    compositionCohortDefinition.addSearch("MQC4D1", EptsReportUtils.map(getMQC4D1(), MAPPING));
+
+    compositionCohortDefinition.setCompositionString("MQC4D1 AND E");
+
+    return compositionCohortDefinition;
+  }
+
+  public CohortDefinition getMQC4N2() {
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+    compositionCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "Location", Date.class));
+
+    compositionCohortDefinition.setName("Numerator for Category 4");
+
+    compositionCohortDefinition.addSearch(
+        "E", EptsReportUtils.map(getLastClinicalConsultationClassficacaoDesnutricao(), MAPPING));
+
+    compositionCohortDefinition.addSearch("MQC4D2", EptsReportUtils.map(getMQC4D2(), MAPPING));
+
+    compositionCohortDefinition.setCompositionString("MQC4D2 AND E");
+
+    return compositionCohortDefinition;
+  }
+
+  private CohortDefinition getLastClinicalConsultationClassficacaoDesnutricao() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName(
+        "last clinical consultation registered CLASSIFICAÇÃO DE DESNUTRIÇÃO");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "classificationOfMalnutritionConcept",
+        commonMetadata.getClassificationOfMalnutritionConcept().getConceptId());
+    map.put("normalConcept", hivMetadata.getNormalConcept().getConceptId());
+    map.put(
+        "malnutritionLightConcept", commonMetadata.getMalnutritionLightConcept().getConceptId());
+    map.put("malnutritionConcept", hivMetadata.getMalnutritionConcept().getConceptId());
+    map.put(
+        "chronicMalnutritionConcept", hivMetadata.getChronicMalnutritionConcept().getConceptId());
+
+    String query =
+        "SELECT max_date.patient_id "
+            + "FROM "
+            + "   ( "
+            + "    SELECT p.patient_id, MAX(encounter_datetime) AS max_encounter_date "
+            + "    FROM patient p "
+            + "        INNER JOIN encounter e "
+            + "            ON e.patient_id = p.patient_id "
+            + "        INNER JOIN obs o "
+            + "            ON o.encounter_id = e.encounter_id "
+            + "    WHERE "
+            + "        p.voided = 0 "
+            + "        AND e.voided = 0 "
+            + "        AND o.voided = 0 "
+            + "        AND e.encounter_type = ${adultoSeguimentoEncounterType} "
+            + "        AND e.location_id = :location "
+            + "        AND e.encounter_datetime  "
+            + "            BETWEEN :startDate AND :endDate "
+            + "        AND o.concept_id = ${classificationOfMalnutritionConcept} "
+            + "        AND o.value_coded IN (${normalConcept}, ${malnutritionLightConcept}, ${malnutritionConcept}, ${chronicMalnutritionConcept}) "
+            + "    GROUP BY patient_id "
+            + "    ) max_date";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
   }
 }
