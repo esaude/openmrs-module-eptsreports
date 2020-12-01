@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -20,7 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 /** @author Stélio Moiane */
 public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
-  @Autowired private Eri2MonthsCohortQueries resumoMensalQueries;
+  @Autowired private MQCohortQueries mqCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
@@ -28,20 +28,22 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
     final Location location = Context.getLocationService().getLocation(244);
     final Date startDate = DateUtil.getDateTime(2019, 11, 21);
     final Date endDate = DateUtil.getDateTime(2019, 12, 20);
-    // final Date reportingEndDate = DateUtil.getDateTime(2018, 9, 20);
 
     final CohortDefinition txNewCompositionCohort =
-        this.resumoMensalQueries.getEri2MonthsBrestfeetingCompositionCohort("");
+        this.mqCohortQueries.findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultRF11();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
-    parameters.put(new Parameter("endDate", "End Date", Date.class), endDate);
+    parameters.put(new Parameter("startInclusionDate", "Start Date", Date.class), startDate);
+    
+    parameters.put(new Parameter("endInclusionDate", "End Date", Date.class), endDate);
+    
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(txNewCompositionCohort, parameters);
+    
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
-    System.out.println(evaluateCohortDefinition.getMemberIds().size());
+    
   }
 
   @Override
