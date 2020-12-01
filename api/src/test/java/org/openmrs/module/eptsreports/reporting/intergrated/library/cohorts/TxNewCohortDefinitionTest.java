@@ -33,17 +33,17 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
         this.mqCohortQueries.findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultRF11();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
+
     parameters.put(new Parameter("startInclusionDate", "Start Date", Date.class), startDate);
-    
+
     parameters.put(new Parameter("endInclusionDate", "End Date", Date.class), endDate);
-    
+
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(txNewCompositionCohort, parameters);
-    
+
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
-    
   }
 
   @Override

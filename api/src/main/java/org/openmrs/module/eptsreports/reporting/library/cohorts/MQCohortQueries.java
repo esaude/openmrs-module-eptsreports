@@ -25,7 +25,8 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYear;
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdult;
 
     definition.setQuery(query);
 
@@ -66,4 +67,40 @@ public class MQCohortQueries {
 
     return defeinition;
   }
+  
+  public CohortDefinition findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultRF13() {
+	    final CompositionCohortDefinition defeinition = new CompositionCohortDefinition();
+
+	    defeinition.setName("Tx NEW");
+	    defeinition.addParameter(
+	        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
+	    defeinition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
+	    defeinition.addParameter(new Parameter("location", "location", Location.class));
+
+	    final String mappings =
+	        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},location=${location}";
+
+	    defeinition.addSearch(
+	        "START-ART",
+	        EptsReportUtils.map(
+	            this.genericCohorts.generalSql(
+	                "START-ART",
+	                QualityImprovementQueriesInterface.QUERY
+	                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildren),
+	            mappings));
+
+	    defeinition.addSearch(
+	        "TRANSFERED-IN",
+	        EptsReportUtils.map(
+	            this.genericCohorts.generalSql(
+	                "TRANSFERED-IN",
+	                QualityImprovementQueriesInterface.QUERY
+	                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
+	            mappings));
+
+	    defeinition.setCompositionString("START-ART NOT (TRANSFERED-IN)");
+
+	    return defeinition;
+	  }
+
 }
