@@ -114,6 +114,31 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             MQC4N2, "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
+    // Category 5 denominator indicators
+    dataSetDefinition.addColumn(
+        "MQ5DEN1",
+        "Crianças em TARV com desnutrição (DAM ou DAG) e  com registo de prescrição de suplementação ou tratamento nutricional",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ5DEN1",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ5Den1(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=<15");
+
+    dataSetDefinition.addColumn(
+        "MQ5DEN2",
+        "MG em TARV com desnutrição (DAM ou DAG) e  com registo de prescrição de suplementação ou tratamento nutricional",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ5DEN2",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ5Den2(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
     return dataSetDefinition;
   }
 
