@@ -38,6 +38,8 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
     parameters.put(new Parameter("endInclusionDate", "End Date", Date.class), endDate);
 
+    parameters.put(new Parameter("revisionDate", "End Date", Date.class), endDate);
+
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
     final EvaluatedCohort evaluateCohortDefinition =
