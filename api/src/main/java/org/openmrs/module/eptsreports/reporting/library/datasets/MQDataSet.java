@@ -36,7 +36,7 @@ public class MQDataSet extends BaseDataSet {
             "patientNewlyEnrolledInHIVIndicator",
             EptsReportUtils.map(
                 this.mqCohortQueries
-                    .findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultRF11(),
+                    .findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultCategory3RF11Denominator(),
                 mappings));
 
     dataSetDefinition.addColumn(
