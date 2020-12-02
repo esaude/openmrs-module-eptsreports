@@ -21,6 +21,7 @@ public class MQCohortQueries {
   public CohortDefinition findPatientsWhoAreNewlyEnrolledOnArt() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
+
     definition.setName("patientsPregnantEnrolledOnART");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
@@ -82,25 +83,26 @@ public class MQCohortQueries {
   public CohortDefinition
       findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3RF12Numerator() {
 
-    final CompositionCohortDefinition defeinition = new CompositionCohortDefinition();
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    defeinition.setName("First Consult IN Inclusion Period");
-    defeinition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("First Consult IN Inclusion Period");
+
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},location=${location}";
 
-    defeinition.addSearch(
+    definition.addSearch(
         "RF11-DENOMINATOR",
         EptsReportUtils.map(
             this
                 .findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultCategory3RF11Denominator(),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "RF12-NUMERATOR",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -109,9 +111,9 @@ public class MQCohortQueries {
                     .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3FR12Numerator),
             mappings));
 
-    defeinition.setCompositionString("RF11-DENOMINATOR AND RF12-NUMERATOR");
+    definition.setCompositionString("RF11-DENOMINATOR AND RF12-NUMERATOR");
 
-    return defeinition;
+    return definition;
   }
 
   @DocumentedDefinition(
@@ -120,19 +122,18 @@ public class MQCohortQueries {
   public CohortDefinition
       findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInChildrenCategory3RF13Denominator() {
 
-    final CompositionCohortDefinition defeinition = new CompositionCohortDefinition();
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    defeinition.setName("RF13");
-    defeinition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
-    defeinition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("RF13");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    defeinition.addSearch(
+    definition.addSearch(
         "START-ART-CHILDREN",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -141,7 +142,7 @@ public class MQCohortQueries {
                     .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -150,9 +151,9 @@ public class MQCohortQueries {
                     .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
             mappings));
 
-    defeinition.setCompositionString("START-ART-CHILDREN NOT (TRANSFERED-IN)");
+    definition.setCompositionString("START-ART-CHILDREN NOT (TRANSFERED-IN)");
 
-    return defeinition;
+    return definition;
   }
 
   @DocumentedDefinition(
@@ -161,25 +162,25 @@ public class MQCohortQueries {
   public CohortDefinition
       findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildrenAndHaveFirstConsultInclusionPeriodCategory3RF14Numerator() {
 
-    final CompositionCohortDefinition defeinition = new CompositionCohortDefinition();
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    defeinition.setName("First Consult IN Inclusion Period");
-    defeinition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("First Consult IN Inclusion Period");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},location=${location}";
 
-    defeinition.addSearch(
+    definition.addSearch(
         "RF13-DENOMINATOR",
         EptsReportUtils.map(
             this
                 .findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInChildrenCategory3RF13Denominator(),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "RF14-NUMERATOR",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -188,9 +189,9 @@ public class MQCohortQueries {
                     .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3FR12Numerator),
             mappings));
 
-    defeinition.setCompositionString("RF13-DENOMINATOR AND RF14-NUMERATOR");
+    definition.setCompositionString("RF13-DENOMINATOR AND RF14-NUMERATOR");
 
-    return defeinition;
+    return definition;
   }
 
   @DocumentedDefinition(
@@ -199,19 +200,18 @@ public class MQCohortQueries {
   public CohortDefinition
       findPatientsNewlyEnrolledByAgeChildrenDesagragationInAPeriodCategory4RF15Denominator() {
 
-    final CompositionCohortDefinition defeinition = new CompositionCohortDefinition();
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    defeinition.setName("RF15");
-    defeinition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
-    defeinition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("RF15");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    defeinition.addSearch(
+    definition.addSearch(
         "START-ART-CHILDREN",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -220,7 +220,7 @@ public class MQCohortQueries {
                     .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -229,7 +229,7 @@ public class MQCohortQueries {
                     .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -238,9 +238,9 @@ public class MQCohortQueries {
                     .findPatientsWhoArePregnantInclusionDateRF08),
             mappings));
 
-    defeinition.setCompositionString("START-ART-CHILDREN NOT (TRANSFERED-IN OR PREGNANT)");
+    definition.setCompositionString("START-ART-CHILDREN NOT (TRANSFERED-IN OR PREGNANT)");
 
-    return defeinition;
+    return definition;
   }
 
   @DocumentedDefinition(
@@ -248,26 +248,26 @@ public class MQCohortQueries {
           "findPatientsNewlyEnrolledByAgeAndNutritionalAssessmentInAPeriodCategory4RF16Numerator")
   public CohortDefinition
       findPatientsNewlyEnrolledByAgeAndNutritionalAssessmentInAPeriodCategory4RF16Numerator() {
-    final CompositionCohortDefinition defeinition = new CompositionCohortDefinition();
 
-    defeinition.setName("RF16");
-    defeinition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
-    defeinition.addParameter(new Parameter("location", "location", Location.class));
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("RF16");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    defeinition.addSearch(
+    definition.addSearch(
         "RF15-DENOMINATOR",
         EptsReportUtils.map(
             this
                 .findPatientsNewlyEnrolledByAgeChildrenDesagragationInAPeriodCategory4RF15Denominator(),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "NUTRITIONAL-ASSESSMENT",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -276,9 +276,9 @@ public class MQCohortQueries {
                     .findPatientsWhoHasNutritionalAssessmentInLastConsultation),
             mappings));
 
-    defeinition.setCompositionString("RF15-DENOMINATOR AND NUTRITIONAL-ASSESSMENT");
+    definition.setCompositionString("RF15-DENOMINATOR AND NUTRITIONAL-ASSESSMENT");
 
-    return defeinition;
+    return definition;
   }
 
   @DocumentedDefinition(
@@ -286,23 +286,23 @@ public class MQCohortQueries {
   public CohortDefinition
       findPregnantHumansNewlyEnrolledOnARTInInclusionPeriodCategory4RF17Denominator() {
 
-    final CompositionCohortDefinition defeinition = new CompositionCohortDefinition();
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    defeinition.setName("PREGNANTS NEWLY ENRROLED IN ART");
-    defeinition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
-    defeinition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("PREGNANTS NEWLY ENRROLED IN ART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
-    defeinition.addSearch(
+    definition.addSearch(
         "RF16",
         EptsReportUtils.map(
             this
                 .findPatientsNewlyEnrolledByAgeAndNutritionalAssessmentInAPeriodCategory4RF16Numerator(),
             mappings));
-    defeinition.addSearch(
+    definition.addSearch(
         "RF8",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -311,7 +311,7 @@ public class MQCohortQueries {
                     .findPatientsWhoArePregnantInclusionDateRF08),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -319,9 +319,9 @@ public class MQCohortQueries {
                 QualityImprovementQueriesInterface.QUERY
                     .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
             mappings));
-    defeinition.setCompositionString("(RF16 AND RF8) NOT (TRANSFERED-IN)");
+    definition.setCompositionString("(RF16 AND RF8) NOT (TRANSFERED-IN)");
 
-    return defeinition;
+    return definition;
   }
 
   @DocumentedDefinition(
@@ -330,25 +330,25 @@ public class MQCohortQueries {
   public CohortDefinition
       findPregnantsNewlyEnrolledOnARTInInclusionPeriodAndHasNutritionalAssessmentCategory4RF18() {
 
-    final CompositionCohortDefinition defeinition = new CompositionCohortDefinition();
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    defeinition.setName("PREGNANTS NEWLY ENRROLED IN ART AND HAS NUTRITONAL ASSESSMENT");
-    defeinition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
-    defeinition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("PREGNANTS NEWLY ENRROLED IN ART AND HAS NUTRITONAL ASSESSMENT");
+
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    defeinition.addSearch(
+    definition.addSearch(
         "RF17-DENOMINATOR",
         EptsReportUtils.map(
             this.findPregnantHumansNewlyEnrolledOnARTInInclusionPeriodCategory4RF17Denominator(),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "NUTRITIONAL-ASSESSMENT",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -356,9 +356,9 @@ public class MQCohortQueries {
                 QualityImprovementQueriesInterface.QUERY
                     .findPatientsWhoHasNutritionalAssessmentInLastConsultation),
             mappings));
-    defeinition.setCompositionString("(RF17-DENOMINATOR AND NUTRITIONAL-ASSESSMENT)");
+    definition.setCompositionString("(RF17-DENOMINATOR AND NUTRITIONAL-ASSESSMENT)");
 
-    return defeinition;
+    return definition;
   }
 
   @DocumentedDefinition(
@@ -367,18 +367,18 @@ public class MQCohortQueries {
   public CohortDefinition
       findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGInclusionPeriodCategory5RF19Denominator() {
 
-    final CompositionCohortDefinition defeinition = new CompositionCohortDefinition();
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    defeinition.setName("Categoria 5 Pediátrico - Denominador");
-    defeinition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("Categoria 5 Pediátrico - Denominador");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    defeinition.addSearch(
+    definition.addSearch(
         "START-ART-CHILDREN",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -387,7 +387,7 @@ public class MQCohortQueries {
                     .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "RF19-DENOMINATOR",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -396,7 +396,7 @@ public class MQCohortQueries {
                     .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGInclusionPeriod),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -405,7 +405,7 @@ public class MQCohortQueries {
                     .findPatientsWhoArePregnantInclusionDateRF08),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "BREASTFEEDING",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -414,7 +414,7 @@ public class MQCohortQueries {
                     .findPatientsWhoAreBreastfeedingInclusionDateRF09),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -423,10 +423,10 @@ public class MQCohortQueries {
                     .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
             mappings));
 
-    defeinition.setCompositionString(
+    definition.setCompositionString(
         "START-ART-CHILDREN AND RF19-DENOMINATOR NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN)");
 
-    return defeinition;
+    return definition;
   }
 
   @DocumentedDefinition(
@@ -434,24 +434,25 @@ public class MQCohortQueries {
           "findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGANDATPUSOJAInclusionPeriodCategory5FR20Numerator")
   public CohortDefinition
       findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGANDATPUSOJAInclusionPeriodCategory5FR20Numerator() {
-    final CompositionCohortDefinition defeinition = new CompositionCohortDefinition();
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    defeinition.setName("Categoria 5 Pediátrico - Numerador");
-    defeinition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
-    defeinition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("Categoria 5 Pediátrico - Numerador");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    defeinition.addSearch(
+    definition.addSearch(
         "RF19-DENOMINATOR",
         EptsReportUtils.map(
             this
                 .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGInclusionPeriodCategory5RF19Denominator(),
             mappings));
 
-    defeinition.addSearch(
+    definition.addSearch(
         "RF20-NUMERATOR",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
@@ -460,9 +461,9 @@ public class MQCohortQueries {
                     .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGANDATPUSOJAInclusionPeriod),
             mappings));
 
-    defeinition.setCompositionString("RF19-DENOMINATOR AND RF20-NUMERATOR");
+    definition.setCompositionString("RF19-DENOMINATOR AND RF20-NUMERATOR");
 
-    return defeinition;
+    return definition;
   }
 
   @DocumentedDefinition(
@@ -474,11 +475,11 @@ public class MQCohortQueries {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName("PREGNANTS NEWLY ENRROLED IN ART AND HAS NUTRITIONAL ASSESSMENT DAM-DAG");
-    definition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    definition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
+
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
@@ -527,15 +528,15 @@ public class MQCohortQueries {
       value =
           "findPregnantsNewlyEnrolledOnARTInInclusionPeriodAndHasNutritionalAssessmentDAMandDAGAndATPUCategory5RF22")
   public CohortDefinition
-      findPregnantsNewlyEnrolledOnARTInInclusionPeriodAndHasNutritionalAssessmentDAMandDAGAndATPUCategory5RF22() {
+      findPregnantsNewlyEnrolledOnARTInInclusionPeriodAndHasNutritionalAssessmentDAMandDAGAndATPUCategory5RF22Denominator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName("PREGNANTS NEWLY ENRROLED IN ART AND HAS NUTRITIONAL ASSESSMENT ATPU");
-    definition.addParameter(
-        new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    definition.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 

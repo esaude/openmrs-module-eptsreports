@@ -278,5 +278,95 @@ public interface QualityImprovementQueriesInterface {
                 + "inner join obs obsApoio on obsApoio.person_id=firstClinica.patient_id  "
                 + "where firstClinica.encounter_datetime=obsGrau.obs_datetime and obsGrau.concept_id=6336 and obsGrau.value_coded in (68,1844) and obsGrau.voided=0 and   "
                 + "firstClinica.encounter_datetime=obsApoio.obs_datetime and obsApoio.concept_id=2152 and obsApoio.value_coded in (2151,6143) and obsApoio.voided=0  ";
+
+    public static final String
+        findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6 =
+            "select lastClinica.patient_id from ( "
+                + "select p.patient_id,max(e.encounter_datetime) encounter_datetime  from patient p "
+                + "inner join encounter e on e.patient_id=p.patient_id "
+                + "where p.voided=0 and e.voided=0 and e.encounter_datetime between :startInclusionDate and :endRevisionDate and "
+                + "e.location_id=:location and e.encounter_type=6 "
+                + "group by p.patient_id "
+                + ") lastClinica "
+                + "inner join obs obsTBActiva on obsTBActiva.person_id=lastClinica.patient_id "
+                + "where lastClinica.encounter_datetime=obsTBActiva.obs_datetime and obsTBActiva.concept_id=23761 and obsTBActiva.value_coded=1065 and obsTBActiva.voided=0 ";
+
+    public static final String
+        findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6 =
+            "select lastClinica.patient_idfrom ( "
+                + "select p.patient_id,max(e.encounter_datetime) encounter_datetime  from patient p "
+                + "inner join encounter e on e.patient_id=p.patient_id "
+                + "where p.voided=0 and e.voided=0 and e.encounter_datetime between :startInclusionDate and :endRevisionDate and "
+                + "e.location_id=:location and e.encounter_type=6 "
+                + "group by p.patient_id "
+                + ") lastClinica "
+                + "inner join obs obsRastreio on obsRastreio.person_id=lastClinica.patient_id "
+                + "where lastClinica.encounter_datetime=obsRastreio.obs_datetime and obsRastreio.concept_id=23758 and obsRastreio.value_coded in (1065,1066) and obsRastreio.voided=0 ";
+
+    public static final String findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7 =
+        "select p.patient_id  from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs obsTBActiva on obsTBActiva.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and e.encounter_datetime between :startInclusionDate and :endInclusionDate and  "
+            + "e.location_id=:location and e.encounter_type=6 and obsTBActiva.concept_id=23761 and obsTBActiva.value_coded=1065 and obsTBActiva.voided=0 "
+            + "group by p.patient_id ";
+    public static final String findPatientsWithPositiveTBScreeningInDurindPeriodCategory7 =
+        "select p.patient_id from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs obsTBPositivo on obsTBPositivo.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and e.encounter_datetime between :startInclusionDate and :endInclusionDate and "
+            + "e.location_id=:location and e.encounter_type=6 and obsTBPositivo.concept_id=23758 and obsTBPositivo.value_coded=1065 and obsTBPositivo.voided=0 "
+            + "group by p.patient_id ";
+
+    public static final String finPatientHaveTBTreatmentDuringPeriodCategory7 =
+        "select p.patient_id from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs obsTB on obsTB.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and obsTB.obs_datetime between :startInclusionDate and :endInclusionDate and  "
+            + "e.location_id=:location and e.encounter_type=6 and obsTB.concept_id=1268 and obsTB.value_coded in (1256,1257,1267) and obsTB.voided=0 "
+            + "group by p.patient_id ";
+
+    public static final String findPatientWhoStartTPIDuringPeriodCategory7 =
+        "select p.patient_id  from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs obsTPI on obsTPI.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and obsTPI.obs_datetime between :startInclusionDate and :endInclusionDate and  "
+            + "e.location_id=:location and e.encounter_type=6 and obsTPI.concept_id=6122 and obsTPI.value_coded=1256 and obsTPI.voided=0 "
+            + "group by p.patient_id ";
+
+    public static final String findPatientWhoStartTPI4MonthsAfterDateOfInclusionCategory7 =
+        "select p.patient_id from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs obsTPI on obsTPI.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and obsTPI.obs_datetime between (:startInclusionDate + INTERVAL 4 MONTH)  and :endRevisionDate and  "
+            + "e.location_id=:location and e.encounter_type=6 and obsTPI.concept_id=6122 and obsTPI.value_coded=1256 and obsTPI.voided=0 "
+            + "group by p.patient_id ";
+
+    public static final String findPatientWhoCompleteTPICategory7 =
+        "select inicioTPI.patient_id,inicioTPI.dataInicioTPI,obsFimTPI.obs_datetime dataFimTPI, "
+            + "obsTBActiva.obs_datetime dataTBActiva,obsRastreio.obs_datetime dataRastreioPositivo, obsTB.obs_datetime dataTB from  ( "
+            + "select p.patient_id,min(obsTPI.obs_datetime) dataInicioTPI from patient p "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "inner join obs obsTPI on obsTPI.encounter_id=e.encounter_id "
+            + "where p.voided=0 and e.voided=0 and obsTPI.obs_datetime between :startInclusionDate and :endInclusionDate and  "
+            + "e.location_id=:location and e.encounter_type=6 and obsTPI.concept_id=6122 and obsTPI.value_coded=1256 and obsTPI.voided=0 "
+            + "group by p.patient_id "
+            + ") inicioTPI "
+            + "inner join obs obsFimTPI on obsFimTPI.person_id=inicioTPI.patient_id "
+            + "left join obs obsTBActiva on obsTBActiva.person_id=inicioTPI.patient_id and obsTBActiva.voided=0 and  "
+            + "obsTBActiva.concept_id=23761 and obsTBActiva.value_coded=1065 and  "
+            + "obsTBActiva.obs_datetime between inicioTPI.dataInicioTPI and (inicioTPI.dataInicioTPI + INTERVAL 9 MONTH) and obsTBActiva.location_id=:location "
+            + "left join obs obsRastreio on obsRastreio.person_id=inicioTPI.patient_id and obsRastreio.voided=0 and  "
+            + "obsRastreio.concept_id=23758 and obsRastreio.value_coded=1065 and  "
+            + "obsRastreio.obs_datetime between inicioTPI.dataInicioTPI and (inicioTPI.dataInicioTPI + INTERVAL 9 MONTH) and obsRastreio.location_id=:location "
+            + "left join obs obsTB on obsTB.person_id=inicioTPI.patient_id and obsTB.voided=0 and  "
+            + "obsTB.concept_id=1268 and obsTB.value_coded in (1256,1257,1267) and  "
+            + "obsTB.obs_datetime between inicioTPI.dataInicioTPI and (inicioTPI.dataInicioTPI + INTERVAL 9 MONTH) and obsTB.location_id=:location "
+            + "where obsFimTPI.concept_id=6122 and obsFimTPI.value_coded=1267 and  "
+            + "obsFimTPI.obs_datetime between (inicioTPI.dataInicioTPI + INTERVAL 6 MONTH) and (inicioTPI.dataInicioTPI + INTERVAL 9 MONTH) and  "
+            + "obsFimTPI.voided=0 and obsFimTPI.location_id=:location and "
+            + "obsTBActiva.person_id is null and  "
+            + "obsRastreio.person_id is null and  "
+            + "obsTB.person_id is null ";
   }
 }
