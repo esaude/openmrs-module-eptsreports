@@ -440,4 +440,52 @@ public class CommonMetadata extends Metadata {
             .getGlobalProperty("eptsreports.cotrimoxazoleProphylaxisStartDateConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 2152</b>
+   *
+   * <p><b>Name:</b> NUTRITIONAL SUPPLEMENT
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getNutritionalSupplememtConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.nutritionalSupplememtConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 6143</b>
+   *
+   * <p><b>Name:</b> ATPU
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getATPUSupplememtConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.ATPUSupplememtConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 2151</b>
+   *
+   * <p><b>Name:</b> Soja
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getSojaSupplememtConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.sojaSupplememtConceptUuid");
+    return getConcept(uuid);
+  }
 }

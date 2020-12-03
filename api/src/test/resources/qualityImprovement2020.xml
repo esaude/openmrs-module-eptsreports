@@ -472,7 +472,22 @@
                      description="UUID for the ART pickup concept" uuid="083ed0c9-5875-11ea-8247-a0a4c5d1c75c"/>
 
 
+<global_property
+		property="eptsreports.nutritionalSupplememtConceptUuid"
+		property_value="e1e205f0-1d5f-11e0-b929-000c29ad1d07"
+		description="NUTRITIONAL SUPPLEMENT concept"
+	/>
 
+	<global_property property="eptsreports.ATPUSupplememtConceptUuid"
+	property_value="014b76fb-c7ee-404c-b913-9795a108015e"
+			description="ATPU SUPPLEMENT concept"
+	/>
+
+	<global_property
+		property="eptsreports.sojaSupplememtConceptUuid" 
+		property_value="e1e204ec-1d5f-11e0-b929-000c29ad1d07"
+		description="Soja SUPPLEMENT concept"
+	/>
 
 		<!-- concept & concept_name -->
 
@@ -860,6 +875,20 @@
 	<concept concept_id="23866" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1"
              date_created="2019-07-09 13:00:20" uuid="74f6c17f-9819-41da-ba34-5910f67d24d0"/>
 
+<concept concept_id="2152" retired="0" datatype_id="2" 
+	class_id="7" is_set="0" creator="1" 
+	date_created="2008-10-13 23:14:01" 
+	uuid="e1e205f0-1d5f-11e0-b929-000c29ad1d07" />
+
+	<concept concept_id="6143" retired="0" datatype_id="2" 
+	class_id="7" is_set="0" creator="1" 
+	date_created="2008-10-13 23:14:01" 
+	uuid="014b76fb-c7ee-404c-b913-9795a108015e" />
+
+	<concept concept_id="2151" retired="0" datatype_id="2" 
+	class_id="7" is_set="0" creator="1" 
+	date_created="2008-10-13 23:14:01" 
+	uuid="e1e204ec-1d5f-11e0-b929-000c29ad1d07" />
 
 
 		<!--| program | -->

@@ -30,7 +30,7 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
   @Test
   public void getInfantPatientsEnrolledInTarv2020SampleShouldPass() throws EvaluationException {
 
-    CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getMQ5Den1();
+    CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getMQ5A(true);
 
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
@@ -45,7 +45,7 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
   @Test
   @Ignore("Same methods are already tested on MQ5Den1")
   public void getPregnantPatientEnrolledInTARV2020ServiceShouldPass() throws EvaluationException {
-    CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getMQ5Den2();
+    CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getMQ5B(false);
 
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());

@@ -122,7 +122,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "MQ5DEN1",
                 EptsReportUtils.map(
-                    qualityImprovement2020CohortQueries.getMQ5Den1(),
+                    qualityImprovement2020CohortQueries.getMQ5A(true),
                     "startDate=${startDate},endDate=${endDate},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=<15");
@@ -134,7 +134,32 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "MQ5DEN2",
                 EptsReportUtils.map(
-                    qualityImprovement2020CohortQueries.getMQ5Den2(),
+                    qualityImprovement2020CohortQueries.getMQ5B(true),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    // Category 5 nominator indicators
+    dataSetDefinition.addColumn(
+        "MQ5NOM1",
+        "Crianças em TARV com desnutrição (DAM ou DAG) e  com registo de prescrição de suplementação ou tratamento nutricional",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ5NOM1",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ5A(false),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=<15");
+
+    dataSetDefinition.addColumn(
+        "MQ5NOM2",
+        "MG em TARV com desnutrição (DAM ou DAG) e  com registo de prescrição de suplementação ou tratamento nutricional",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ5NOM2",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ5B(false),
                     "startDate=${startDate},endDate=${endDate},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
