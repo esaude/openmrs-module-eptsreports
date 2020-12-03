@@ -2288,6 +2288,58 @@
 		</description>
 	</globalProperty>
 
+
+	<!-- 23884 -->
+	<globalProperty>
+		<property>eptsreports.hivTestingSiteConceptUuid</property>
+		<defaultValue>602d1865-4689-4b5b-84ff-092b51e7840c</defaultValue>
+		<description>
+			HIV Testing Site
+		</description>
+	</globalProperty>
+
+
+	<!-- 6245 -->
+	<globalProperty>
+		<property>eptsreports.voluntaryCouncelingTestingCommunityConceptUuid</property>
+		<defaultValue>cf6e0b75-d0b4-403a-a886-0c06e1e9ea77</defaultValue>
+		<description>
+			VOLUNTARY COUNCELING AND TESTING - COMMUNITY
+		</description>
+	</globalProperty>
+
+
+	<!-- 22772 -->
+	<globalProperty>
+		<property>eptsreports.typeTestHIVConceptUuid</property>
+		<defaultValue>c7ac119c-d59d-474d-8334-0c5bdd2e9863</defaultValue>
+		<description>
+			TYPE OF HIV TEST
+		</description>
+	</globalProperty>
+
+
+
+
+	<!-- 1030 -->
+	<globalProperty>
+		<property>eptsreports.hivPCRQualitativeConceptUuid</property>
+		<defaultValue>e1d7f61e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			HIV DNA POLYMERASE CHAIN REACTION, QUALITATIVE
+		</description>
+	</globalProperty>
+
+
+	<!-- 1040 -->
+	<globalProperty>
+		<property>eptsreports.hivRapidTest1QualitativeConceptUuid</property>
+		<defaultValue>e1d800dc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			HIV RAPID TEST 1, QUALITATIVE
+		</description>
+	</globalProperty>
+
 	<globalProperty>
 		<property>eptsreports.nutritionalSupplememtConceptUuid</property>
 		<defaultValue>e1e205f0-1d5f-11e0-b929-000c29ad1d07</defaultValue>

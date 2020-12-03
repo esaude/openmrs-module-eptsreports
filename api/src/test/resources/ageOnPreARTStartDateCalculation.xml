@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+    <location location_id="1" name="Alto Ligonha" description="NA"
+              address2="NA" state_province="NA" country="MA"
+              date_created="2008-10-13 11:32:52" county_district="NA" address6="NA"
+              retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
+
+    <!-- person -->
+    <person person_id="1001" gender="F"  creator="1"
+            birthdate="2000-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="421875e2-6f22-1000-9281-8f1ee524029e" />
+
+
+    <!-- patient -->
+    <patient patient_id="1001"   creator="1"
+             date_created="2005-09-22 00:00:00.0"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+
+    <!-- global_property -->
+    <global_property
+            property="eptsreports.recordPreArtFlowConceptUuid"
+            property_value="e1de7d54-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID for the FLUXO REGISTO PRE-TARV concept"
+            uuid="25a9f568-7d4f-4496-b372-939950af7ddc"
+    />
+
+    <!--| program | -->
+
+    <program program_id="1" concept_id="1781" creator="1"
+             date_created="2012-02-29 09:42:25" retired="0"
+             name="SERVICO TARV - CUIDADO"
+             description="Programa de seguimento e cuidado aos pacientes HIV+"
+             uuid="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99" />
+
+
+    <!-- | patient_program | -->
+    <patient_program patient_program_id="4616"
+                     patient_id="1001" program_id="1" date_enrolled="2008-01-26 00:00:00"
+                     creator="1" date_created="2019-01-26 00:00:00" voided="0"
+                     uuid="d1315b84-2b18-4605-9bde-0a845bc35ebc" location_id="1" />
+
+
+</dataset>

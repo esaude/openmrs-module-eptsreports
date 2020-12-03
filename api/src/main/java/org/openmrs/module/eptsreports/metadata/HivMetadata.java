@@ -3444,4 +3444,83 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.badConcept");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 22772</b>
+   *
+   * <p><b>Name:</b> TYPE OF HIV TEST
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getTypeTestHIVConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.typeTestHIVConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23884</b>
+   *
+   * <p><b>Name:</b> HIV Testing Site
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getHivTestingSiteConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.hivTestingSiteConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 6245</b>
+   *
+   * <p><b>Name:</b> VOLUNTARY COUNCELING AND TESTING - COMMUNITY
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getVoluntaryCouncelingTestingCommunityConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.voluntaryCouncelingTestingCommunityConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 1030</b>
+   *
+   * <p><b>Name:</b> HIV DNA POLYMERASE CHAIN REACTION, QUALITATIVE
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getHivPCRQualitativeConceptUuid() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.hivPCRQualitativeConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 1040</b>
+   *
+   * <p><b>Name:</b> HIV RAPID TEST 1, QUALITATIVE
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getHivRapidTest1QualitativeConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.hivRapidTest1QualitativeConceptUuid");
+    return getConcept(uuid);
+  }
 }
