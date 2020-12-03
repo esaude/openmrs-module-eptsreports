@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
+
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -9,16 +10,111 @@ import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinitio
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MQCohortQueries {
 
-  @Autowired private GenericCohortQueries genericCohorts;
-
   @DocumentedDefinition(value = "findPatientsWhoAreNewlyEnrolledOnArt")
-  public CohortDefinition findPatientsWhoAreNewlyEnrolledOnArt() {
+  public CohortDefinition findPatientsWhoAreNewlyEnrolledOnARTRF05() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnARTRF05;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06")
+  public CohortDefinition
+      findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoTransferedOutRF07")
+  public CohortDefinition findPatientsWhoTransferedOutRF07() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query = QualityImprovementQueriesInterface.QUERY.findPatientsWhoTransferedOutRF07;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoArePregnantInclusionDateRF08")
+  public CohortDefinition findPatientsWhoArePregnantInclusionDateRF08() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY.findPatientsWhoArePregnantInclusionDateRF08;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoAreBreastfeedingInclusionDateRF09")
+  public CohortDefinition findPatientsWhoAreBreastfeedingInclusionDateRF09() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY.findPatientsWhoAreBreastfeedingInclusionDateRF09;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation")
+  public CohortDefinition findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
@@ -38,6 +134,361 @@ public class MQCohortQueries {
   }
 
   @DocumentedDefinition(
+      value = "findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation")
+  public CohortDefinition
+      findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen1neLess14")
+  public CohortDefinition
+      findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen1neLess14() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen1neLess14;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingMonth")
+  public CohortDefinition findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingMonth() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingMonth;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value =
+          "findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3FR12Numerator")
+  public CohortDefinition
+      findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3FR12Numerator() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3FR12Numerator;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoHasNutritionalAssessmentInLastConsultation")
+  public CohortDefinition findPatientsWhoHasNutritionalAssessmentInLastConsultation() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoHasNutritionalAssessmentInLastConsultation;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value =
+          "findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGInclusionPeriod")
+  public CohortDefinition
+      findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGInclusionPeriod() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGInclusionPeriod;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value =
+          "findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGANDATPUSOJAInclusionPeriod")
+  public CohortDefinition
+      findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGANDATPUSOJAInclusionPeriod() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGANDATPUSOJAInclusionPeriod;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWhoHasNutritionalAssessmentDAMandDAGInLastConsultation")
+  public CohortDefinition findPatientsWhoHasNutritionalAssessmentDAMandDAGInLastConsultation() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoHasNutritionalAssessmentDAMandDAGInLastConsultation;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWhoHasNutritionalAssessmentDAMandDAGAndATPUInLastConsultation")
+  public CohortDefinition
+      findPatientsWhoHasNutritionalAssessmentDAMandDAGAndATPUInLastConsultation() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoHasNutritionalAssessmentDAMandDAGAndATPUInLastConsultation;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6")
+  public CohortDefinition
+      findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6")
+  public CohortDefinition findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7")
+  public CohortDefinition findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWithPositiveTBScreeningInDurindPeriodCategory7")
+  public CohortDefinition findPatientsWithPositiveTBScreeningInDurindPeriodCategory7() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWithPositiveTBScreeningInDurindPeriodCategory7;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "finPatientHaveTBTreatmentDuringPeriodCategory7")
+  public CohortDefinition finPatientHaveTBTreatmentDuringPeriodCategory7() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY.finPatientHaveTBTreatmentDuringPeriodCategory7;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientWhoStartTPIDuringPeriodCategory7")
+  public CohortDefinition findPatientWhoStartTPIDuringPeriodCategory7() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY.findPatientWhoStartTPIDuringPeriodCategory7;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientWhoStartTPI4MonthsAfterDateOfInclusionCategory7")
+  public CohortDefinition findPatientWhoStartTPI4MonthsAfterDateOfInclusionCategory7() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientWhoStartTPI4MonthsAfterDateOfInclusionCategory7;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientWhoCompleteTPICategory7")
+  public CohortDefinition findPatientWhoCompleteTPICategory7() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query = QualityImprovementQueriesInterface.QUERY.findPatientWhoCompleteTPICategory7;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
       value =
           "findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultCategory3RF11Denominator")
   public CohortDefinition
@@ -46,8 +497,8 @@ public class MQCohortQueries {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName("ADULT NOT TRANSFERED IN");
-    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -57,19 +508,12 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-ADULT",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-ART-ADULT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation),
-            mappings));
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.setCompositionString("START-ART-ADULT NOT (TRANSFERED-IN)");
@@ -105,10 +549,8 @@ public class MQCohortQueries {
     definition.addSearch(
         "RF12-NUMERATOR",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "RF12",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3FR12Numerator),
+            this
+                .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3FR12Numerator(),
             mappings));
 
     definition.setCompositionString("RF11-DENOMINATOR AND RF12-NUMERATOR");
@@ -136,19 +578,13 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-CHILDREN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-ART-CHILDREN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation),
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation(),
             mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.setCompositionString("START-ART-CHILDREN NOT (TRANSFERED-IN)");
@@ -183,10 +619,8 @@ public class MQCohortQueries {
     definition.addSearch(
         "RF14-NUMERATOR",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "RF12",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3FR12Numerator),
+            this
+                .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3FR12Numerator(),
             mappings));
 
     definition.setCompositionString("RF13-DENOMINATOR AND RF14-NUMERATOR");
@@ -214,29 +648,18 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-CHILDREN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-ART",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation),
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation(),
             mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.setCompositionString("START-ART-CHILDREN NOT (TRANSFERED-IN OR PREGNANT)");
 
@@ -270,11 +693,7 @@ public class MQCohortQueries {
     definition.addSearch(
         "NUTRITIONAL-ASSESSMENT",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "NUTRITIONAL-ASSESSMENT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoHasNutritionalAssessmentInLastConsultation),
-            mappings));
+            this.findPatientsWhoHasNutritionalAssessmentInLastConsultation(), mappings));
 
     definition.setCompositionString("RF15-DENOMINATOR AND NUTRITIONAL-ASSESSMENT");
 
@@ -303,21 +722,12 @@ public class MQCohortQueries {
                 .findPatientsNewlyEnrolledByAgeAndNutritionalAssessmentInAPeriodCategory4RF16Numerator(),
             mappings));
     definition.addSearch(
-        "RF8",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "RF8",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        "RF8", EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
     definition.setCompositionString("(RF16 AND RF8) NOT (TRANSFERED-IN)");
 
@@ -351,11 +761,7 @@ public class MQCohortQueries {
     definition.addSearch(
         "NUTRITIONAL-ASSESSMENT",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "NUTRITIONAL_ASSESSMENT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoHasNutritionalAssessmentInLastConsultation),
-            mappings));
+            this.findPatientsWhoHasNutritionalAssessmentInLastConsultation(), mappings));
     definition.setCompositionString("(RF17-DENOMINATOR AND NUTRITIONAL-ASSESSMENT)");
 
     return definition;
@@ -381,46 +787,28 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-CHILDREN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-ART-CHILDREN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation),
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation(),
             mappings));
 
     definition.addSearch(
         "RF19-DENOMINATOR",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "RF19",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGInclusionPeriod),
+            this
+                .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGInclusionPeriod(),
             mappings));
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "BREASTFEEDING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "BREASTFEEDING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreBreastfeedingInclusionDateRF09),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.setCompositionString(
@@ -455,10 +843,8 @@ public class MQCohortQueries {
     definition.addSearch(
         "RF20-NUMERATOR",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "RF20",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGANDATPUSOJAInclusionPeriod),
+            this
+                .findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGANDATPUSOJAInclusionPeriod(),
             mappings));
 
     definition.setCompositionString("RF19-DENOMINATOR AND RF20-NUMERATOR");
@@ -485,38 +871,20 @@ public class MQCohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "RF5",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "RF5",
-                QualityImprovementQueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnARTRF05),
-            mappings));
+        "RF5", EptsReportUtils.map(this.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.addSearch(
-        "RF8",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "RF8",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        "RF8", EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "NUTRITIONAL-ASSESSMENT-DAM-DAG",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "NUTRITIONAL-ASSESSMENT-DAM-DAG",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoHasNutritionalAssessmentDAMandDAGInLastConsultation),
-            mappings));
+            this.findPatientsWhoHasNutritionalAssessmentDAMandDAGInLastConsultation(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
     definition.setCompositionString(
         "(RF5 AND RF8 AND NUTRITIONAL-ASSESSMENT-DAM-DAG) NOT (TRANSFERED-IN)");
@@ -550,10 +918,7 @@ public class MQCohortQueries {
     definition.addSearch(
         "NUTRITIONAL-ASSESSMENT-ATPU",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "NUTRITIONAL ASSESSMENT-ATPU",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoHasNutritionalAssessmentDAMandDAGAndATPUInLastConsultation),
+            this.findPatientsWhoHasNutritionalAssessmentDAMandDAGAndATPUInLastConsultation(),
             mappings));
 
     definition.setCompositionString("RF21 AND NUTRITIONAL-ASSESSMENT-ATPU");
@@ -575,47 +940,27 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-ADULT",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "NUTRITIONAL ASSESSMENT-ATPU",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation),
-            mappings));
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation(), mappings));
 
     definition.addSearch(
         "TB-ACTIVE",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6),
+            this.findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6(),
             mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "BREASTFEEDING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "BREASTFEEDING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreBreastfeedingInclusionDateRF09),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.setCompositionString(
         "START-ART-ADULT NOT (TB-ACTIVE OR TRANSFERED-IN OR PREGNANT OR BREASTFEEDING)");
@@ -649,11 +994,7 @@ public class MQCohortQueries {
     definition.addSearch(
         "TB-SCREENING",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6),
-            mappings));
+            this.findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6(), mappings));
 
     definition.setCompositionString("RF11-DENOMINATOR AND TB-SCREENING");
 
@@ -679,47 +1020,28 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-CHILDREN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-ART-CHILDREN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation),
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation(),
             mappings));
 
     definition.addSearch(
         "TB-ACTIVE",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6),
+            this.findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6(),
             mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "BREASTFEEDING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "BREASTFEEDING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreBreastfeedingInclusionDateRF09),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.setCompositionString(
         "START-ART-CHILDREN NOT (TB-ACTIVE OR TRANSFERED-IN OR PREGNANT OR BREASTFEEDING)");
@@ -753,11 +1075,7 @@ public class MQCohortQueries {
     definition.addSearch(
         "TB-SCREENING",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6),
-            mappings));
+            this.findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6(), mappings));
 
     definition.setCompositionString("RF13-DENOMINATOR AND TB-SCREENING");
 
@@ -782,39 +1100,23 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
         "TB-ACTIVE",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6),
+            this.findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6(),
             mappings));
 
     definition.addSearch(
         "BREASTFEEDING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "BREASTFEEDING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreBreastfeedingInclusionDateRF09),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.setCompositionString("PREGNANT NOT (TB-ACTIVE OR TRANSFERED-IN OR BREASTFEEDING)");
 
@@ -847,11 +1149,7 @@ public class MQCohortQueries {
     definition.addSearch(
         "TB-SCREENING",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6),
-            mappings));
+            this.findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6(), mappings));
 
     definition.setCompositionString("RF15-DENOMINATOR AND TB-SCREENING");
 
@@ -876,38 +1174,22 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "BREASTFEEDING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "BREASTFEEDING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreBreastfeedingInclusionDateRF09),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
         "TB-ACTIVE",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6),
+            this.findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6(),
             mappings));
 
     definition.setCompositionString("BREASTFEEDING NOT (TB-ACTIVE OR TRANSFERED-IN OR PREGNANT )");
@@ -941,11 +1223,7 @@ public class MQCohortQueries {
     definition.addSearch(
         "TB-SCREENING",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6),
-            mappings));
+            this.findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6(), mappings));
 
     definition.setCompositionString("RF17-DENOMINATOR AND TB-SCREENING");
 
@@ -966,73 +1244,38 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-ADULT",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-ART-ADULT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation),
-            mappings));
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation(), mappings));
 
     definition.addSearch(
         "TB-ACTIVE-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7),
-            mappings));
+            this.findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-SCREENING-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWithPositiveTBScreeningInDurindPeriodCategory7),
-            mappings));
+            this.findPatientsWithPositiveTBScreeningInDurindPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-TREATMENT-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-TREATMENT-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .finPatientHaveTBTreatmentDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.finPatientHaveTBTreatmentDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
-        "TRANSFERED-OUT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-OUT",
-                QualityImprovementQueriesInterface.QUERY.findPatientsWhoTransferedOutRF07),
-            mappings));
+        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "BREASTFEEDING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "BREASTFEEDING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreBreastfeedingInclusionDateRF09),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.setCompositionString(
         "START-ART-ADULT NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7 OR TRANSFERED-IN OR TRANSFERED-OUT OR PREGNANT OR BREASTFEEDING)");
@@ -1065,12 +1308,7 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "START-TPI",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-TPI",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWhoStartTPIDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.findPatientWhoStartTPIDuringPeriodCategory7(), mappings));
 
     definition.setCompositionString("RF19-DENOMINATOR AND START-TPI");
 
@@ -1091,73 +1329,39 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-CHILDREN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-ART-CHILDREN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation),
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation(),
             mappings));
 
     definition.addSearch(
         "TB-ACTIVE-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7),
-            mappings));
+            this.findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-SCREENING-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWithPositiveTBScreeningInDurindPeriodCategory7),
-            mappings));
+            this.findPatientsWithPositiveTBScreeningInDurindPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-TREATMENT-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-TREATMENT-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .finPatientHaveTBTreatmentDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.finPatientHaveTBTreatmentDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
-        "TRANSFERED-OUT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-OUT",
-                QualityImprovementQueriesInterface.QUERY.findPatientsWhoTransferedOutRF07),
-            mappings));
+        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "BREASTFEEDING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "BREASTFEEDING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreBreastfeedingInclusionDateRF09),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.setCompositionString(
         "START-ART-CHILDREN NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7 OR TRANSFERED-IN OR TRANSFERED-OUT OR PREGNANT OR BREASTFEEDING)");
@@ -1190,12 +1394,7 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "START-TPI",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-TPI",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWhoStartTPIDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.findPatientWhoStartTPIDuringPeriodCategory7(), mappings));
 
     definition.setCompositionString("RF21-DENOMINATOR AND START-TPI");
 
@@ -1215,65 +1414,34 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
-        "TRANSFERED-OUT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-OUT",
-                QualityImprovementQueriesInterface.QUERY.findPatientsWhoTransferedOutRF07),
-            mappings));
+        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.addSearch(
         "TB-ACTIVE-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7),
-            mappings));
+            this.findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-SCREENING-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWithPositiveTBScreeningInDurindPeriodCategory7),
-            mappings));
+            this.findPatientsWithPositiveTBScreeningInDurindPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-TREATMENT-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-TREATMENT-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .finPatientHaveTBTreatmentDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.finPatientHaveTBTreatmentDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "BREASTFEEDING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "BREASTFEEDING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreBreastfeedingInclusionDateRF09),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.setCompositionString(
         "PREGNANT NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7 OR TRANSFERED-IN OR TRANSFERED-OUT OR BREASTFEEDING)");
@@ -1306,12 +1474,7 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "START-TPI",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-TPI",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWhoStartTPIDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.findPatientWhoStartTPIDuringPeriodCategory7(), mappings));
 
     definition.setCompositionString("RF23-DENOMINATOR AND START-TPI");
 
@@ -1332,91 +1495,47 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-ADULT",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-ART-ADULT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation),
-            mappings));
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation(), mappings));
 
     definition.addSearch(
         "TB-ACTIVE-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7),
-            mappings));
+            this.findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-SCREENING-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWithPositiveTBScreeningInDurindPeriodCategory7),
-            mappings));
+            this.findPatientsWithPositiveTBScreeningInDurindPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-TREATMENT-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-TREATMENT-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .finPatientHaveTBTreatmentDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.finPatientHaveTBTreatmentDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
-        "TRANSFERED-OUT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-OUT",
-                QualityImprovementQueriesInterface.QUERY.findPatientsWhoTransferedOutRF07),
-            mappings));
+        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "BREASTFEEDING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "BREASTFEEDING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreBreastfeedingInclusionDateRF09),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.addSearch(
         "START-TPI",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-TPI",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWhoStartTPIDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.findPatientWhoStartTPIDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "START-TPI4MONTHS",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-TPI",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWhoStartTPI4MonthsAfterDateOfInclusionCategory7),
-            mappings));
+            this.findPatientWhoStartTPI4MonthsAfterDateOfInclusionCategory7(), mappings));
 
     definition.setCompositionString(
         "START-ART-ADULT NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7 OR TRANSFERED-IN OR TRANSFERED-OUT OR PREGNANT OR BREASTFEEDING OR START-TPI OR START-TPI4MONTHS)");
@@ -1448,39 +1567,21 @@ public class MQCohortQueries {
             mappings));
 
     definition.addSearch(
-        "END-TPI",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "END-TPI",
-                QualityImprovementQueriesInterface.QUERY.findPatientWhoCompleteTPICategory7),
-            mappings));
+        "END-TPI", EptsReportUtils.map(this.findPatientWhoCompleteTPICategory7(), mappings));
 
     definition.addSearch(
         "TB-ACTIVE-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7),
-            mappings));
+            this.findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-SCREENING-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWithPositiveTBScreeningInDurindPeriodCategory7),
-            mappings));
+            this.findPatientsWithPositiveTBScreeningInDurindPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-TREATMENT-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-TREATMENT-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .finPatientHaveTBTreatmentDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.finPatientHaveTBTreatmentDuringPeriodCategory7(), mappings));
 
     definition.setCompositionString(
         "(RF25-DENOMINATOR AND END-TPI) NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7)");
@@ -1502,91 +1603,48 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-CHILDREN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-ART-CHILDREN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen1neLess14),
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen1neLess14(),
             mappings));
 
     definition.addSearch(
         "START-TPI",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-TPI",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWhoStartTPIDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.findPatientWhoStartTPIDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
-        "TRANSFERED-OUT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-OUT",
-                QualityImprovementQueriesInterface.QUERY.findPatientsWhoTransferedOutRF07),
-            mappings));
+        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "BREASTFEEDING",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "BREASTFEEDING",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoAreBreastfeedingInclusionDateRF09),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.addSearch(
         "TB-ACTIVE-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7),
-            mappings));
+            this.findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-SCREENING-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWithPositiveTBScreeningInDurindPeriodCategory7),
-            mappings));
+            this.findPatientsWithPositiveTBScreeningInDurindPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-TREATMENT-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-TREATMENT-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .finPatientHaveTBTreatmentDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.finPatientHaveTBTreatmentDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "START-TPI4MONTHS",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-TPI",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWhoStartTPI4MonthsAfterDateOfInclusionCategory7),
-            mappings));
+            this.findPatientWhoStartTPI4MonthsAfterDateOfInclusionCategory7(), mappings));
 
     definition.setCompositionString(
         "(START-ART-CHILDREN AND START-TPI) NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7 OR TRANSFERED-IN OR TRANSFERED-OUT OR PREGNANT OR BREASTFEEDING OR START-TPI4MONTHS)");
@@ -1618,42 +1676,9 @@ public class MQCohortQueries {
             mappings));
 
     definition.addSearch(
-        "END-TPI",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "END-TPI",
-                QualityImprovementQueriesInterface.QUERY.findPatientWhoCompleteTPICategory7),
-            mappings));
+        "END-TPI", EptsReportUtils.map(this.findPatientWhoCompleteTPICategory7(), mappings));
 
-    definition.addSearch(
-        "TB-ACTIVE-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7),
-            mappings));
-
-    definition.addSearch(
-        "TB-SCREENING-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWithPositiveTBScreeningInDurindPeriodCategory7),
-            mappings));
-
-    definition.addSearch(
-        "TB-TREATMENT-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-TREATMENT-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .finPatientHaveTBTreatmentDuringPeriodCategory7),
-            mappings));
-
-    definition.setCompositionString(
-        "(RF27-DENOMINATOR AND END-TPI) NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7)");
+    definition.setCompositionString("RF27-DENOMINATOR AND END-TPI ");
 
     return definition;
   }
@@ -1671,74 +1696,39 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "PREGNANT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "PREGNANT",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoArePregnantInclusionDateRF08),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "START-TPI",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-TPI",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWhoStartTPIDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.findPatientWhoStartTPIDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06),
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
     definition.addSearch(
-        "TRANSFERED-OUT",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-OUT",
-                QualityImprovementQueriesInterface.QUERY.findPatientsWhoTransferedOutRF07),
-            mappings));
+        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.addSearch(
         "TB-ACTIVE-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7),
-            mappings));
+            this.findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-SCREENING-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWithPositiveTBScreeningInDurindPeriodCategory7),
-            mappings));
+            this.findPatientsWithPositiveTBScreeningInDurindPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-TREATMENT-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-TREATMENT-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .finPatientHaveTBTreatmentDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.finPatientHaveTBTreatmentDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "START-TPI4MONTHS",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-TPI",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientWhoStartTPI4MonthsAfterDateOfInclusionCategory7),
-            mappings));
+            this.findPatientWhoStartTPI4MonthsAfterDateOfInclusionCategory7(), mappings));
 
     definition.setCompositionString(
         "(PREGNANT AND START-TPI) NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7 OR TRANSFERED-IN OR TRANSFERED-OUT OR START-TPI4MONTHS)");
@@ -1771,42 +1761,23 @@ public class MQCohortQueries {
             mappings));
 
     definition.addSearch(
-        "END-TPI",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "END-TPI",
-                QualityImprovementQueriesInterface.QUERY.findPatientWhoCompleteTPICategory7),
-            mappings));
+        "END-TPI", EptsReportUtils.map(this.findPatientWhoCompleteTPICategory7(), mappings));
 
     definition.addSearch(
         "TB-ACTIVE-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-ACTIVE-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7),
-            mappings));
+            this.findPatientsDiagnosedWithActiveTBDuringDuringPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-SCREENING-CAT7",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-SCREENING-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .findPatientsWithPositiveTBScreeningInDurindPeriodCategory7),
-            mappings));
+            this.findPatientsWithPositiveTBScreeningInDurindPeriodCategory7(), mappings));
 
     definition.addSearch(
         "TB-TREATMENT-CAT7",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TB-TREATMENT-CAT7",
-                QualityImprovementQueriesInterface.QUERY
-                    .finPatientHaveTBTreatmentDuringPeriodCategory7),
-            mappings));
+        EptsReportUtils.map(this.finPatientHaveTBTreatmentDuringPeriodCategory7(), mappings));
 
-    definition.setCompositionString(
-        "(RF29-DENOMINATOR AND END-TPI) NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7)");
+    definition.setCompositionString("RF29-DENOMINATOR AND END-TPI");
 
     return definition;
   }

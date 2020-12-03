@@ -10,6 +10,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQue
 import org.openmrs.module.eptsreports.reporting.library.cohorts.QualityImprovementCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.MQDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -60,6 +61,10 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
     reportDefinition.setParameters(getParameters());
     reportDefinition.addDataSetDefinition(
         "MQ", Mapped.mapStraightThrough(mqDataSet.constructTMqDatset()));
+    reportDefinition.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(),
+            "endDate=${dataFinalAvaliacao},location=${location}"));
 
     return reportDefinition;
   }
@@ -84,9 +89,9 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
   @Override
   public List<Parameter> getParameters() {
     return Arrays.asList(
-        new Parameter("startDate", "Data Inicial Inclusão", Date.class),
-        new Parameter("endDate", "Data Final Inclusão", Date.class),
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class),
+        new Parameter("endInclusionDate", "  Data Final Inclusão", Date.class),
+        new Parameter("endRevisionDate", "Data Final Revisão", Date.class),
         new Parameter("location", "Unidade Sanitária", Location.class));
   }
 }
