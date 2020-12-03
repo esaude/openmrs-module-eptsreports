@@ -29,7 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxRTTPLHIVLess12MonthCalculation extends BaseFghCalculation {
+public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
 
   private static final int CHUNK_SIZE = 1000;
 
@@ -58,7 +58,6 @@ public class TxRTTPLHIVLess12MonthCalculation extends BaseFghCalculation {
       parameters.put("endDate", DateUtil.adjustDate(startDate, -1, DurationUnit.DAYS));
       parameters.put("realEndDate", endDate);
       parameters.put("location", location);
-
       CalculationResultMap iiTPatients =
           Context.getRegisteredComponents(TxRTTPatientsWhoExperiencedIITCalculation.class)
               .get(0)
@@ -90,7 +89,7 @@ public class TxRTTPLHIVLess12MonthCalculation extends BaseFghCalculation {
       if (calculationResult != null && calculationResult.getValue() != null) {
         Date iitDate = (Date) calculationResult.getValue();
         Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-        if (DateUtil.getDaysBetween(iiDatePlus29, minTxCurrDate) < DAYS_OF_YEAR) {
+        if (DateUtil.getDaysBetween(iiDatePlus29, minTxCurrDate) >= DAYS_OF_YEAR) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         }
       }
@@ -110,7 +109,7 @@ public class TxRTTPLHIVLess12MonthCalculation extends BaseFghCalculation {
       if (calculationResult != null && calculationResult.getValue() != null) {
         Date iitDate = (Date) calculationResult.getValue();
         Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-        if (DateUtil.getDaysBetween(iiDatePlus29, maxTxCurrDate) < DAYS_OF_YEAR) {
+        if (DateUtil.getDaysBetween(iiDatePlus29, maxTxCurrDate) >= DAYS_OF_YEAR) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         }
       }

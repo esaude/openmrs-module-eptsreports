@@ -197,4 +197,15 @@ public class QueryDisaggregationProcessor {
     }
     return listPatientDates;
   }
+
+  public Map<Integer, Date> findTransferredInPatientsUntilRerportEndingDate(
+      EvaluationContext context) {
+    SqlQueryBuilder qb =
+        new SqlQueryBuilder(
+            IQueryDisaggregationProcessor.QUERY.findTransferredInPatientsUntilRerportEndingDate,
+            context.getParameterValues());
+    return Context.getRegisteredComponents(EvaluationService.class)
+        .get(0)
+        .evaluateToMap(qb, Integer.class, Date.class, context);
+  }
 }

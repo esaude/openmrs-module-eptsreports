@@ -2,6 +2,7 @@ package org.openmrs.module.eptsreports.reporting.calculation.rtt;
 
 import java.util.Date;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
@@ -11,11 +12,12 @@ import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastFilaCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastRecepcaoLevantamentoCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastSeguimentoCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.NextFilaDateCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.NextSeguimentoDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.OnArtInitiatedArvDrugsCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.TxRttNextFilaUntilEndDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.TxRttNextSeguimentoUntilEndDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.txml.TxMLPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
+import org.openmrs.module.eptsreports.reporting.calculation.util.processor.QueryDisaggregationProcessor;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
@@ -34,6 +36,29 @@ public class TxRTTPatientsWhoExperiencedIITCalculation extends BaseFghCalculatio
         Context.getRegisteredComponents(OnArtInitiatedArvDrugsCalculation.class)
             .get(0)
             .evaluate(parameterValues, context);
+
+    QueryDisaggregationProcessor queryDisaggregation =
+        Context.getRegisteredComponents(QueryDisaggregationProcessor.class).get(0);
+
+    Map<Integer, Date> transferredInToInclude =
+        queryDisaggregation.findTransferredInPatientsUntilRerportEndingDate(context);
+
+    for (Entry<Integer, Date> entry : transferredInToInclude.entrySet()) {
+      CalculationResult calculationResult = inicioRealResult.get(entry.getKey());
+      if (calculationResult != null && calculationResult.getValue() != null) {
+        Date inicioDate = (Date) calculationResult.getValue();
+        if (inicioDate != null) {
+          if (entry.getValue().compareTo(startDate) > 0) {
+            inicioRealResult.remove(entry.getKey());
+          } else {
+            if (entry.getValue().compareTo(inicioDate) >= 0) {
+              inicioRealResult.put(entry.getKey(), new SimpleResult(entry.getValue(), this));
+            }
+          }
+        }
+      }
+    }
+
     Set<Integer> cohort = inicioRealResult.keySet();
     CalculationResultMap lastFilaCalculationResult =
         Context.getRegisteredComponents(LastFilaCalculation.class)
@@ -49,11 +74,11 @@ public class TxRTTPatientsWhoExperiencedIITCalculation extends BaseFghCalculatio
         lastRecepcaoLevantamentoCalculation.evaluate(cohort, parameterValues, context);
 
     CalculationResultMap nextFilaResult =
-        Context.getRegisteredComponents(NextFilaDateCalculation.class)
+        Context.getRegisteredComponents(TxRttNextFilaUntilEndDateCalculation.class)
             .get(0)
             .evaluate(lastFilaCalculationResult.keySet(), parameterValues, context);
     CalculationResultMap nextSeguimentoResult =
-        Context.getRegisteredComponents(NextSeguimentoDateCalculation.class)
+        Context.getRegisteredComponents(TxRttNextSeguimentoUntilEndDateCalculation.class)
             .get(0)
             .evaluate(lastSeguimentoCalculationResult.keySet(), parameterValues, context);
 
@@ -88,17 +113,16 @@ public class TxRTTPatientsWhoExperiencedIITCalculation extends BaseFghCalculatio
               nextSeguimentoResult,
               TxMLPatientCalculation.getLastRecepcaoLevantamentoPlus30(
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
-      if (maxNextDate != null) {
+
+      if (maxNextDate == null) {
+        resultMap.put(patientId, new SimpleResult(null, this));
+      } else {
+
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, 28);
 
         if (nextDatePlus28.compareTo(startDate) < 0) {
           resultMap.put(patientId, new SimpleResult(nextDatePlus28, this));
         }
-      } else {
-        this.checkConsultationsOrFilaWithoutNextConsultationDate(
-            patientId, resultMap, startDate, lastFilaCalculationResult, nextFilaResult);
-        this.checkConsultationsOrFilaWithoutNextConsultationDate(
-            patientId, resultMap, startDate, lastSeguimentoCalculationResult, nextSeguimentoResult);
       }
     }
     return resultMap;

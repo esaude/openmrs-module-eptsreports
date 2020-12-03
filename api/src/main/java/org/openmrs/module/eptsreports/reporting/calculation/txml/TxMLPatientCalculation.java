@@ -60,6 +60,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
             .evaluate(lastSeguimentoCalculationResult.keySet(), parameterValues, context);
 
     return this.evaluateUsingCalculationRules(
+        parameterValues,
         context,
         cohort,
         startDate,
@@ -81,6 +82,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
   }
 
   protected abstract CalculationResultMap evaluateUsingCalculationRules(
+      Map<String, Object> parameterValues,
       EvaluationContext context,
       Set<Integer> cohort,
       Date startDate,
@@ -150,93 +152,4 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
     }
     return result;
   }
-
-  //  protected CalculationResultMap filterUntracedAndTracedPatients(
-  //      EvaluationContext context, CalculationResultMap resultMap) {
-  //    CalculationResultMap returnMap = new CalculationResultMap();
-  //    QueryDisaggregationProcessor queryDisaggregation =
-  //        Context.getRegisteredComponents(QueryDisaggregationProcessor.class).get(0);
-  //
-  //    Map<Integer, Date> criteriaOneData =
-  //        queryDisaggregation.findUntracedPatientsWithinReportingPeriodCriteriaOne(context);
-  //    ListMap<Integer, Date> criteriaTwoData =
-  //        queryDisaggregation.findUntracedByNotHavefilledDataInVisitSectionCriteriaTwo(context);
-  //    ListMap<Integer, Date> criteriaThreeData =
-  //        queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThree(context);
-  //    ListMap<Integer, Date> criteriaThreeNegationData =
-  //
-  // queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThreeNegation(context);
-  //
-  //    for (Entry<Integer, CalculationResult> entry : resultMap.entrySet()) {
-  //      Integer patientId = entry.getKey();
-  //      Date maxNextDate = (Date) entry.getValue().getValue();
-  //
-  //      if (this.matchCriteriaOne(criteriaOneData, patientId, maxNextDate)) {
-  //        returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-  //        continue;
-  //      }
-  //
-  //      if (this.matchCriteriaTwo(criteriaTwoData, patientId, maxNextDate)) {
-  //        returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-  //        continue;
-  //      }
-  //
-  //      if (this.matchCriteriaThree(
-  //          criteriaThreeData, criteriaThreeNegationData, patientId, maxNextDate)) {
-  //        returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-  //        continue;
-  //      }
-  //    }
-  //    return returnMap;
-  //  }
-
-  //  private boolean matchCriteriaOne(
-  //      Map<Integer, Date> criteriaOneData, Integer patientId, Date maxNextDate) {
-  //    Date maxHomeCardVist = criteriaOneData.get(patientId);
-  //    if (maxHomeCardVist == null
-  //        || (maxHomeCardVist != null && maxHomeCardVist.compareTo(maxNextDate) < 0)) {
-  //      return true;
-  //    }
-  //    return false;
-  //  }
-  //
-  //  private boolean matchCriteriaTwo(
-  //      ListMap<Integer, Date> criteriaTwoData, Integer patientId, Date maxNextDate) {
-  //    List<Date> homeCardVisitDates = criteriaTwoData.get(patientId);
-  //
-  //    if (homeCardVisitDates == null || homeCardVisitDates.isEmpty()) {
-  //      return false;
-  //    }
-  //    for (Date homeCardVisitDate : homeCardVisitDates) {
-  //      if (homeCardVisitDate != null && homeCardVisitDate.compareTo(maxNextDate) >= 0) {
-  //        return true;
-  //      }
-  //    }
-  //    return false;
-  //  }
-  //
-  //  private boolean matchCriteriaThree(
-  //      ListMap<Integer, Date> criteriaThreeData,
-  //      ListMap<Integer, Date> criteriaThreeNegationData,
-  //      Integer patientId,
-  //      Date maxNextDate) {
-  //    List<Date> homeCardVisitDates = criteriaThreeData.get(patientId);
-  //    List<Date> homeCardVisitDatesNegation = criteriaThreeNegationData.get(patientId);
-  //
-  //    if (homeCardVisitDates != null
-  //        && !homeCardVisitDates.isEmpty()
-  //        && homeCardVisitDatesNegation != null
-  //        && !homeCardVisitDatesNegation.isEmpty()) {
-  //      return false;
-  //    }
-  //
-  //    if (homeCardVisitDates != null && !homeCardVisitDates.isEmpty()) {
-  //      for (Date homeCardVisitDate : homeCardVisitDates) {
-  //        if (homeCardVisitDate != null && homeCardVisitDate.compareTo(maxNextDate) >= 0) {
-  //          return true;
-  //        }
-  //      }
-  //    }
-  //    return false;
-  //  }
 }

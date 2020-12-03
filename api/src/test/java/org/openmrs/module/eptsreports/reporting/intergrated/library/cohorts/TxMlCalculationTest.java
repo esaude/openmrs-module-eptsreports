@@ -9,10 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.MisauKeyPopReportCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalAPSSCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxMlCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -20,17 +17,12 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
-
-  @Autowired private TxRTTCohortQueries txRTTCohortQueries;
-  @Autowired private MisauKeyPopReportCohortQueries misauKeyPopReportCohortQueries;
-
-  @Autowired private ResumoMensalAPSSCohortQueries resumoMensalAPSSCohortQueries;
+public class TxMlCalculationTest extends DefinitionsFGHLiveTest {
 
   @Autowired private TxMlCohortQueries txMlCohortQueries;
 
   @Test
-  public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
+  public void shouldTestTxmlNumerator() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(400);
 
@@ -45,9 +37,6 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
     parameters.put(new Parameter("endDate", "End Date", Date.class), endDate);
     parameters.put(new Parameter("location", "Location", Location.class), location);
-
-    // CohortDefinition patientsWhoExperiencedIIT =
-    // txRTTCohortQueries.getPatientsOnRTT();
 
     CohortDefinition patientsWhoMissedNextApointment =
         txMlCohortQueries.getPatientsWhoMissedNextApointment();

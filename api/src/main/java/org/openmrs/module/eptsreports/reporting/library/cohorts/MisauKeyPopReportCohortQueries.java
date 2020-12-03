@@ -17,14 +17,10 @@ import org.springframework.stereotype.Component;
 public class MisauKeyPopReportCohortQueries {
 
   private GenericCohortQueries genericCohortQueries;
-  private ResumoMensalCohortQueries resumoMensalCohortQueries;
 
   @Autowired
-  public MisauKeyPopReportCohortQueries(
-      GenericCohortQueries genericCohortQueries,
-      ResumoMensalCohortQueries resumoMensalCohortQueries) {
+  public MisauKeyPopReportCohortQueries(GenericCohortQueries genericCohortQueries) {
     this.genericCohortQueries = genericCohortQueries;
-    this.resumoMensalCohortQueries = resumoMensalCohortQueries;
   }
 
   @DocumentedDefinition(value = "patientsCurrentlyOnTarvWhoReceicevedVLResults")
@@ -154,7 +150,7 @@ public class MisauKeyPopReportCohortQueries {
         "INICIOTARV",
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "patientsWhoAreNewlyEnrolledOnART",
+                "InicioTarvComDataFinalConhecida",
                 MisauKeyPopReportQueries.QUERY.findInicioTarvComDataFinalConhecida),
             mappings));
 
@@ -162,9 +158,9 @@ public class MisauKeyPopReportCohortQueries {
         "TRANSFERIDOPARA",
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "findPatientsTransferidosParaInEndReportingPeriod",
+                "PatientsTransferidosParaInEndReportingPeriod",
                 MisauKeyPopReportQueries.QUERY.findPatientsTransferidosParaInEndReportingPeriod),
-            mappings));
+            "endDate=${endDate-1y},location=${location}"));
 
     compositionDefinition.setCompositionString("INICIOTARV NOT TRANSFERIDOPARA");
 

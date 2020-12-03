@@ -139,7 +139,7 @@ public class ResumoMensalAPSSCohortQueries {
 
     final CompositionCohortDefinition compsitionDefinition = new CompositionCohortDefinition();
     compsitionDefinition.setName("NumberOfPatientsWhoAreCurrentlyEnrolledOnArtMOHC1");
-    final String mappings = "startDate=${startDate-3m},endDate=${endDate-3m},location=${location}";
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     compsitionDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     compsitionDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -174,21 +174,20 @@ public class ResumoMensalAPSSCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "B1",
-        map(
-            getTxNewCompositionCohort("Number of patientes who initiated TARV", mappings),
-            mappings));
+        "B1", map(getTxNewCompositionCohort("Number of patientes who initiated TARV"), mappings));
     cd.setCompositionString("B1");
     return cd;
   }
 
-  private CohortDefinition getTxNewCompositionCohort(final String cohortName, String mappings) {
+  private CohortDefinition getTxNewCompositionCohort(final String cohortName) {
     final CompositionCohortDefinition txNewCompositionCohort = new CompositionCohortDefinition();
 
     txNewCompositionCohort.setName(cohortName);
     txNewCompositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
     txNewCompositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
     txNewCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate-3m},endDate=${endDate-3m},location=${location}";
 
     txNewCompositionCohort.addSearch(
         "START-ART",

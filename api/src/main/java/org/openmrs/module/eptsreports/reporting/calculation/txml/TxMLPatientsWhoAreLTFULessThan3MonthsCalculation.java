@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.txml;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
@@ -18,6 +19,7 @@ public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation extends TxMLPatien
 
   @Override
   protected CalculationResultMap evaluateUsingCalculationRules(
+      Map<String, Object> parameterValues,
       EvaluationContext context,
       Set<Integer> cohort,
       Date startDate,
@@ -54,6 +56,6 @@ public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation extends TxMLPatien
             patientId, resultMap, endDate, lastSeguimentoCalculationResult, nextSeguimentoResult);
       }
     }
-    return resultMap; // filterUntracedAndTracedPatients(context, resultMap);
+    return resultMap;
   }
 }
