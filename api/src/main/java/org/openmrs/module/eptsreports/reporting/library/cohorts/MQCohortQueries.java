@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class MQCohortQueries {
 
-  @DocumentedDefinition(value = "findPatientsWhoAreNewlyEnrolledOnArt")
+  @DocumentedDefinition(value = "findPatientsWhoAreNewlyEnrolledOnARTRF05")
   public CohortDefinition findPatientsWhoAreNewlyEnrolledOnARTRF05() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
