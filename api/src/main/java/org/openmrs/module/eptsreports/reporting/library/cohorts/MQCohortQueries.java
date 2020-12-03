@@ -487,7 +487,9 @@ public class MQCohortQueries {
 
     return definition;
   }
-
+  
+	/*Os Numeradores e Denominadores comecam a ser colectados apartir Daqui
+	*/  
   @DocumentedDefinition(
       value =
           "findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultCategory3RF11Denominator")
