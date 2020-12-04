@@ -31,9 +31,11 @@ public class IMER1DataSet extends BaseDataSet {
     this.imer1NumeratorCohortQueries = imer1NumeratorCohortQueries;
   }
 
-  public DataSetDefinition constructIMER1DenominaorDataSet() {
+  public DataSetDefinition constructIMER1DataSet() {
 
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
+    dsd.setName("IMER 1 Data Set");
+    dsd.addParameters(getParameters());
 
     /* denominator */
     CohortIndicator dall =
