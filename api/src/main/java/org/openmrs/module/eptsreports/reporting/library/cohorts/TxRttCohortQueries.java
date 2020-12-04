@@ -36,6 +36,8 @@ public class TxRttCohortQueries {
 
   private TxCurrCohortQueries txCurrCohortQueries;
 
+  private CommonCohortQueries commonCohortQueries;
+
   private final String DEFAULT_MAPPING =
       "startDate=${startDate},endDate=${endDate},location=${location}";
 
@@ -43,10 +45,12 @@ public class TxRttCohortQueries {
   public TxRttCohortQueries(
       HivMetadata hivMetadata,
       GenericCohortQueries genericCohortQueries,
-      TxCurrCohortQueries txCurrCohortQueries) {
+      TxCurrCohortQueries txCurrCohortQueries,
+      CommonCohortQueries commonCohortQueries) {
     this.hivMetadata = hivMetadata;
     this.genericCohortQueries = genericCohortQueries;
     this.txCurrCohortQueries = txCurrCohortQueries;
+    this.commonCohortQueries = commonCohortQueries;
   }
 
   /**
@@ -88,6 +92,10 @@ public class TxRttCohortQueries {
    *       (startDate -1 day) following the criterias defined in the common queries:
    *   <li>Filter all patients who experienced IIT by end of previous reporting period (startDate -1
    *       day) following the criterias defined in the common queries:
+   *       <ul>
+   *         <li>And Exclude all IIT patients who are transferred out by previous reporting period,
+   *             following the criterias defined in the common queries:
+   *       </ul>
    *   <li>Filter all patients who returned to the treatment during the reporting period following
    *       the criterias below: {@link
    *       TxRttCohortQueries#getPatientsReturnedTreatmentDuringReportingPeriod() }
@@ -124,7 +132,14 @@ public class TxRttCohortQueries {
             txCurrCohortQueries.getTxCurrCompositionCohort("txcurr", true),
             "onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("initiatedPreviousPeriod AND LTFU AND returned AND txcurr");
+    cd.addSearch(
+        "transferredout",
+        EptsReportUtils.map(
+            commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod(),
+            "onOrBefore=${startDate-1d},location=${location}"));
+
+    cd.setCompositionString(
+        "initiatedPreviousPeriod AND returned AND txcurr (LTFU AND NOT transferredout)");
 
     return cd;
   }
