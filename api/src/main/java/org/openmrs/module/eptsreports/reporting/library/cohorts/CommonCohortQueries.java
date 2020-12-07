@@ -190,6 +190,7 @@ public class CommonCohortQueries {
   public CohortDefinition getMohMQPatientsOnCondition(
       Boolean female,
       Boolean transfIn,
+      String occurType,
       EncounterType encounterType,
       Concept question,
       List<Concept> answers,
@@ -214,9 +215,24 @@ public class CommonCohortQueries {
         answerIds2.add(concept.getConceptId());
       }
     }
-    String query =
-        "SELECT p.person_id FROM person p INNER JOIN encounter e "
-            + "ON p.person_id = e.patient_id "
+    String query = "";
+    if (occurType == "last") {
+
+      query +=
+          "SELECT p.person_id FROM person p INNER JOIN "
+              + "(SELECT p.person_id, MAX(e.encounter_datetime) FROM person p INNER JOIN encounter e ";
+
+    } else if (occurType == "first") {
+      query +=
+          "SELECT p.person_id FROM person p INNER JOIN "
+              + "(SELECT p.person_id, MIN(e.encounter_datetime) FROM person p INNER JOIN encounter e ";
+
+    } else if (occurType == "once") {
+      query += "SELECT p.person_id FROM person p INNER JOIN encounter e ";
+    }
+
+    query +=
+        "ON p.person_id = e.patient_id "
             + "INNER JOIN obs o "
             + "ON e.encounter_id = o.encounter_id ";
     if (transfIn) {
@@ -235,7 +251,11 @@ public class CommonCohortQueries {
     }
     query +=
         "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
-            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0";
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0 ";
+
+    if (occurType == "last" || occurType == "first") {
+      query += "GROUP BY p.person_id) list ON p.person_id = list.person_id";
+    }
 
     Map<String, String> map = new HashMap<>();
     map.put("encounterType", String.valueOf(encounterType.getEncounterTypeId()));

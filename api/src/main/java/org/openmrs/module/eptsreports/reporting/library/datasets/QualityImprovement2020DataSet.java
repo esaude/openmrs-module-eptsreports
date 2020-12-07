@@ -164,6 +164,55 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
+    // Category 6 denominator indicators
+    dataSetDefinition.addColumn(
+        "MQ6DEN1",
+        "Crianças em TARV com desnutrição (DAM ou DAG) e  com registo de prescrição de suplementação ou tratamento nutricional",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ6DEN1",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ6A(1),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ6DEN2",
+        "",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ6DEN2",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ6A(2),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=<15");
+
+    dataSetDefinition.addColumn(
+        "MQ6DEN3",
+        "% de mulheres grávidas HIV+ rastreadas para TB na última consulta clínica",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ6DEN3",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ6A(3),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ6DEN4",
+        "% de mulheres lactantes HIV+ rastreadas para TB  na última consulta",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ6DEN4",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ6A(4),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
     return dataSetDefinition;
   }
 
