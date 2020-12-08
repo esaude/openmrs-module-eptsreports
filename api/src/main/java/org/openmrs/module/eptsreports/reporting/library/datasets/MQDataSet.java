@@ -31,23 +31,6 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.setName("MQ Data Set");
 
-    final CohortIndicator patientEnrolledInHIVStartedARTIndicator =
-        this.eptsGeneralIndicator.getIndicator(
-            "patientNewlyEnrolledInHIVIndicator",
-            EptsReportUtils.map(
-                this.mqCohortQueries
-                    .findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultCategory3RF11Denominator(),
-                mappings));
-
-    patientEnrolledInHIVStartedARTIndicator.addParameter(
-        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
-    patientEnrolledInHIVStartedARTIndicator.addParameter(
-        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
-    patientEnrolledInHIVStartedARTIndicator.addParameter(
-        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
-    patientEnrolledInHIVStartedARTIndicator.addParameter(
-        new Parameter("location", "location", Date.class));
-
     final CohortIndicator CAT3ADULTODENOMINATOR =
         this.eptsGeneralIndicator.getIndicator(
             "CAT3ADULTODENOMINATOR",
@@ -559,12 +542,6 @@ public class MQDataSet extends BaseDataSet {
     CAT7PragnantTPINUMERATOR.addParameter(
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT7PragnantTPINUMERATOR.addParameter(new Parameter("location", "location", Date.class));
-
-    dataSetDefinition.addColumn(
-        "PCN01",
-        "PCN01",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "");
 
     dataSetDefinition.addColumn(
         "CAT3ADULTODENOMINATOR",

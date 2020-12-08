@@ -408,7 +408,6 @@ public class MQCohortQueries {
     String query =
         QualityImprovementQueriesInterface.QUERY
             .findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6;
-
     definition.setQuery(query);
 
     return definition;
@@ -1704,8 +1703,7 @@ public class MQCohortQueries {
         "TB-TREATMENT-CAT7",
         EptsReportUtils.map(this.finPatientHaveTBTreatmentDuringPeriodCategory7(), mappings));
 
-    definition.setCompositionString(
-        "(RF25-DENOMINATOR AND END-TPI) NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7)");
+    definition.setCompositionString("END-TPI");
 
     return definition;
   }

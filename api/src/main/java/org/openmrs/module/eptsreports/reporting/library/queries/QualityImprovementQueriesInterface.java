@@ -359,7 +359,7 @@ public interface QualityImprovementQueriesInterface {
     public static final String
         findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6 =
             "select lastClinica.patient_id from ( "
-                + "select p.patient_id,max(e.encounter_datetime) encounter_datetime  from patient p "
+                + "select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
                 + "inner join encounter e on e.patient_id=p.patient_id "
                 + "where p.voided=0 and e.voided=0 and e.encounter_datetime between :startInclusionDate and :endRevisionDate and "
                 + "e.location_id=:location and e.encounter_type=6 "
@@ -370,7 +370,7 @@ public interface QualityImprovementQueriesInterface {
 
     public static final String
         findPatientWwithTBScreeningAtTheLastConsultationOfThePeriodCategory6 =
-            "select lastClinica.patient_idfrom ( "
+            "select lastClinica.patient_id from ( "
                 + "select p.patient_id,max(e.encounter_datetime) encounter_datetime  from patient p "
                 + "inner join encounter e on e.patient_id=p.patient_id "
                 + "where p.voided=0 and e.voided=0 and e.encounter_datetime between :startInclusionDate and :endRevisionDate and "
@@ -420,9 +420,10 @@ public interface QualityImprovementQueriesInterface {
             + "group by p.patient_id ";
 
     public static final String findPatientWhoCompleteTPICategory7 =
-        "select inicioTPI.patient_id,inicioTPI.dataInicioTPI,obsFimTPI.obs_datetime dataFimTPI, "
+        "select patient_id from( "
+            + "select inicioTPI.patient_id,inicioTPI.dataInicioTPI,obsFimTPI.obs_datetime dataFimTPI, "
             + "obsTBActiva.obs_datetime dataTBActiva,obsRastreio.obs_datetime dataRastreioPositivo, obsTB.obs_datetime dataTB from  ( "
-            + "select p.patient_id,min(obsTPI.obs_datetime) dataInicioTPI from patient p "
+            + "select p.patient_id,min(obsTPI.obs_datetime) dataInicioTPI from  patient p "
             + "inner join encounter e on e.patient_id=p.patient_id "
             + "inner join obs obsTPI on obsTPI.encounter_id=e.encounter_id "
             + "where p.voided=0 and e.voided=0 and obsTPI.obs_datetime between :startInclusionDate and :endInclusionDate and  "
@@ -444,7 +445,8 @@ public interface QualityImprovementQueriesInterface {
             + "obsFimTPI.voided=0 and obsFimTPI.location_id=:location and "
             + "obsTBActiva.person_id is null and  "
             + "obsRastreio.person_id is null and  "
-            + "obsTB.person_id is null ";
+            + "obsTB.person_id is null "
+            + ")finalTPI ";
 
     public static final String
         findAdultsOnARTWithMinimum3APSSFollowupConsultationsIntheFirst3MonthsAfterStartingARTCategory11NumeratorAdult =

@@ -25,13 +25,13 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
-    final Location location = Context.getLocationService().getLocation(244);
+    final Location location = Context.getLocationService().getLocation(223);
     final Date startDate = DateUtil.getDateTime(2019, 11, 21);
-    final Date endDate = DateUtil.getDateTime(2019, 12, 20);
+    final Date endDate = DateUtil.getDateTime(2020, 12, 20);
 
     final CohortDefinition txNewCompositionCohort =
         this.mqCohortQueries
-            .findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultCategory3RF11Denominator();
+            .findPatientsWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndEndTPICategory7RF26Numerator();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
     parameters.put(new Parameter("endInclusionDate", "End Date", Date.class), endDate);
 
-    parameters.put(new Parameter("revisionDate", "End Date", Date.class), endDate);
+    parameters.put(new Parameter("endRevisionDate", "End Date", Date.class), endDate);
 
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
@@ -47,6 +47,7 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
         this.evaluateCohortDefinition(txNewCompositionCohort, parameters);
 
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
+    System.out.println(evaluateCohortDefinition.getMemberIds());
   }
 
   @Override
