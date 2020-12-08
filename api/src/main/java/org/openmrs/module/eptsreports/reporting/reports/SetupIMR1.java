@@ -18,8 +18,11 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.IMR1Dataset;
+import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -31,6 +34,8 @@ import org.springframework.stereotype.Component;
 public class SetupIMR1 extends EptsDataExportManager {
 
   @Autowired private IMR1Dataset imr1Dataset;
+
+  @Autowired protected GenericCohortQueries genericCohortQueries;
 
   @Override
   public String getVersion() {
@@ -69,10 +74,11 @@ public class SetupIMR1 extends EptsDataExportManager {
         "I", Mapped.mapStraightThrough(this.imr1Dataset.constructIMR1DataSet()));
 
     // add a base cohort here to help in calculations running
-    // reportDefinition.setBaseCohortDefinition(EptsReportUtils.map(
-    // this.genericCohortQueries.generalSql("baseCohortQuery",
-    // BaseQueries.getBaseCohortQuery()),
-    // "endDate=${endDate},location=${location}"));
+    reportDefinition.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
+            "endDate=${endDate},location=${location}"));
 
     return reportDefinition;
   }
@@ -94,7 +100,6 @@ public class SetupIMR1 extends EptsDataExportManager {
     } catch (final IOException e) {
       throw new ReportingException(e.toString());
     }
-
     return Arrays.asList(reportDesign);
   }
 }

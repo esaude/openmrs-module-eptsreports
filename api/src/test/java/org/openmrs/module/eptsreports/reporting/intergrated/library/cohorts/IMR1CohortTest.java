@@ -10,7 +10,6 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.IMR1CohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalAPSSCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -21,14 +20,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class IMR1CohortTest extends DefinitionsFGHLiveTest {
 
   @Autowired private IMR1CohortQueries imr1CohortQueries;
-  @Autowired private ResumoMensalAPSSCohortQueries resumoMensalAPSSCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
-    final Location location = Context.getLocationService().getLocation(208);
-    final Date startDate = DateUtil.getDateTime(2019, 9, 21);
-    final Date endDate = DateUtil.getDateTime(2019, 12, 20);
+    final Location location = Context.getLocationService().getLocation(400);
+    final Date startDate = DateUtil.getDateTime(2020, 6, 21);
+    final Date endDate = DateUtil.getDateTime(2020, 9, 20);
 
     System.out.println(startDate);
     System.out.println(endDate);
@@ -38,12 +36,7 @@ public class IMR1CohortTest extends DefinitionsFGHLiveTest {
     parameters.put(new Parameter("endDate", "End Date", Date.class), endDate);
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
-    // CohortDefinition cohortDefinition =
-    // imr1CohortQueries.getAllPatientsWhoAreBreastfeeding();
-
-    CohortDefinition cohortDefinition =
-        resumoMensalAPSSCohortQueries
-            .findPatientsWhoAreCurrentlyEnrolledOnArtWithPrevencaoPosetivaD1();
+    CohortDefinition cohortDefinition = imr1CohortQueries.getPatientsNewlyEnrolledOnArtCare();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(cohortDefinition, parameters);
@@ -65,6 +58,6 @@ public class IMR1CohortTest extends DefinitionsFGHLiveTest {
 
   @Override
   protected String password() {
-    return "eSaude123";
+    return "H!$fGH0Mr$";
   }
 }
