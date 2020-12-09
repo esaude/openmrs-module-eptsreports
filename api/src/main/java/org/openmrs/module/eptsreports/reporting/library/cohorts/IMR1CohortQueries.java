@@ -48,8 +48,10 @@ public class IMR1CohortQueries {
     return compsitionDefinition;
   }
 
-  @DocumentedDefinition(value = "PatientsNewlyEnrolledOnArtCareExcludingPregnants")
-  public CohortDefinition getPatientsNewlyEnrolledOnArtCareExcludingPregnants() {
+  @DocumentedDefinition(
+      value = "PatientsNewlyEnrolledOnArtCareExcludingPregnantsAndBreastFeedingDenominator")
+  public CohortDefinition
+      getPatientsNewlyEnrolledOnArtCareExcludingPregnantsAndBreastfeedingDenominator() {
 
     final CompositionCohortDefinition compsitionDefinition = new CompositionCohortDefinition();
     compsitionDefinition.setName("Patients newly enrolled on ART Care excluding Pregnants");
@@ -64,13 +66,18 @@ public class IMR1CohortQueries {
     compsitionDefinition.addSearch(
         "PREGNANT", EptsReportUtils.map(this.getAllPatientsWhoArePregnantInAPeriod(), mappings));
 
-    compsitionDefinition.setCompositionString("DENOMINATOR NOT PREGNANT");
+    compsitionDefinition.addSearch(
+        "BREASTFEEDING", EptsReportUtils.map(this.getAllPatientsWhoAreBreastfeeding(), mappings));
+
+    compsitionDefinition.setCompositionString("DENOMINATOR NOT (PREGNANT OR BREASTFEEDING)");
 
     return compsitionDefinition;
   }
 
-  @DocumentedDefinition(value = "PatientsNewlyEnrolledOnArtCareNumeratorExcludingPregnants")
-  public CohortDefinition getPatientsNewlyEnrolledOnArtCareNumeratorExcludingPregnants() {
+  @DocumentedDefinition(
+      value = "PatientsNewlyEnrolledOnArtCareExcludingPregnantsAndBreastFeedingNumerator")
+  public CohortDefinition
+      getPatientsNewlyEnrolledOnArtCareExcludingPregnantsAndBreasFeedingNumerator() {
 
     final CompositionCohortDefinition compsitionDefinition = new CompositionCohortDefinition();
     compsitionDefinition.setName("Patients newly enrolled on ART Care excluding Pregnants");
@@ -86,7 +93,10 @@ public class IMR1CohortQueries {
     compsitionDefinition.addSearch(
         "PREGNANT", EptsReportUtils.map(this.getAllPatientsWhoArePregnantInAPeriod(), mappings));
 
-    compsitionDefinition.setCompositionString("NUMERATOR NOT PREGNANT");
+    compsitionDefinition.addSearch(
+        "BREASTFEEDING", EptsReportUtils.map(this.getAllPatientsWhoAreBreastfeeding(), mappings));
+
+    compsitionDefinition.setCompositionString("NUMERATOR NOT (PREGNANT OR BREASTFEEDING)");
 
     return compsitionDefinition;
   }

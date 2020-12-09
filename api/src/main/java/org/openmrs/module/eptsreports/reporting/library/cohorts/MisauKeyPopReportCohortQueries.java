@@ -139,7 +139,8 @@ public class MisauKeyPopReportCohortQueries {
   public CohortDefinition getPatientsCoort12StartArt() {
 
     final CompositionCohortDefinition compositionDefinition = new CompositionCohortDefinition();
-    final String mappings = "startDate=${startDate-1y},endDate=${endDate-1y},location=${location}";
+    final String mappings =
+        "startDate=${startDate-12m},endDate=${endDate-12m},location=${location}";
 
     compositionDefinition.setName("Numero de pacientes na coorte 12 - inicio de TARV");
     compositionDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -160,7 +161,7 @@ public class MisauKeyPopReportCohortQueries {
             this.genericCohortQueries.generalSql(
                 "PatientsTransferidosParaInEndReportingPeriod",
                 MisauKeyPopReportQueries.QUERY.findPatientsTransferidosParaInEndReportingPeriod),
-            "endDate=${endDate-1y},location=${location}"));
+            "endDate=${endDate},location=${location}"));
 
     compositionDefinition.setCompositionString("INICIOTARV NOT TRANSFERIDOPARA");
 

@@ -74,7 +74,7 @@ public class SetupMisauKeyPopReport extends EptsDataExportManager {
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
+                "baseCohortQuery", BaseQueries.getAdultBaseCohortQuery()),
             "endDate=${endDate},location=${location}"));
     return rd;
   }
