@@ -40,10 +40,10 @@ public class IMR1CohortQueries {
         EptsReportUtils.map(this.getAllPatientsEnrolledInArtCareDuringReportingPeriod(), mappings));
 
     compsitionDefinition.addSearch(
-        "TRANSFERRED",
+        "TRANSFERRED-IN",
         EptsReportUtils.map(this.getAllPatientsTransferredInByEndReportingDate(), mappings));
 
-    compsitionDefinition.setCompositionString("NEWLY-ENROLLED NOT TRANSFERRED");
+    compsitionDefinition.setCompositionString("NEWLY-ENROLLED NOT TRANSFERRED-IN");
 
     return compsitionDefinition;
   }
@@ -116,21 +116,18 @@ public class IMR1CohortQueries {
         EptsReportUtils.map(this.getAllPatientsEnrolledInArtCareDuringReportingPeriod(), mappings));
 
     compsitionDefinition.addSearch(
-        "ATSC",
+        "CONSULTATION-SAME-DIAGNOSIS-DAY",
         EptsReportUtils.map(
-            this.getAllPatientsWhoTestedPositiveInCommunityByEndReportingPeriod(), mappings));
+            this
+                .getAllPatientsWithClinicianConsultationInTheSameDiagnosisDayByBeforeEndOfReportingPeriod(),
+            "endDate=${endDate-1m},location=${location}"));
 
     compsitionDefinition.addSearch(
-        "PCR-TR",
-        EptsReportUtils.map(
-            this.getAllPatientsWhoHaveTestedPositiveOnHivByEndOfReportingPeriod(), mappings));
-
-    compsitionDefinition.addSearch(
-        "TRANSFERRED",
+        "TRANSFERRED-IN",
         EptsReportUtils.map(this.getAllPatientsTransferredInByEndReportingDate(), mappings));
 
     compsitionDefinition.setCompositionString(
-        "(NEWLY-ENROLLED AND (ATSC OR PCR-TR)) NOT TRANSFERRED");
+        "(NEWLY-ENROLLED AND CONSULTATION-SAME-DIAGNOSIS-DAY) NOT TRANSFERRED-IN");
 
     return compsitionDefinition;
   }
@@ -162,7 +159,7 @@ public class IMR1CohortQueries {
   }
 
   @DocumentedDefinition(value = "PatientsWhoArePregnantInAPeriod")
-  private CohortDefinition getAllPatientsWhoArePregnantInAPeriod() {
+  public CohortDefinition getAllPatientsWhoArePregnantInAPeriod() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("PatientsWhoArePregnantInAPeriod Cohort");
@@ -187,30 +184,17 @@ public class IMR1CohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "PatientsWhoTestedPositiveInCommunityByEndReportingPeriod")
-  private CohortDefinition getAllPatientsWhoTestedPositiveInCommunityByEndReportingPeriod() {
+  @DocumentedDefinition(value = "PatientsWithClinicianConsultationInTheSameDiagnosisDay")
+  private CohortDefinition
+      getAllPatientsWithClinicianConsultationInTheSameDiagnosisDayByBeforeEndOfReportingPeriod() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("PatientsWhoTestedPositiveInCommunityByEndReportingPeriod Cohort");
+    definition.setName("PatientsWithClinicianConsultationInTheSameDiagnosisDay Cohort");
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     definition.setQuery(
-        IMR1Queries.QUERY.findPatientsWhoTestedPositiveInCommunityByEndReportingPeriod);
-
-    return definition;
-  }
-
-  @DocumentedDefinition(value = "PatientsWhoHaveTestedPositiveOnHivByEndOfReportingPeriod")
-  private CohortDefinition getAllPatientsWhoHaveTestedPositiveOnHivByEndOfReportingPeriod() {
-
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("PatientsWhoHaveTestedPositiveOnHivByEndOfReportingPeriod Cohort");
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    definition.setQuery(
-        IMR1Queries.QUERY.findPatientsWhoHaveTestedPositiveOnHivByEndOfReportingPeriod);
+        IMR1Queries.QUERY.findPatientsWithClinicianConsultationInTheSameDiagnosisDay);
 
     return definition;
   }

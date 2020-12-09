@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.IMR1CohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.PvlsCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -17,15 +17,17 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 
-public class IMR1CohortTest extends DefinitionsFGHLiveTest {
+public class TxPVLSCohortQueriesTest extends DefinitionsFGHLiveTest {
 
-  @Autowired private IMR1CohortQueries imr1CohortQueries;
+  @Autowired private PvlsCohortQueries pvlsCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
-    final Location location = Context.getLocationService().getLocation(400);
-    final Date startDate = DateUtil.getDateTime(2020, 8, 21);
+    final Location location = Context.getLocationService().getLocation(271);
+
+    System.out.println(location.getName());
+    final Date startDate = DateUtil.getDateTime(2020, 6, 21);
     final Date endDate = DateUtil.getDateTime(2020, 9, 20);
 
     System.out.println(startDate);
@@ -36,14 +38,15 @@ public class IMR1CohortTest extends DefinitionsFGHLiveTest {
     parameters.put(new Parameter("endDate", "End Date", Date.class), endDate);
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
-    CohortDefinition cohortDefinitionDemoninator =
-        imr1CohortQueries.getAllPatientsWhoArePregnantInAPeriod();
+    // CohortDefinition patientsWhoExperiencedIIT =
+    // txRTTCohortQueries.getPatientsOnRTT();
 
-    CohortDefinition cohortDefinitionNumerator =
-        imr1CohortQueries.getPatientsNewlyEnrolledOnArtCareNumerator();
+    CohortDefinition cohortDefinition =
+        this.pvlsCohortQueries
+            .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months();
 
     final EvaluatedCohort evaluateCohortDefinition =
-        this.evaluateCohortDefinition(cohortDefinitionDemoninator, parameters);
+        this.evaluateCohortDefinition(cohortDefinition, parameters);
 
     System.out.println(evaluateCohortDefinition.getMemberIds().size());
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
@@ -62,6 +65,7 @@ public class IMR1CohortTest extends DefinitionsFGHLiveTest {
 
   @Override
   protected String password() {
-    return "H!$fGH0Mr$";
+    // return "H!$fGH0Mr$";
+    return "eSaude123";
   }
 }
