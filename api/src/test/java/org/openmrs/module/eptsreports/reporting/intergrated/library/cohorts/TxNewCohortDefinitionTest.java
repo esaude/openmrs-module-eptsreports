@@ -26,12 +26,12 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(223);
-    final Date startDate = DateUtil.getDateTime(2019, 11, 21);
-    final Date endDate = DateUtil.getDateTime(2020, 12, 20);
+    final Date startDate = DateUtil.getDateTime(2020, 1, 21);
+    final Date endDate = DateUtil.getDateTime(2020, 9, 20);
 
     final CohortDefinition txNewCompositionCohort =
         this.mqCohortQueries
-            .findPatientsWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndEndTPICategory7RF26Numerator();
+            .findAdultInTheSecondLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line65ColumnEDenominator();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 
