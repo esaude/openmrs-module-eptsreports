@@ -638,7 +638,13 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
 
-    compositionCohortDefinition.setCompositionString("(A AND B AND C) AND NOT (D OR E)");
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(nutSupport, MAPPING));
+
+    if (den) {
+      compositionCohortDefinition.setCompositionString("(A AND B AND C) AND NOT (D OR E)");
+    } else {
+      compositionCohortDefinition.setCompositionString("(A AND B AND C) AND NOT (D OR E) AND F");
+    }
 
     return compositionCohortDefinition;
   }

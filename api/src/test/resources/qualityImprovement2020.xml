@@ -478,17 +478,20 @@ description="UUID for the TUBERCULOSE ACTIVO concept" uuid="763a4102-1d49-47ae-b
 		property="eptsreports.nutritionalSupplememtConceptUuid"
 		property_value="e1e205f0-1d5f-11e0-b929-000c29ad1d07"
 		description="NUTRITIONAL SUPPLEMENT concept"
+		uuid="448d0b8c-3a25-11eb-a98c-0242ac120002"
 	/>
 
 	<global_property property="eptsreports.ATPUSupplememtConceptUuid"
 	property_value="014b76fb-c7ee-404c-b913-9795a108015e"
 			description="ATPU SUPPLEMENT concept"
+			uuid="4f4bf6dd-3a25-11eb-a98c-0242ac120002"
 	/>
 
 	<global_property
 		property="eptsreports.sojaSupplememtConceptUuid"
 		property_value="e1e204ec-1d5f-11e0-b929-000c29ad1d07"
 		description="Soja SUPPLEMENT concept"
+		uuid="58528cd4-3a25-11eb-a98c-0242ac120002"
 	/>
 
 		<!-- concept & concept_name -->
