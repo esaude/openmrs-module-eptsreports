@@ -32,12 +32,6 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
   public DataSetDefinition constructQualityImprovement2020DataSet() {
 
-    final String mappingsAll =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location},testStart=${testStart}";
-
-    final String mappingsWitshEvaluate =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
-
     CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
     dataSetDefinition.setName("Quality Improvement DataSet 2020");
     dataSetDefinition.addParameters(getParameters());
