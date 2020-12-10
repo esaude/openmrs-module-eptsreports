@@ -2,6 +2,9 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalculationCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.library.quality.improvment.calculation.QualityImprovmentCategory11SectionICalculation;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterfaceCategory12;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -553,7 +556,7 @@ public class MQCohortQueries {
     return definition;
   }
 
-  //  Aqui Se encontram as Definitions da CATEGORIA 12
+  // Aqui Se encontram as Definitions da CATEGORIA 12
 
   @DocumentedDefinition(
       value =
@@ -851,7 +854,8 @@ public class MQCohortQueries {
     return definition;
   }
 
-  /*Os Numeradores e Denominadores comecam a ser colectados apartir Daqui
+  /*
+   * Os Numeradores e Denominadores comecam a ser colectados apartir Daqui
    */
   @DocumentedDefinition(
       value =
@@ -2214,7 +2218,7 @@ public class MQCohortQueries {
     return definition;
   }
 
-  //  As definitions da categoria 11 comecam aqui
+  // As definitions da categoria 11 comecam aqui
 
   @DocumentedDefinition(value = "findAdultWithCVOver1000CopiesCategory11DenominatorAdult")
   public CohortDefinition findAdultWithCVOver1000CopiesCategory11DenominatorAdult() {
@@ -2388,7 +2392,7 @@ public class MQCohortQueries {
     return definition;
   }
 
-  //  1. Construcao dos denominadores e Numeradores da CATEGORIA 11 PART 1
+  // 1. Construcao dos denominadores e Numeradores da CATEGORIA 11 PART 1
 
   // Desagregacao Adultos
 
@@ -2710,7 +2714,7 @@ public class MQCohortQueries {
     return definition;
   }
 
-  //  1. Construcao dos denominadores e Numeradores da CATEGORIA 12 PART 1
+  // 1. Construcao dos denominadores e Numeradores da CATEGORIA 12 PART 1
 
   // Desagregacao Adultos
 
@@ -3068,7 +3072,7 @@ public class MQCohortQueries {
     return definition;
   }
 
-  //  1. Construcao dos denominadores e Numeradores da CATEGORIA 12 PART 2
+  // 1. Construcao dos denominadores e Numeradores da CATEGORIA 12 PART 2
 
   // Desagregacao Adultos 1 Linha Denominador e Numerador
 
@@ -3562,5 +3566,21 @@ public class MQCohortQueries {
         "PREGNANT-FIRST-LINE NOT (B1E-NOTFIRSTLINE OR B13-RESUMO-MENSAL)");
 
     return definition;
+  }
+
+  @DocumentedDefinition(value = "childrenPatientsWithAtLeast9APSSConsultations")
+  public CohortDefinition findChildrenPatientsWithAtLeast9APSSConsultationByInclusionPeriod() {
+    BaseFghCalculationCohortDefinition cd =
+        new BaseFghCalculationCohortDefinition(
+            "childrenPatientsWithAtLeast9APSSConsultations",
+            Context.getRegisteredComponents(QualityImprovmentCategory11SectionICalculation.class)
+                .get(0));
+
+    cd.addParameter(new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
+    cd.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
+    cd.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    return cd;
   }
 }
