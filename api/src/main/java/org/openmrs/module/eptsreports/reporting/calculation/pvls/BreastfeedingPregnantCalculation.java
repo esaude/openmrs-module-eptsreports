@@ -51,14 +51,16 @@ public class BreastfeedingPregnantCalculation extends AbstractPatientCalculation
       Date breastfeedingDate = (Date) breastfeedingDateMap.get(ptId).getValue();
       if (state.equals(PregnantOrBreastfeedingWomen.PREGNANTWOMEN)
           && pregnancyDate != null
-          && femaleCohort.contains(ptId)) {
+          && femaleCohort.contains(ptId)
+          && (breastfeedingDate == null || breastfeedingDate.compareTo(pregnancyDate) <= 0)) {
 
-        isCandidate = breastfeedingDate == null || breastfeedingDate.compareTo(pregnancyDate) <= 0;
+        isCandidate = true;
 
       } else if (state.equals(PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN)
           && breastfeedingDate != null
-          && femaleCohort.contains(ptId)) {
-        isCandidate = pregnancyDate == null || pregnancyDate.compareTo(breastfeedingDate) < 0;
+          && femaleCohort.contains(ptId)
+          && (pregnancyDate == null || pregnancyDate.compareTo(breastfeedingDate) < 0)) {
+        isCandidate = true;
       }
       resultMap.put(ptId, new BooleanResult(isCandidate, this));
     }
