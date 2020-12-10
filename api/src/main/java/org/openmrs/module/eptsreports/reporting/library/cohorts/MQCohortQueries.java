@@ -7,6 +7,7 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalcula
 import org.openmrs.module.eptsreports.reporting.library.quality.improvment.calculation.QualityImprovmentCategory11SectionICalculation;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterfaceCategory12;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -3576,9 +3577,13 @@ public class MQCohortQueries {
             Context.getRegisteredComponents(QualityImprovmentCategory11SectionICalculation.class)
                 .get(0));
 
-    cd.addParameter(new Parameter("startInclusionDate", "Start Inclusion Date", Date.class));
-    cd.addParameter(new Parameter("endInclusionDate", "End Inclusion Date", Date.class));
-    cd.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    cd.addParameter(
+        new Parameter(
+            EptsReportConstants.START_INCULSION_DATE, "Start Inclusion Date", Date.class));
+    cd.addParameter(
+        new Parameter(EptsReportConstants.END_INCLUSION_DATE, "End Inclusion Date", Date.class));
+    cd.addParameter(
+        new Parameter(EptsReportConstants.END_REVISION_DATE, "End Revision Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;
