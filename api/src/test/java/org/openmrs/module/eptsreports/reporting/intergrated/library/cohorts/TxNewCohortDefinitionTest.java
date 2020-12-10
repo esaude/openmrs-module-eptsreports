@@ -31,7 +31,7 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
     final CohortDefinition txNewCompositionCohort =
         this.mqCohortQueries
-            .findAdultInTheSecondLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line65ColumnEDenominator();
+            .findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11Denominator();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 

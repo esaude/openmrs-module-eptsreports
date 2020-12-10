@@ -543,6 +543,121 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT7PragnantTPINUMERATOR.addParameter(new Parameter("location", "location", Date.class));
 
+    final CohortIndicator CAT11AdultoAPSSPPDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11AdultoAPSSPPDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInCategory11Denominator(),
+                mappings));
+    CAT11AdultoAPSSPPDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11AdultoAPSSPPDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11AdultoAPSSPPDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11AdultoAPSSPPDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+    final CohortIndicator CAT11AdultoAPSSPPNUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11AdultoAPSSPPNUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTCategory11NUMERATOR(),
+                mappings));
+    CAT11AdultoAPSSPPNUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11AdultoAPSSPPNUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11AdultoAPSSPPNUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11AdultoAPSSPPNUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+    final CohortIndicator CAT11Adulto1000CVDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11Adulto1000CVDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11Denominator(),
+                mappings));
+    CAT11Adulto1000CVDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11Adulto1000CVDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11Adulto1000CVDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11Adulto1000CVDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+    final CohortIndicator CAT11Adulto1000CVNUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11Adulto1000CVNUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11NUMERATOR(),
+                mappings));
+    CAT11Adulto1000CVNUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11Adulto1000CVNUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11Adulto1000CVNUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11Adulto1000CVNUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+    final CohortIndicator CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findChildernOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Denominator(),
+                mappings));
+    CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR.addParameter(
+        new Parameter("location", "location", Date.class));
+    final CohortIndicator CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findChildernOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Numerator(),
+                mappings));
+    CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR.addParameter(
+        new Parameter("location", "location", Date.class));
+    final CohortIndicator CAT11Children1000CVDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11Children1000CVDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findChildrenOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutWITH1000CVCategory11Denominator(),
+                mappings));
+    CAT11Children1000CVDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11Children1000CVDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11Children1000CVDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11Children1000CVDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+    final CohortIndicator CAT11Children1000CVNUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11Children1000CVNUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findChildrenOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutWITH1000CVCategory11NUMERATOR(),
+                mappings));
+    CAT11Children1000CVNUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11Children1000CVNUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11Children1000CVNUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11Children1000CVNUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
     //    Categoria 12 Adultos PARTE 1
 
     //    Categoria 12 Adultos
@@ -1117,6 +1232,46 @@ public class MQDataSet extends BaseDataSet {
         EptsReportUtils.map(CAT7PragnantTPINUMERATOR, mappings),
         "");
 
+    dataSetDefinition.addColumn(
+        "CAT11AdultoAPSSPPDENOMINATOR",
+        "CAT11AdultoAPSSPPDENOMINATOR",
+        EptsReportUtils.map(CAT11AdultoAPSSPPDENOMINATOR, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT11AdultoAPSSPPNUMERATOR",
+        "CAT11AdultoAPSSPPNUMERATOR",
+        EptsReportUtils.map(CAT11AdultoAPSSPPNUMERATOR, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT11Adulto1000CVDENOMINATOR",
+        "CAT11Adulto1000CVDENOMINATOR",
+        EptsReportUtils.map(CAT11Adulto1000CVDENOMINATOR, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT11Adulto1000CVNUMERATOR",
+        "CAT11Adulto1000CVNUMERATOR",
+        EptsReportUtils.map(CAT11Adulto1000CVNUMERATOR, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
+        "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
+        EptsReportUtils.map(CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
+        "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
+        EptsReportUtils.map(CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT11Children1000CVDENOMINATOR",
+        "CAT11Children1000CVDENOMINATOR",
+        EptsReportUtils.map(CAT11Children1000CVDENOMINATOR, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT11Children1000CVNUMERATOR",
+        "CAT11Children1000CVNUMERATOR",
+        EptsReportUtils.map(CAT11Children1000CVNUMERATOR, mappings),
+        "");
     dataSetDefinition.addColumn(
         "CAT12ADULTDENOMINADOR33DAYS",
         "CAT12ADULTDENOMINADOR33DAYS",
