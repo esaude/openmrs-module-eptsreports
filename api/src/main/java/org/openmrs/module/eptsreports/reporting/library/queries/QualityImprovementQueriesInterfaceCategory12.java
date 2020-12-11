@@ -26,7 +26,7 @@ public interface QualityImprovementQueriesInterfaceCategory12 {
                 + ") art_start GROUP "
                 + "BY patient_id "
                 + ") tx_new "
-                + "WHERE art_start_date BETWEEN date_add(:endRevisionDat	e, interval -14 MONTH) AND  date_add(:endRevisionDate, interval -11 MONTH) ";
+                + "WHERE art_start_date BETWEEN date_add(:endRevisionDate, interval -14 MONTH) AND  date_add(:endRevisionDate, interval -11 MONTH) ";
 
     public static final String
         findPatientsWhoAreNewlyEnrolledOnARTByAge14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12AdultA =
