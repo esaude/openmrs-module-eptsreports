@@ -658,6 +658,37 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT11Children1000CVNUMERATOR.addParameter(new Parameter("location", "location", Date.class));
 
+    final CohortIndicator CAT11Least9APSSConsultationDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11Least9APSSConsultationDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findChildernWith9MonthAnd2YearOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Denominator(),
+                mappings));
+    CAT11Least9APSSConsultationDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11Least9APSSConsultationDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11Least9APSSConsultationDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11Least9APSSConsultationDENOMINATOR.addParameter(
+        new Parameter("location", "location", Date.class));
+    final CohortIndicator CAT11Least9APSSConsultationNUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11Least9APSSConsultationNUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findChildernWith9MonthAnd2YearOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Numerator(),
+                mappings));
+    CAT11Least9APSSConsultationNUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11Least9APSSConsultationNUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11Least9APSSConsultationNUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11Least9APSSConsultationNUMERATOR.addParameter(
+        new Parameter("location", "location", Date.class));
+
     //    Categoria 12 Adultos PARTE 1
 
     //    Categoria 12 Adultos
@@ -1272,6 +1303,18 @@ public class MQDataSet extends BaseDataSet {
         "CAT11Children1000CVNUMERATOR",
         EptsReportUtils.map(CAT11Children1000CVNUMERATOR, mappings),
         "");
+
+    dataSetDefinition.addColumn(
+        "CAT11Least9APSSConsultationDENOMINATOR",
+        "CAT11Least9APSSConsultationDENOMINATOR",
+        EptsReportUtils.map(CAT11Least9APSSConsultationDENOMINATOR, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT11Least9APSSConsultationNUMERATOR",
+        "CAT11Least9APSSConsultationNUMERATOR",
+        EptsReportUtils.map(CAT11Least9APSSConsultationNUMERATOR, mappings),
+        "");
+
     dataSetDefinition.addColumn(
         "CAT12ADULTDENOMINADOR33DAYS",
         "CAT12ADULTDENOMINADOR33DAYS",

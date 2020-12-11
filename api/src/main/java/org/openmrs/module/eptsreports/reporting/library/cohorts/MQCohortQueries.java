@@ -866,7 +866,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("ADULT NOT TRANSFERED IN");
+    definition.setName(
+        "findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInAdultCategory3RF11Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -900,7 +901,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("First Consult IN Inclusion Period");
+    definition.setName(
+        "findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3RF12Numerator");
 
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
@@ -938,7 +940,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("RF13");
+    definition.setName(
+        "findPatientsNewlyEnrolledByAgeInAPeriodExcludingTrasferedInChildrenCategory3RF13Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -973,7 +976,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("First Consult IN Inclusion Period");
+    definition.setName(
+        "findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildrenAndHaveFirstConsultInclusionPeriodCategory3RF14Numerator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1010,7 +1014,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("RF15");
+    definition.setName(
+        "findPatientsNewlyEnrolledByAgeChildrenDesagragationInAPeriodCategory4RF15Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1049,7 +1054,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("RF16");
+    definition.setName(
+        "findPatientsNewlyEnrolledByAgeAndNutritionalAssessmentInAPeriodCategory4RF16Numerator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1083,7 +1089,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("PREGNANTS NEWLY ENRROLED IN ART");
+    definition.setName(
+        "findPregnantHumansNewlyEnrolledOnARTInInclusionPeriodCategory4RF17Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1120,7 +1127,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("PREGNANTS NEWLY ENRROLED IN ART AND HAS NUTRITONAL ASSESSMENT");
+    definition.setName(
+        "findPregnantsNewlyEnrolledOnARTInInclusionPeriodAndHasNutritionalAssessmentCategory4RF18");
 
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
@@ -1154,7 +1162,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("Categoria 5 Pediátrico - Denominador");
+    definition.setName(
+        "findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGInclusionPeriodCategory5RF19Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1204,7 +1213,8 @@ public class MQCohortQueries {
       findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGANDATPUSOJAInclusionPeriodCategory5FR20Numerator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("Categoria 5 Pediátrico - Numerador");
+    definition.setName(
+        "findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearChildAndHaveFirstConsultMarkedDAMDAGANDATPUSOJAInclusionPeriodCategory5FR20Numerator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1241,7 +1251,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("PREGNANTS NEWLY ENRROLED IN ART AND HAS NUTRITIONAL ASSESSMENT DAM-DAG");
+    definition.setName(
+        "findPregnantsNewlyEnrolledOnARTInInclusionPeriodAndHasNutritionalAssessmentDAMandDAGCategory5RF21Denominator");
 
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
@@ -1281,7 +1292,8 @@ public class MQCohortQueries {
       findPregnantsNewlyEnrolledOnARTInInclusionPeriodAndHasNutritionalAssessmentDAMandDAGAndATPUCategory5RF22Denominator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("PREGNANTS NEWLY ENRROLED IN ART AND HAS NUTRITIONAL ASSESSMENT ATPU");
+    definition.setName(
+        "findPregnantsNewlyEnrolledOnARTInInclusionPeriodAndHasNutritionalAssessmentDAMandDAGAndATPUCategory5RF22Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1317,6 +1329,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
+    definition.setName(
+        "findPatientWhoAreNewlyEnrolledOnARTHaveAreLastClinicalConsultationDuringRevisionPeriodCategory6RF11Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1634,6 +1648,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
+    definition.setName(
+        "findPatientWhoAreNewlyEnrolledOnARTDuringRevisionPeriodAndStartTPIAndElegibleTPTCategory7RF19Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1726,6 +1742,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
+    definition.setName(
+        "findChildenWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndStartTPIAndElegibleTPTCategory7RF21Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1819,6 +1837,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
+    definition.setName(
+        "findPregnantWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndStartTPIAndElegibleTPTCategory7RF23Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -1906,6 +1926,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
+    definition.setName(
+        "findPatientsWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndEndTPICategory7RF25Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2020,6 +2042,8 @@ public class MQCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
+    definition.setName(
+        "findChildrenWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndEndTPICategory7RF27Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2120,7 +2144,8 @@ public class MQCohortQueries {
       findPragnantWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndEndTPICategory7RF29Denominator() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
-
+    definition.setName(
+        "findPragnantWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndEndTPICategory7RF29Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2272,7 +2297,8 @@ public class MQCohortQueries {
       findChildernOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInCategory11Denominator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("");
+    definition.setName(
+        "findChildernOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInCategory11Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2403,12 +2429,15 @@ public class MQCohortQueries {
   public CohortDefinition
       findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInCategory11Denominator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("");
+
+    definition.setName(
+        "findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInCategory11Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     definition.addParameter(new Parameter("location", "location", Date.class));
+
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
     definition.addSearch(
@@ -2438,8 +2467,10 @@ public class MQCohortQueries {
           "findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTCategory11NUMERATOR")
   public CohortDefinition
       findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTCategory11NUMERATOR() {
+
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("");
+    definition.setName(
+        "findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTCategory11NUMERATOR");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2447,6 +2478,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
     definition.addSearch(
         "ADULT",
         EptsReportUtils.map(
@@ -2480,15 +2512,20 @@ public class MQCohortQueries {
           "findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11NUMERATOR")
   public CohortDefinition
       findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11NUMERATOR() {
+
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("");
+
+    definition.setName(
+        "findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11NUMERATOR");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     definition.addParameter(new Parameter("location", "location", Date.class));
+
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
     definition.addSearch(
         "B1", EptsReportUtils.map(this.findPatientsWhoHaveLastFirstLineTerapeutic(), mappings));
     definition.addSearch(
@@ -2523,7 +2560,8 @@ public class MQCohortQueries {
   public CohortDefinition
       findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11Denominator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("");
+    definition.setName(
+        "findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2559,7 +2597,8 @@ public class MQCohortQueries {
   public CohortDefinition
       findChildernOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Denominator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("");
+    definition.setName(
+        "findChildernOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2596,7 +2635,8 @@ public class MQCohortQueries {
   public CohortDefinition
       findChildernOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Numerator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("");
+    definition.setName(
+        "findChildernOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Numerator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2639,7 +2679,8 @@ public class MQCohortQueries {
   public CohortDefinition
       findChildrenOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutWITH1000CVCategory11NUMERATOR() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("");
+    definition.setName(
+        "findChildrenOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutWITH1000CVCategory11NUMERATOR");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2683,7 +2724,8 @@ public class MQCohortQueries {
   public CohortDefinition
       findChildrenOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutWITH1000CVCategory11Denominator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("");
+    definition.setName(
+        "findChildrenOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutWITH1000CVCategory11Denominator");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2715,6 +2757,104 @@ public class MQCohortQueries {
     return definition;
   }
 
+  @DocumentedDefinition(
+      value =
+          "findChildernWith9MonthAnd2YearOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Denominator")
+  public CohortDefinition
+      findChildernWith9MonthAnd2YearOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Denominator() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName(
+        "findChildernWith9MonthAnd2YearOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Denominator");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+    definition.addSearch(
+        "CHILDREN",
+        EptsReportUtils.map(
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen9MontheLess2(),
+            mappings));
+    definition.addSearch(
+        "PREGNANT",
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
+    definition.addSearch(
+        "BREASTFEEDING",
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
+    definition.addSearch(
+        "TRANSFERED-IN",
+        EptsReportUtils.map(
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
+            mappings));
+    definition.addSearch(
+        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
+    definition.setCompositionString(
+        "CHILDREN NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value =
+          "findChildernWith9MonthAnd2YearOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Numerator")
+  public CohortDefinition
+      findChildernWith9MonthAnd2YearOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Numerator() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    definition.setName(
+        "findChildernWith9MonthAnd2YearOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Numerator");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+    definition.addSearch(
+        "CHILDREN",
+        EptsReportUtils.map(
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen9MontheLess2(),
+            mappings));
+    definition.addSearch(
+        "CHILDREN-I",
+        EptsReportUtils.map(
+            this.findChildrenPatientsWithAtLeast9APSSConsultationByInclusionPeriod(), mappings));
+    definition.addSearch(
+        "PREGNANT",
+        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
+    definition.addSearch(
+        "BREASTFEEDING",
+        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
+    definition.addSearch(
+        "TRANSFERED-IN",
+        EptsReportUtils.map(
+            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
+            mappings));
+    definition.addSearch(
+        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
+    definition.setCompositionString(
+        "(CHILDREN AND CHILDREN-I) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen9MontheLess2")
+  public CohortDefinition
+      findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen9MontheLess2() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName(
+        "findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen9MontheLess2");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+    String query =
+        QualityImprovementQueriesInterface.QUERY
+            .findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen9MontheLess2;
+    definition.setQuery(query);
+    return definition;
+  }
+
   // 1. Construcao dos denominadores e Numeradores da CATEGORIA 12 PART 1
 
   // Desagregacao Adultos
@@ -2726,7 +2866,8 @@ public class MQCohortQueries {
       findAdultsWhoStartedARTInTheInclusionPeriodCategory12ExcludingPreganantAndBreastfeedingAndTrasferedInOrOut() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("");
+    definition.setName(
+        "findAdultsWhoStartedARTInTheInclusionPeriodCategory12ExcludingPreganantAndBreastfeedingAndTrasferedInOrOut");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2773,7 +2914,8 @@ public class MQCohortQueries {
       findChildrenWhoStartedARTInTheInclusionPeriodCategory12ExcludingPreganantAndBreastfeedingAndTrasferedInOrOut() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("");
+    definition.setName(
+        "findChildrenWhoStartedARTInTheInclusionPeriodCategory12ExcludingPreganantAndBreastfeedingAndTrasferedInOrOut");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2816,12 +2958,13 @@ public class MQCohortQueries {
 
   @DocumentedDefinition(
       value =
-          "findPregnantrenWhoStartedARTInTheInclusionPeriodCategory12ExcludingBreastfeedingAndTrasferedInOrOut(")
+          "findPregnantWhoStartedARTInTheInclusionPeriodCategory12ExcludingBreastfeedingAndTrasferedInOrOut(")
   public CohortDefinition
       findPregnantWhoStartedARTInTheInclusionPeriodCategory12ExcludingBreastfeedingAndTrasferedInOrOut() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("");
+    definition.setName(
+        "findPregnantWhoStartedARTInTheInclusionPeriodCategory12ExcludingBreastfeedingAndTrasferedInOrOut");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2864,7 +3007,8 @@ public class MQCohortQueries {
       findAdultsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12Line62ColumnDInTheTemplateNumerator1() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("");
+    definition.setName(
+        "findAdultsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12Line62ColumnDInTheTemplateNumerator1");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2900,7 +3044,8 @@ public class MQCohortQueries {
       findAdultsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line63ColumnDInTheTemplateNumerator2() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("");
+    definition.setName(
+        "findAdultsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line63ColumnDInTheTemplateNumerator2");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2936,7 +3081,8 @@ public class MQCohortQueries {
       findChildrenWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12Line67ColumnDInTheTemplateNumerator3() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("");
+    definition.setName(
+        "findChildrenWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12Line67ColumnDInTheTemplateNumerator3");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -2972,7 +3118,8 @@ public class MQCohortQueries {
       findChildrenWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line63ColumnDInTheTemplateNumerator4() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("");
+    definition.setName(
+        "findChildrenWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line63ColumnDInTheTemplateNumerator4");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -3003,12 +3150,13 @@ public class MQCohortQueries {
 
   @DocumentedDefinition(
       value =
-          "findPregnantWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12Line68ColumnDInTheTemplateNumerator5(")
+          "findPregnantWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12Line71ColumnDInTheTemplateNumerator5(")
   public CohortDefinition
       findPregnantWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12Line71ColumnDInTheTemplateNumerator5() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("");
+    definition.setName(
+        "findPregnantWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12Line71ColumnDInTheTemplateNumerator5");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -3039,12 +3187,13 @@ public class MQCohortQueries {
 
   @DocumentedDefinition(
       value =
-          "findPregnantWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line63ColumnDInTheTemplateNumerator6(")
+          "findPregnantWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line72ColumnDInTheTemplateNumerator6(")
   public CohortDefinition
       findPregnantWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line72ColumnDInTheTemplateNumerator6() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("");
+    definition.setName(
+        "findPregnantWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line72ColumnDInTheTemplateNumerator6");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -3576,6 +3725,7 @@ public class MQCohortQueries {
             "childrenPatientsWithAtLeast9APSSConsultations",
             Context.getRegisteredComponents(QualityImprovmentCategory11SectionICalculation.class)
                 .get(0));
+    cd.setName("childrenPatientsWithAtLeast9APSSConsultations");
 
     cd.addParameter(
         new Parameter(
