@@ -29,7 +29,11 @@ public class Ec17Queries {
             + " DATE_FORMAT(programState.start_date, '%d-%m-%Y') AS state_date, "
             + " DATE_FORMAT(filaANDrecepecao.encounter_datetime, '%d-%m-%Y') AS encounter_date, "
             + " filaANDrecepecao.FormType, "
-            + " filaANDrecepecao.location_name AS location_name "
+            + " filaANDrecepecao.location_name AS location_name, "
+            + "  IF(filaANDrecepecao.FormType = 'FILA',  DATE_FORMAT(filaANDrecepecao.encounter_datetime, '%d-%m-%Y'),'') AS fila_encounter_date, "
+            + "  IF(filaANDrecepecao.FormType = 'RECEPCAO - LEVANTOU TARV',  DATE_FORMAT(filaANDrecepecao.encounter_datetime, '%d-%m-%Y'),'') AS recepcao_encounter_date, "
+            + "  IF(filaANDrecepecao.FormType = 'FILA',  DATE_FORMAT(filaANDrecepecao.date_created, '%d-%m-%Y'),'') AS fila_date_created, "
+            + "  IF(filaANDrecepecao.FormType = 'RECEPCAO - LEVANTOU TARV',  DATE_FORMAT(filaANDrecepecao.date_created, '%d-%m-%Y'),'') AS recepcao_date_created "
             + " FROM "
             + " person pe "
             + " INNER JOIN "
@@ -83,7 +87,7 @@ public class Ec17Queries {
             + " AND pg.location_id IN (:location) "
             + " GROUP BY pg.patient_id "
             + " ) AS programState ON pe.person_id = programState.patient_id "
-            + " where 	pe.voided = 0";
+            + " where 	pe.voided = 0 ";
     return query;
   }
 }

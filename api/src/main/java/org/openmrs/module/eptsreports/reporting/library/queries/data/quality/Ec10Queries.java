@@ -57,7 +57,7 @@ public class Ec10Queries {
             + stateId // 9
             + " AND pg.location_id IN (:location) "
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
-            + " AND ps.start_date <= :endDate "
+            + " AND ps.start_date between :startDate AND :endDate "
             + " ) abandonedPrograma on pe.person_id = abandonedPrograma.patient_id "
             + " inner join "
             + " (	select pn1.* "

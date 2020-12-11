@@ -177,9 +177,29 @@ public class SummaryQueries {
    * @return String
    */
   public static String getPatientsWithNegativeBirthDates() {
-    return "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NULL"
+    return " "
+        + " SELECT  DISTINCT(pa.patient_id) FROM patient pa "
+        + " INNER JOIN patient_identifier pi ON pa.patient_id=pi.patient_id "
+        + " INNER JOIN person pe ON pa.patient_id=pe.person_id "
+        + " INNER JOIN person_name pn ON pa.patient_id=pn.person_id "
+        + " INNER JOIN patient_program pg ON pa.patient_id=pg.patient_id "
+        + " INNER JOIN patient_state ps ON pg.patient_program_id= ps.patient_program_id "
+        + " INNER JOIN encounter e ON pa.patient_id=e.patient_id "
+        + " INNER JOIN location l ON e.location_id=l.location_id "
+        + " WHERE "
+        + " pg.program_id= 2 "
+        + " and ps.patient_state_id = (select max(ps1.patient_state_id) from patient_state ps1 inner join patient_program pp on ps1.patient_program_id = pp.patient_program_id inner join patient p "
+        + " on p.patient_id = pp.patient_id where pp.patient_id = pa.patient_id and pp.program_id = 2 "
+        + " ) AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+        + " AND pa.patient_id IN( "
+        + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
+        + " WHERE pe.birthdate IS NULL "
         + " UNION "
-        + "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL AND pe.birthdate > pe.date_created";
+        + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
+        + " WHERE pe.birthdate IS NOT NULL AND pe.birthdate > pe.date_created "
+        + " UNION "
+        + " SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id "
+        + " WHERE TIMESTAMPDIFF(MONTH,pe.birthdate,CURRENT_TIMESTAMP)<0) ";
   }
 
   /**
@@ -359,7 +379,7 @@ public class SummaryQueries {
             + " AND ps.state = 9 "
             + " AND pg.location_id IN (:location) "
             + " AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
-            + " AND ps.start_date <= :endDate "
+            + " AND ps.start_date between :startDate AND :endDate "
             + " ) abandonedPrograma on pe.person_id = abandonedPrograma.patient_id "
             + " inner join "
             + " (	select pn1.* "
@@ -391,9 +411,11 @@ public class SummaryQueries {
             + " from 	patient p "
             + " inner join encounter e on p.patient_id = e.patient_id "
             + " inner join location l on l.location_id = e.location_id "
-            + " where 	p.voided = 0 and e.voided = 0 and e.encounter_type IN (6,9) and e.location_id IN (:location) "
+            + " where 	p.voided = 0 and e.voided = 0 and e.encounter_type IN ( 9 "
+            + ",6 "
+            + " ) and e.location_id IN (:location) "
             + " AND e.encounter_datetime between :startDate AND :endDate "
-            + " order by e.encounter_datetime desc"
+            + " order by e.encounter_datetime desc "
             + " ) consultation 	on consultation.patient_id = pe.person_id "
             + " inner join patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = 2 and pg.location_id IN (:location) "
             + " inner join patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL "
@@ -401,7 +423,7 @@ public class SummaryQueries {
             + " pe.voided = 0 "
             + " and abandonedPrograma.patient_id is not null "
             + " and consultation.encounter_datetime >= abandonedPrograma.abandoned_date "
-            + " GROUP BY pe.person_id";
+            + " GROUP BY pe.person_id ";
     return String.format(query);
   }
 
@@ -420,7 +442,7 @@ public class SummaryQueries {
       ) {
 
     String query =
-        "SELECT pe.person_id As patient_id "
+        "SELECT 	pe.person_id As patient_id "
             + "FROM "
             + "person pe "
             + "inner join "
@@ -431,15 +453,13 @@ public class SummaryQueries {
             + "	 INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
             + "    INNER JOIN location l on l.location_id = pg.location_id "
             + "	 WHERE p.voided = 0 "
-            + "	 AND pg.program_id = "
-            + programId
+            + "	 AND pg.program_id = 2 "
             + "	 AND pg.voided = 0 "
             + "	 AND ps.voided = 0 "
-            + "	 AND ps.state = "
-            + stateId
+            + "	 AND ps.state = 9 "
             + "	 AND pg.location_id IN (:location) "
-            + "	 AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
-            + "	 AND ps.start_date<=:endDate "
+            + "	 AND (ps.start_date IS NOT NULL AND ps.end_date IS NULL and ps.voided =0) "
+            + "	 AND ps.start_date BETWEEN :startDate and :endDate "
             + ") abandonedPrograma on pe.person_id = abandonedPrograma.patient_id "
             + "left join "
             + "( "
@@ -447,12 +467,10 @@ public class SummaryQueries {
             + "	FROM patient p "
             + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id ="
-            + sampleCollectionDateConceptId
-            + "	AND e.encounter_type = "
-            + labEncounterType
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = 23821 "
+            + "	AND e.encounter_type = 13 "
             + "	AND e.location_id IN (:location) "
-            + "	AND o.value_datetime BETWEEN :startDate AND :endDate "
+            + "	AND o.value_datetime BETWEEN :startDate and :endDate "
             + ") colheitaLaboratorio on pe.person_id = colheitaLaboratorio.patient_id "
             + "left join "
             + "( "
@@ -460,12 +478,10 @@ public class SummaryQueries {
             + "	FROM patient p "
             + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id ="
-            + requestLaboratoryDateConceptId
-            + "	AND e.encounter_type = "
-            + labEncounterType
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = 6246 "
+            + "	AND e.encounter_type = 13 "
             + "	AND e.location_id IN (:location) "
-            + "	AND o.value_datetime  BETWEEN :startDate AND :endDate "
+            + "	AND o.value_datetime  BETWEEN :startDate and :endDate "
             + ") pedidoLaboratorio on pe.person_id = pedidoLaboratorio.patient_id "
             + "left join "
             + "( "
@@ -473,12 +489,10 @@ public class SummaryQueries {
             + "	FROM patient p "
             + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id ="
-            + sampleCollectionDateConceptId
-            + "	AND e.encounter_type = "
-            + fsrLabEncounterType
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = 23821 "
+            + "	AND e.encounter_type = 51 "
             + "	AND e.location_id IN (:location) "
-            + "	AND o.value_datetime BETWEEN :startDate AND :endDate "
+            + "	AND o.value_datetime BETWEEN :startDate and :endDate "
             + ") fsr on pe.person_id = fsr.patient_id "
             + "left join "
             + "(	select pn1.* "
@@ -504,10 +518,9 @@ public class SummaryQueries {
             + "	) pid2 "
             + "	where pid1.patient_id = pid2.patient_id and pid1.patient_identifier_id = pid2.id "
             + ") pid on pid.patient_id = pe.person_id "
-            + "inner join  patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = "
-            + programId
+            + "inner join  patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = 2 "
             + " and pg.location_id IN (:location) "
-            + "inner join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + "inner join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and (ps.start_date IS NOT NULL AND ps.end_date IS NULL and ps.voided =0) "
             + "where 	pe.voided = 0 and "
             + "		( "
             + "			colheitaLaboratorio.patient_id is not null or "
@@ -669,7 +682,7 @@ public class SummaryQueries {
 
   public static String getPatientsMarkedAsDeceasedAndHaveAnEncounterEC3() {
     String query =
-        " SELECT pe.person_id As patient_id "
+        "SELECT pe.person_id As patient_id "
             + " FROM "
             + " person pe "
             + " left join person peObito on pe.person_id = peObito.person_id and peObito.voided = 0 and peObito.death_date IS NOT NULL "
@@ -680,7 +693,6 @@ public class SummaryQueries {
             + " INNER JOIN patient_program pg ON p.patient_id = pg.patient_id "
             + " INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
             + " WHERE p.voided = 0 AND pg.program_id = 2 "
-            // + programId // 2
             + " AND pg.voided = 0 "
             + " AND ps.voided = 0 "
             + " AND ps.state = 10 "
@@ -695,13 +707,10 @@ public class SummaryQueries {
             + " INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + " INNER JOIN obs o ON e.encounter_id = o.encounter_id "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = 6272 "
-            // + stateOfStayPriorArtPatient // 6272
-            + " AND o.value_coded = 1366"
-            // + patientHasDiedConceptUuid // 1366
+            + " AND o.value_coded = 1366 "
             + " AND e.encounter_type = 53 "
-            // + masterCardEncounterType // 53
             + " AND e.location_id IN (:location) "
-            + " AND o.obs_datetime <= :endDate "
+            + " AND o.obs_datetime <= :endDate"
             + " ) deadFichaResumo on pe.person_id = deadFichaResumo.patient_id "
             + " left join "
             + " ( "
@@ -710,11 +719,8 @@ public class SummaryQueries {
             + " INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + " INNER JOIN obs o ON e.encounter_id = o.encounter_id "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = 6273 "
-            // + stateOfStayArtPatient // 6273
             + " AND value_coded = 1366 "
-            // + patientHasDiedConceptUuid // 1366
             + " AND e.encounter_type = 6 "
-            // + sTarvAdultoSeguimentoEncounterTypeUuid // 6
             + " AND e.location_id IN (:location) "
             + " AND o.obs_datetime <= :endDate"
             + " ) deadFichaClinica on pe.person_id = deadFichaClinica.patient_id "
@@ -749,7 +755,6 @@ public class SummaryQueries {
             + " inner join encounter e on p.patient_id = e.patient_id "
             + " inner join location l on l.location_id = e.location_id "
             + " where 	p.voided = 0 and e.voided = 0 and e.encounter_type = 18 "
-            // + encounterType // 18
             + " and e.location_id IN (:location) "
             + " AND e.encounter_datetime between :startDate AND :endDate"
             + " ) fila 	on fila.patient_id = pe.person_id "
@@ -761,14 +766,11 @@ public class SummaryQueries {
             + " inner join obs o on e.encounter_id = o.encounter_id "
             + " inner join location l on l.location_id = e.location_id "
             + " where 	p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 52 "
-            // + masterCardDrugPickupEncounterTypeUuid // 52
             + " AND o.concept_id = 23866 "
-            // + preArtPickupDate // 23866
             + " and o.value_datetime is not null and e.location_id IN (:location) "
             + " AND o.value_datetime between :startDate AND :endDate"
             + " ) recepcao	on recepcao.patient_id = pe.person_id "
             + " left join  patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = 2 "
-            // + programId // 2
             + " and pg.location_id IN (:location) "
             + " left join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL "
             + " where 	pe.voided = 0 and "
@@ -793,8 +795,8 @@ public class SummaryQueries {
             + " recepcao.encounter_datetime>deadFichaClinica.death_date "
             + " ) "
             + " ) "
-            + " GROUP BY pg.patient_id ";
-    return String.format(query);
+            + " GROUP BY pe.person_id;";
+    return query;
   }
 
   /**
@@ -856,7 +858,7 @@ public class SummaryQueries {
             + " GROUP BY pg.patient_id "
             + " ) AS programState ON pe.person_id = programState.patient_id "
             + " where pe.voided = 0 and pe.birthdate is null ";
-    return String.format(query);
+    return query;
   }
 
   public static String getPatientsSexNotDefinedEC21() {
@@ -900,7 +902,7 @@ public class SummaryQueries {
             + " GROUP BY pg.patient_id "
             + " ) AS programState ON pe.person_id = programState.patient_id "
             + " where pe.voided = 0 and pe.gender is null ";
-    return String.format(query);
+    return query;
   }
 
   public static String getPatientsWhoseEncounterIsBeforeEC18() {
@@ -952,16 +954,15 @@ public class SummaryQueries {
             + " AND pg.location_id IN (:location) "
             + " GROUP BY pg.patient_id "
             + " ) AS programState ON pe.person_id = programState.patient_id "
-            + " where pe.voided = 0";
-    return String.format(query);
+            + " where pe.voided = 0 ";
+    return query;
   }
 
   public static String getPatientsWhoseEncounterIsBeforeEC17() {
     String query =
         " SELECT "
             + " pe.person_id As patient_id "
-            + " FROM "
-            + " person pe "
+            + " from person pe "
             + " INNER JOIN "
             + " (	select pn1.* "
             + " from person_name pn1 "
@@ -988,16 +989,18 @@ public class SummaryQueries {
             + " ) pid on pid.patient_id = pe.person_id "
             + " INNER JOIN "
             + " ( "
-            + " Select p.patient_id, e.encounter_datetime, l.name  location_name, e.date_created, 'Fila' AS FormType "
+            + " Select p.patient_id, e.encounter_datetime, l.name  location_name, e.date_created, f.name AS FormType "
             + " from 	patient p "
             + " inner join encounter e on p.patient_id = e.patient_id "
             + " inner join location l on l.location_id = e.location_id "
+            + " inner join form f on f.form_id = e.form_id and f.retired = 0 "
             + " where p.voided = 0 and e.voided = 0 and e.encounter_type = 18 and e.location_id IN (:location) "
             + " AND e.encounter_datetime < '1985-01-01 00:00:00' "
             + " UNION "
-            + " SELECT p.patient_id, o.value_datetime encounter_datetime, l.name location_name, e.date_created, 'Recepção Levantou' AS FormType "
+            + " SELECT p.patient_id, o.value_datetime encounter_datetime, l.name location_name, e.date_created, f.name AS FormType "
             + " FROM patient p "
             + " INNER JOIN encounter e on p.patient_id = e.patient_id "
+            + " inner join form f on f.form_id = e.form_id and f.retired = 0 "
             + " inner join obs o on e.encounter_id = o.encounter_id "
             + " inner join location l on l.location_id = e.location_id "
             + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 52 "
@@ -1011,8 +1014,8 @@ public class SummaryQueries {
             + " AND pg.location_id IN (:location) "
             + " GROUP BY pg.patient_id "
             + " ) AS programState ON pe.person_id = programState.patient_id "
-            + " where 	pe.voided = 0";
-    return String.format(query);
+            + " where 	pe.voided = 0 ";
+    return query;
   }
   /**
    * The patients whose date of Encounter is before 1985 - for EC19

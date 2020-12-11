@@ -23,11 +23,12 @@ public class Ec11Queries {
    */
   public static String getEc11CombinedQuery(
       int programId,
-      int stateId,
-      int labEncounterType,
-      int fsrLabEncounterType,
-      int sampleCollectionDateConceptId,
-      int requestLaboratoryDateConceptId) {
+      int stateId, // 9
+      int labEncounterType, // 13
+      int fsrLabEncounterType, // 51
+      int sampleCollectionDateConceptId, // 23821
+      int requestLaboratoryDateConceptId) // 6246
+      {
     String query =
         "SELECT 	pe.person_id As patient_id, "
             + "		pid.identifier AS NID, "
@@ -63,15 +64,13 @@ public class Ec11Queries {
             + "	 INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
             + "    INNER JOIN location l on l.location_id = pg.location_id "
             + "	 WHERE p.voided = 0 "
-            + "	 AND pg.program_id = "
-            + programId
+            + "	 AND pg.program_id = 2 "
             + "	 AND pg.voided = 0 "
             + "	 AND ps.voided = 0 "
-            + "	 AND ps.state = "
-            + stateId
+            + "	 AND ps.state = 9 "
             + "	 AND pg.location_id IN (:location) "
-            + "	 AND ps.start_date IS NOT NULL AND ps.end_date IS NULL "
-            + "	 AND ps.start_date<=:endDate "
+            + "	 AND (ps.start_date IS NOT NULL AND ps.end_date IS NULL and ps.voided =0) "
+            + "	 AND ps.start_date BETWEEN :startDate AND :endDate "
             + ") abandonedPrograma on pe.person_id = abandonedPrograma.patient_id "
             + "left join "
             + "( "
@@ -79,10 +78,8 @@ public class Ec11Queries {
             + "	FROM patient p "
             + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id ="
-            + sampleCollectionDateConceptId
-            + "	AND e.encounter_type = "
-            + labEncounterType
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = 23821 "
+            + "	AND e.encounter_type = 13 "
             + "	AND e.location_id IN (:location) "
             + "	AND o.value_datetime BETWEEN :startDate AND :endDate "
             + ") colheitaLaboratorio on pe.person_id = colheitaLaboratorio.patient_id "
@@ -92,10 +89,8 @@ public class Ec11Queries {
             + "	FROM patient p "
             + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id ="
-            + requestLaboratoryDateConceptId
-            + "	AND e.encounter_type = "
-            + labEncounterType
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = 6246 "
+            + "	AND e.encounter_type = 13 "
             + "	AND e.location_id IN (:location) "
             + "	AND o.value_datetime  BETWEEN :startDate AND :endDate "
             + ") pedidoLaboratorio on pe.person_id = pedidoLaboratorio.patient_id "
@@ -105,10 +100,8 @@ public class Ec11Queries {
             + "	FROM patient p "
             + "	INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "	INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id ="
-            + sampleCollectionDateConceptId
-            + "	AND e.encounter_type = "
-            + fsrLabEncounterType
+            + "	WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o.concept_id = 23821 "
+            + "	AND e.encounter_type = 51 "
             + "	AND e.location_id IN (:location) "
             + "	AND o.value_datetime BETWEEN :startDate AND :endDate "
             + ") fsr on pe.person_id = fsr.patient_id "
@@ -136,10 +129,9 @@ public class Ec11Queries {
             + "	) pid2 "
             + "	where pid1.patient_id = pid2.patient_id and pid1.patient_identifier_id = pid2.id "
             + ") pid on pid.patient_id = pe.person_id "
-            + "inner join  patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = "
-            + programId
+            + "inner join  patient_program pg ON pe.person_id = pg.patient_id and pg.program_id = 2 "
             + " and pg.location_id IN (:location) "
-            + "inner join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL "
+            + "inner join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and (ps.start_date IS NOT NULL AND ps.end_date IS NULL and ps.voided =0) "
             + "where 	pe.voided = 0 and "
             + "		( "
             + "			colheitaLaboratorio.patient_id is not null or "
