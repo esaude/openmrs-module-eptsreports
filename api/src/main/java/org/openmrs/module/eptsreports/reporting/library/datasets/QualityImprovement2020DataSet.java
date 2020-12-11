@@ -42,6 +42,10 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
+    dataSetDefinition.addDimension(
+        "ageInMonths",
+        EptsReportUtils.map(eptsCommonDimension.ageInMonths(), "effectiveDate=${endDate}"));
+
     CohortIndicator initiatedART =
         eptsGeneralIndicator.getIndicator(
             "initiatedART",
@@ -206,6 +210,91 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     "startDate=${startDate},endDate=${endDate},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
+
+    // Category 11 denominator indicators
+    dataSetDefinition.addColumn(
+        "MQ11DEN1",
+        "Adultos em TARV com o mínimo de 3 consultas de seguimento de adesão na FM-ficha de APSS/PP nos primeiros 3 meses após início do TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11DEN1",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11DEN("A"),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ11DEN2",
+        "Pacientes na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas de APSS/PP mensais consecutivas para reforço de adesão",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11DEN2",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11DEN("B"),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ11DEN3",
+        " MG em TARV com o mínimo de 3 consultas de seguimento de adesão na FM-ficha de APSS/PP nos primeiros 3 meses após início do TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11DEN3",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11DEN("C"),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ11DEN4",
+        "MG na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas de APSS/PP mensais consecutivas para reforço de adesão",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11DEN4",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11DEN("D"),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ11DEN5",
+        "Crianças > 2 anos de idade em TARV com registo mensal de seguimento da adesão na ficha de APSS/PP nos primeiros 99 dias de TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11DEN5",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11DEN("E"),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=2-14");
+
+    dataSetDefinition.addColumn(
+        "MQ11DEN6",
+        "Crianças < 2 anos de idade em TARV com registo mensal de seguimento da adesão na ficha de APSS/PP no primeiro Ano de TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11DEN6",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11DEN("F"),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "ageInMonths=<9m");
+
+    dataSetDefinition.addColumn(
+        "MQ11DEN7",
+        "Crianças (0-14 anos) na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas mensais consecutivas de APSS/PP para reforço de adesão",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11DEN7",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11DEN("G"),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=<15");
 
     return dataSetDefinition;
   }

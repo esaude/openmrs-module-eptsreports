@@ -32,14 +32,9 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.*;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
-import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
-import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
@@ -613,6 +608,17 @@ public class GenericCohortQueries {
     cd.addCalculationParameter("minAge", minAge);
     cd.addCalculationParameter("maxAge", maxAge);
 
+    return cd;
+  }
+
+  public CohortDefinition getAgeInMonths(int minAge, int maxAge) {
+    AgeCohortDefinition cd = new AgeCohortDefinition();
+    cd.setName("Age in months");
+    cd.addParameter(new Parameter("effectiveDate", "Effective Date", Date.class));
+    cd.setMinAge(minAge);
+    cd.setMinAgeUnit(DurationUnit.MONTHS);
+    cd.setMaxAge(maxAge);
+    cd.setMaxAgeUnit(DurationUnit.MONTHS);
     return cd;
   }
 }

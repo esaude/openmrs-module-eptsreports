@@ -274,4 +274,66 @@ public class CommonCohortQueries {
 
     return sqlCohortDefinition;
   }
+
+  /**
+   * <b>Description:</b> MOH Transferred Out Query
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Select all patients registered in encounter “Ficha Resumo-MasterCard” (encounter type 53) with
+   * LAST “Patient State” (PT:“Estado de Permanência”) (Concept ID 6272) equal to “Transferred Out”
+   * (PT: “Transferido Para”) (Concept ID 1706) AND obs_datetime <=endDate
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getTranferredOutPatients() {
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Patients From Ficha Clinica");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("6272", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
+    map.put("6273", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
+    map.put("1706", hivMetadata.getTransferredOutConcept().getConceptId());
+
+    String query =
+        "SELECT union_tbl.patient_id FROM (SELECT filtered.patient_id, MAX(filtered.transfer_date) as transfer_date FROM  "
+            + " (SELECT   p.patient_id, "
+            + "   MAX(o.obs_datetime) as transfer_date "
+            + "    FROM patient p INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "   JOIN  obs o ON o.encounter_id = e.encounter_id WHERE e.encounter_type = ${53} "
+            + "   AND o.concept_id = ${6272} AND p.voided = 0 AND e.voided = 0 "
+            + "   AND e.location_id = :location "
+            + "   AND o.value_coded = ${1706} AND o.obs_datetime BETWEEN :startDate AND :endDate  "
+            + "            GROUP BY   p.patient_id "
+            + "UNION "
+            + " SELECT  p.patient_id, "
+            + "   MAX(e.encounter_datetime) transfer_date "
+            + "   FROM patient p INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "   JOIN  obs o ON o.encounter_id = e.encounter_id WHERE e.encounter_type = ${6} "
+            + "   AND o.concept_id = ${6273} AND p.voided = 0 AND e.voided = 0 "
+            + "   AND e.location_id = :location "
+            + "   AND o.value_coded = ${1706} AND e.encounter_datetime <= :endDate  "
+            + "            GROUP BY   p.patient_id) filtered group by filtered.patient_id) union_tbl "
+            + "Where union_tbl.patient_id NOT IN  "
+            + "            (Select p.patient_id from patient p join encounter e on e.patient_id = p.patient_id  "
+            + "   where e.encounter_type IN (${52},${6}) and e.location_id= :location and e.voided=0 and p.voided =0  "
+            + "            and e.encounter_datetime > union_tbl.transfer_date and e.encounter_datetime <= :endDate)";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
 }

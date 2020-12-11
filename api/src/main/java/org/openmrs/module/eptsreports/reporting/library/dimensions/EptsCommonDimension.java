@@ -139,7 +139,9 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "10-19",
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 10 and 19", 10, 19));
-
+    dim.addCohortDefinition(
+        "2-14",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 10 and 19", 2, 14));
     return dim;
   }
 
@@ -366,6 +368,18 @@ public class EptsCommonDimension {
         eriDSDCohortQueries.getPregnantAndBreastfeedingAndOnTBTreatment();
     CohortDefinition inverse = new InverseCohortDefinition(pregnantBreastfeedingTb);
     dim.addCohortDefinition("NPNBNTB", mapStraightThrough(inverse));
+    return dim;
+  }
+
+  /** Dimension for Age in months */
+  public CohortDefinitionDimension ageInMonths() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("Patients having age in months");
+    dim.addParameter(new Parameter("effectiveDate", "End Date", Date.class));
+    dim.addCohortDefinition(
+        "<9m",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeInMonths(0, 8), "effectiveDate=${effectiveDate}"));
     return dim;
   }
 }
