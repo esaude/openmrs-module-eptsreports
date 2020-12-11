@@ -57,7 +57,7 @@ public class APSSResumoTrimestralCohortQueriesTest extends DefinitionsTest {
     context.addParameterValue("location", location);
   }
 
-  @Ignore
+  @Ignore("Uses DATEADD function not supported by H2")
   public void getA1ShouldReturn() throws EvaluationException {
 
     CohortDefinition cohort = APSSResumoTrimestralCohortQueries.getA1();
@@ -67,6 +67,22 @@ public class APSSResumoTrimestralCohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("onOrAfter", "onOrAfter", Date.class), this.getStartDate());
     parameters.put(new Parameter("onOrBefore", "onOrBefore", Date.class), this.getEndDate());
     parameters.put(new Parameter("locationList", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+
+    assertEquals(3, evaluatedCohort.getMemberIds().size());
+  }
+
+  @Ignore("Uses DATEADD function not supported by H2")
+  public void getC1ShouldReturn() throws EvaluationException {
+
+    CohortDefinition cohort = APSSResumoTrimestralCohortQueries.getC1();
+
+    Map<Parameter, Object> parameters = new HashMap<>();
+
+    parameters.put(new Parameter("startDate", "onOrAfter", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "onOrBefore", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
 

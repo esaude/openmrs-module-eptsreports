@@ -218,6 +218,14 @@
 					 <global_property property="eptsreports.isoniazidUseConceptUuid"
                      property_value="be4a76ca-662a-4c39-903b-71983f5f67c9"
                      description="UUID for the Uso de Isoniazida concept" uuid="7a24b039-a3f2-4a53-bdf0-584011db4f42"/>
+
+					 <global_property property="eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid"
+                     property_value="f4aa93fe-8737-4f70-9532-542b768459d7"
+                     description="UUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO" uuid="b30f277e-8d69-45e0-a4f1-053a433fe84e"/>
+
+					 <global_property property="eptsreports.memberShipPlanConcept"
+                     property_value="d05c1eec-0757-4efa-a26a-c77152ae3718"
+                     description="UUID for PLANO DE ADESÃO" uuid="b1382e34-3938-11eb-a98c-0242ac120002"/>
 					 
 	<concept concept_id="23808" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2012-02-27 11:30:21" uuid="f69b1fe0-a657-4225-a996-20b599132508" />
 
@@ -306,6 +314,8 @@
       <concept concept_id="23758" retired="0" datatype_id="2" class_id="4" is_set="0" creator="1" date_created="2018-10-24 09:22:44" changed_by="1" date_changed="2019-01-07 23:01:13" uuid="2eab4e55-d0d0-4fa8-8d23-b40eaaee44c8" />
 
 	<concept concept_id="23866" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2019-07-09 13:00:20" uuid="74f6c17f-9819-41da-ba34-5910f67d24d0"/>
+
+<concept concept_id="23716" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2019-07-09 13:00:20" uuid="d05c1eec-0757-4efa-a26a-c77152ae3718"/>
 
  <concept_name concept_id="1781" name="ARV SERVICE - CARE" locale="en" creator="1" date_created="2008-10-13 05:58:15"
                   concept_name_id="7172" voided="0" uuid="c953fdcc-e049-4c30-b847-a86eb1851f51"
@@ -426,6 +436,10 @@
 
   <encounter_type encounter_type_id="53" name="Master Card - Ficha Resumo" description="Ficha resumo no master card" creator="1"
                     date_created="2019-07-31 14:23:47" retired="0" uuid="e422ecf9-75dd-4367-b21e-54bccabc4763"/>
+
+<encounter_type encounter_type_id="35" name="APSS: PREVENÇÃO POSITIVA - SEGUIMENTO" description="Ficha de apoio psicossocial e prevenção positiva - Seguimento" creator="1"
+                    date_created="2019-07-09 13:03:45" retired="0" uuid="f4aa93fe-8737-4f70-9532-542b768459d7"/>
+
 
 			   <encounter encounter_id="52673" encounter_type="18" patient_id="1021" encounter_datetime="2019-09-30 00:00:00"
                creator="1" date_created="2018-09-30 00:00:00" voided="0"

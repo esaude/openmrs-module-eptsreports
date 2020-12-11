@@ -229,7 +229,9 @@ public class APSSResumoTrimestralCohortQueries {
 
     cd.addSearch(
         "minArtStartDate",
-        map(getFichaAPSSAndMinArtStartDate(), "endDate=${endDate},location=${location}"));
+        map(
+            getFichaAPSSAndMinArtStartDate(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("activeInART AND minArtStartDate");
 
@@ -528,7 +530,7 @@ public class APSSResumoTrimestralCohortQueries {
   private CohortDefinition getFichaAPSSAndMinArtStartDate() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("All Patients Registered In Encounter Ficha APSS AND PP");
-
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -680,6 +682,8 @@ public class APSSResumoTrimestralCohortQueries {
             + "        GROUP BY p.patient_id  "
             + ") art_startdate   "
             + "    WHERE art_startdate.patient_id=external.patient_id ) AND :endDate "
+            + "    AND encounter_datetime "
+            + "        >= :startDate AND encounter_datetime <= :endDate  "
             + "    AND e.location_id = :location";
 
     StringSubstitutor sb = new StringSubstitutor(map);
