@@ -264,7 +264,7 @@ public class TxRttCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getITTOrLTFUPatients(int numDays) {
+  public CohortDefinition getITTOrLTFUPatients(int numDays) {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.addSearch(
@@ -293,12 +293,16 @@ public class TxRttCohortQueries {
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
 
     map.put("1410", hivMetadata.getReturnVisitDateConcept().getConceptId());
     map.put("5096", hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
+    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
 
     String query =
-        "SELECT total.patient_id FROM "
+        "SELECT final.patient_id "
+            + " FROM( "
+            + " SELECT total.patient_id FROM "
             + "    ( "
             + "        SELECT     pat1.patient_id, Max(enc1.encounter_datetime) AS encounter_datetime "
             + "        FROM  patient pat1  "
@@ -397,8 +401,25 @@ public class TxRttCohortQueries {
             + "                    AND o.value_datetime IS NOT NULL "
             + "            ) right1 "
             + "    ON total.patient_id = right1.patient_id   "
-            + "WHERE  "
-            + "    right1.patient_id IS NULL ";
+            + " WHERE  "
+            + "    right1.patient_id IS NULL "
+            + " ) AS final  "
+            + " WHERE final.patient_id NOT  IN( "
+            + "    SELECT p.patient_id "
+            + "    FROM  patient p "
+            + "        INNER JOIN encounter e  "
+            + "            ON e.patient_id = p.patient_id "
+            + "        INNER JOIN obs o  "
+            + "            ON e.encounter_id = o.encounter_id "
+            + "     "
+            + "    WHERE p.voided = 0 "
+            + "        AND e.voided = 0 "
+            + "        AND o.voided = 0 "
+            + "        AND e.encounter_type = ${52} "
+            + "        AND e.location_id = :location "
+            + "        AND o.value_datetime <= :onOrBefore "
+            + "        AND o.concept_id = ${23866} "
+            + "        )";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
     definition.setQuery(stringSubstitutor.replace(query));

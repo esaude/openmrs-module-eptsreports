@@ -94,7 +94,7 @@ public class TXCurrQueries {
             + " inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
             + " where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d "
             + " and ps.state in (%d,%d,%d) and ps.end_date is null and ps.start_date<=:onOrBefore "
-            + "and pg.location_id=:location group by p.patient_id  ";
+            + "and pg.location_id=:location group by p.patient_id ";
 
     return String.format(
         query,
