@@ -457,7 +457,7 @@ public class APSSResumoTrimestralCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getPatientsRegisteredInFichaAPSSPP() {
+  public CohortDefinition getPatientsRegisteredInFichaAPSSPP() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("All Patients Registered In Encounter Ficha APSS AND PP");
 
@@ -469,7 +469,6 @@ public class APSSResumoTrimestralCohortQueries {
     map.put(
         "prevencaoPositivaSeguimentoEncounterType",
         hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
-    map.put("preARTCounselingConcept", hivMetadata.getPreARTCounselingConcept().getConceptId());
     map.put("patientFoundYesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
     map.put("pp1Concept", hivMetadata.getPP1Concept().getConceptId());
     map.put("pp2Concept", hivMetadata.getPP2Concept().getConceptId());
@@ -480,8 +479,7 @@ public class APSSResumoTrimestralCohortQueries {
     map.put("pp7Concept", hivMetadata.getPP7Concept().getConceptId());
 
     String query =
-        ""
-            + " SELECT p.patient_id "
+        " SELECT p.patient_id "
             + " FROM patient p "
             + "     INNER JOIN encounter e "
             + "        ON e.patient_id = p.patient_id "
@@ -518,7 +516,102 @@ public class APSSResumoTrimestralCohortQueries {
             + "    AND (pp7.concept_id = ${pp7Concept} AND pp7.value_coded = ${patientFoundYesConcept}) "
             + "    AND encounter_datetime "
             + "        BETWEEN :startDate AND :endDate "
-            + "    AND e.location_id = :location ";
+            + "    AND e.location_id = :location "
+            + " UNION "
+            + "  SELECT  p.patient_id "
+            + " FROM patient p "
+            + " WHERE p.voided = 0"
+            + "    AND p.patient_id IN ("
+            + "                        SELECT e.patient_id "
+            + "                        FROM encounter  e"
+            + "                            INNER JOIN obs o"
+            + "                                ON o.encounter_id = e.encounter_id"
+            + "                        WHERE e.voided = 0"
+            + "                            AND o.voided = 0"
+            + "                            AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType}"
+            + "                            AND e.encounter_datetime"
+            + "                                BETWEEN :startDate AND :endDate "
+            + "                            AND e.location_id = :location"
+            + "                            AND o.concept_id = ${pp1Concept} AND o.value_coded = ${patientFoundYesConcept} "
+            + "                        )"
+            + "    AND p.patient_id IN("
+            + "                        SELECT e.patient_id "
+            + "                        FROM encounter  e"
+            + "                            INNER JOIN obs o"
+            + "                                ON o.encounter_id = e.encounter_id"
+            + "                        WHERE e.voided = 0"
+            + "                            AND o.voided = 0"
+            + "                            AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType}"
+            + "                            AND e.encounter_datetime"
+            + "                                BETWEEN :startDate AND :endDate "
+            + "                            AND e.location_id = :location"
+            + "                            AND o.concept_id = ${pp2Concept} AND o.value_coded = ${patientFoundYesConcept}"
+            + "                        )"
+            + "    AND p.patient_id IN("
+            + "                        SELECT e.patient_id "
+            + "                        FROM encounter  e"
+            + "                            INNER JOIN obs o"
+            + "                                ON o.encounter_id = e.encounter_id"
+            + "                        WHERE e.voided = 0"
+            + "                            AND o.voided = 0"
+            + "                            AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType}"
+            + "                            AND e.encounter_datetime"
+            + "                                BETWEEN :startDate AND :endDate "
+            + "                            AND e.location_id = :location"
+            + "                            AND o.concept_id = ${pp3Concept} AND o.value_coded = ${patientFoundYesConcept}"
+            + "                        )"
+            + "    AND p.patient_id IN("
+            + "                        SELECT e.patient_id "
+            + "                        FROM encounter  e"
+            + "                            INNER JOIN obs o"
+            + "                                ON o.encounter_id = e.encounter_id"
+            + "                        WHERE e.voided = 0"
+            + "                            AND o.voided = 0"
+            + "                            AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType}"
+            + "                            AND e.encounter_datetime"
+            + "                                BETWEEN :startDate AND :endDate "
+            + "                            AND e.location_id = :location"
+            + "                            AND o.concept_id = ${pp4Concept} AND o.value_coded = ${patientFoundYesConcept}"
+            + "                        )"
+            + "    AND p.patient_id IN("
+            + "                        SELECT e.patient_id "
+            + "                        FROM encounter  e"
+            + "                            INNER JOIN obs o"
+            + "                                ON o.encounter_id = e.encounter_id"
+            + "                        WHERE e.voided = 0"
+            + "                            AND o.voided = 0"
+            + "                            AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType}"
+            + "                            AND e.encounter_datetime"
+            + "                                BETWEEN :startDate AND :endDate "
+            + "                            AND e.location_id = :location"
+            + "                            AND o.concept_id = ${familyPlanningConcept} AND o.value_coded = ${patientFoundYesConcept} "
+            + "                        )"
+            + "    AND p.patient_id IN("
+            + "                        SELECT e.patient_id "
+            + "                        FROM encounter  e"
+            + "                            INNER JOIN obs o"
+            + "                                ON o.encounter_id = e.encounter_id"
+            + "                        WHERE e.voided = 0"
+            + "                            AND o.voided = 0"
+            + "                            AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType} "
+            + "                            AND e.encounter_datetime"
+            + "                                BETWEEN :startDate AND :endDate "
+            + "                            AND e.location_id = :location"
+            + "                            AND o.concept_id = ${pp6Concept} AND o.value_coded = ${patientFoundYesConcept} "
+            + "                        ) "
+            + "                        AND p.patient_id IN("
+            + "                        SELECT e.patient_id "
+            + "                        FROM encounter  e"
+            + "                            INNER JOIN obs o"
+            + "                                ON o.encounter_id = e.encounter_id"
+            + "                        WHERE e.voided = 0"
+            + "                            AND o.voided = 0"
+            + "                            AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType} "
+            + "                            AND e.encounter_datetime"
+            + "                                BETWEEN :startDate AND :endDate "
+            + "                            AND e.location_id = :location"
+            + "                            AND o.concept_id = ${pp7Concept} AND o.value_coded = ${patientFoundYesConcept}"
+            + "                        ) ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     String replacedQuery = sb.replace(query);

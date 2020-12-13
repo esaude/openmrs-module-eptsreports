@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.APSSResumoTrimestralCohortQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -57,7 +59,7 @@ public class APSSResumoTrimestralCohortQueriesTest extends DefinitionsTest {
     context.addParameterValue("location", location);
   }
 
-  @Ignore("Uses DATEADD function not supported by H2")
+  @Ignore
   public void getA1ShouldReturn() throws EvaluationException {
 
     CohortDefinition cohort = APSSResumoTrimestralCohortQueries.getA1();
@@ -87,5 +89,28 @@ public class APSSResumoTrimestralCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
 
     assertEquals(3, evaluatedCohort.getMemberIds().size());
+  }
+
+  @Test
+  public void getPatientsRegisteredInFichaAPSSPPShoulReturnPatientsWithAllPPFilled()
+      throws EvaluationException {
+
+    CohortDefinition cohort =
+        APSSResumoTrimestralCohortQueries.getPatientsRegisteredInFichaAPSSPP();
+
+    Map<Parameter, Object> parameters = new HashMap<>();
+
+    parameters.put(
+        new Parameter("startDate", "Start Date", Date.class),
+        EptsCalculationUtils.addMonths(this.getStartDate(), -3));
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort, parameters);
+
+    assertEquals(3, evaluatedCohort.getMemberIds().size());
+    assertTrue(evaluatedCohort.getMemberIds().contains(999901));
+    assertTrue(evaluatedCohort.getMemberIds().contains(999902));
+    assertTrue(evaluatedCohort.getMemberIds().contains(999904));
   }
 }
