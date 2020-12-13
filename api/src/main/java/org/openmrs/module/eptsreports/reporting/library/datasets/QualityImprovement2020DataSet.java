@@ -222,7 +222,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQC11DEN("A"),
                     "startDate=${startDate},endDate=${endDate},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
+        "age=14+");
 
     dataSetDefinition.addColumn(
         "MQ11DEN2",
@@ -234,7 +234,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQC11DEN("B"),
                     "startDate=${startDate},endDate=${endDate},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
+        "age=14+");
 
     dataSetDefinition.addColumn(
         "MQ11DEN3",
