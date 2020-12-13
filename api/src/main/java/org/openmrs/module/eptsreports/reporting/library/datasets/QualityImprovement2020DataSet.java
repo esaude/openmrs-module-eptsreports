@@ -296,6 +296,95 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=<15");
 
+    // Numerator CAT 11
+
+    dataSetDefinition.addColumn(
+        "MQ11NUM1",
+        "1.1. % de adultos em TARV com o mínimo de 3 consultas de seguimento de adesão na FM-ficha de APSS/PP nos primeiros 3 meses após início do TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11NUM1",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFandGAdultss(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ11NUM2",
+        "11.2. % de pacientes na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas de APSS/PP mensais consecutivas para reforço de adesão ",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11NUM2",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries
+                        .getMQC11NumB1nB2notCnotDnotEnotEnotFnHandAdultss(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ11NUM3",
+        "11.3. % de crianças >2 anos de idade em TARV com registo mensal de seguimento da adesão na ficha de APSS/PP nos primeiros 99 dias de TARV ",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11NUM3",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11NumAnB3nCnotDnotEnotEnotFnG(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ11NUM4",
+        "11.4. % de crianças <2 anos de idade em TARV com registo mensal de seguimento da adesão na ficha de APSS/PP no primeiro ano de TARV ",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11NUM4",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11NumB1nB2nB3nCnotDnotEnotEnotFnH(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ11NUM5",
+        "11.5. % de crianças (0-14 anos) na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas mensais consecutivas de APSS/PP para reforço de adesão",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11NUM5",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFnotGnChildren(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ11NUM6",
+        "11.6. % de crianças <2 anos de idade em TARV com registo mensal de seguimento da adesão na ficha de APSS/PP no primeiro ano de TARV (Line 61 in the template) Numerador (Column D in the",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11NUM6",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries
+                        .getMQC11NumAnotCnotDnotEnotFnotIlessThan9Month(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ11NUM7",
+        "11.7. % de crianças (0-14 anos) na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3  consultas mensais consecutivas de APSS/PP para reforço de adesão",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ11NUM7",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries
+                        .getMQC11NumB1nB2notCnotDnotEnotFnHChildren(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
     return dataSetDefinition;
   }
 

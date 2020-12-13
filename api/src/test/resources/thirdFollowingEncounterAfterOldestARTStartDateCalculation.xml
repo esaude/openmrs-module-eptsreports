@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<dataset>
+    <location location_id="1" name="Alto Ligonha" description="NA"
+              address2="NA" state_province="NA" country="MA"
+              date_created="2008-10-13 11:32:52" county_district="NA" address6="NA"
+              retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
+
+    <!-- person -->
+    <person person_id="1001" gender="F"  creator="1"
+            birthdate="1973-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="421875e2-6f22-1000-9281-8f1ee524029e" />
+
+    <person person_id="1002" gender="M"  creator="1"
+            birthdate="1999-12-20 00:00:00.0" birthdate_estimated="0" dead="false"
+            date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="537447ce-387f-11eb-8a3e-031d19738f17" />
+
+    <person person_id="1003" gender="M"  creator="1"
+            birthdate="1984-11-15 00:00:00.0" birthdate_estimated="0" dead="false"
+            date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="5b0ebc4e-387f-11eb-b004-a7ab1adae3f0" />
+
+
+    <!-- patient -->
+    <patient patient_id="1001"   creator="1"
+             date_created="2005-09-22 00:00:00.0"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+    <patient patient_id="1002"   creator="1"
+             date_created="2005-09-22 00:00:00.0"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+    <patient patient_id="1003"   creator="1"
+             date_created="2005-09-22 00:00:00.0"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+
+
+
+    <!-- global_property -->
+    <global_property
+            property="eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid"
+            property_value="f4aa93fe-8737-4f70-9532-542b768459d7"
+            description="UUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO encounter type"
+            uuid="25a9f568-7d4f-4496-b372-939950af7ddc"
+    />
+    <global_property
+            property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid"
+            property_value="e278f956-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID for the S.TARV: ADULTO SEGUIMENTO encounter typee"
+            uuid="c9000eb4-388a-11eb-aff6-0b3a6a19dee8"
+    />
+
+    <global_property
+            property="eptsreports.arvPlanConceptUuid"
+            property_value="e1d9ee10-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID for the GESTÃO DE TARV concept"
+            uuid="0e405ffa-388c-11eb-be31-53c6fc8c15ce"
+    />
+
+    <global_property
+            property="eptsreports.startDrugs"
+            property_value="e1d9ef28-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID for the START DRUGS concept"
+            uuid="31f971de-388c-11eb-958f-4f462f97a667"
+    />
+
+    <global_property
+            property="eptsreports.historicalStartDateConceptUuid"
+            property_value="e1d8f690-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID for the DATA DE INICIO DO TARV concept"
+            uuid="4f8c5c56-388d-11eb-941b-5bf07dec298d"
+    />
+
+    <encounter_type encounter_type_id="35"
+                    name="APSS: PREVENÇÃO POSITIVA - SEGUIMENTO"
+                    description="Ficha de apoio psicossocial e prevenção positiva - Seguimento"
+                    creator="1" date_created="2014-07-09 08:16:00" retired="0"
+                    uuid="f4aa93fe-8737-4f70-9532-542b768459d7" />
+
+    <encounter_type encounter_type_id="6"
+                    name="S.TARV: ADULTO SEGUIMENTO"
+                    description="seguimento visita do paciente adulto"
+                    creator="1" date_created="2008-10-13 04:32:34" retired="0"
+                    uuid="e278f956-1d5f-11e0-b929-000c29ad1d07" />
+
+    <concept concept_id="1255" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="e1d9ee10-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="1256" retired="0" datatype_id="4" class_id="15" is_set="0" creator="1" date_created="2019-07-09 13:00:20" uuid="e1d9ef28-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="1190" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2005-02-09 00:00:00" uuid="e1d8f690-1d5f-11e0-b929-000c29ad1d07" />
+
+    <encounter encounter_id="112" encounter_type="6" patient_id="1001" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="81c5a0a8-388b-11eb-944e-4fee60b94949" location_id="1" />
+
+    <encounter encounter_id="111" encounter_type="35" patient_id="1001" encounter_datetime="2019-10-20 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9896-7ad705f0e4e1" location_id="1" />
+
+    <encounter encounter_id="211" encounter_type="35" patient_id="1001" encounter_datetime="2019-11-18 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="7d214fd8-3891-11eb-ad6a-57263c715239" location_id="1" />
+
+    <encounter encounter_id="311" encounter_type="35" patient_id="1001" encounter_datetime="2019-12-12 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="04d8766e-3ba2-11eb-9ffb-5f09f7429ec6" location_id="1" />
+
+
+    <!--
+        <obs obs_id="122" person_id="1001" concept_id="1255" encounter_id="112" obs_datetime="2019-09-26 00:00:00"  value_coded="1256"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c183947a-388b-11eb-b6a7-eb9d5a01c619" location_id="1" />
+    -->
+    <obs obs_id="123" person_id="1001" concept_id="1190" encounter_id="112" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="76d70f0e-388d-11eb-927d-4fc160e49bf1" location_id="1" />
+
+
+
+
+</dataset>
