@@ -384,4 +384,26 @@ public class EptsCommonDimension {
             genericCohortQueries.getAgeInMonths(0, 8), "effectiveDate=${effectiveDate}"));
     return dim;
   }
+  /**
+   * Dimension for returning patients age based on their ART start date
+   *
+   * @return @{@link CohortDefinitionDimension}
+   */
+  public CohortDefinitionDimension ageBasedOnArtStartDate() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("Patients having age based on ART start date by reporting end date");
+    dim.addParameter(new Parameter("effectiveDate", "End Date", Date.class));
+    dim.addCohortDefinition(
+        "adultsArt",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnArtStartDate(15, null, false),
+            "onOrBefore=${effectiveDate},location=${location}"));
+    dim.addCohortDefinition(
+        "childrenArt",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnArtStartDate(null, 14, false),
+            "onOrBefore=${effectiveDate},location=${location}"));
+
+    return dim;
+  }
 }
