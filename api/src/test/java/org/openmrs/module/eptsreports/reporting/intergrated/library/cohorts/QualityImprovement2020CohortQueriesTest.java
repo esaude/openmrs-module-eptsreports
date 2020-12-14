@@ -133,8 +133,26 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     assertNotNull(evaluatedCohort.getMemberIds());
   }
 
+  @Test
+  public void getMQ12patientsShouldPass() throws EvaluationException {
+
+    CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getMQ12DEN(1);
+
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(
+        new Parameter("dataFinalRevisao", "Data Final Revisão", Date.class),
+        this.getDataFinalAvaliacao());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+
+    assertNotNull(evaluatedCohort.getMemberIds());
+  }
+
   private Date getDataFinalAvaliacao() {
-    return DateUtil.getDateTime(2019, 5, 26);
+    return DateUtil.getDateTime(2019, 5, 27);
   }
 
   @Override

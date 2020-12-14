@@ -2564,4 +2564,139 @@ public class QualityImprovement2020CohortQueries {
 
     return compositionCohortDefinition;
   }
+
+  /**
+   * <b>MQ12</b>: Melhoria de Qualidade Category 12 <br>
+   * <i> DENOMINATOR 1: A AND NOT (C OR D OR E OR F) AND AGE > 15 </i> <br>
+   * <i> DENOMINATOR 2: A AND NOT (C OR D OR E OR F) AND AGE > 15 </i> <br>
+   * <i> DENOMINATOR 6: A AND NOT (C OR D OR E OR F) AND AGE <= 15 </i> <br>
+   * <i> DENOMINATOR 7: A AND NOT (C OR D OR E OR F) AND AGE <= 15 </i> <br>
+   * <i> DENOMINATOR 10: (A AND C) AND NOT (D OR E OR F) </i> <br>
+   * <i> DENOMINATOR 11: (A AND C) AND NOT (D OR E OR F) </i> <br>
+   *
+   * <ul>
+   *   <li>A - Select all patients who initiated ART during the Inclusion period (startDateInclusion
+   *       and endDateInclusion)
+   *   <li>C - All female patients registered as “Pregnant” on MasterCard during the inclusion
+   *       period (startDateInclusion and endDateInclusion)
+   *   <li>D - All female patients registered as “Breastfeeding” on MasterCard during the inclusion
+   *       period (startDateInclusion and endDateInclusion)
+   *   <li>
+   *   <li>E - All transferred IN patients within the revision period
+   *   <li>F - All transferred OUT patients within the revision period
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ12DEN(Integer den) {
+    CompositionCohortDefinition comp = new CompositionCohortDefinition();
+
+    switch (den) {
+      case 1:
+        comp.setName(
+            "# de adultos (15/+anos) que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV");
+        break;
+      case 2:
+        comp.setName(
+            "# de adultos (15/+anos) que iniciaram o TARV no período de inclusão e que tiveram consultas clínicas ou levantamentos de ARVs dentro de 99 dias após o início do TARV");
+        break;
+      case 6:
+        comp.setName(
+            "# de crianças (0-14 anos) que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV");
+        break;
+      case 7:
+        comp.setName(
+            "# de crianças (0-14 anos) que iniciaram o TARV no período de inclusão e que tiveram consultas clínicas ou levantamentos de ARVs dentro de 99 dias após o início do TARV");
+        break;
+      case 10:
+        comp.setName(
+            "# de mulheres grávidas HIV+  que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV");
+        break;
+      case 11:
+        comp.setName(
+            "# de mulheres grávidas HIV+  que iniciaram o TARV no período de inclusão e que tiveram consultas clínicas ou levantamentos de ARVs dentro de 99 dias após o início do TARV");
+        break;
+    }
+
+    comp.addParameter(new Parameter("startDate", "startDate", Date.class));
+    comp.addParameter(new Parameter("endDate", "endDate", Date.class));
+    comp.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    comp.addParameter(new Parameter("location", "location", Date.class));
+
+    CohortDefinition startedART = getMQC3D1();
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            true,
+            false,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getPregnantConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition breastfeeding =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            true,
+            false,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getBreastfeeding(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition transferIn =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            true,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getTransferFromOtherFacilityConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            hivMetadata.getTypeOfPatientTransferredFrom(),
+            Collections.singletonList(hivMetadata.getArtStatus()));
+
+    CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
+
+    comp.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
+
+    comp.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+
+    comp.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+
+    comp.addSearch(
+        "E",
+        EptsReportUtils.map(
+            transferIn,
+            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
+
+    comp.addSearch(
+        "F",
+        EptsReportUtils.map(
+            transferOut,
+            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
+
+    comp.addSearch(
+        "CHILDREN",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnArtStartDate(0, 14, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    comp.addSearch(
+        "ADULT",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnArtStartDate(15, null, false),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    if (den == 1 || den == 2) {
+      comp.setCompositionString("A AND NOT (C OR D OR E OR F) AND ADULT");
+    } else if (den == 6 || den == 7) {
+      comp.setCompositionString("A AND NOT (C OR D OR E OR F) AND CHILDREN");
+    } else if (den == 10 || den == 11) {
+      comp.setCompositionString("(A AND C) AND NOT (D OR E OR F)");
+    }
+    return comp;
+  }
 }
