@@ -1461,7 +1461,7 @@ public class QualityImprovement2020CohortQueries {
   }
 
   /**
-   * <b>MQ5A</b>: Melhoria de Qualidade Category 11 Denominator <br>
+   * <b>MQC11</b>: Melhoria de Qualidade Category 11 Denominator <br>
    * <i> DENOMINATORS: A,B1,B2,B3,C,D and E</i> <br>
    *
    * <ul>
@@ -1504,15 +1504,12 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition startedART = getMQC3D1(); // A
 
     CohortDefinition patientsFromFichaClinicaLinhaTerapeutica =
-        getPatientsFromFichaClinicaB1OrB2(true); // B1
+        getPatientsFromFichaClinicaDenominatorB("B1");
 
     CohortDefinition patientsFromFichaClinicaCargaViral =
-        getPatientsFromFichaClinicaB1OrB2(false); // B2
+        getPatientsFromFichaClinicaDenominatorB("B2_11");
 
-    CohortDefinition patientsWithClinicalConsultation =
-        getPatientsWithClinicalConsultationB3(); // B3
-
-    // CohortDefinition nutritionalClass = getPatientsWithNutritionalState();
+    CohortDefinition patientsWithClinicalConsultation = getPatientsWithClinicalConsultationB3();
 
     CohortDefinition pregnant =
         commonCohortQueries.getMohMQPatientsOnCondition(
@@ -1568,19 +1565,154 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
 
-    if (indicatorFlag == "A" || indicatorFlag == "E" || indicatorFlag == "F")
+    if (indicatorFlag.equals("A") || indicatorFlag == "E" || indicatorFlag.equals("F"))
       compositionCohortDefinition.setCompositionString("A AND NOT (C OR D OR E OR F)");
-    if (indicatorFlag == "B" || indicatorFlag == "G")
+    if (indicatorFlag.equals("B") || indicatorFlag.equals("G"))
       compositionCohortDefinition.setCompositionString("(B1 AND B2) AND NOT (C OR D OR E OR F)");
-    if (indicatorFlag == "C")
+    if (indicatorFlag.equals("C"))
       compositionCohortDefinition.setCompositionString("(A AND B3 AND C) AND NOT (D OR E OR F)");
-    if (indicatorFlag == "D")
+    if (indicatorFlag.equals("D"))
       compositionCohortDefinition.setCompositionString("(B1 AND B3 AND C) AND NOT (D OR E OR F)");
 
     return compositionCohortDefinition;
   }
 
-  /* <b>MQC11B1B2</b>: Melhoria de Qualidade Category 11 Deniminator B1 and B2 <br>
+  /**
+   * <b>MQ12</b>: Melhoria de Qualidade Category 12 Denominator Part 2 <br>
+   * <i> DENOMINATORS: A,B1,B1E,B2,B2E,C,D and E</i> <br>
+   *
+   * <ul>
+   *   <li>A - Select all patients who initiated ART during the period (startDateInclusion =
+   *       endDateRevision - 14 months and endDateInclusion = endDateRevision - 11 months)
+   *   <li>
+   *   <li>B1- Select all patients from Ficha Clinica (encounter type 6) who have THE LAST “LINHA
+   *       TERAPEUTICA”(Concept id 21151) during the Inclusion period (startDateInclusion =
+   *       endDateRevision - 14 months and endDateInclusion = endDateRevision - 11 months) and the
+   *       value coded is “PRIMEIRA LINHA”(Concept id 21150)
+   *   <li>
+   *   <li>B1E- Select all patients from Ficha Clinica (encounter type 6) who have “LINHA
+   *       TERAPEUTICA”(Concept id 21151) with value coded DIFFERENT THAN “PRIMEIRA LINHA”(Concept
+   *       id 21150) during the period (startDate = endDateRevision - 14 months and endDateRevision)
+   *   <li>
+   *   <li>B2- Select all patients from Ficha Clinica (encounter type 6) who have THE LAST “LINHA
+   *       TERAPEUTICA”(Concept id 21151) during the Inclusion period (startDateInclusion =
+   *       endDateRevision - 14 months and endDateInclusion = endDateRevision - 11 months) and the
+   *       value coded is “SEGUNDA LINHA”(Concept id 21148)
+   *   <li>
+   *   <li>C - All female patients registered as “Pregnant” on a clinical consultation during the
+   *       inclusion period (startDateInclusion and endDateInclusion)
+   *   <li>
+   *   <li>D - All female patients registered as “Breastfeeding” on a clinical consultation during
+   *       the inclusion period (startDateInclusion and endDateInclusion)
+   *   <li>
+   *   <li>E - All transferred IN patients
+   *   <li>
+   *   <li>F - All Transferred Out patients
+   * </ul>
+   *
+   * @return CohortDefinition
+   * @params indicatorFlag A to E For inicator 12.3 to 12.12 respectively
+   */
+  public CohortDefinition getMQC12P2DEN(String indicatorFlag) {
+    String mapping1 = "startDate=${endDate-14m},endDate=${endDate},location=${location}";
+    String mapping2 = "startDate=${endDate-14m},endDate=${endDate-11m},location=${location}";
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+
+    if (indicatorFlag.equals("A"))
+      compositionCohortDefinition.setName(
+          "Adultos (15/+anos) na 1ª linha que iniciaram o TARV há 12 meses atrás sem registo de saidas");
+    if (indicatorFlag.equals("B"))
+      compositionCohortDefinition.setName(
+          "Adultos (15/+anos) que iniciaram 2ª linha TARV há 12 meses atrá");
+    if (indicatorFlag.equals("C"))
+      compositionCohortDefinition.setName(
+          "Crianças (0-14 anos) na 1ª linha que iniciaram o TARV há 12 meses atrás");
+    if (indicatorFlag.equals("D"))
+      compositionCohortDefinition.setName(
+          "Crianças (0-14 anos)  que iniciaram 2ª linha TARV há 12 meses atrás");
+    if (indicatorFlag.equals("E"))
+      compositionCohortDefinition.setName(
+          "Mulheres grávidas HIV+ 1ª linha que iniciaram o TARV há 12 meses atrás");
+
+    compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    CohortDefinition startedART = getMQC3D1();
+
+    CohortDefinition b1 = getPatientsFromFichaClinicaDenominatorB("B1");
+
+    CohortDefinition b1E = getPatientsFromFichaClinicaDenominatorB("B1E");
+
+    CohortDefinition b2 = getPatientsFromFichaClinicaDenominatorB("B2_12");
+
+    CohortDefinition b2E = getPatientsFromFichaClinicaDenominatorB("B2E");
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            true,
+            false,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getPregnantConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition breastfeeding =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            true,
+            false,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getBreastfeeding(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition transferIn =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            true,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getTransferFromOtherFacilityConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            hivMetadata.getTypeOfPatientTransferredFrom(),
+            Collections.singletonList(hivMetadata.getArtStatus()));
+
+    CohortDefinition transfOut = commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod();
+
+    compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, mapping2));
+
+    compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, mapping2));
+
+    compositionCohortDefinition.addSearch("B1E", EptsReportUtils.map(b1E, mapping1));
+
+    compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, mapping2));
+
+    compositionCohortDefinition.addSearch("B2E", EptsReportUtils.map(b2E, mapping1));
+
+    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+
+    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+
+    if (indicatorFlag.equals("A") || indicatorFlag.equals("C"))
+      compositionCohortDefinition.setCompositionString("(A AND B1) NOT (C OR D OR E)");
+    if (indicatorFlag.equals("B") || indicatorFlag.equals("D"))
+      compositionCohortDefinition.setCompositionString("(A AND B2) AND NOT (C OR D OR E)");
+    if (indicatorFlag.equals("E"))
+      compositionCohortDefinition.setCompositionString("(A AND B1 AND C) AND NOT (D OR E)");
+
+    return compositionCohortDefinition;
+  }
+
+  /**
+   * <b>MQC11B1B2</b>: Melhoria de Qualidade Category 11 Deniminator B1 and B2 <br>
    * <i> A and not B</i> <br>
    *
    * <ul>
@@ -1594,7 +1726,7 @@ public class QualityImprovement2020CohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsFromFichaClinicaB1OrB2(boolean isB1) {
+  public CohortDefinition getPatientsFromFichaClinicaDenominatorB(String key) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("Patients From Ficha Clinica");
@@ -1606,21 +1738,37 @@ public class QualityImprovement2020CohortQueries {
     map.put("encounterType", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put("therapeuticLineConcept", hivMetadata.getTherapeuticLineConcept().getConceptId());
     map.put("firstLineConcept", hivMetadata.getFirstLineConcept().getConceptId());
+    map.put("secondLineConcept", hivMetadata.getSecondLineConcept().getConceptId());
     map.put("viralLoadConcept", hivMetadata.getHivViralLoadConcept().getConceptId());
 
-    String query = "";
-    String queryTermination = "";
+    String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN (SELECT p.patient_id, MAX(e.encounter_datetime), e.encounter_id ";
+    String queryTermination =
+        " GROUP BY p.patient_id) filtered ON p.patient_id = filtered.patient_id ";
     String valueQuery = "";
 
-    if (isB1) {
-      query +=
-          "SELECT p.patient_id FROM patient p INNER JOIN (SELECT p.patient_id, MAX(e.encounter_datetime), e.encounter_id ";
+    if (key == "B1") {
       valueQuery =
           " AND o.concept_id = ${therapeuticLineConcept} AND o.value_coded = ${firstLineConcept} ";
-      queryTermination += " GROUP BY p.patient_id) filtered ON p.patient_id = filtered.patient_id ";
-    } else {
-      query += "SELECT p.patient_id ";
+    }
+    if (key == "B1E") {
+      valueQuery =
+          " AND o.concept_id = ${therapeuticLineConcept} AND o.value_coded <> ${firstLineConcept} ";
+    }
+    if (key == "B2_11") {
+      query = "SELECT p.patient_id ";
       valueQuery = " AND o.concept_id = ${viralLoadConcept} AND o.value_numeric > 1000 ";
+      queryTermination = "";
+    }
+    if (key == "B2_12") {
+
+      valueQuery =
+          " AND o.concept_id = ${therapeuticLineConcept} AND o.value_coded = ${secondLineConcept} ";
+    }
+
+    if (key == "B2E") {
+      valueQuery =
+          " AND o.concept_id = ${therapeuticLineConcept} AND o.value_coded <> ${secondLineConcept} ";
     }
 
     query +=
@@ -2168,8 +2316,8 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition b1 = getPatientsFromFichaClinicaB1OrB2(true);
-    CohortDefinition b2 = getPatientsFromFichaClinicaB1OrB2(false);
+    CohortDefinition b1 = getPatientsFromFichaClinicaDenominatorB("B1");
+    CohortDefinition b2 = getPatientsFromFichaClinicaDenominatorB("B2_11");
     CohortDefinition c =
         commonCohortQueries.getMohMQPatientsOnCondition(
             true,
@@ -2306,8 +2454,8 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition b1 = getPatientsFromFichaClinicaB1OrB2(true);
-    CohortDefinition b2 = getPatientsFromFichaClinicaB1OrB2(false);
+    CohortDefinition b1 = getPatientsFromFichaClinicaDenominatorB("B1");
+    CohortDefinition b2 = getPatientsFromFichaClinicaDenominatorB("B2_11");
     ;
     CohortDefinition b3 = getPatientsWithClinicalConsultationB3();
     CohortDefinition c =
@@ -2508,8 +2656,8 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition b1 = getPatientsFromFichaClinicaB1OrB2(true);
-    CohortDefinition b2 = getPatientsFromFichaClinicaB1OrB2(false);
+    CohortDefinition b1 = getPatientsFromFichaClinicaDenominatorB("B1");
+    CohortDefinition b2 = getPatientsFromFichaClinicaDenominatorB("B2_11");
     CohortDefinition c =
         commonCohortQueries.getMohMQPatientsOnCondition(
             true,
