@@ -710,7 +710,7 @@ public interface QualityImprovementQueriesInterface {
                 + " 	) art_start                                                                                       		"
                 + " 	group by patient_id) tx_new                                                                       		"
                 + " 	join                                                                                              		"
-                + " 	(select p.patient_id, min(e.encounter_datetime)                                                  		"
+                + " 	(select p.patient_id, min(e.encounter_datetime) min_consultation_date                                   "
                 + " 	from patient p                                                                                   		"
                 + "	 	join encounter e on e.patient_id = p.patient_id                             							"
                 + "	where p.voided=0 and e.voided=0 and e.encounter_type = 35         								  			"
@@ -718,8 +718,8 @@ public interface QualityImprovementQueriesInterface {
                 + "	group by p.patient_id                                                            				  			"
                 + "	) min_consultation on min_consultation.patient_id = tx_new.patient_id	                          			"
                 + "	join person pe on pe.person_id= tx_new.patient_id                                                 			"
-                + "where (TIMESTAMPDIFF(year,birthdate,art_start_date))<2 and birthdate is not null and pe.voided=0    			"
-                + " 	and art_start_date between :startInclusionDate and :endInclusionDate                              		";
+                + "where (TIMESTAMPDIFF(year,birthdate,tx_new.art_start_date))<2 and birthdate is not null and pe.voided=0    			"
+                + "  and tx_new.art_start_date between :startInclusionDate and :endInclusionDate and tx_new.art_start_date < min_consultation.min_consultation_date";
 
     public static final String
         findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen9MontheLess2 =
