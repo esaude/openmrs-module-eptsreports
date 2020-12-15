@@ -49,13 +49,13 @@ public class TxRTTPatientsWhoExperiencedIITCalculation extends BaseFghCalculatio
       if (calculationResult != null && calculationResult.getValue() != null) {
         Date inicioDate = (Date) calculationResult.getValue();
         if (inicioDate != null) {
-          if (entry.getValue().compareTo(startDate) > 0) {
-            inicioRealResult.remove(entry.getKey());
-          } else {
-            //						if (entry.getValue().compareTo(inicioDate) >= 0) {
-            //							inicioRealResult.put(entry.getKey(), new SimpleResult(entry.getValue(), this));
-            //						}
+          if (entry.getValue().compareTo(inicioDate) >= 0) {
+            inicioRealResult.put(entry.getKey(), new SimpleResult(entry.getValue(), this));
           }
+          // TODO: vai entrar na proxima release
+          //					if (entry.getValue().compareTo(startDate) > 0) {
+          //						inicioRealResult.remove(entry.getKey());
+          //					}
         }
       }
     }
