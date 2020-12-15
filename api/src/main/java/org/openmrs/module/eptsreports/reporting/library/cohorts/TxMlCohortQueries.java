@@ -32,6 +32,8 @@ public class TxMlCohortQueries {
 
   @Autowired private HivCohortQueries hivCohortQueries;
 
+  @Autowired private TxRttCohortQueries txRttCohortQueries;
+
   /**
    * <b>Description:</b> Patients started ART and missed Next Appointment or Next Drug Pickup (A and
    * B)
@@ -47,7 +49,7 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition missedAppointment = getAllPatientsWhoMissedNextAppointment();
-    CohortDefinition noScheduled = getPatientWithoutScheduledDrugPickupDateMasterCardAmdArtPickup();
+    CohortDefinition noScheduled = txRttCohortQueries.getSecondPartFromITT();
     CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
 
     CohortDefinition transferredOut = hivCohortQueries.getPatientsTransferredOut();
@@ -58,7 +60,7 @@ public class TxMlCohortQueries {
 
     String mappings = "onOrBefore=${endDate},location=${location}";
     String mappings2 = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
-    cd.addSearch("noScheduled", EptsReportUtils.map(noScheduled, mappings2));
+    cd.addSearch("noScheduled", EptsReportUtils.map(noScheduled, mappings));
     cd.addSearch("startedArt", EptsReportUtils.map(startedArt, mappings));
 
     cd.addSearch(
