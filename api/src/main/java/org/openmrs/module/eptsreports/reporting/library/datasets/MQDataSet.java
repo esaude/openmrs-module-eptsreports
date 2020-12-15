@@ -4,9 +4,11 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortCategory15Queries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -19,6 +21,8 @@ public class MQDataSet extends BaseDataSet {
 
   @Autowired private MQCohortQueries mqCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+
+  @Autowired private MQCohortCategory15Queries mqCohortCategory15Queries;
 
   public DataSetDefinition constructTMqDatset() {
 
@@ -689,9 +693,9 @@ public class MQDataSet extends BaseDataSet {
     CAT11Least9APSSConsultationNUMERATOR.addParameter(
         new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Adultos PARTE 1
+    // Categoria 12 Adultos PARTE 1
 
-    //    Categoria 12 Adultos
+    // Categoria 12 Adultos
 
     final CohortIndicator CAT12ADULTDENOMINADOR33DAYS =
         this.eptsGeneralIndicator.getIndicator(
@@ -757,7 +761,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12ADULTNUMERATOR99DAYS.addParameter(new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Criancas
+    // Categoria 12 Criancas
 
     final CohortIndicator CAT12CHILDRENDENOMINADOR33DAYS =
         this.eptsGeneralIndicator.getIndicator(
@@ -823,7 +827,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12CHILDRENNUMERATOR99DAYS.addParameter(new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Mulheres Gravidas
+    // Categoria 12 Mulheres Gravidas
 
     final CohortIndicator CAT12PREGNANTDENOMINADOR33DAYS =
         this.eptsGeneralIndicator.getIndicator(
@@ -889,9 +893,9 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12PREGNANTNUMERATOR99DAYS.addParameter(new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Adultos PARTE 2
+    // Categoria 12 Adultos PARTE 2
 
-    //    Categoria 12 Adultos Primeira Linha
+    // Categoria 12 Adultos Primeira Linha
 
     final CohortIndicator CAT12ADULTDENOMINATORFIRSTLINE =
         this.eptsGeneralIndicator.getIndicator(
@@ -925,7 +929,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12ADULTNUMERATORFIRSTLINE.addParameter(new Parameter("location", "location", Date.class));
 
-    //  Categoria 12 Adultos Segunda Linha
+    // Categoria 12 Adultos Segunda Linha
 
     final CohortIndicator CAT12ADULTDENOMINATORSECONDLINE =
         this.eptsGeneralIndicator.getIndicator(
@@ -959,9 +963,9 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12ADULTNUMERATORSECONDLINE.addParameter(new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Adultos PARTE 2
+    // Categoria 12 Adultos PARTE 2
 
-    //    Categoria 12 Criancas Primeira Linha
+    // Categoria 12 Criancas Primeira Linha
 
     final CohortIndicator CAT12CHILDRENDENOMINATORFIRSTLINE =
         this.eptsGeneralIndicator.getIndicator(
@@ -996,7 +1000,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12CHILDRENNUMERATORFIRSTLINE.addParameter(new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Criancas Segunda Linha
+    // Categoria 12 Criancas Segunda Linha
 
     final CohortIndicator CAT12CHILDRENDENOMINATORSECONDLINE =
         this.eptsGeneralIndicator.getIndicator(
@@ -1447,7 +1451,183 @@ public class MQDataSet extends BaseDataSet {
         EptsReportUtils.map(CAT12PREGNANTNUMERATORFIRSTLINE, mappings),
         "");
 
+    this.addColumnsForCategory15(dataSetDefinition, mappings);
+
     return dataSetDefinition;
+  }
+
+  private void addColumnsForCategory15(
+      CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
+    // Categoria 15 DENOMINATOR
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_1_2_3_4_DENOMINATOR",
+        "CAT15INDICATOR_1_2_3_4_DENOMINATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries
+                    .getDenominatorCategory15_Indicator_1_And_2_and_3_And_4(),
+                "CAT15INDICATOR_1_2_3_4_DENOMINATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_5_7_9_11_DENOMINATOR",
+        "CAT15INDICATOR_5_7_9_11_DENOMINATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries
+                    .getDenominatorCategory15_Indicator_5_And_7_And_9_And_11(),
+                "CAT15INDICATOR_5_7_9_11_DENOMINATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_6_8_10_12_DENOMINATOR",
+        "CAT15INDICATOR_6_8_10_12_DENOMINATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries
+                    .getDenominatorCategory15_Indicator_6_And_8_And_10_And_12(),
+                "CAT15INDICATOR_6_8_10_12_DENOMINATOR",
+                mappings),
+            mappings),
+        "");
+
+    // Categoria 15 NUMERATOR
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_1_NUMERATOR",
+        "CAT15INDICATOR_1_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_1(),
+                "CAT15INDICATOR_1_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_2_NUMERATOR",
+        "CAT15INDICATOR_2_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_2(),
+                "CAT15INDICATOR_2_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_3_NUMERATOR",
+        "CAT15INDICATOR_3_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_3(),
+                "CAT15INDICATOR_3_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_4_NUMERATOR",
+        "CAT15INDICATOR_4_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_4(),
+                "CAT15INDICATOR_4_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_5_NUMERATOR",
+        "CAT15INDICATOR_5_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_5(),
+                "CAT15INDICATOR_5_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_6_NUMERATOR",
+        "CAT15INDICATOR_6_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_6(),
+                "CAT15INDICATOR_6_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_7_NUMERATOR",
+        "CAT15INDICATOR_7_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_7(),
+                "CAT15INDICATOR_7_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_8_NUMERATOR",
+        "CAT15INDICATOR_8_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_8(),
+                "CAT15INDICATOR_8_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_9_NUMERATOR",
+        "CAT15INDICATOR_9_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_9(),
+                "CAT15INDICATOR_9_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_10_NUMERATOR",
+        "CAT15INDICATOR_10_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_10(),
+                "CAT15INDICATOR_10_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_11_NUMERATOR",
+        "CAT15INDICATOR_11_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_11(),
+                "CAT15INDICATOR_11_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT15INDICATOR_12_NUMERATOR",
+        "CAT15INDICATOR_12_NUMERATOR",
+        EptsReportUtils.map(
+            this.setIndicatorWithAllParameters(
+                this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_12(),
+                "CAT15INDICATOR_12_NUMERATOR",
+                mappings),
+            mappings),
+        "");
+  }
+
+  private CohortIndicator setIndicatorWithAllParameters(
+      CohortDefinition cohortDefinition, String indicatorName, String mappings) {
+    final CohortIndicator indicator =
+        this.eptsGeneralIndicator.getIndicator(
+            indicatorName, EptsReportUtils.map(cohortDefinition, mappings));
+
+    indicator.addParameter(new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    indicator.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    indicator.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    indicator.addParameter(new Parameter("location", "location", Date.class));
+
+    return indicator;
   }
 
   @Override

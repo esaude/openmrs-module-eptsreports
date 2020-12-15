@@ -2,7 +2,9 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementCategory15QueriesInterface;
+import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -17,12 +19,446 @@ public class MQCohortCategory15Queries {
 
   @Autowired private MQCohortQueries mQCohortQueries;
 
+  @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
+
+  @Autowired private GenericCohortQueries genericCohortQueries;
+
+  @Autowired private HivMetadata hivMetadata;
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_1")
+  public CohortDefinition getNumeratorCategory15_Indicator_1() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_1");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_1_And_2_and_3_And_4(), mappings));
+
+    definition.setCompositionString("G2 AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_2")
+  public CohortDefinition getNumeratorCategory15_Indicator_2() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_2");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "H1",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatietWithRequestForVL(
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                    hivMetadata.getHivViralLoadConcept().getConceptId())),
+            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_1_And_2_and_3_And_4(), mappings));
+
+    definition.setCompositionString("H1 AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_3")
+  public CohortDefinition getNumeratorCategory15_Indicator_3() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_3");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "H2",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatientWithVlResult(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_1_And_2_and_3_And_4(), mappings));
+
+    definition.setCompositionString("G2 AND H2 AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_4")
+  public CohortDefinition getNumeratorCategory15_Indicator_4() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_4");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "I",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatientWithVlResulLessThan1000(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_1_And_2_and_3_And_4(), mappings));
+
+    definition.setCompositionString("G2 AND I AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_5")
+  public CohortDefinition getNumeratorCategory15_Indicator_5() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_5");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_5_And_7_And_9_And_11(), mappings));
+
+    definition.setCompositionString("G2 AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_6")
+  public CohortDefinition getNumeratorCategory15_Indicator_6() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_6");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_6_And_8_And_10_And_12(), mappings));
+
+    definition.setCompositionString("G2 AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_7")
+  public CohortDefinition getNumeratorCategory15_Indicator_7() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_7");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "H1",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatietWithRequestForVL(
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                    hivMetadata.getHivViralLoadConcept().getConceptId())),
+            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_5_And_7_And_9_And_11(), mappings));
+
+    definition.setCompositionString("H1 AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_8")
+  public CohortDefinition getNumeratorCategory15_Indicator_8() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_8");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "H1",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatietWithRequestForVL(
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                    hivMetadata.getHivViralLoadConcept().getConceptId())),
+            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_6_And_8_And_10_And_12(), mappings));
+
+    definition.setCompositionString("H1 AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_9")
+  public CohortDefinition getNumeratorCategory15_Indicator_9() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_9");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "H2",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatientWithVlResult(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_5_And_7_And_9_And_11(), mappings));
+
+    definition.setCompositionString("G2 AND H2 AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_10")
+  public CohortDefinition getNumeratorCategory15_Indicator_10() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_10");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "H2",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatientWithVlResult(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_6_And_8_And_10_And_12(), mappings));
+
+    definition.setCompositionString("G2 AND H2 AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_11")
+  public CohortDefinition getNumeratorCategory15_Indicator_11() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_11");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "I",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatientWithVlResulLessThan1000(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_5_And_7_And_9_And_11(), mappings));
+
+    definition.setCompositionString("G2 AND I AND DENOMINATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NumeratorCategory15_Indicator_12")
+  public CohortDefinition getNumeratorCategory15_Indicator_12() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - NumeratorCategory15_Indicator_12");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "I",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "VL",
+                ResumoMensalQueries.findPatientWithVlResulLessThan1000(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
+                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
+            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_6_And_8_And_10_And_12(), mappings));
+
+    definition.setCompositionString("G2 AND I AND DENOMINATOR");
+
+    return definition;
+  }
+
   @DocumentedDefinition(value = "DenominatorCategory15_Indicator_1_And_2_and_3_And_4")
   public CohortDefinition getDenominatorCategory15_Indicator_1_And_2_and_3_And_4() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("DenominatorCategory15_Indicator_1_And_2_and_3_And_4");
+    definition.setName("MQ - DenominatorCategory15_Indicator_1_And_2_and_3_And_4");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -76,11 +512,11 @@ public class MQCohortCategory15Queries {
   }
 
   @DocumentedDefinition(value = "DenominatorCategory15_Indicator_5_And_7_And_9_And_11")
-  public CohortDefinition getDenominatorCategory15_Indicator_5_And_7_And_9() {
+  public CohortDefinition getDenominatorCategory15_Indicator_5_And_7_And_9_And_11() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("DenominatorCategory15_Indicator_5_And_7_And_9_And_11");
+    definition.setName("MQ - DenominatorCategory15_Indicator_5_And_7_And_9_And_11");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -136,7 +572,7 @@ public class MQCohortCategory15Queries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("DenominatorCategory15_Indicator_6_And_8_And_10_And_12");
+    definition.setName("MQ - DenominatorCategory15_Indicator_6_And_8_And_10_And_12");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -190,7 +626,7 @@ public class MQCohortCategory15Queries {
   @DocumentedDefinition(value = "PatientsFromFichaClinicaForGivenConceptsDenominadorCategoria15A")
   private CohortDefinition findPatientsFromFichaClinicaForGivenConceptsDenominadorCategoria15A() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("PatientsFromFichaClinicaForGivenConceptsDenominadorCategoria15A");
+    definition.setName("MQ - PatientsFromFichaClinicaForGivenConceptsDenominadorCategoria15A");
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     String query =
@@ -207,7 +643,7 @@ public class MQCohortCategory15Queries {
       findPatientsWithLastGaacOrDispensaTrimestralInClinicaForGivenConceptsDenominadorCategoria15B1() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName(
-        "PatientsWithLastGaacOrDispensaTrimestralInClinicaForGivenConceptsDenominadorCategoria15B1");
+        "MQ - PatientsWithLastGaacOrDispensaTrimestralInClinicaForGivenConceptsDenominadorCategoria15B1");
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     String query =
@@ -223,7 +659,7 @@ public class MQCohortCategory15Queries {
       findPatientsWithDispensaTrimestralInicarInFichaClinicaDuringTheRevisionPeriodA2() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName(
-        "PatientsWithDispensaTrimestralInicarInFichaClinicaDuringTheRevisionPeriodA2");
+        "MQ - PatientsWithDispensaTrimestralInicarInFichaClinicaDuringTheRevisionPeriodA2");
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     String query =
@@ -239,7 +675,7 @@ public class MQCohortCategory15Queries {
       findPatientsWithLastTipoDeDispensaTrimestralInFichaClinicaWithinRevisionPeriodA3() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName(
-        "PatientsWithLastTipoDeDispensaTrimestralInFichaClinicaWithinRevisionPeriodA3");
+        "MQ - PatientsWithLastTipoDeDispensaTrimestralInFichaClinicaWithinRevisionPeriodA3");
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     String query =
@@ -257,7 +693,7 @@ public class MQCohortCategory15Queries {
 
     definition.setName(
         String.format(
-            "PatientsWhoAreNewlyEnrolledOnARTByAgeUsingAgeRange %s To %s ", startAge, endAge));
+            "MQ - PatientsWhoAreNewlyEnrolledOnARTByAgeUsingAgeRange %s To %s ", startAge, endAge));
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
