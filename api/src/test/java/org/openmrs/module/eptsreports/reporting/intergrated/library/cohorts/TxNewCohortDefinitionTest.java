@@ -31,7 +31,7 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
     final Date endDate = DateUtil.getDateTime(2020, 9, 20);
 
     final CohortDefinition txNewCompositionCohort =
-        this.mQCategory13Section1CohortQueries.findNumeratorC();
+        this.mQCategory13Section1CohortQueries.findNumeratorCategory13Section1C();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 

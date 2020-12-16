@@ -161,8 +161,8 @@ public class MQCategory13Section1CohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "findNumeratorC")
-  public CohortDefinition findNumeratorC() {
+  @DocumentedDefinition(value = "findNumeratorCategory13Section1C")
+  public CohortDefinition findNumeratorCategory13Section1C() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
@@ -179,13 +179,12 @@ public class MQCategory13Section1CohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "findDenominatorB")
-  public CohortDefinition findDenominatorB() {
+  @DocumentedDefinition(value = "findDenominatorCategory13SectionIB")
+  public CohortDefinition findDenominatorCategory13SectionIB() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName(
-        "findPatientsNewlyEnrolledByAgeAndNutritionalAssessmentInAPeriodCategory4RF16Numerator");
+    definition.setName("findDenominatorCategory13SectionIB");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -236,13 +235,12 @@ public class MQCategory13Section1CohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "findDenominatorB")
-  public CohortDefinition findFinalNumeratorC() {
+  @DocumentedDefinition(value = "findFinalNumeratorCategory13SectionIC")
+  public CohortDefinition findFinalNumeratorCategory13SectionIC() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName(
-        "findPatientsNewlyEnrolledByAgeAndNutritionalAssessmentInAPeriodCategory4RF16Numerator");
+    definition.setName("findFinalNumeratorCategory13SectionIC");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -252,9 +250,11 @@ public class MQCategory13Section1CohortQueries {
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    definition.addSearch("B", EptsReportUtils.map(this.findDenominatorB(), mappings));
+    definition.addSearch(
+        "B", EptsReportUtils.map(this.findDenominatorCategory13SectionIB(), mappings));
 
-    definition.addSearch("C", EptsReportUtils.map(this.findNumeratorC(), mappings));
+    definition.addSearch(
+        "C", EptsReportUtils.map(this.findNumeratorCategory13Section1C(), mappings));
 
     definition.setCompositionString("B AND C");
 
