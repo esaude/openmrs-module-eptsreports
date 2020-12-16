@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -7,7 +9,6 @@ import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition2;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -15,9 +16,6 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 @Component
 public class IMER1DenominatorCohortQueries {
@@ -58,8 +56,7 @@ public class IMER1DenominatorCohortQueries {
     compositionCohortDefinition.addSearch(
         "D",
         EptsReportUtils.map(
-            getTransferredInPatients(),
-            "onOrBefore=${endDate},location=${location}"));
+            getTransferredInPatients(), "onOrBefore=${endDate},location=${location}"));
 
     compositionCohortDefinition.setCompositionString("A AND NOT D");
 
@@ -92,10 +89,9 @@ public class IMER1DenominatorCohortQueries {
             "onOrAfter=${endDate-2m-1d},onOrBefore=${endDate-1m},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-            "D",
-            EptsReportUtils.map(
-                    getTransferredInPatients(),
-                    "onOrBefore=${endDate},location=${location}"));
+        "D",
+        EptsReportUtils.map(
+            getTransferredInPatients(), "onOrBefore=${endDate},location=${location}"));
 
     compositionCohortDefinition.setCompositionString("A AND B  AND NOT (C OR D)");
     return compositionCohortDefinition;
@@ -127,10 +123,9 @@ public class IMER1DenominatorCohortQueries {
             "onOrAfter=${endDate-2m-1d},onOrBefore=${endDate-1m},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-            "D",
-            EptsReportUtils.map(
-                    getTransferredInPatients(),
-                    "onOrBefore=${endDate},location=${location}"));
+        "D",
+        EptsReportUtils.map(
+            getTransferredInPatients(), "onOrBefore=${endDate},location=${location}"));
 
     compositionCohortDefinition.setCompositionString("A AND C AND NOT (B OR D)");
 
@@ -163,10 +158,9 @@ public class IMER1DenominatorCohortQueries {
             "onOrAfter=${endDate-2m-1d},onOrBefore=${endDate-1m},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-            "D",
-            EptsReportUtils.map(
-                    getTransferredInPatients(),
-                    "onOrBefore=${endDate},location=${location}"));
+        "D",
+        EptsReportUtils.map(
+            getTransferredInPatients(), "onOrBefore=${endDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "CHILDREN",
@@ -205,10 +199,9 @@ public class IMER1DenominatorCohortQueries {
             "onOrAfter=${endDate-2m-1d},onOrBefore=${endDate-1m},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-            "D",
-            EptsReportUtils.map(
-                    getTransferredInPatients(),
-                    "onOrBefore=${endDate},location=${location}"));
+        "D",
+        EptsReportUtils.map(
+            getTransferredInPatients(), "onOrBefore=${endDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "ADULTS",
@@ -283,17 +276,18 @@ public class IMER1DenominatorCohortQueries {
   }
 
   /**
-   * <b>Description:</b>  Transferred-in patients PRE-TARV
+   * <b>Description:</b> Transferred-in patients PRE-TARV
    *
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getTransferredInPatients() {
 
     EptsTransferredInCohortDefinition2 transferredInPreviousMonth =
-            new EptsTransferredInCohortDefinition2();
+        new EptsTransferredInCohortDefinition2();
     transferredInPreviousMonth.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     transferredInPreviousMonth.addParameter(new Parameter("location", "Location", Location.class));
-    transferredInPreviousMonth.addArtProgram(EptsTransferredInCohortDefinition2.ARTProgram.PRE_TARV);
+    transferredInPreviousMonth.addArtProgram(
+        EptsTransferredInCohortDefinition2.ARTProgram.PRE_TARV);
 
     return transferredInPreviousMonth;
   }

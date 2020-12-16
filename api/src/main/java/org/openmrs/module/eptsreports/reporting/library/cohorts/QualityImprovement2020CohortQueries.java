@@ -3092,10 +3092,28 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
     CohortDefinition returnedForAnyConsultationOrPickup =
-        qualityImprovement2020Queries.getMQ12NumH(25, 33);
+        qualityImprovement2020Queries.getMQ12NumH(
+            25,
+            33,
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+            hivMetadata.getArtPickupConcept().getConceptId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId());
 
     CohortDefinition returnedForAnotherConsultationOrPickup =
-        qualityImprovement2020Queries.getMQ12NumI(20, 33);
+        qualityImprovement2020Queries.getMQ12NumI(
+            20,
+            33,
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
+            hivMetadata.getArtPickupConcept().getConceptId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId());
 
     comp.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
 

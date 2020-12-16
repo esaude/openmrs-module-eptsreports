@@ -4,13 +4,10 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 
 public class QualityImprovement2020Queries {
-
-  private static HivMetadata hivMetadata;
 
   /**
    * H - Filter all patients that returned for any clinical consultation (encounter type 6,
@@ -20,7 +17,16 @@ public class QualityImprovement2020Queries {
    *
    * @return SqlCohortDefinition
    */
-  public SqlCohortDefinition getMQ12NumH(int lowerBound, int upperBound) {
+  public static SqlCohortDefinition getMQ12NumH(
+      int lowerBound,
+      int upperBound,
+      int adultoSeguimentoEncounterType,
+      int masterCardDrugPickupEncounterType,
+      int masterCardEncounterType,
+      int yesConcept,
+      int historicalDrugStartDateConcept,
+      int artPickupConcept,
+      int artDatePickupMasterCard) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
@@ -30,13 +36,13 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
-    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
-    map.put("1065", hivMetadata.getYesConcept().getConceptId());
-    map.put("1190", hivMetadata.getHistoricalDrugStartDateConcept().getConceptId());
-    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
-    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put("6", adultoSeguimentoEncounterType);
+    map.put("52", masterCardDrugPickupEncounterType);
+    map.put("53", masterCardEncounterType);
+    map.put("1065", yesConcept);
+    map.put("1190", historicalDrugStartDateConcept);
+    map.put("23865", artPickupConcept);
+    map.put("23866", artDatePickupMasterCard);
 
     String query =
         "SELECT     inicio_real.patient_id "
@@ -146,7 +152,16 @@ public class QualityImprovement2020Queries {
    *
    * @return SqlCohortDefinition
    */
-  public SqlCohortDefinition getMQ12NumI(int lowerBound, int upperBound) {
+  public static SqlCohortDefinition getMQ12NumI(
+      int lowerBound,
+      int upperBound,
+      int adultoSeguimentoEncounterType,
+      int masterCardDrugPickupEncounterType,
+      int masterCardEncounterType,
+      int yesConcept,
+      int historicalDrugStartDateConcept,
+      int artPickupConcept,
+      int artDatePickupMasterCard) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
@@ -156,13 +171,13 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
-    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
-    map.put("1065", hivMetadata.getYesConcept().getConceptId());
-    map.put("1190", hivMetadata.getHistoricalDrugStartDateConcept().getConceptId());
-    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
-    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put("6", adultoSeguimentoEncounterType);
+    map.put("52", masterCardDrugPickupEncounterType);
+    map.put("53", masterCardEncounterType);
+    map.put("1065", yesConcept);
+    map.put("1190", historicalDrugStartDateConcept);
+    map.put("23865", artPickupConcept);
+    map.put("23866", artDatePickupMasterCard);
 
     String query =
         "SELECT second_visit.patient_id, second_visit.first_visit_1, second_visit.first_visit_2, after_second_visit.first_visit_3  "

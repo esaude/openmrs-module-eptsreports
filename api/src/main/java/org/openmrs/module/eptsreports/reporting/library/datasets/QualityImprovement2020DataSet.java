@@ -727,7 +727,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
-        // Category 13 Denominator indicators
+    // Category 13 Denominator indicators
     dataSetDefinition.addColumn(
         "MQ13DEN1",
         "% de adultos (15/+anos) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
