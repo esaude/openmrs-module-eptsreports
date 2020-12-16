@@ -1716,6 +1716,128 @@ public class QualityImprovement2020CohortQueries {
 
   /**
    * <b>MQC11B1B2</b>: Melhoria de Qualidade Category 11 Deniminator B1 and B2 <br>
+   * /** <b>MQC13</b>: Melhoria de Qualidade Category 13 Part 3 Denominator <br>
+   * <i> DENOMINATORS: A,B1,B2,B3,C,D and E</i> <br>
+   *
+   * <ul>
+   *   <li>A - Select all patients who initiated ART during the Inclusion period (startDateInclusion
+   *       and endDateInclusion)
+   *   <li>
+   *   <li>B1 - B1= (BI1 and not B1E) : MUDANCA DE REGIME
+   *   <li>
+   *   <li>B2 = (BI2 and not B2E) - PACIENTES 2a LINHA
+   *   <li>
+   *   <li>C - All female patients registered as “Pregnant” on a clinical consultation during the
+   *       inclusion period (startDateInclusion and endDateInclusion)
+   *   <li>
+   *   <li>D - All female patients registered as “Breastfeeding” on a clinical consultation during
+   *       the inclusion period (startDateInclusion and endDateInclusion)
+   *   <li>
+   *   <li>E - All transferred IN patients
+   *   <li>
+   *   <li>F - All Transferred Out patients
+   * </ul>
+   *
+   * @return CohortDefinition
+   * @params indicatorFlag A to F For inicator 13.2 to 13.14 accordingly to the specs
+   */
+  public CohortDefinition getMQC13P3DEN(String indicatorFlag) {
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+
+    if (indicatorFlag.equals("A"))
+      compositionCohortDefinition.setName(
+          "Crianças  (0-4 anos de idade) que iniciaram TARV no período de inclusão");
+    if (indicatorFlag.equals("B"))
+      compositionCohortDefinition.setName(
+          "Crianças  (5-9 anos de idade) que iniciaram TARV no período de inclusão");
+    if (indicatorFlag.equals("C"))
+      compositionCohortDefinition.setName(
+          "Crianças  (5-9 anos de idade) que iniciaram TARV no período de inclusão");
+    if (indicatorFlag.equals("D"))
+      compositionCohortDefinition.setName(
+          "crianças  (10-14 anos de idade) que iniciaram TARV no período de inclusão");
+    if (indicatorFlag.equals("E"))
+      compositionCohortDefinition.setName(
+          "Adultos (15/+ anos) que iniciaram a 2a linha do TARV no período de inclusão ");
+    if (indicatorFlag.equals("F"))
+      compositionCohortDefinition.setName(
+          "Crianças  > 2 anos que iniciaram a 2a linha do TARV no período de inclusão");
+
+    compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+    String mapping =
+        "startDate=${startDate},endDate=${endDate},less3mDate=${startDate-3m},location=${location}";
+
+    CohortDefinition startedART = getMQC3D1();
+
+    CohortDefinition b1Patients = getPatientsOnRegimeChangeBI1AndNotB1E_B1();
+
+    CohortDefinition b2Patients = getPatientsOnSecondLineBI2AndNotB2E_B2();
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            true,
+            false,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getPregnantConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition breastfeeding =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            true,
+            false,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getBreastfeeding(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition transferIn =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            true,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getTransferFromOtherFacilityConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            hivMetadata.getTypeOfPatientTransferredFrom(),
+            Collections.singletonList(hivMetadata.getArtStatus()));
+
+    CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
+
+    compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
+
+    compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1Patients, MAPPING));
+
+    compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2Patients, mapping));
+
+    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+
+    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+
+    if (indicatorFlag.equals("A")
+        || indicatorFlag.equals("B")
+        || indicatorFlag.equals("C")
+        || indicatorFlag.equals("D"))
+      compositionCohortDefinition.setCompositionString(
+          "((A AND NOT E) OR B1) AND NOT (C OR D OR F))");
+    if (indicatorFlag.equals("E") || indicatorFlag.equals("F"))
+      compositionCohortDefinition.setCompositionString("B2 AND NOT (C OR D OR F)");
+
+    return compositionCohortDefinition;
+  }
+
+  /**
+   * <b>MQC11B1B2</b>: Melhoria de Qualidade Category 11 Deniminator B1 and B2 <br>
    * <i> A and not B</i> <br>
    *
    * <ul>
@@ -2855,6 +2977,153 @@ public class QualityImprovement2020CohortQueries {
       comp.setCompositionString("(A AND C) AND NOT (D OR E OR F)");
     }
     return comp;
+  }
+
+  /**
+   * <b>MQC13Part3B1</b>: Melhoria de Qualidade Category 13 Deniminator B1 <br>
+   * <i> BI1 and not B1E</i> <br>
+   *
+   * <ul>
+   *   <li>BI1 - Select all patients who have the most recent “ALTERNATIVA A LINHA - 1a LINHA”
+   *       (Concept Id 23898, obs_datetime) recorded in Ficha Resumo (encounter type 53) with any
+   *       value coded (not null) during the inclusion period (startDateInclusion and
+   *       endDateInclusion) AND
+   *   <li>B1E - Exclude all patients from Ficha Clinica (encounter type 6, encounter_datetime) who
+   *       have “LINHA TERAPEUTICA”(Concept id 21151) with value coded DIFFERENT THAN “PRIMEIRA
+   *       LINHA”(Concept id 21150) and encounter_datetime > the most recent “ALTERNATIVA A LINHA -
+   *       1a LINHA” (from B1) and <= endDateInclusion
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsOnRegimeChangeBI1AndNotB1E_B1() {
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Patients With Clinical Consultation");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("23898", commonMetadata.getAlternativeLineConcept().getConceptId());
+    map.put("21151", hivMetadata.getTherapeuticLineConcept().getConceptId());
+    map.put("21150", hivMetadata.getFirstLineConcept().getConceptId());
+
+    String query =
+        "SELECT patient_id "
+            + "FROM   (SELECT p.patient_id, "
+            + "               Max(o.obs_datetime) AS regime_date "
+            + "        FROM   patient p "
+            + "               JOIN encounter e "
+            + "                 ON e.patient_id = p.patient_id "
+            + "               JOIN obs o "
+            + "                 ON o.encounter_id = e.encounter_id "
+            + "        WHERE  e.encounter_type = ${53} "
+            + "               AND o.concept_id = ${23898} "
+            + "               AND o.value_coded IS NOT NULL "
+            + "               AND e.location_id = :location "
+            + "               AND e.voided = 0 "
+            + "               AND p.voided = 0 "
+            + "               AND o.obs_datetime BETWEEN :startDate AND :endDate "
+            + "        GROUP  BY p.patient_id) bI1 "
+            + "WHERE  bI1.patient_id NOT IN (SELECT p.patient_id "
+            + "                              FROM   patient p "
+            + "                                     JOIN encounter e "
+            + "                                       ON e.patient_id = p.patient_id "
+            + "                                     JOIN obs o "
+            + "                                       ON o.encounter_id = e.encounter_id "
+            + "                              WHERE  e.encounter_type = ${6} "
+            + "                                     AND o.concept_id = ${21151} "
+            + "                                     AND o.value_coded <> ${21150} "
+            + "                                     AND e.location_id = :location "
+            + "                                     AND e.voided = 0 "
+            + "                                     AND p.voided = 0 "
+            + "                                     AND e.encounter_datetime > bI1.regime_date "
+            + "                                     AND e.encounter_datetime <= :endDate)";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>MQC13Part3B2</b>: Melhoria de Qualidade Category 13 Deniminator B2 <br>
+   * <i> BI2 and not B2E</i> <br>
+   *
+   * <ul>
+   *   <li>BI2- Select all patients who have the LAST “LINHA TERAPEUTICA” (Concept Id 21151)
+   *       recorded in Ficha Clinica (encounter type 6, encounter_datetime) with value coded
+   *       “SEGUNDA LINHA” (concept id 21148) during the inclusion period (startDateInclusion and
+   *       endDateInclusion) AND
+   *   <li>B1E - Exclude all patients with clinical consultation (encounter type 6) with concept
+   *       “PEDIDO DE INVESTIGACOES LABORATORIAIS” (Concept Id 23722) and value coded “HIV CARGA
+   *       VIRAL” (Concept Id 856) on Encounter_datetime startDateInclusion-3months and
+   *       startDateInclusion.
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsOnSecondLineBI2AndNotB2E_B2() {
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Patients With Clinical Consultation");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("less3mDate", "less3mDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("21151", hivMetadata.getTherapeuticLineConcept().getConceptId());
+    map.put("21148", hivMetadata.getSecondLineConcept().getConceptId());
+    map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+
+    String query =
+        "SELECT patient_id "
+            + "FROM   (SELECT p.patient_id, "
+            + "               Max(e.encounter_datetime) AS regime_date "
+            + "        FROM   patient p "
+            + "               JOIN encounter e "
+            + "                 ON e.patient_id = p.patient_id "
+            + "               JOIN obs o "
+            + "                 ON o.encounter_id = e.encounter_id "
+            + "        WHERE  e.encounter_type = ${6} "
+            + "               AND o.concept_id = ${21151} "
+            + "               AND o.value_coded IS NOT NULL "
+            + "               AND e.location_id = :location "
+            + "               AND e.voided = 0 "
+            + "               AND p.voided = 0 "
+            + "               AND o.obs_datetime BETWEEN :startDate AND :endDate "
+            + "        GROUP  BY p.patient_id) bI2 "
+            + "WHERE  bI2.patient_id NOT IN (SELECT p.patient_id "
+            + "                              FROM   patient p "
+            + "                                     JOIN encounter e "
+            + "                                       ON e.patient_id = p.patient_id "
+            + "                                     JOIN obs o "
+            + "                                       ON o.encounter_id = e.encounter_id "
+            + "                              WHERE  e.encounter_type = ${6} "
+            + "               AND bI2.patient_id = p.patient_id "
+            + "                                     AND o.concept_id = ${23722} "
+            + "                                     AND o.value_coded = ${856} "
+            + "                                     AND e.location_id = :location "
+            + "                                     AND e.voided = 0 "
+            + "                                     AND p.voided = 0 "
+            + "                                     AND e.encounter_datetime BETWEEN "
+            + "                                         :less3mDate AND :endDate "
+            + "                              GROUP  BY p.patient_id)  ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
   }
 
   /**
