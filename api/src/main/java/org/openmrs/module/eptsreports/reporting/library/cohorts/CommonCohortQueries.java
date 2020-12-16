@@ -767,4 +767,90 @@ public class CommonCohortQueries {
 
     return sqlCohortDefinition;
   }
+
+  /**
+   * 17 - MOH MQ: Patients who initiated ART during the inclusion period
+   *
+   * <p>A1- All patients with first drugs pick up date (earliest concept ID 23866 value_datetime)
+   * set in mastercard pharmacy form “Recepção/Levantou ARV”(Encounter Type ID 52) with Levantou ARV
+   * (concept id 23865) = Yes (concept id 1065) earliest “Date of Pick up” Encounter Type Ids = 52
+   * The earliest “Data de Levantamento” (Concept Id 23866 value_datetime) <= endDate Levantou ARV
+   * (concept id 23865) = SIm (1065) OR A2-All patients who have the first historical start drugs
+   * date (earliest concept ID 1190) set in FICHA RESUMO (Encounter Type 53) earliest “historical
+   * start date” Encounter Type Ids = 53 The earliest “Historical Start Date” (Concept Id 1190)And
+   * historical start date(Value_datetime) <=EndDate And the earliest date from A1 and A2
+   * (identified as Patient ART Start Date) is >= startDateRevision and <=endDateInclusion
+   *
+   * @return SqlCohortDefinition
+   */
+  public SqlCohortDefinition getMOHArtStartDate(
+      int adultoSeguimentoEncounterType,
+      int masterCardDrugPickupEncounterType,
+      int masterCardEncounterType,
+      int yesConcept,
+      int historicalDrugStartDateConcept,
+      int artPickupConcept,
+      int artDatePickupMasterCard) {
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName(" All patients that started ART during inclusion period ");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", adultoSeguimentoEncounterType);
+    map.put("52", masterCardDrugPickupEncounterType);
+    map.put("53", masterCardEncounterType);
+    map.put("1065", yesConcept);
+    map.put("1190", historicalDrugStartDateConcept);
+    map.put("23865", artPickupConcept);
+    map.put("23866", artDatePickupMasterCard);
+
+    String query =
+        "  SELECT	patient_id "
+            + "      FROM	("
+            + "          SELECT	p.patient_id, Min(value_datetime) data_inicio "
+            + "                    FROM	patient p "
+            + "              INNER JOIN encounter e "
+            + "                  ON p.patient_id = e.patient_id "
+            + "              INNER JOIN obs o "
+            + "                  ON e.encounter_id = o.encounter_id "
+            + "          WHERE 	p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND o.voided = 0 "
+            + "              AND e.encounter_type = ${53} "
+            + "              AND o.concept_id = ${1190} "
+            + "              AND o.value_datetime IS NOT NULL "
+            + "              AND o.value_datetime <= :endDate "
+            + "              AND e.location_id = :location "
+            + "          GROUP  BY p.patient_id "
+            + "          UNION "
+            + "          SELECT 	p.patient_id, Min(pickupdate.value_datetime) AS data_inicio "
+            + "          FROM   	patient p "
+            + "              JOIN encounter e "
+            + "                ON p.patient_id = e.patient_id "
+            + "              JOIN obs pickup "
+            + "                ON e.encounter_id = pickup.encounter_id "
+            + "              JOIN obs pickupdate "
+            + "                ON e.encounter_id = pickupdate.encounter_id "
+            + "          WHERE  	p.voided = 0 "
+            + "              AND pickup.voided = 0 "
+            + "              AND pickup.concept_id = ${23865} "
+            + "              AND pickup.value_coded = ${1065} "
+            + "              AND pickupdate.voided = 0 "
+            + "              AND pickupdate.concept_id = ${23866} "
+            + "              AND pickupdate.value_datetime <= :endDate "
+            + "              AND e.encounter_type = ${52} "
+            + "              AND e.voided = 0 "
+            + "              AND e.location_id = :location "
+            + "          GROUP  BY p.patient_id) inicio "
+            + "      GROUP  BY patient_id ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
 }
