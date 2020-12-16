@@ -122,6 +122,8 @@ public class EptsTransferredInCohortDefinitionEvaluator2 implements CohortDefini
     }
     q.addParameter("onOrBefore", cd.getOnOrBefore());
 
+    System.out.println(">>>>>>>>>>>  " + q);
+
     List<Integer> results = evaluationService.evaluateToList(q, Integer.class, context);
     ret.setMemberIds(new HashSet<>(results));
     return ret;
@@ -136,6 +138,7 @@ public class EptsTransferredInCohortDefinitionEvaluator2 implements CohortDefini
       if (PRE_TARV.equals(program)) {
         programsEnrolled.add(hivMetadata.getHIVCareProgram());
         programConcepts.add(hivMetadata.getPreTarvConcept());
+        programConcepts.add(hivMetadata.getArtStatus());
         programWorkflowStates.add(
             hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState());
       }

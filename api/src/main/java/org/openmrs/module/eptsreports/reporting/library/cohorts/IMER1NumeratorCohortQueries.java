@@ -45,99 +45,86 @@ public class IMER1NumeratorCohortQueries {
    *
    * @return CohortDefinition
    */
-  private CohortDefinition getE() {
+  public CohortDefinition getE() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("E Part from numerator");
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
-    map.put("hivTestingSiteConcept", hivMetadata.getHivTestingSiteConcept().getConceptId());
-    map.put("typeTestHIVConcept", hivMetadata.getTypeTestHIVConcept().getConceptId());
-    map.put(
-        "voluntaryCouncelingTestingCommunityConcept",
-        hivMetadata.getVoluntaryCouncelingTestingCommunityConcept().getConceptId());
-    map.put(
-        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
-    map.put(
-        "adultoSeguimentoEncounterType",
-        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("23884", hivMetadata.getHivTestingSiteConcept().getConceptId());
+    map.put("22772", hivMetadata.getTypeTestHIVConcept().getConceptId());
+    map.put("6245", hivMetadata.getVoluntaryCouncelingTestingCommunityConcept().getConceptId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
 
     String query =
-        " SELECT final_outter.patient_id "
-            + "FROM"
-            + "( "
-            + " SELECT outter.patient_id, MIN(outter.min_date)  AS m_date "
-            + "    FROM "
-            + "    ( "
-            + "        SELECT p.patient_id, MIN(data_diag.obs_datetime) AS min_date "
-            + "        FROM patient p "
-            + "            INNER JOIN encounter e "
-            + "                ON e.patient_id = p.patient_id "
-            + "            INNER JOIN obs testing_site "
-            + "                ON testing_site.encounter_id = e.encounter_id "
-            + "            INNER JOIN obs data_diag "
-            + "                ON data_diag.encounter_id = e.encounter_id "
-            + "        WHERE  "
-            + "            p.voided =0 "
-            + "            AND e.voided = 0 "
-            + "            AND testing_site.voided = 0 "
-            + "            AND data_diag.voided = 0 "
-            + "            AND e.encounter_type = 53 "
-            + "            AND e.location_id = :location "
-            + "            AND (testing_site.concept_id = ${hivTestingSiteConcept} AND testing_site.value_coded = ${voluntaryCouncelingTestingCommunityConcept}) "
-            + "            AND (data_diag.concept_id = ${typeTestHIVConcept} AND data_diag.obs_datetime <= :endDate) "
-            + "        GROUP BY p.patient_id "
-            + "        UNION                                     "
-            + "        SELECT p.patient_id, MIN(e.encounter_datetime) AS min_date "
-            + "        FROM patient p "
-            + "            INNER JOIN encounter e "
-            + "                ON e.patient_id = p.patient_id "
-            + "            INNER JOIN ( "
-            + "                        SELECT p.patient_id, MIN(o.obs_datetime) AS et_date "
-            + "                        FROM patient p "
-            + "                            INNER JOIN encounter e "
-            + "                                ON e.patient_id = p.patient_id "
-            + "                            INNER JOIN obs o "
-            + "                                ON o.encounter_id = e.encounter_id "
-            + "                        WHERE  "
-            + "                            p.voided =0 "
-            + "                            AND e.voided = 0 "
-            + "                            AND o.voided = 0 "
-            + "                            AND e.encounter_type = 53 "
-            + "                            AND e.location_id = :location "
-            + "                            AND (o.concept_id = ${typeTestHIVConcept} AND o.obs_datetime <= :endDate) "
-            + "                        GROUP BY p.patient_id "
-            + "                        ) init_date "
-            + "                    ON init_date.patient_id = p.patient_id "
-            + "            INNER JOIN ( "
-            + "                        SELECT p.patient_id, DATE_ADD(MIN(o.obs_datetime), INTERVAL 7 DAY ) AS et_date "
-            + "                        FROM patient p "
-            + "                            INNER JOIN encounter e "
-            + "                                ON e.patient_id = p.patient_id "
-            + "                            INNER JOIN obs o "
-            + "                                ON o.encounter_id = e.encounter_id "
-            + "                        WHERE  "
-            + "                            p.voided =0 "
-            + "                            AND e.voided = 0 "
-            + "                            AND o.voided = 0 "
-            + "                            AND e.encounter_type = 53 "
-            + "                            AND e.location_id = :location "
-            + "                            AND (o.concept_id = ${typeTestHIVConcept} AND o.obs_datetime <= :endDate) "
-            + "                        GROUP BY p.patient_id "
-            + "                        ) final_date "
-            + "                    ON final_date.patient_id = p.patient_id "
-            + "        WHERE  "
-            + "            p.voided =0 "
-            + "            AND e.voided =0 "
-            + "            AND e.encounter_type = 6 "
-            + "            AND e.location_id = :location "
-            + "            AND e.encounter_datetime >= init_date.et_date "
-            + "            AND e.encounter_datetime <= final_date.et_date "
-            + "        GROUP BY p.patient_id "
-            + "    ) AS outter "
-            + " GROUP BY outter.patient_id"
-            + " ) AS final_outter ";
+        " SELECT final_outter.patient_id  "
+            + "FROM "
+            + "(  "
+            + "    SELECT outter.patient_id, MIN(outter.min_date)  AS m_date  "
+            + "    FROM  "
+            + "    (  "
+            + "        SELECT p.patient_id, MIN(e.encounter_datetime) AS min_date  "
+            + "        FROM patient p  "
+            + "            INNER JOIN encounter e  "
+            + "                ON e.patient_id = p.patient_id  "
+            + "            INNER JOIN (  "
+            + "                        SELECT p.patient_id, MIN(o.obs_datetime) AS et_date  "
+            + "                        FROM patient p  "
+            + "                            INNER JOIN encounter e  "
+            + "                                ON e.patient_id = p.patient_id  "
+            + "                            INNER JOIN obs o  "
+            + "                                ON o.encounter_id = e.encounter_id  "
+            + "                            INNER JOIN obs testing_site  "
+            + "                                ON testing_site.encounter_id = e.encounter_id  "
+            + "                        WHERE   "
+            + "                            p.voided =0  "
+            + "                            AND testing_site.voided = 0  "
+            + "                            AND e.voided = 0  "
+            + "                            AND o.voided = 0  "
+            + "                            AND e.encounter_type = ${53}  "
+            + "                            AND e.location_id = :location  "
+            + "                            AND (testing_site.concept_id = ${23884} AND testing_site.value_coded = ${6245})  "
+            + " "
+            + "                            AND (o.concept_id = ${22772} AND o.obs_datetime <= :endDate )  "
+            + "                        GROUP BY p.patient_id  "
+            + "                        ) init_date  "
+            + "                    ON init_date.patient_id = p.patient_id  "
+            + "            INNER JOIN (  "
+            + "                        SELECT p.patient_id, DATE_ADD(MIN(o.obs_datetime), INTERVAL 7 DAY ) AS et_date  "
+            + "                        FROM patient p  "
+            + "                            INNER JOIN encounter e  "
+            + "                                ON e.patient_id = p.patient_id  "
+            + "                            INNER JOIN obs o  "
+            + "                                ON o.encounter_id = e.encounter_id  "
+            + "                            INNER JOIN obs testing_site  "
+            + "                                ON testing_site.encounter_id = e.encounter_id  "
+            + "                        WHERE   "
+            + "                            p.voided =0  "
+            + "                            AND testing_site.voided = 0  "
+            + "                            AND e.voided = 0  "
+            + "                            AND o.voided = 0  "
+            + "                            AND e.encounter_type = ${53}  "
+            + "                            AND e.location_id = :location  "
+            + "                            AND (testing_site.concept_id = 23884 AND testing_site.value_coded = ${6245})  "
+            + " "
+            + "                            AND (o.concept_id = ${22772} AND o.obs_datetime <= :endDate )  "
+            + "                        GROUP BY p.patient_id  "
+            + "                        ) final_date  "
+            + "                    ON final_date.patient_id = p.patient_id  "
+            + "        WHERE   "
+            + "            p.voided =0  "
+            + "            AND e.voided =0  "
+            + "            AND e.encounter_type = ${6} "
+            + "            AND e.location_id = :location  "
+            + "            AND e.encounter_datetime >= init_date.et_date  "
+            + "            AND e.encounter_datetime <= final_date.et_date  "
+            + "        GROUP BY p.patient_id  "
+            + "    ) AS outter  "
+            + "    GROUP BY outter.patient_id "
+            + "    ) AS final_outter  "
+            + "             ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
