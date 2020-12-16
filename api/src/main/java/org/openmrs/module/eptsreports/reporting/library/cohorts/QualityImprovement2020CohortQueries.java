@@ -3678,6 +3678,9 @@ public class QualityImprovement2020CohortQueries {
       if (line == 1) {
         compositionCohortDefinition.setCompositionString(
             "(B1 AND ((B2 AND NOT B2E) OR (B3 AND NOT B3E)) AND NOT (B4E OR B5E)) AND C AND age");
+      } else if (line == 4) {
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND (secondLineB2 AND NOT secondLineB2E) AND NOT (B4E OR B5E)) AND C AND age");
       } else if (line == 6) {
         compositionCohortDefinition.setCompositionString(
             "(B1 AND ((B2 AND NOT B2E) OR (B3 AND NOT B3E)) AND NOT (B4E OR B5E)) AND C AND age");
@@ -3687,6 +3690,9 @@ public class QualityImprovement2020CohortQueries {
       } else if (line == 8) {
         compositionCohortDefinition.setCompositionString(
             "(B1 AND ((B2 AND NOT B2E) OR (B3 AND NOT B3E)) AND NOT (B4E OR B5E)) AND C AND age");
+      } else if (line == 13) {
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND (secondLineB2 AND NOT secondLineB2E) AND NOT (B4E OR B5E)) AND C AND age");
       }
     }
 
