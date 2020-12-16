@@ -9,6 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalAPSSCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -20,6 +21,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
   @Autowired private TxRTTCohortQueries txRTTCohortQueries;
+
+  @Autowired private ResumoMensalAPSSCohortQueries resumoMensalAPSSCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
@@ -39,9 +42,12 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
     CohortDefinition patientsWhoExperiencedIIT = txRTTCohortQueries.getPatientsOnRTT();
+    CohortDefinition cohortDefinitionC1 =
+        this.resumoMensalAPSSCohortQueries
+            .findPatientsWhoAreCurrentlyEnrolledOnArtWithPrevencaoPosetivaD1();
 
     final EvaluatedCohort evaluateCohortDefinition =
-        this.evaluateCohortDefinition(patientsWhoExperiencedIIT, parameters);
+        this.evaluateCohortDefinition(cohortDefinitionC1, parameters);
 
     System.out.println(evaluateCohortDefinition.getMemberIds().size());
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
