@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries10;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries13_3;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -21,6 +22,7 @@ public class MQDataSet extends BaseDataSet {
   @Autowired private MQCohortQueries mqCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
   @Autowired private MQCohortQueries13_3 mqCohortQueries13_3;
+  @Autowired private MQCohortQueries10 mqCohortQueries10;
 
   public DataSetDefinition constructTMqDatset() {
 
@@ -1259,6 +1261,38 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT13_PART_3_13_14_NUMERATOR.addParameter(new Parameter("location", "location", Date.class));
 
+    final CohortIndicator CAT10_10_3_DENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT10_10_3_DENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries10
+                    .findChildrenWithPCRTestPositiveForHIVAndStartARTWithinTwoWeeksCategory10_Denominador_10_3(),
+                mappings));
+
+    CAT10_10_3_DENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT10_10_3_DENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT10_10_3_DENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT10_10_3_DENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT10_10_3_NUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT10_10_3_NUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries10
+                    .findChildrenWithPCRTestPositiveForHIVAndStartARTWithinTwoWeeksCategory10_Numerador_10_3(),
+                mappings));
+
+    CAT10_10_3_NUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT10_10_3_NUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT10_10_3_NUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT10_10_3_NUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
     dataSetDefinition.addColumn(
         "CAT3ADULTODENOMINATOR",
         "CAT3ADULTODENOMINATOR",
@@ -1711,6 +1745,18 @@ public class MQDataSet extends BaseDataSet {
         "CAT13_PART_3_13_14_NUMERATOR",
         "CAT13_PART_3_13_14_NUMERATOR",
         EptsReportUtils.map(CAT13_PART_3_13_14_NUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT10_10_3_DENOMINATOR",
+        "CAT10_10_3_DENOMINATOR",
+        EptsReportUtils.map(CAT10_10_3_DENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT10_10_3_NUMERATOR",
+        "CAT10_10_3_NUMERATOR",
+        EptsReportUtils.map(CAT10_10_3_NUMERATOR, mappings),
         "");
 
     return dataSetDefinition;
