@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries13_3;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -19,6 +20,7 @@ public class MQDataSet extends BaseDataSet {
 
   @Autowired private MQCohortQueries mqCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  @Autowired private MQCohortQueries13_3 mqCohortQueries13_3;
 
   public DataSetDefinition constructTMqDatset() {
 
@@ -689,9 +691,9 @@ public class MQDataSet extends BaseDataSet {
     CAT11Least9APSSConsultationNUMERATOR.addParameter(
         new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Adultos PARTE 1
+    // Categoria 12 Adultos PARTE 1
 
-    //    Categoria 12 Adultos
+    // Categoria 12 Adultos
 
     final CohortIndicator CAT12ADULTDENOMINADOR33DAYS =
         this.eptsGeneralIndicator.getIndicator(
@@ -757,7 +759,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12ADULTNUMERATOR99DAYS.addParameter(new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Criancas
+    // Categoria 12 Criancas
 
     final CohortIndicator CAT12CHILDRENDENOMINADOR33DAYS =
         this.eptsGeneralIndicator.getIndicator(
@@ -823,7 +825,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12CHILDRENNUMERATOR99DAYS.addParameter(new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Mulheres Gravidas
+    // Categoria 12 Mulheres Gravidas
 
     final CohortIndicator CAT12PREGNANTDENOMINADOR33DAYS =
         this.eptsGeneralIndicator.getIndicator(
@@ -889,9 +891,9 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12PREGNANTNUMERATOR99DAYS.addParameter(new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Adultos PARTE 2
+    // Categoria 12 Adultos PARTE 2
 
-    //    Categoria 12 Adultos Primeira Linha
+    // Categoria 12 Adultos Primeira Linha
 
     final CohortIndicator CAT12ADULTDENOMINATORFIRSTLINE =
         this.eptsGeneralIndicator.getIndicator(
@@ -925,7 +927,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12ADULTNUMERATORFIRSTLINE.addParameter(new Parameter("location", "location", Date.class));
 
-    //  Categoria 12 Adultos Segunda Linha
+    // Categoria 12 Adultos Segunda Linha
 
     final CohortIndicator CAT12ADULTDENOMINATORSECONDLINE =
         this.eptsGeneralIndicator.getIndicator(
@@ -959,9 +961,9 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12ADULTNUMERATORSECONDLINE.addParameter(new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Adultos PARTE 2
+    // Categoria 12 Adultos PARTE 2
 
-    //    Categoria 12 Criancas Primeira Linha
+    // Categoria 12 Criancas Primeira Linha
 
     final CohortIndicator CAT12CHILDRENDENOMINATORFIRSTLINE =
         this.eptsGeneralIndicator.getIndicator(
@@ -996,7 +998,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12CHILDRENNUMERATORFIRSTLINE.addParameter(new Parameter("location", "location", Date.class));
 
-    //    Categoria 12 Criancas Segunda Linha
+    // Categoria 12 Criancas Segunda Linha
 
     final CohortIndicator CAT12CHILDRENDENOMINATORSECONDLINE =
         this.eptsGeneralIndicator.getIndicator(
@@ -1064,6 +1066,198 @@ public class MQDataSet extends BaseDataSet {
     CAT12PREGNANTNUMERATORFIRSTLINE.addParameter(
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12PREGNANTNUMERATORFIRSTLINE.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_2_DENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_2_DENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findAdultsPatientsInFirstLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_Denominador_13_2(),
+                mappings));
+
+    CAT13_PART_3_13_2_DENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_2_DENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_2_DENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_2_DENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_2_NUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_2_NUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findAdultsPatientsInFirstLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_Numerador_13_2(),
+                mappings));
+
+    CAT13_PART_3_13_2_NUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_2_NUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_2_NUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_2_NUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_9_DENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_9_DENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findChildrenZeroToFourPatientsInFirstLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_Denominador_13_9(),
+                mappings));
+
+    CAT13_PART_3_13_9_DENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_9_DENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_9_DENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_9_DENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_9_NUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_9_NUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findChildrenPatientsFromZeroToFourInFirstLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_Numerador_13_9(),
+                mappings));
+
+    CAT13_PART_3_13_9_NUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_9_NUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_9_NUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_9_NUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_10_DENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_10_DENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findChildrenFifeNinePatientsInFirstLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_Denominador_13_10(),
+                mappings));
+
+    CAT13_PART_3_13_10_DENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_10_DENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_10_DENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_10_DENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_10_NUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_10_NUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findChildrenPatientsFromFiveToNineInFirstLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_Numerador_13_10(),
+                mappings));
+
+    CAT13_PART_3_13_10_NUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_10_NUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_10_NUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_10_NUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_11_DENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_11_DENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findChildrenFifeNinePatientsInFirstLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_Denominador_13_11(),
+                mappings));
+
+    CAT13_PART_3_13_11_DENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_11_DENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_11_DENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_11_DENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_11_NUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_11_NUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findChildrenPatientsFrom14To10InFirstLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_Numerador_13_11(),
+                mappings));
+
+    CAT13_PART_3_13_11_NUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_11_NUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_11_NUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_11_NUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_5_DENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_5_DENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findAdultPatientsInSecondLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_3_Denominador_13_5(),
+                mappings));
+
+    CAT13_PART_3_13_5_DENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_5_DENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_5_DENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_5_DENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_5_NUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_5_NUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findAdultPatientsInSecondLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_3_Numerador_13_5(),
+                mappings));
+
+    CAT13_PART_3_13_5_NUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_5_NUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_5_NUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_5_NUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_14_DENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_14_DENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findChildrenPatientsInSecondLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartAgeBiggerThanTwoCategory13_3_Denominador_13_14(),
+                mappings));
+
+    CAT13_PART_3_13_14_DENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_14_DENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_14_DENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_14_DENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13_PART_3_13_14_NUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13_PART_3_13_14_NUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries13_3
+                    .findChildrenPatientsInSecondLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_3_Numerador_13_14(),
+                mappings));
+
+    CAT13_PART_3_13_14_NUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13_PART_3_13_14_NUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13_PART_3_13_14_NUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13_PART_3_13_14_NUMERATOR.addParameter(new Parameter("location", "location", Date.class));
 
     dataSetDefinition.addColumn(
         "CAT3ADULTODENOMINATOR",
@@ -1445,6 +1639,78 @@ public class MQDataSet extends BaseDataSet {
         "CAT12PREGNANTNUMERATORFIRSTLINE",
         "CAT12PREGNANTNUMERATORFIRSTLINE",
         EptsReportUtils.map(CAT12PREGNANTNUMERATORFIRSTLINE, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_2_DENOMINATOR",
+        "CAT13_PART_3_13_2_DENOMINATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_2_DENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_2_NUMERATOR",
+        "CAT13_PART_3_13_2_NUMERATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_2_NUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_9_DENOMINATOR",
+        "CAT13_PART_3_13_9_DENOMINATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_9_DENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_9_NUMERATOR",
+        "CAT13_PART_3_13_9_NUMERATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_9_NUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_10_DENOMINATOR",
+        "CAT13_PART_3_13_10_DENOMINATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_10_DENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_10_NUMERATOR",
+        "CAT13_PART_3_13_10_NUMERATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_10_NUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_11_DENOMINATOR",
+        "CAT13_PART_3_13_11_DENOMINATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_11_DENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_11_NUMERATOR",
+        "CAT13_PART_3_13_11_NUMERATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_11_NUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_5_DENOMINATOR",
+        "CAT13_PART_3_13_5_DENOMINATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_5_DENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_5_NUMERATOR",
+        "CAT13_PART_3_13_5_NUMERATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_5_NUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_14_DENOMINATOR",
+        "CAT13_PART_3_13_14_DENOMINATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_14_DENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13_PART_3_13_14_NUMERATOR",
+        "CAT13_PART_3_13_14_NUMERATOR",
+        EptsReportUtils.map(CAT13_PART_3_13_14_NUMERATOR, mappings),
         "");
 
     return dataSetDefinition;
