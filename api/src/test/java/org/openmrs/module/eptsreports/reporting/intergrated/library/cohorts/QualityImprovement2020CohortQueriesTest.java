@@ -155,7 +155,7 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
   @Ignore("Functions used in queries not supported by H2")
   public void getMQ13patientsShouldPass() throws EvaluationException {
 
-    CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getMQ13Part1(true,1);
+    CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getMQ13(true, 1);
 
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
