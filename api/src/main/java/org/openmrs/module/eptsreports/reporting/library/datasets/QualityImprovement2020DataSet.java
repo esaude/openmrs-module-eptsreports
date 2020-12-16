@@ -727,6 +727,79 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
+    // Category 12 numerator indicators
+    dataSetDefinition.addColumn(
+        "MQ12NUM1",
+        "# de adultos (15/+anos) que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs entre 25 a 33 dias após o início do TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ12NUM1",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ12NUM(1),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ12NUM2",
+        "# de adultos (15/+anos) que iniciaram o TARV no período de inclusão e que tiveram 3 consultas clínicas ou levantamentos de ARVs dentro de 99 dias após o início do TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ12NUM2",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ12NUM(2),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=<15");
+
+    dataSetDefinition.addColumn(
+        "MQ12NUM6",
+        "# de crianças (0-14 anos) que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ12NUM6",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ12NUM(6),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ12NUM7",
+        "# de crianças (0-14 anos) que iniciaram o TARV no período de inclusão e que tiveram consultas clínicas ou levantamentos de ARVs dentro de 99 dias após o início do TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ12NUM7",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ12NUM(7),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ12NUM10",
+        "# de mulheres grávidas HIV+  que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ12NUM10",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ12NUM(10),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ12NUM11",
+        "# de mulheres grávidas HIV+  que iniciaram o TARV no período de inclusão e que tiveram consultas clínicas ou levantamentos de ARVs dentro de 99 dias após o início do TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ12NUM11",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ12NUM(11),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
     // Category 13 Denominator indicators
     dataSetDefinition.addColumn(
         "MQ13DEN1",
@@ -800,76 +873,52 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
-    // Category 12 numerator indicators
+    // Category 13 Numerator indicators
     dataSetDefinition.addColumn(
-        "MQ12NUM1",
-        "# de adultos (15/+anos) que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs entre 25 a 33 dias após o início do TARV",
+        "MQ13NUM1",
+        "% de adultos (15/+anos) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "MQ12NUM1",
+                "MQ13NUM1",
                 EptsReportUtils.map(
-                    qualityImprovement2020CohortQueries.getMQ12NUM(1),
-                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
-            "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
-
-    dataSetDefinition.addColumn(
-        "MQ12NUM2",
-        "# de adultos (15/+anos) que iniciaram o TARV no período de inclusão e que tiveram 3 consultas clínicas ou levantamentos de ARVs dentro de 99 dias após o início do TARV",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "MQ12NUM2",
-                EptsReportUtils.map(
-                    qualityImprovement2020CohortQueries.getMQ12NUM(2),
-                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
-            "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=<15");
-
-    dataSetDefinition.addColumn(
-        "MQ12NUM6",
-        "# de crianças (0-14 anos) que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "MQ12NUM6",
-                EptsReportUtils.map(
-                    qualityImprovement2020CohortQueries.getMQ12NUM(6),
-                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+                    qualityImprovement2020CohortQueries.getMQ13(false, 1),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
     dataSetDefinition.addColumn(
-        "MQ12NUM7",
-        "# de crianças (0-14 anos) que iniciaram o TARV no período de inclusão e que tiveram consultas clínicas ou levantamentos de ARVs dentro de 99 dias após o início do TARV",
+        "MQ13NUM6",
+        "% de crianças (0-4 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "MQ12NUM7",
+                "MQ13NUM6",
                 EptsReportUtils.map(
-                    qualityImprovement2020CohortQueries.getMQ12NUM(7),
-                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+                    qualityImprovement2020CohortQueries.getMQ13(false, 6),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
     dataSetDefinition.addColumn(
-        "MQ12NUM10",
-        "# de mulheres grávidas HIV+  que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV",
+        "MQ13NUM7",
+        "% de crianças (5-9 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "MQ12NUM10",
+                "MQ13NUM7",
                 EptsReportUtils.map(
-                    qualityImprovement2020CohortQueries.getMQ12NUM(10),
-                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+                    qualityImprovement2020CohortQueries.getMQ13(false, 7),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
     dataSetDefinition.addColumn(
-        "MQ12NUM11",
-        "# de mulheres grávidas HIV+  que iniciaram o TARV no período de inclusão e que tiveram consultas clínicas ou levantamentos de ARVs dentro de 99 dias após o início do TARV",
+        "MQ13NUM8",
+        "% de crianças (10-14 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "MQ12NUM11",
+                "MQ13NUM8",
                 EptsReportUtils.map(
-                    qualityImprovement2020CohortQueries.getMQ12NUM(11),
-                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+                    qualityImprovement2020CohortQueries.getMQ13(false, 8),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 

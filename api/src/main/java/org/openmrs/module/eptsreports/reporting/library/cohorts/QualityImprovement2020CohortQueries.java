@@ -3443,6 +3443,60 @@ public class QualityImprovement2020CohortQueries {
   }
 
   /**
+   * <b>Description:</b> MQ Categoria 13 C query
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * C - Select all patients with Last Clinical Consultation (encounter type 6, encounter_datetime)
+   * occurred during the period (encounter_datetime > endDateInclusion and <= endDateRevision) and
+   * the concept: “PEDIDO DE INVESTIGACOES LABORATORIAIS” (Concept Id 23722) and value coded “HIV
+   * CARGA VIRAL” (Concept Id 856) In this last consultation.
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getMQ13C() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Last Ficha Clinica");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+
+    String query =
+        " SELECT  "
+            + "     patient_id  "
+            + " FROM  "
+            + "     (SELECT   "
+            + "         p.patient_id, MAX(e.encounter_datetime) last_clinical  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     INNER JOIN obs o ON o.person_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  AND o.voided = 0"
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+            + "             AND o.concept_id = ${23722}  "
+            + "             AND o.value_coded = ${856}  "
+            + "     GROUP BY p.patient_id) AS list";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
    * <b>MQ13</b>: Melhoria de Qualidade Category 13 <br>
    * <i></i><br>
    * <i> <b>DENOMINATOR (1,6,7,8):</b> B1 AND ((B2 AND NOT B2E) OR (B3 AND NOT B3E)) AND NOT (B4E OR
@@ -3540,6 +3594,8 @@ public class QualityImprovement2020CohortQueries {
         commonCohortQueries.getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
             false, true, 3);
 
+    CohortDefinition C = getMQ13C();
+
     compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(lastClinical, MAPPING));
 
     if (line == 1) {
@@ -3596,10 +3652,12 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("B5E", EptsReportUtils.map(B5E, MAPPING));
 
+    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(C, MAPPING));
+
     if (den) {
       if (line == 1) {
         compositionCohortDefinition.setCompositionString(
-            "B1 AND ((B2 AND NOT B2E) OR (B3 AND NOT B3E)) AND NOT (B4E OR B5E) and age");
+            "B1 AND ((B2 AND NOT B2E) OR (B3 AND NOT B3E)) AND NOT (B4E OR B5E) AND age");
       } else if (line == 4) {
         compositionCohortDefinition.setCompositionString(
             "B1 AND (secondLineB2 AND NOT secondLineB2E) AND NOT (B4E OR B5E) AND age");
@@ -3615,6 +3673,20 @@ public class QualityImprovement2020CohortQueries {
       } else if (line == 13) {
         compositionCohortDefinition.setCompositionString(
             "B1 AND (secondLineB2 AND NOT secondLineB2E) AND NOT (B4E OR B5E) AND age");
+      }
+    } else {
+      if (line == 1) {
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND ((B2 AND NOT B2E) OR (B3 AND NOT B3E)) AND NOT (B4E OR B5E)) AND C AND age");
+      } else if (line == 6) {
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND ((B2 AND NOT B2E) OR (B3 AND NOT B3E)) AND NOT (B4E OR B5E)) AND C AND age");
+      } else if (line == 7) {
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND ((B2 AND NOT B2E) OR (B3 AND NOT B3E)) AND NOT (B4E OR B5E)) AND C AND age");
+      } else if (line == 8) {
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND ((B2 AND NOT B2E) OR (B3 AND NOT B3E)) AND NOT (B4E OR B5E)) AND C AND age");
       }
     }
 
