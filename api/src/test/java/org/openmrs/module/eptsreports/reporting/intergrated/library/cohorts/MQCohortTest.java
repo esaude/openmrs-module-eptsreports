@@ -24,10 +24,10 @@ public class MQCohortTest extends DefinitionsFGHLiveTest {
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(400);
-    final Date startInclusionDate = DateUtil.getDateTime(2019, 3, 21);
-    final Date endInclusionDate = DateUtil.getDateTime(2019, 6, 20);
+    final Date startInclusionDate = DateUtil.getDateTime(2019, 10, 21);
+    final Date endInclusionDate = DateUtil.getDateTime(2020, 1, 20);
 
-    final Date revisionDate = DateUtil.getDateTime(2020, 3, 21);
+    final Date revisionDate = DateUtil.getDateTime(2020, 10, 20);
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 
@@ -42,7 +42,7 @@ public class MQCohortTest extends DefinitionsFGHLiveTest {
         new Parameter(EptsReportConstants.END_REVISION_DATE, "End Date", Date.class), revisionDate);
 
     CohortDefinition cohortDefinition =
-        mQCohortQueries.findChildrenPatientsWithAtLeast9APSSConsultationByInclusionPeriod();
+        mQCohortQueries.findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodByH();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(cohortDefinition, parameters);

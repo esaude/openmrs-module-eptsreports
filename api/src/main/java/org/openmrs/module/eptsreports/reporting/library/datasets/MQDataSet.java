@@ -574,6 +574,7 @@ public class MQDataSet extends BaseDataSet {
                 this.mqCohortQueries
                     .findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInCategory11Denominator(),
                 mappings));
+
     CAT11AdultoAPSSPPDENOMINATOR.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     CAT11AdultoAPSSPPDENOMINATOR.addParameter(
@@ -581,6 +582,7 @@ public class MQDataSet extends BaseDataSet {
     CAT11AdultoAPSSPPDENOMINATOR.addParameter(
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT11AdultoAPSSPPDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
     final CohortIndicator CAT11AdultoAPSSPPNUMERATOR =
         this.eptsGeneralIndicator.getIndicator(
             "CAT11AdultoAPSSPPNUMERATOR",
@@ -588,6 +590,7 @@ public class MQDataSet extends BaseDataSet {
                 this.mqCohortQueries
                     .findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTCategory11NUMERATOR(),
                 mappings));
+
     CAT11AdultoAPSSPPNUMERATOR.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     CAT11AdultoAPSSPPNUMERATOR.addParameter(
@@ -595,6 +598,7 @@ public class MQDataSet extends BaseDataSet {
     CAT11AdultoAPSSPPNUMERATOR.addParameter(
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT11AdultoAPSSPPNUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
     final CohortIndicator CAT11Adulto1000CVDENOMINATOR =
         this.eptsGeneralIndicator.getIndicator(
             "CAT11Adulto1000CVDENOMINATOR",
@@ -602,6 +606,7 @@ public class MQDataSet extends BaseDataSet {
                 this.mqCohortQueries
                     .findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11Denominator(),
                 mappings));
+
     CAT11Adulto1000CVDENOMINATOR.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     CAT11Adulto1000CVDENOMINATOR.addParameter(
@@ -609,6 +614,7 @@ public class MQDataSet extends BaseDataSet {
     CAT11Adulto1000CVDENOMINATOR.addParameter(
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT11Adulto1000CVDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
     final CohortIndicator CAT11Adulto1000CVNUMERATOR =
         this.eptsGeneralIndicator.getIndicator(
             "CAT11Adulto1000CVNUMERATOR",
@@ -616,6 +622,7 @@ public class MQDataSet extends BaseDataSet {
                 this.mqCohortQueries
                     .findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11NUMERATOR(),
                 mappings));
+
     CAT11Adulto1000CVNUMERATOR.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     CAT11Adulto1000CVNUMERATOR.addParameter(
@@ -623,6 +630,7 @@ public class MQDataSet extends BaseDataSet {
     CAT11Adulto1000CVNUMERATOR.addParameter(
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT11Adulto1000CVNUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
     final CohortIndicator CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR =
         this.eptsGeneralIndicator.getIndicator(
             "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
@@ -630,6 +638,7 @@ public class MQDataSet extends BaseDataSet {
                 this.mqCohortQueries
                     .findChildernOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Denominator(),
                 mappings));
+
     CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR.addParameter(
@@ -638,6 +647,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR.addParameter(
         new Parameter("location", "location", Date.class));
+
     final CohortIndicator CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR =
         this.eptsGeneralIndicator.getIndicator(
             "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
@@ -645,6 +655,7 @@ public class MQDataSet extends BaseDataSet {
                 this.mqCohortQueries
                     .findChildernOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Numerator(),
                 mappings));
+
     CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR.addParameter(
@@ -653,6 +664,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR.addParameter(
         new Parameter("location", "location", Date.class));
+
     final CohortIndicator CAT11Children1000CVDENOMINATOR =
         this.eptsGeneralIndicator.getIndicator(
             "CAT11Children1000CVDENOMINATOR",
@@ -660,6 +672,7 @@ public class MQDataSet extends BaseDataSet {
                 this.mqCohortQueries
                     .findChildrenOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutWITH1000CVCategory11Denominator(),
                 mappings));
+
     CAT11Children1000CVDENOMINATOR.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     CAT11Children1000CVDENOMINATOR.addParameter(
@@ -667,6 +680,7 @@ public class MQDataSet extends BaseDataSet {
     CAT11Children1000CVDENOMINATOR.addParameter(
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT11Children1000CVDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
     final CohortIndicator CAT11Children1000CVNUMERATOR =
         this.eptsGeneralIndicator.getIndicator(
             "CAT11Children1000CVNUMERATOR",
@@ -674,6 +688,7 @@ public class MQDataSet extends BaseDataSet {
                 this.mqCohortQueries
                     .findChildrenOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutWITH1000CVCategory11NUMERATOR(),
                 mappings));
+
     CAT11Children1000CVNUMERATOR.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     CAT11Children1000CVNUMERATOR.addParameter(
@@ -1179,6 +1194,106 @@ public class MQDataSet extends BaseDataSet {
         "CAT13CV1014NUMERATOR",
         EptsReportUtils.map(CVNUMERATOR, mappings),
         "age=10-14");
+    final CohortIndicator CAT13P2PregnantWithCVInTARVDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P2PregnantWithCVInTARVDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findPatientsWhoArePregnantWithCVInTARVCategory13P2Denumerator(),
+                mappings));
+
+    CAT13P2PregnantWithCVInTARVDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P2PregnantWithCVInTARVDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P2PregnantWithCVInTARVDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P2PregnantWithCVInTARVDENOMINATOR.addParameter(
+        new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13P2PregnantWithCVInTARVNUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P2PregnantWithCVInTARVNUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries.findPatientsWhoArePregnantWithCVInTARVCategory13P2Numerator(),
+                mappings));
+
+    CAT13P2PregnantWithCVInTARVNUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P2PregnantWithCVInTARVNUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P2PregnantWithCVInTARVNUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P2PregnantWithCVInTARVNUMINATOR.addParameter(
+        new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findPatientsWhoArePregnantWithCVInFirstConsultationTARVCategory13P2Denumerator(),
+                mappings));
+
+    CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR.addParameter(
+        new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findPatientsWhoArePregnantWithCVInFirstConsultationTARVCategory13P2Numerator(),
+                mappings));
+
+    CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR.addParameter(
+        new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findPatientsWhoArePregnantWithCVIn33DaysAfterInclusionDateTARVCategory13P2Denumerator(),
+                mappings));
+
+    CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR.addParameter(
+        new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findPatientsWhoArePregnantWithCVIn33DaysAfterInclusionDateTARVCategory13P2Numerator(),
+                mappings));
+
+    CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR.addParameter(
+        new Parameter("location", "location", Date.class));
 
     dataSetDefinition.addColumn(
         "CAT3ADULTODENOMINATOR",
@@ -1383,36 +1498,55 @@ public class MQDataSet extends BaseDataSet {
         "CAT11AdultoAPSSPPDENOMINATOR",
         EptsReportUtils.map(CAT11AdultoAPSSPPDENOMINATOR, mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT11AdultoAPSSPPNUMERATOR",
         "CAT11AdultoAPSSPPNUMERATOR",
         EptsReportUtils.map(CAT11AdultoAPSSPPNUMERATOR, mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT11Adulto1000CVDENOMINATOR",
         "CAT11Adulto1000CVDENOMINATOR",
         EptsReportUtils.map(CAT11Adulto1000CVDENOMINATOR, mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT11Adulto1000CVNUMERATOR",
         "CAT11Adulto1000CVNUMERATOR",
         EptsReportUtils.map(CAT11Adulto1000CVNUMERATOR, mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
         "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
         EptsReportUtils.map(CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR, mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
         "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
         EptsReportUtils.map(CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR, mappings),
         "");
+
+    dataSetDefinition.addColumn(
+        "CAT11Least9APSSConsultationDENOMINATOR",
+        "CAT11Least9APSSConsultationDENOMINATOR",
+        EptsReportUtils.map(CAT11Least9APSSConsultationDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT11Least9APSSConsultationNUMERATOR",
+        "CAT11Least9APSSConsultationNUMERATOR",
+        EptsReportUtils.map(CAT11Least9APSSConsultationNUMERATOR, mappings),
+        "");
+
     dataSetDefinition.addColumn(
         "CAT11Children1000CVDENOMINATOR",
         "CAT11Children1000CVDENOMINATOR",
         EptsReportUtils.map(CAT11Children1000CVDENOMINATOR, mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT11Children1000CVNUMERATOR",
         "CAT11Children1000CVNUMERATOR",
@@ -1560,6 +1694,43 @@ public class MQDataSet extends BaseDataSet {
         "CAT12PREGNANTNUMERATORFIRSTLINE",
         "CAT12PREGNANTNUMERATORFIRSTLINE",
         EptsReportUtils.map(CAT12PREGNANTNUMERATORFIRSTLINE, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P2PregnantWithCVInTARVDENOMINATOR",
+        "CAT13P2PregnantWithCVInTARVDENOMINATOR",
+        EptsReportUtils.map(CAT13P2PregnantWithCVInTARVDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR",
+        "CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR",
+        EptsReportUtils.map(CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR",
+        "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR",
+        EptsReportUtils.map(
+            CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P2PregnantWithCVInTARVNUMINATOR",
+        "CAT13P2PregnantWithCVInTARVNUMINATOR",
+        EptsReportUtils.map(CAT13P2PregnantWithCVInTARVNUMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR",
+        "CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR",
+        EptsReportUtils.map(CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR",
+        "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR",
+        EptsReportUtils.map(CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR, mappings),
         "");
 
     this.addColumnsForCategory15(dataSetDefinition, mappings);
