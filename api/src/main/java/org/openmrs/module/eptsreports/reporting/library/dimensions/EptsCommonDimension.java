@@ -141,6 +141,30 @@ public class EptsCommonDimension {
     return dim;
   }
 
+  public CohortDefinitionDimension mqAgeDimention(
+      final AgeDimensionCohortInterface ageDimensionCohort) {
+    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setParameters(ageDimensionCohort.getParameters());
+    dim.setName(" MQ age dimension");
+
+    dim.addCohortDefinition("UK", ageDimensionCohort.createUnknownAgeCohort());
+    dim.addCohortDefinition(
+        "0-4",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 4 years", 0, 4));
+    dim.addCohortDefinition(
+        "5-9",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 5 and 9 years", 5, 9));
+    dim.addCohortDefinition(
+        "10-14",
+        ageDimensionCohort.createXtoYAgeCohort(
+            "patients with age between 10 and 14 years", 10, 14));
+
+    dim.addCohortDefinition(
+        "15+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 15", 15, null));
+
+    return dim;
+  }
+
   /** @return CohortDefinitionDimension */
   public CohortDefinitionDimension maternityDimension() {
     final CohortDefinitionDimension dim = new CohortDefinitionDimension();

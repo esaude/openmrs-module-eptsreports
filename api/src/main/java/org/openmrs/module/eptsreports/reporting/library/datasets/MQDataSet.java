@@ -1,11 +1,16 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCategory13Section1CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortCategory15Queries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -14,13 +19,22 @@ import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MQDataSet extends BaseDataSet {
 
   @Autowired private MQCohortQueries mqCohortQueries;
+
+  @Autowired private MQCategory13Section1CohortQueries mQCategory13Section1CohortQueries;
+
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
+  @Autowired private EptsCommonDimension eptsCommonDimension;
+
+  @Autowired
+  @Qualifier("commonAgeDimensionCohort")
+  private AgeDimensionCohortInterface ageDimensionCohort;
 
   @Autowired private MQCohortCategory15Queries mqCohortCategory15Queries;
 
@@ -34,6 +48,12 @@ public class MQDataSet extends BaseDataSet {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     dataSetDefinition.setName("MQ Data Set");
+
+    dataSetDefinition.addDimension("gender", map(eptsCommonDimension.gender(), ""));
+
+    dataSetDefinition.addDimension(
+        "age",
+        map(eptsCommonDimension.mqAgeDimention(ageDimensionCohort), "effectiveDate=${endDate}"));
 
     final CohortIndicator CAT3ADULTODENOMINATOR =
         this.eptsGeneralIndicator.getIndicator(
@@ -1068,6 +1088,97 @@ public class MQDataSet extends BaseDataSet {
     CAT12PREGNANTNUMERATORFIRSTLINE.addParameter(
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT12PREGNANTNUMERATORFIRSTLINE.addParameter(new Parameter("location", "location", Date.class));
+
+    // Adicionando os Denominadores da Categoria 13 Parte I
+
+    // 15+
+    final CohortIndicator CAT13ADULT15CVDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13ADULT15CVDENOMINATOR",
+            EptsReportUtils.map(
+                this.mQCategory13Section1CohortQueries.findDenominatorB(), mappings));
+
+    CAT13ADULT15CVDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13ADULT15CVDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13ADULT15CVDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13ADULT15CVDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    // 0-4
+
+    final CohortIndicator CVDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT1304CVDENOMINATOR",
+            EptsReportUtils.map(
+                this.mQCategory13Section1CohortQueries.findDenominatorB(), mappings));
+
+    CVDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CVDENOMINATOR.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CVDENOMINATOR.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CVDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CVNUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CVNUMERATOR",
+            EptsReportUtils.map(
+                this.mQCategory13Section1CohortQueries.findFinalNumeratorC(), mappings));
+
+    CVNUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CVNUMERATOR.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CVNUMERATOR.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CVNUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    dataSetDefinition.addColumn(
+        "CAT13CV15PLUSDENOMINATOR",
+        "CAT13CV15PLUSDENOMINATOR",
+        EptsReportUtils.map(CVDENOMINATOR, mappings),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "CAT13CV04DENOMINATOR",
+        "CAT13CV04DENOMINATOR",
+        EptsReportUtils.map(CVDENOMINATOR, mappings),
+        "age=0-4");
+
+    dataSetDefinition.addColumn(
+        "CAT13CV59DENOMINATOR",
+        "CAT13CV59DENOMINATOR",
+        EptsReportUtils.map(CVDENOMINATOR, mappings),
+        "age=5-9");
+
+    dataSetDefinition.addColumn(
+        "CAT13CV1014DENOMINATOR",
+        "CAT13CV1014DENOMINATOR",
+        EptsReportUtils.map(CVDENOMINATOR, mappings),
+        "age=10-14");
+
+    dataSetDefinition.addColumn(
+        "CAT13CV15PLUSNUMERATOR",
+        "CAT13CV15PLUSNUMERATOR",
+        EptsReportUtils.map(CVNUMERATOR, mappings),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "CAT13CV04NUMERATOR",
+        "CAT13CV04NUMERATOR",
+        EptsReportUtils.map(CVNUMERATOR, mappings),
+        "age=0-4");
+
+    dataSetDefinition.addColumn(
+        "CAT13CV59NUMERATOR",
+        "CAT13CV59NUMERATOR",
+        EptsReportUtils.map(CVNUMERATOR, mappings),
+        "age=5-9");
+
+    dataSetDefinition.addColumn(
+        "CAT13CV1014NUMERATOR",
+        "CAT13CV1014NUMERATOR",
+        EptsReportUtils.map(CVNUMERATOR, mappings),
+        "age=10-14");
 
     dataSetDefinition.addColumn(
         "CAT3ADULTODENOMINATOR",
