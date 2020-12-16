@@ -488,4 +488,51 @@ public class CommonMetadata extends Metadata {
             .getGlobalProperty("eptsreports.sojaSupplememtConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 23898</b>
+   *
+   * <p><b>Name:</b> Alternativa de Linha de Tratamento Conjunto
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getAlternativeLineConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.alternativeLineConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23741</b>
+   *
+   * <p><b>Name:</b> Alternativa de Primeira Linha de Tratamento
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getAlternativeFirstLineConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.alternativeFirstLineConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 1371</b>
+   *
+   * <p><b>Name:</b> Mudanca de Regime
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getRegimeChangeConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.regimeChangeConceptUuid");
+    return getConcept(uuid);
+  }
 }

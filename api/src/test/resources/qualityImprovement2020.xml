@@ -523,9 +523,49 @@ description="UUID for the TUBERCULOSE ACTIVO concept" uuid="763a4102-1d49-47ae-b
 
  <global_property property="eptsreports.transferOutToAnotherFacilityConceptUuid"
                      property_value="e1de1cf6-1d5f-11e0-b929-000c29ad1d07"
-                     description="UUID for the TRANSFERIDO PARA concept" uuid="77e584e7-5a09-11ea-8247-a0a4c5d1c75c"/>
+                     description="UUID for the TRANSFERIDO PARA concept" 
+					 uuid="77e584e7-5a09-11ea-8247-a0a4c5d1c75c"/>
 
+<global_property property="eptsreports.therapeuticLineConceptUuid" 
+property_value="fdff0637-b36f-4dce-90c7-fe9f1ec586f0" 
+description="UUID Therapeutic Line Concept" 
+uuid="6cd165ea-18bf-4a47-b458-aae06b15dab9" />
 
+<global_property property="eptsreports.firstLineConceptUuid" 
+property_value="a6bbe1ac-5243-40e4-98cb-7d4a1467dfbe" 
+description="UUID First Line Concept" 
+uuid="79006c4e-0a82-4f7d-bcfc-651c5aa0b0ec" />
+
+<global_property property="eptsreports.alternativeLineConceptUuid" 
+property_value="c95bf5fa-a04f-48d9-8504-f0575c2e255f" 
+description="UUID First Line Concept" 
+uuid="7856c4e-0a82-4f1d-bcfc-651c5aa7591c" />
+
+<global_property property="eptsreports.alternativeFirstLineConceptUuid" 
+property_value="faa0e305-6803-48a4-a589-db412f52ddaa" 
+description="UUID First Line Concept" 
+uuid="9856c4e-458d-4f1d-bcfc-651c5aa7598s" />
+
+<global_property property="eptsreports.regimeChangeConceptUuid" 
+property_value="e1d83e4e-1d5f-11e0-b929-000c29ad1d07" 
+description="UUID First Line Concept" 
+uuid="7d21b053-3eb6-11eb-b57a-0242ac120002" />
+
+<global_property property="eptsreports.noConceptUuid" 
+property_value="e1d81c70-1d5f-11e0-b929-000c29ad1d07" 
+description="Concept uuid for NO" 
+uuid="78ccd9a7-0f45-4218-ab89-7a04d899f6cf" />
+
+<global_property property="eptsreports.hivViralLoadConceptUuid" 
+property_value="e1d6247e-1d5f-11e0-b929-000c29ad1d07" 
+description="UUID for HIV VIRAL LOAD concept" 
+uuid="25a16b62-05fd-4b4e-83e0-8a3659c69981" />
+
+<global_property property="eptsreports.applicationForLaboratoryResearch" 
+property_value="92653c45-9eb2-486d-90c0-3e00569e99c0" 
+description="UUID for the APPLICATION FOR LABORATORY RESEARCH concept" 
+uuid="27066b38-7156-4fbb-8f45-0c940c4f1179" />
+		
 		<!-- concept & concept_name -->
 
 	<!--1255 -->
@@ -942,7 +982,22 @@ description="UUID for the TUBERCULOSE ACTIVO concept" uuid="763a4102-1d49-47ae-b
  <concept concept_id="6273" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1"
              date_created="2012-02-29 10:06:33" uuid="a7d3b5c9-8b8e-4f29-b332-8db47466fed3"/>
    	
+<concept concept_id="21151" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2016-10-28 09:02:02" changed_by="1" date_changed="2018-10-08 12:04:30" uuid="fdff0637-b36f-4dce-90c7-fe9f1ec586f0" />
 
+<concept concept_id="21150" retired="0" datatype_id="2" class_id="11" is_set="0" creator="1" date_created="2016-10-28 08:56:29" changed_by="1" date_changed="2019-02-28 10:48:23" uuid="a6bbe1ac-5243-40e4-98cb-7d4a1467dfbe" />
+
+<concept concept_id="23898" retired="0" datatype_id="2" class_id="11" is_set="0" creator="1" date_created="2016-10-28 08:56:29" changed_by="1" date_changed="2019-02-28 10:48:23" uuid="c95bf5fa-a04f-48d9-8504-f0575c2e255f" />
+
+<concept concept_id="23741" retired="0" datatype_id="2" class_id="11" is_set="0" creator="1" date_created="2016-10-28 08:56:29" changed_by="1" date_changed="2019-02-28 10:48:23" uuid="faa0e305-6803-48a4-a589-db412f52ddaa" />
+
+<concept concept_id="1088" retired="0" datatype_id="2" class_id="11" is_set="0" creator="1" date_created="2016-10-28 08:56:29" changed_by="1" date_changed="2019-02-28 10:48:23" uuid="e1d83e4e-1d5f-11e0-b929-000c29ad1d07" />
+
+<concept concept_id="1066" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2005-01-06 00:00:00" uuid="e1d81c70-1d5f-11e0-b929-000c29ad1d07" />
+
+<concept concept_id="856" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="e1d6247e-1d5f-11e0-b929-000c29ad1d07" />
+
+<concept concept_id="23722" retired="0" datatype_id="2" class_id="8" is_set="0" creator="1" date_created="2018-10-23 16:22:43" changed_by="1" date_changed="2019-01-07 23:01:13" uuid="92653c45-9eb2-486d-90c0-3e00569e99c0" />
+		 
 		<!--| program | -->
 
 	<program program_id="1" concept_id="1781" creator="1"

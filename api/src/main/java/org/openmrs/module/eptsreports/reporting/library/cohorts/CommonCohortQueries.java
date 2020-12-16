@@ -336,4 +336,435 @@ public class CommonCohortQueries {
 
     return sqlCohortDefinition;
   }
+
+  /**
+   * <b>Description:</b> MOH Last Clinical Consultation Query
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Select all patients with Last Clinical Consultation (encounter type 6, encounter_datetime)
+   * occurred during the period (encounter_datetime > endDateInclusion and <= endDateRevision)
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getMOHPatientsLastClinicalConsultation() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Last Ficha Clinica");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+
+    String query =
+        " SELECT  "
+            + "     patient_id  "
+            + " FROM  "
+            + "     (SELECT   "
+            + "         p.patient_id, MAX(e.encounter_datetime) last_clinical  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+            + "     GROUP BY p.patient_id) AS list";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>Description:</b> MOH Patients on Treatments for 6 Months
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * B2 - Select all patients who have the FIRST “LINHA TERAPEUTICA” (Concept Id 21151) recorded in
+   * Ficha Clinica (encounter type 6, encounter_datetime) with value coded “PRIMEIRA LINHA” (concept
+   * id 21150) before the the “Last Clinical Consultation Date” (last encounter_datetime from B1)
+   * and at least for 6 months
+   *
+   * <p>B3 - Select all patients who have the MOST RECENT “ALTERNATIVA A LINHA - 1a LINHA” (Concept
+   * Id 23898, obs_datetime) recorded in Ficha Resumo (encounter type 53) with any value coded (not
+   * null) before the “Last Clinical Consultation Date” (last encounter_datetime from B1) and at
+   * least for 6 months
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getMOHPatientsOnTreatmentFor6Months(
+      Boolean masterCard,
+      EncounterType lastClinicalEncounter,
+      EncounterType treatmentEncounter,
+      Concept treatmentConcept,
+      List<Concept> treatmentValueCoded) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Patients on treatment for 6 months from last clinical visit");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    List<Integer> answerIds = new ArrayList<>();
+
+    for (Concept concept : treatmentValueCoded) {
+      answerIds.add(concept.getConceptId());
+    }
+
+    String query = " SELECT  " + "     patient_id  " + " FROM  " + "     (SELECT   ";
+    if (masterCard) {
+      query += "         p.patient_id, MAX(o.obs_datetime)  ";
+    } else {
+      query += "         p.patient_id, MIN(e.encounter_datetime)  ";
+    }
+    query +=
+        "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "     INNER JOIN (SELECT   "
+            + "         p.patient_id, MAX(e.encounter_datetime) last_visit  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.encounter_type = ${lastClinicalEncounter}  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+            + "     GROUP BY p.patient_id) AS clinical ON clinical.patient_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND o.voided = 0  "
+            + "             AND e.encounter_type = ${treatmentEncounter}  "
+            + "             AND e.location_id = :location  "
+            + "             AND o.concept_id = ${treatmentConcept}  "
+            + "             AND o.value_coded IN (${treatmentValueCoded})  ";
+    if (masterCard) {
+      query +=
+          "             AND DATE(o.obs_datetime) <= DATE(clinical.last_visit)  "
+              + "             AND DATEDIFF(o.obs_datetime, clinical.last_visit) >= 180  "; // check
+      // other
+      // queries for time they use
+    } else {
+      query +=
+          "             AND DATE(e.encounter_datetime) <= DATE(clinical.last_visit)  "
+              + "             AND DATEDIFF(e.encounter_datetime, clinical.last_visit) >= 180  "; // check other queries for time they use
+    }
+    query += "     GROUP BY p.patient_id) AS treatment_line;";
+
+    Map<String, String> map = new HashMap<>();
+    map.put("lastClinicalEncounter", String.valueOf(lastClinicalEncounter.getEncounterTypeId()));
+    map.put("treatmentEncounter", String.valueOf(treatmentEncounter.getEncounterTypeId()));
+    map.put("treatmentConcept", String.valueOf(treatmentConcept.getConceptId()));
+    map.put("treatmentValueCoded", StringUtils.join(answerIds, ","));
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>Description:</b> MOH Patients to Exclude From Treatment in 6 Months
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * B2E - Exclude all patients from Ficha Clinica (encounter type 6, encounter_datetime) who have
+   * “LINHA TERAPEUTICA”(Concept id 21151) with value coded DIFFERENT THAN “PRIMEIRA LINHA”(Concept
+   * id 21150) and encounter_datetime > first “LINHA TERAPEUTICA” = “PRIMEIRA LINHA” (from B2) and
+   * <= “Last Clinical Consultation” (last encounter_datetime from B1)
+   *
+   * <p>B3E - Exclude all patients from Ficha Clinica (encounter type 6, encounter_datetime) who
+   * have “LINHA TERAPEUTICA”(Concept id 21151) with value coded DIFFERENT THAN “PRIMEIRA
+   * LINHA”(Concept id 21150) and encounter_datetime > the most recent “ALTERNATIVA A LINHA - 1a
+   * LINHA” (from B3) and <= “Last Clinical Consultation” (last encounter_datetime from B1)
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getMOHPatientsToExcludeFromTreatmentIn6Months(
+      Boolean masterCard,
+      EncounterType clinicalEncounter,
+      EncounterType treatmentEncounter,
+      Concept treatmentConcept,
+      List<Concept> treatmentValueCoded,
+      EncounterType exclusionEncounter,
+      Concept exclusionConcept,
+      List<Concept> exclusionValueCoded) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Patients to exclude in treatment in the last 6 months");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    List<Integer> answerIds = new ArrayList<>();
+    List<Integer> answerIds2 = new ArrayList<>();
+
+    for (Concept concept : treatmentValueCoded) {
+      answerIds.add(concept.getConceptId());
+    }
+
+    for (Concept concept : exclusionValueCoded) {
+      answerIds2.add(concept.getConceptId());
+    }
+
+    String query =
+        " SELECT  "
+            + "     p.patient_id  "
+            + " FROM  "
+            + "     patient p  "
+            + "         INNER JOIN  "
+            + "     encounter e ON e.patient_id = p.patient_id  "
+            + "         INNER JOIN  "
+            + "     obs o ON o.encounter_id = e.encounter_id  "
+            + "         INNER JOIN  "
+            + "     (SELECT   ";
+    if (masterCard) {
+      query += "         p.patient_id, MAX(o.obs_datetime) the_time ";
+    } else {
+      query += "         p.patient_id, MIN(e.encounter_datetime) the_time  ";
+    }
+
+    query +=
+        "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "     INNER JOIN (SELECT   "
+            + "         p.patient_id, MAX(e.encounter_datetime) last_visit  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.encounter_type = ${clinicalEncounter}  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+            + "     GROUP BY p.patient_id) AS clinical ON clinical.patient_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND o.voided = 0  "
+            + "             AND e.encounter_type = ${clinicalEncounter}  "
+            + "             AND e.location_id = :location  "
+            + "             AND o.concept_id = ${treatmentEncounter}  "
+            + "             AND o.value_coded IN (${treatmentConcept})  ";
+    if (masterCard) {
+      query +=
+          "             AND DATE(o.obs_datetime) <= DATE(clinical.last_visit)  "
+              + "             AND DATEDIFF(o.obs_datetime, clinical.last_visit) >= 180  "; // check
+      // other
+      // queries for time they use
+    } else {
+      query +=
+          "             AND DATE(e.encounter_datetime) <= DATE(clinical.last_visit)  "
+              + "             AND DATEDIFF(e.encounter_datetime, clinical.last_visit) >= 180  "; // check other queries for time they use
+    }
+    query +=
+        "     GROUP BY p.patient_id) treatment_line ON treatment_line.patient_id = p.patient_id  "
+            + "     INNER JOIN (SELECT   "
+            + "         p.patient_id, MAX(e.encounter_datetime) last_visit  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.encounter_type = ${clinicalEncounter}  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+            + "     GROUP BY p.patient_id) AS clinical ON clinical.patient_id = p.patient_id  "
+            + " WHERE  "
+            + "     p.voided = 0 AND e.voided = 0  "
+            + "         AND o.voided = 0  "
+            + "         AND e.location_id = :location  "
+            + "         AND e.encounter_type = ${exclusionEncounter} "
+            + "         AND o.concept_id = ${exclusionConcept}  "
+            + "         AND o.value_coded NOT IN (${exclusionValueCoded})  "
+            + "         AND DATE(e.encounter_datetime) > DATE(treatment_line.the_time)  "
+            + "         AND DATE(e.encounter_datetime) <= DATE(clinical.last_visit);";
+
+    Map<String, String> map = new HashMap<>();
+    map.put("clinicalEncounter", String.valueOf(clinicalEncounter.getEncounterTypeId()));
+    map.put("treatmentEncounter", String.valueOf(treatmentEncounter.getEncounterTypeId()));
+    map.put("treatmentConcept", String.valueOf(treatmentConcept.getConceptId()));
+    map.put("treatmentValueCoded", StringUtils.join(answerIds, ","));
+    map.put("exclusionEncounter", String.valueOf(exclusionEncounter.getEncounterTypeId()));
+    map.put("exclusionConcept", String.valueOf(exclusionConcept.getConceptId()));
+    map.put("exclusionValueCoded", StringUtils.join(answerIds2, ","));
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>Description:</b> MOH Last Clinical Consultation Query
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Select all patients with Last Clinical Consultation (encounter type 6, encounter_datetime)
+   * occurred during the period (encounter_datetime > endDateInclusion and <= endDateRevision)
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getMOHPatientsAgeOnLastClinicalConsultationDate(
+      Integer minAge, Integer maxAge) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Patients Age at Last Ficha Clinica");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("minAge", minAge);
+    map.put("maxAge", maxAge);
+
+    String query =
+        " SELECT  "
+            + "     p.person_id  "
+            + " FROM  "
+            + "     person p  "
+            + "         INNER JOIN  "
+            + "     (SELECT   "
+            + "         p.patient_id, MAX(e.encounter_datetime) last_visit  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+            + "     GROUP BY p.patient_id) clinical ON clinical.patient_id = p.person_id  "
+            + " WHERE  ";
+    if (minAge != null && maxAge != null) {
+      query +=
+          "     DATEDIFF(clinical.last_visit, p.birthdate)/365 >= ${minAge}  "
+              + "         AND   "
+              + "   DATEDIFF(clinical.last_visit, p.birthdate)/365 <= ${maxAge}; ";
+    } else if (minAge == null && maxAge != null) {
+      query += "   DATEDIFF(clinical.last_visit, p.birthdate)/365 <= ${maxAge}; ";
+    } else if (minAge != null && maxAge == null) {
+      query += "     DATEDIFF(clinical.last_visit, p.birthdate)/365 >= ${minAge};  ";
+    }
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>Description:</b> MOH Patients With Viral Load Request or Result Between Last Clinical
+   * Consultations
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * B4E - Exclude all patients with “Carga Viral” (Concept id 856, value_numeric not null)
+   * registered in Ficha Clinica (encounter type 6, encounter_datetime) or Ficha Resumo (encounter
+   * type 53, obs_datetime) during the last 12 months from the Last Clinical Consultation, i.e, at
+   * least one “Carga Viral” encounter_datetime between “Last Clinical Consultation”-12months (last
+   * encounter_datetime-12months from B1) and “Last Clinical Consultation” (last encounter_datetime
+   * from B1).
+   *
+   * <p>B5E- exclude all patients with concept “PEDIDO DE INVESTIGACOES LABORATORIAIS” (Concept Id
+   * 23722) and value coded “HIV CARGA VIRAL” (Concept Id 856) registered in Ficha Clinica
+   * (encounter type 6) during the last 3 months from the Last Clinical Consultation (at least one
+   * “Pedido de Carga Viral” encounter_datetime between “Last Clinical Consultation”-3months and
+   * “Last Clinical Consultation” (last encounter_datetime from B1).
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
+      Boolean b4e, Boolean b5e, Integer period) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName(
+        "Patients to exclude with VL request or results between last clinical visits");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    String query =
+        " SELECT  "
+            + "     p.patient_id  "
+            + " FROM  "
+            + "     patient p  "
+            + "         INNER JOIN  "
+            + "     encounter e ON e.patient_id = p.patient_id  "
+            + "         INNER JOIN  "
+            + "     obs o ON o.encounter_id = e.encounter_id  "
+            + "         INNER JOIN  "
+            + "     (SELECT   "
+            + "         p.patient_id, MAX(e.encounter_datetime) last_visit  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+            + "     GROUP BY p.patient_id) clinical ON clinical.patient_id = p.patient_id  "
+            + " WHERE  "
+            + "     p.voided = 0 AND e.voided = 0  "
+            + "         AND o.voided = 0  "
+            + "         AND e.location_id = :location  ";
+    if (b4e) {
+      query += "         AND concept_id = ${856}  " + "         AND o.value_numeric IS NOT NULL  ";
+    } else if (b5e) {
+      query += "         AND concept_id = ${23722}  " + "         AND o.value_coded =  ${856}  ";
+    }
+    query +=
+        "         AND (e.encounter_type = ${6}  "
+            + "         AND DATE(e.encounter_datetime) BETWEEN DATE_SUB(clinical.last_visit,  "
+            + "         INTERVAL ${period} MONTH) AND DATE(clinical.last_visit))  ";
+    if (b4e) {
+      query +=
+          "      OR   "
+              + "         (e.encounter_type = ${53}  "
+              + "         AND o.obs_datetime BETWEEN DATE_SUB(clinical.last_visit,  "
+              + "         INTERVAL 12 MONTH) AND DATE(clinical.last_visit));";
+    }
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+    map.put("period", period);
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
 }

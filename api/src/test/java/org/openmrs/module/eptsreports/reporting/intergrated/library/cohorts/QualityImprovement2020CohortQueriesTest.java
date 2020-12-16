@@ -151,6 +151,25 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     assertNotNull(evaluatedCohort.getMemberIds());
   }
 
+  @Test
+  @Ignore("Functions used in queries not supported by H2")
+  public void getMQ13patientsShouldPass() throws EvaluationException {
+
+    CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getMQ13Part1(true,1);
+
+    Map<Parameter, Object> parameters = new HashMap<>();
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
+    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(
+        new Parameter("dataFinalRevisao", "Data Final Revisão", Date.class),
+        this.getDataFinalAvaliacao());
+    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
+
+    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
+
+    assertNotNull(evaluatedCohort.getMemberIds());
+  }
+
   private Date getDataFinalAvaliacao() {
     return DateUtil.getDateTime(2019, 5, 27);
   }

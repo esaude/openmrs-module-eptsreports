@@ -2416,6 +2416,32 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.alternativeLineConceptUuid</property>
+		<defaultValue>c95bf5fa-a04f-48d9-8504-f0575c2e255f</defaultValue>
+		<description>
+			ALTERNATIVAS DE LINHA CONJUNTO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.alternativeFirstLineConceptUuid</property>
+		<defaultValue>faa0e305-6803-48a4-a589-db412f52ddaa</defaultValue>
+		<description>
+			ALTERNATIVA DE PRIMEIRA LINHA DE TRATAMENTO concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.regimeChangeConceptUuid</property>
+		<defaultValue>e1d83e4e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			MUDANCA DE REGIME DE TRATAMENTO concept
+		</description>
+	</globalProperty>
+
+	
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
