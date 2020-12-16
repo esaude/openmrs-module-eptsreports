@@ -115,7 +115,7 @@ public class QualityImprovement2020Queries {
             + "                      AND        o.value_coded = ${1065} "
             + "                      AND        pickupdate.concept_id = ${23866} "
             + "                      AND        pickupdate.value_datetime IS NOT NULL "
-            + "                      AND        pickupdate.value_datetime <= :endDate) AS first_real"
+            + "                      AND        pickupdate.value_datetime <= :endDate) AS first_real "
             + "ON         inicio_real.patient_id = first_real.patient_id "
             + "WHERE      first_real.first_visit >= date_add(inicio_real.data_inicio, INTERVAL "
             + lowerBound

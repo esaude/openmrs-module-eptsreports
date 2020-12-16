@@ -1829,7 +1829,7 @@ public class QualityImprovement2020CohortQueries {
         || indicatorFlag.equals("C")
         || indicatorFlag.equals("D"))
       compositionCohortDefinition.setCompositionString(
-          "((A AND NOT E) OR B1) AND NOT (C OR D OR F))");
+          "((A AND NOT E) OR B1) AND NOT (C OR D OR F)");
     if (indicatorFlag.equals("E") || indicatorFlag.equals("F"))
       compositionCohortDefinition.setCompositionString("B2 AND NOT (C OR D OR F)");
 
