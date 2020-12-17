@@ -1126,7 +1126,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQC13P3NUM("F"),
                     "startDate=${startDate},endDate=${endDate},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=2-15");
+        "age=2-14");
 
     dataSetDefinition.addColumn(
         "MQ13NUM3",
@@ -1152,17 +1152,56 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=2-14");
 
-        dataSetDefinition.addColumn(
-            "MQ13NUM18",
-            "% de MG na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 cópia e terem 3 sessões consecutivas de APSS/PP",
-            EptsReportUtils.map(
-                eptsGeneralIndicator.getIndicator(
-                    "MQ13NUM18",
-                    EptsReportUtils.map(
-                        qualityImprovement2020CohortQueries.getMQ13P4(false, 18),
-                        "startDate=${startDate},endDate=${endDate},location=${location}")),
-                "startDate=${startDate},endDate=${endDate},location=${location}"),
-            "");
+    dataSetDefinition.addColumn(
+        "MQ13NUM18",
+        "% de MG na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 cópia e terem 3 sessões consecutivas de APSS/PP",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ13NUM18",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ13P4(false, 18),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    // Categoria  13 part 2  Denominator
+    dataSetDefinition.addColumn(
+        "MQ13DEN15",
+        "13.15. % de MG elegíveis a CV com registo de pedido de CV feito pelo clínico (MG que iniciaram TARV na CPN) Denominator: # de MG com registo de início do TARV na CPN dentro do período de inclusão. (Line 90,Column F in the Template) as following",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ13DEN15",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getgetMQC13P2DenMGInIncluisionPeriod(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ13DEN16",
+        "13.16. % de MG elegíveis a CV com registo de pedido de CV feito pelo clínico na primeira CPN (MG que entraram em TARV na CPN) Denominator:# de MG que tiveram a primeira CPN no período de inclusão, e que já estavam em TARV há mais de 3 meses  (Line 91,Column F in the Template) as following:",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ13DEN16",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries
+                        .getgetMQC13P2DenMGInIncluisionPeriod33Month(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ13DEN17",
+        "13.17. % de MG que receberam o resultado da Carga Viral dentro de 33 dias após pedido Denominator: # de MG com registo de pedido de CV no período de revisão (Line 92,Column F in the Template) as following:<",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ13DEN17",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries
+                        .getgetMQC13P2DenMGInIncluisionPeriod33Days(),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
 
     return dataSetDefinition;
   }
