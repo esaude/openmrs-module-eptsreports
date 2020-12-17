@@ -41,7 +41,7 @@ public interface ResumoTrimestralAPSSQueries {
             + "	select patient.patient_id, encounter.encounter_datetime from patient                      											"
             + "		join encounter on encounter.patient_id = patient.patient_id                                                                     "
             + "		join obs on obs.encounter_id = encounter.encounter_id  																		 	"
-            + "	where encounter.encounter_type =35 and  ((obs.concept_id = 6223 and obs.value_coded in(1383,1749,1385)) or obs.concept_id = 23717) "
+            + "	where encounter.encounter_type =35 and  (obs.concept_id = 6223 and obs.value_coded in(1383,1749,1385))    					"
             + "		and patient.voided =0 and encounter.voided = 0 and obs.voided = 0 														"
             + "		and encounter.encounter_datetime between :startDate and  :endDate and encounter.location_id =:location                  "
             + "	) seguimentoAdesao																											"
