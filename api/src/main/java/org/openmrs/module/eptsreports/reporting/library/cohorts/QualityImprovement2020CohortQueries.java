@@ -218,7 +218,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "CHILDREN",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnArtStartDate(0, 14, true),
+            genericCohortQueries.getAgeOnMOHArtStartDate(0, 14, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("(A AND FEMALE AND CHILDREN) AND NOT (B OR C)");
     return cd;
@@ -2434,7 +2434,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition g = getMQC11NG();
-    CohortDefinition adults = genericCohortQueries.getAgeOnArtStartDate(15, 200, true);
+    CohortDefinition adults = genericCohortQueries.getAgeOnMOHArtStartDate(15, 200, true);
 
     compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
     compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
@@ -2503,7 +2503,7 @@ public class QualityImprovement2020CohortQueries {
             Collections.singletonList(hivMetadata.getArtStatus()));
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition h = getMQC11NH();
-    CohortDefinition adults = genericCohortQueries.getAgeOnArtStartDate(15, 200, true);
+    CohortDefinition adults = genericCohortQueries.getAgeOnMOHArtStartDate(15, 200, true);
 
     compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING));
     compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING));
@@ -2707,7 +2707,7 @@ public class QualityImprovement2020CohortQueries {
             Collections.singletonList(hivMetadata.getArtStatus()));
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition g = getMQC11NG();
-    CohortDefinition children = genericCohortQueries.getAgeOnArtStartDate(2, 14, true);
+    CohortDefinition children = genericCohortQueries.getAgeOnMOHArtStartDate(2, 14, true);
 
     compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
     compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
@@ -2846,7 +2846,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition h = getMQC11NH();
-    CohortDefinition children = genericCohortQueries.getAgeOnArtStartDate(0, 14, true);
+    CohortDefinition children = genericCohortQueries.getAgeOnMOHArtStartDate(0, 14, true);
 
     compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING));
     compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING));
@@ -2988,13 +2988,13 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch(
         "CHILDREN",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnArtStartDate(0, 14, true),
+            genericCohortQueries.getAgeOnMOHArtStartDate(0, 14, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     comp.addSearch(
         "ADULT",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnArtStartDate(15, null, false),
+            genericCohortQueries.getAgeOnMOHArtStartDate(15, null, false),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     if (den == 1 || den == 2) {
@@ -3452,13 +3452,13 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch(
         "CHILDREN",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnArtStartDate(0, 14, true),
+            genericCohortQueries.getAgeOnMOHArtStartDate(0, 14, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     comp.addSearch(
         "ADULT",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnArtStartDate(15, null, false),
+            genericCohortQueries.getAgeOnMOHArtStartDate(15, null, false),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     if (den == 1) {
@@ -4136,35 +4136,35 @@ public class QualityImprovement2020CohortQueries {
 
     String query =
         " SELECT  "
-    + "     p.patient_id  "
-    + " FROM  "
-    + "     patient p  "
-    + "         INNER JOIN  "
-    + "     encounter e ON e.patient_id = p.patient_id  "
-    + "         INNER JOIN  "
-    + "     obs o ON o.encounter_id = e.encounter_id  "
-    + "         INNER JOIN  "
-    + "     (SELECT   "
-    + "         p.patient_id, MIN(e.encounter_datetime) encounter_datetime  "
-    + "     FROM  "
-    + "         patient p  "
-    + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
-    + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
-    + "     WHERE  "
-    + "         p.voided = 0 AND e.voided = 0  "
-    + "             AND o.voided = 0  "
-    + "             AND e.location_id = :location  "
-    + "             AND e.encounter_type = ${6}  "
-    + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
-    + "             AND o.concept_id = ${856}  "
-    + "     GROUP BY p.patient_id) AS list ON list.patient_id = p.patient_id  "
-    + " WHERE  "
-    + "     p.voided = 0 AND e.voided = 0  "
-    + "         AND o.voided = 0  "
-    + "         AND e.location_id = :location  "
-    + "         AND DATE(e.encounter_datetime) = DATE(list.encounter_datetime)  "
-    + "         AND o.concept_id = ${856}  "
-    + "         AND o.value_numeric > 1000;";
+            + "     p.patient_id  "
+            + " FROM  "
+            + "     patient p  "
+            + "         INNER JOIN  "
+            + "     encounter e ON e.patient_id = p.patient_id  "
+            + "         INNER JOIN  "
+            + "     obs o ON o.encounter_id = e.encounter_id  "
+            + "         INNER JOIN  "
+            + "     (SELECT   "
+            + "         p.patient_id, MIN(e.encounter_datetime) encounter_datetime  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND o.voided = 0  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+            + "             AND o.concept_id = ${856}  "
+            + "     GROUP BY p.patient_id) AS list ON list.patient_id = p.patient_id  "
+            + " WHERE  "
+            + "     p.voided = 0 AND e.voided = 0  "
+            + "         AND o.voided = 0  "
+            + "         AND e.location_id = :location  "
+            + "         AND DATE(e.encounter_datetime) = DATE(list.encounter_datetime)  "
+            + "         AND o.concept_id = ${856}  "
+            + "         AND o.value_numeric > 1000;";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
@@ -4211,8 +4211,7 @@ public class QualityImprovement2020CohortQueries {
         compositionCohortDefinition.setName(
             "(B1 and B2)  and NOT (C or D or F) and Age > 2 and Age < 15*");
       } else if (line == 18) {
-        compositionCohortDefinition.setName(
-            "(B1 and B2 and C)  and NOT (D or F)");
+        compositionCohortDefinition.setName("(B1 and B2 and C)  and NOT (D or F)");
       }
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
