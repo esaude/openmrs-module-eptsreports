@@ -265,7 +265,7 @@ public class QualityImprovement2020CohortQueries {
                 hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
                 hivMetadata.getArtPickupConcept().getConceptId(),
                 hivMetadata.getArtDatePickupMasterCard().getConceptId()),
-                MAPPING));
+            MAPPING));
     cd.addSearch(
         "B",
         EptsReportUtils.map(
@@ -3208,7 +3208,7 @@ public class QualityImprovement2020CohortQueries {
                 hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
                 hivMetadata.getArtPickupConcept().getConceptId(),
                 hivMetadata.getArtDatePickupMasterCard().getConceptId()),
-                MAPPING));
+            MAPPING));
     cd.addSearch(
         "G",
         EptsReportUtils.map(
@@ -4106,5 +4106,175 @@ public class QualityImprovement2020CohortQueries {
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
 
     return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>MQ13</b>: Melhoria de Qualidade Category 13 Part 4, B2 <br>
+   *
+   * <ul>
+   *   <li>B2 - Select all patients from Ficha Clinica (encounter type 6) with FIRST concept “Carga
+   *       Viral” (Concept id 856) with value_numeric > 1000 and Encounter_datetime during the
+   *       Inclusion period (startDateInclusion and endDateInclusion). Note: if there is more than
+   *       one record with value_numeric > 1000 than consider the first occurrence during the
+   *       inclusion period.
+   *   <li>
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ13P4B() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Date.class));
+
+    sqlCohortDefinition.setName("Category 13 - Part 4 Denominator - B2");
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+
+    String query =
+        " SELECT  "
+    + "     p.patient_id  "
+    + " FROM  "
+    + "     patient p  "
+    + "         INNER JOIN  "
+    + "     encounter e ON e.patient_id = p.patient_id  "
+    + "         INNER JOIN  "
+    + "     obs o ON o.encounter_id = e.encounter_id  "
+    + "         INNER JOIN  "
+    + "     (SELECT   "
+    + "         p.patient_id, MIN(e.encounter_datetime) encounter_datetime  "
+    + "     FROM  "
+    + "         patient p  "
+    + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+    + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+    + "     WHERE  "
+    + "         p.voided = 0 AND e.voided = 0  "
+    + "             AND o.voided = 0  "
+    + "             AND e.location_id = :location  "
+    + "             AND e.encounter_type = ${6}  "
+    + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+    + "             AND o.concept_id = ${856}  "
+    + "     GROUP BY p.patient_id) AS list ON list.patient_id = p.patient_id  "
+    + " WHERE  "
+    + "     p.voided = 0 AND e.voided = 0  "
+    + "         AND o.voided = 0  "
+    + "         AND e.location_id = :location  "
+    + "         AND DATE(e.encounter_datetime) = DATE(list.encounter_datetime)  "
+    + "         AND o.concept_id = ${856}  "
+    + "         AND o.value_numeric > 1000;";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>MQ13</b>: Melhoria de Qualidade Category 13 <br>
+   * <i> DENOMINATOR 3: (B1 and B2) and NOT (C or D or F) and Age >= 15* </i> <br>
+   * <i> DENOMINATOR 12: (B1 and B2) and NOT (C or D or F) and Age > 2 and Age < 15* </i> <br>
+   * <i> DENOMINATOR 18: (B1 and B2 and C) and NOT (D or F) and Age > 2 and Age < 15* </i> <br>
+   *
+   * <ul>
+   *   <li>B1- Select all patients who have the LAST “LINHA TERAPEUTICA” (Concept Id 21151) recorded
+   *       in Ficha Clinica (encounter type 6, encounter_datetime) with value coded “PRIMEIRA LINHA”
+   *       (concept id 21150) during the inclusion period (startDateInclusion and endDateInclusion).
+   *   <li>
+   *   <li>B2 - Select all patients from Ficha Clinica (encounter type 6) with FIRST concept “Carga
+   *       Viral” (Concept id 856) with value_numeric > 1000 and Encounter_datetime during the
+   *       Inclusion period (startDateInclusion and endDateInclusion). Note: if there is more than
+   *       one record with value_numeric > 1000 than consider the first occurrence during the
+   *       inclusion period.
+   *   <li>
+   *   <li>
+   *   <li>C - All female patients registered as “Pregnant” on a clinical consultation during the
+   *       inclusion period (startDateInclusion and endDateInclusion)
+   *   <li>
+   *   <li>D - All female patients registered as “Breastfeeding” on a clinical consultation during
+   *       the inclusion period (startDateInclusion and endDateInclusion)
+   *   <li>
+   *   <li>F - All Transferred Out patients
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ13P4(Boolean den, Integer line) {
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+
+    if (den) {
+      if (line == 3) {
+        compositionCohortDefinition.setName("(B1 and B2)  and NOT (C or D or F) and Age >= 15*");
+      } else if (line == 12) {
+        compositionCohortDefinition.setName(
+            "(B1 and B2)  and NOT (C or D or F) and Age > 2 and Age < 15*");
+      } else if (line == 18) {
+        compositionCohortDefinition.setName(
+            "(B1 and B2 and C)  and NOT (D or F)");
+      }
+    }
+    compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    CohortDefinition b1 =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "last",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getTherapeuticLineConcept(),
+            Collections.singletonList(hivMetadata.getFirstLineConcept()),
+            null,
+            null);
+
+    CohortDefinition b2 = getMQ13P4B();
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            true,
+            false,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getPregnantConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition breastfeeding =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            true,
+            false,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getBreastfeeding(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
+
+    compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING));
+
+    compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING));
+
+    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+
+    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transferOut, MAPPING));
+
+    if (den) {
+      if (line == 3) {
+        compositionCohortDefinition.setCompositionString("(B1 AND B2) AND NOT (C OR D OR F)");
+      } else if (line == 12) {
+        compositionCohortDefinition.setCompositionString("(B1 AND B2) AND NOT (C OR D OR F)");
+      } else if (line == 18) {
+        compositionCohortDefinition.setCompositionString("(B1 AND B2 AND C) AND NOT (D OR F)");
+      }
+    }
+    return compositionCohortDefinition;
   }
 }
