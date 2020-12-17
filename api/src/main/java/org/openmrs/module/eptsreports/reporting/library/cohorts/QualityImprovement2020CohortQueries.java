@@ -4173,10 +4173,195 @@ public class QualityImprovement2020CohortQueries {
   }
 
   /**
+   * <b>MQ13</b>: Melhoria de Qualidade Category 13 Part 4, G <br>
+   *
+   * <ul>
+   *   <li>G - Select all patients who have 3 APSS&PP (encounter type 35) consultations in 99 days
+   *       after Viral Load Result (the oldest date from B2) following the conditions:
+   *       <p>G1 - One Consultation (Encounter_datetime (from encounter type 35)) on the same date
+   *       when the Viral Load with >1000 result was recorded (the oldest date from B2) AND G2 -
+   *       Another consultation (Encounter_datetime (from encounter type 35) > “Viral Load Date”
+   *       (the oldest date from B2)+20dias and <=“Viral Load Date” (the oldest date from
+   *       B2)+33days. AND G3 - Another consultation (Encounter_datetime (from encounter type 35)) >
+   *       “Second Date” (date from G2, the oldest from G2)+20days and <=“Second Date” (date from
+   *       G2, the oldest one)+33days.
+   *   <li>
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ13P4G() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Date.class));
+
+    sqlCohortDefinition.setName("Category 13 - Part 4 Denominator - G");
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("35", hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+
+    String query =
+        "SELECT DISTINCT   "
+            + "      p.patient_id   "
+            + "  FROM   "
+            + "      patient p   "
+            + "         INNER JOIN   "
+            + "      encounter e ON p.patient_id = e.patient_id   "
+            + "          INNER JOIN   "
+            + "      (SELECT  "
+            + "     p.patient_id,DATE(list.encounter_datetime) encounter_datetime   "
+            + " FROM  "
+            + "     patient p  "
+            + "         INNER JOIN  "
+            + "     encounter e ON e.patient_id = p.patient_id  "
+            + "         INNER JOIN  "
+            + "     obs o ON o.encounter_id = e.encounter_id  "
+            + "         INNER JOIN  "
+            + "     (SELECT   "
+            + "         p.patient_id, MIN(e.encounter_datetime) encounter_datetime  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND o.voided = 0  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+            + "             AND o.concept_id = ${856}  "
+            + "     GROUP BY p.patient_id) AS list ON list.patient_id = p.patient_id  "
+            + " WHERE  "
+            + "     p.voided = 0 AND e.voided = 0  "
+            + "         AND o.voided = 0  "
+            + "         AND e.location_id = :location  "
+            + "         AND DATE(e.encounter_datetime) = DATE(list.encounter_datetime)  "
+            + "         AND o.concept_id = ${856}  "
+            + "         AND o.value_numeric > 1000) vl ON p.patient_id = vl.patient_id   "
+            + "          INNER JOIN   "
+            + "      (SELECT    "
+            + "          p.patient_id, e.encounter_datetime AS primeira   "
+            + "      FROM   "
+            + "          patient p   "
+            + "      INNER JOIN encounter e ON e.patient_id = p.patient_id   "
+            + "      WHERE   "
+            + "          p.voided = 0 AND e.voided = 0   "
+            + "              AND e.encounter_type = ${35}) visit1 ON visit1.patient_id = p.patient_id   "
+            + "          INNER JOIN   "
+            + "      (SELECT    "
+            + "          p.patient_id, e.encounter_datetime AS segunda   "
+            + "      FROM   "
+            + "          patient p   "
+            + "      INNER JOIN encounter e ON e.patient_id = p.patient_id   "
+            + "      WHERE   "
+            + "          p.voided = 0 AND e.voided = 0   "
+            + "              AND e.encounter_type = ${35}) visit2 ON visit2.patient_id = p.patient_id   "
+            + "          INNER JOIN   "
+            + "      (SELECT    "
+            + "          p.patient_id, e.encounter_datetime AS terceira   "
+            + "      FROM   "
+            + "          patient p   "
+            + "      INNER JOIN encounter e ON e.patient_id = p.patient_id   "
+            + "      WHERE   "
+            + "          p.voided = 0 AND e.voided = 0   "
+            + "              AND e.encounter_type = ${35}) visit3 ON visit3.patient_id = p.patient_id   "
+            + "  WHERE p.voided = 0   "
+            + "   AND   e.voided = 0     "
+            + "          AND e.encounter_type = ${35}   "
+            + "          AND e.location_id = :location   "
+            + "          AND DATE(visit1.primeira) = DATE(vl.encounter_datetime)   "
+            + "          AND DATE(visit2.segunda) > DATE(visit1.primeira)   "
+            + "          AND DATE(visit2.segunda) >= DATE_ADD(visit1.primeira, INTERVAL 20 DAY)   "
+            + "          AND DATE(visit2.segunda) <= DATE_ADD(visit1.primeira, INTERVAL 33 DAY)   "
+            + "          AND DATE(visit3.terceira) > DATE(visit2.segunda)   "
+            + "          AND DATE(visit3.terceira) >= DATE_ADD(visit2.segunda, INTERVAL 20 DAY)    "
+            + "          AND DATE(visit3.terceira) <= DATE_ADD(visit2.segunda, INTERVAL 33 DAY);";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>MQ13</b>: Melhoria de Qualidade Category 13 Part 4, H <br>
+   *
+   * <ul>
+   *   <li>Select all patients with clinical consultation (encounter type 6) with concept “PEDIDO DE
+   *       INVESTIGACOES LABORATORIAIS” (Concept Id 23722) and value coded “HIV CARGA VIRAL”
+   *       (Concept Id 856) on Encounter_datetime between “Viral Load Date” (the oldest date from
+   *       B2)+66 days and “Viral Load Date” (the oldest date from B2)+120 days.
+   *   <li>
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ13P4H() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Date.class));
+
+    sqlCohortDefinition.setName("Category 13 - Part 4 Denominator - H");
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+
+    String query =
+        " SELECT DISTINCT  "
+            + "        p.patient_id  "
+            + "    FROM  "
+            + "        patient p  "
+            + "            INNER JOIN  "
+            + "        encounter e ON e.patient_id = p.patient_id  "
+            + "            INNER JOIN  "
+            + "        obs o ON o.encounter_id = e.encounter_id  "
+            + "            INNER JOIN  "
+            + "        (SELECT   "
+            + "            p.patient_id, MIN(e.encounter_datetime) value_datetime  "
+            + "        FROM  "
+            + "            patient p  "
+            + "        INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "        INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "        WHERE  "
+            + "            p.voided = 0 AND e.voided = 0  "
+            + "                AND o.voided = 0  "
+            + "                AND e.location_id = :location  "
+            + "                AND e.encounter_type = ${6}  "
+            + "                AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
+            + "                AND o.concept_id = ${856}  "
+            + "                AND o.value_numeric > 1000  "
+            + "        GROUP BY p.patient_id) vl ON vl.patient_id = p.patient_id  "
+            + "    WHERE  "
+            + "        p.voided = 0 AND e.voided = 0  "
+            + "            AND o.voided = 0  "
+            + "            AND e.encounter_type = ${6}  "
+            + "            AND e.location_id = :location  "
+            + "            AND o.concept_id = ${23722}  "
+            + "            AND o.value_coded = ${856}  "
+            + "            AND DATE(e.encounter_datetime) BETWEEN DATE_ADD(vl.value_datetime,  "
+            + "            INTERVAL 66 DAY) AND DATE_ADD(vl.value_datetime,  "
+            + "            INTERVAL 120 DAY);";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
    * <b>MQ13</b>: Melhoria de Qualidade Category 13 <br>
    * <i> DENOMINATOR 3: (B1 and B2) and NOT (C or D or F) and Age >= 15* </i> <br>
    * <i> DENOMINATOR 12: (B1 and B2) and NOT (C or D or F) and Age > 2 and Age < 15* </i> <br>
    * <i> DENOMINATOR 18: (B1 and B2 and C) and NOT (D or F) and Age > 2 and Age < 15* </i> <br>
+   * <i> NUMERATOR 3: (B1 and B2 AND G AND H) and NOT (C or D or F) and Age >= 15* </i> <br>
+   * <i> NUMERATOR 12: (B1 and B2 AND G AND H) and NOT (C or D or F) and Age > 2 and Age < 15* </i>
+   * <br>
    *
    * <ul>
    *   <li>B1- Select all patients who have the LAST “LINHA TERAPEUTICA” (Concept Id 21151) recorded
@@ -4212,6 +4397,17 @@ public class QualityImprovement2020CohortQueries {
             "(B1 and B2)  and NOT (C or D or F) and Age > 2 and Age < 15*");
       } else if (line == 18) {
         compositionCohortDefinition.setName("(B1 and B2 and C)  and NOT (D or F)");
+      }
+    } else {
+      if (line == 3) {
+        compositionCohortDefinition.setName(
+            "(B1 and B2 AND G AND H)  and NOT (C or D or F) and Age >= 15*");
+      } else if (line == 12) {
+        compositionCohortDefinition.setName(
+            "(B1 and B2 AND G AND H)  and NOT (C or D or F) and Age > 2 and Age < 15*");
+      } else if (line == 18) {
+        compositionCohortDefinition.setName(
+            "(B1 and B2 AND C AND G AND H)  and NOT (D or F)");
       }
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
@@ -4255,6 +4451,10 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
+    CohortDefinition G = getMQ13P4G();
+
+    CohortDefinition H = getMQ13P4H();
+
     compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING));
 
     compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING));
@@ -4265,6 +4465,10 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transferOut, MAPPING));
 
+    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(G, MAPPING));
+
+    compositionCohortDefinition.addSearch("H", EptsReportUtils.map(H, MAPPING));
+
     if (den) {
       if (line == 3) {
         compositionCohortDefinition.setCompositionString("(B1 AND B2) AND NOT (C OR D OR F)");
@@ -4272,6 +4476,17 @@ public class QualityImprovement2020CohortQueries {
         compositionCohortDefinition.setCompositionString("(B1 AND B2) AND NOT (C OR D OR F)");
       } else if (line == 18) {
         compositionCohortDefinition.setCompositionString("(B1 AND B2 AND C) AND NOT (D OR F)");
+      }
+    } else {
+      if (line == 3) {
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND B2 AND G AND H) AND NOT (C OR D OR F)");
+      } else if (line == 12) {
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND B2 AND G AND H) AND NOT (C OR D OR F)");
+      } else if (line == 18) {
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND B2 AND C AND G AND H) AND NOT (D OR F)");
       }
     }
     return compositionCohortDefinition;

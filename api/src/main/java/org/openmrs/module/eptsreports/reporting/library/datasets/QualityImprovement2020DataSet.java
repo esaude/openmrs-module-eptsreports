@@ -1128,6 +1128,42 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=2-15");
 
+    dataSetDefinition.addColumn(
+        "MQ13NUM3",
+        "% de Adultos (15/+anos) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 e terem  3 sessões consecutivas de APSS/PP",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ13NUM3",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ13P4(false, 3),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ13NUM12",
+        "% de crianças (>2 anos de idade) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ13NUM12",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ13P4(false, 12),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=2-14");
+
+        dataSetDefinition.addColumn(
+            "MQ13NUM18",
+            "% de MG na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 cópia e terem 3 sessões consecutivas de APSS/PP",
+            EptsReportUtils.map(
+                eptsGeneralIndicator.getIndicator(
+                    "MQ13NUM18",
+                    EptsReportUtils.map(
+                        qualityImprovement2020CohortQueries.getMQ13P4(false, 18),
+                        "startDate=${startDate},endDate=${endDate},location=${location}")),
+                "startDate=${startDate},endDate=${endDate},location=${location}"),
+            "");
+
     return dataSetDefinition;
   }
 
