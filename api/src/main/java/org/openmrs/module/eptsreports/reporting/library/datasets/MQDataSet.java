@@ -1514,6 +1514,21 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT13P4PregnantDENUMINATOR.addParameter(new Parameter("location", "location", Date.class));
 
+    final CohortIndicator CAT13P4PregnantNUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P4PregnantNUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findPatientsWhoPregnantReceivedResultMoreThan1000CVCategory13P4Numerator(),
+                mappings));
+    CAT13P4PregnantNUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P4PregnantNUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P4PregnantNUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P4PregnantNUMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
     dataSetDefinition.addColumn(
         "CAT3ADULTODENOMINATOR",
         "CAT3ADULTODENOMINATOR",
@@ -2064,6 +2079,11 @@ public class MQDataSet extends BaseDataSet {
         "CAT13P4PregnantDENUMINATOR",
         "CAT13P4PregnantDENUMINATOR",
         EptsReportUtils.map(CAT13P4PregnantDENUMINATOR, mappings),
+        "");
+    dataSetDefinition.addColumn(
+        "CAT13P4PregnantNUMINATOR",
+        "CAT13P4PregnantNUMINATOR",
+        EptsReportUtils.map(CAT13P4PregnantNUMINATOR, mappings),
         "");
 
     this.addColumnsForCategory15(dataSetDefinition, mappings);
