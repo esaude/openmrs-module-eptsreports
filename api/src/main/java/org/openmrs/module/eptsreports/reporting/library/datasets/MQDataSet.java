@@ -1435,6 +1435,85 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT10_10_3_NUMERATOR.addParameter(new Parameter("location", "location", Date.class));
 
+    final CohortIndicator CAT13P4AdultDENUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P4AdultDENUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findPatientsWhoReceivedResultMoreThan1000CVCategory13P4Denumerator(),
+                mappings));
+
+    CAT13P4AdultDENUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P4AdultDENUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P4AdultDENUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P4AdultDENUMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13P4AdultNUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P4AdultNUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findPatientsWhoReceivedResultMoreThan1000CVCategory13P4Numerator(),
+                mappings));
+
+    CAT13P4AdultNUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P4AdultNUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P4AdultNUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P4AdultNUMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13P4ChildrenDENUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P4ChildrenDENUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findChildrenBetween2And15WhoHaveRequestedCVCategory13P4Denumerator(),
+                mappings));
+
+    CAT13P4ChildrenDENUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P4ChildrenDENUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P4ChildrenDENUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P4ChildrenDENUMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13P4ChildrenNUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P4ChildrenNUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findChildrenBetween2And15WhoHaveRequestedCVCategory13P4Numerator(),
+                mappings));
+
+    CAT13P4ChildrenNUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P4ChildrenNUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P4ChildrenNUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P4ChildrenNUMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT13P4PregnantDENUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT13P4PregnantDENUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries.findPregnantWhoHaveRequestedCVCategory13P4Denumerator(),
+                mappings));
+
+    CAT13P4PregnantDENUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT13P4PregnantDENUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT13P4PregnantDENUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT13P4PregnantDENUMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
     dataSetDefinition.addColumn(
         "CAT3ADULTODENOMINATOR",
         "CAT3ADULTODENOMINATOR",
@@ -1955,6 +2034,36 @@ public class MQDataSet extends BaseDataSet {
         "CAT10_10_3_NUMERATOR",
         "CAT10_10_3_NUMERATOR",
         EptsReportUtils.map(CAT10_10_3_NUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P4AdultDENUMINATOR",
+        "CAT13P4AdultDENUMINATOR",
+        EptsReportUtils.map(CAT13P4AdultDENUMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P4AdultNUMINATOR",
+        "CAT13P4AdultNUMINATOR",
+        EptsReportUtils.map(CAT13P4AdultNUMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P4ChildrenDENUMINATOR",
+        "CAT13P4ChildrenDENUMINATOR",
+        EptsReportUtils.map(CAT13P4ChildrenDENUMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P4ChildrenNUMINATOR",
+        "CAT13P4ChildrenNUMINATOR",
+        EptsReportUtils.map(CAT13P4ChildrenNUMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT13P4PregnantDENUMINATOR",
+        "CAT13P4PregnantDENUMINATOR",
+        EptsReportUtils.map(CAT13P4PregnantDENUMINATOR, mappings),
         "");
 
     this.addColumnsForCategory15(dataSetDefinition, mappings);
