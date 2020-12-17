@@ -8,9 +8,8 @@ import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.QualityImprovementCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.QualityImprovementDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.MQDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -23,9 +22,9 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
-  @Autowired private QualityImprovementDataSet initQltyImpDataSet;
-
   @Autowired QualityImprovementCohortQueries qualityImprovementCohortQueries;
+
+  @Autowired MQDataSet mqDataSet;
 
   @Override
   public String getUuid() {
@@ -34,7 +33,7 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "QUALITY IMPROVEMENT REPORT 2019";
+    return "QUALITY IMPROVEMENT REPORT 2020";
   }
 
   @Override
@@ -60,14 +59,7 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
     reportDefinition.setDescription(getDescription());
     reportDefinition.setParameters(getParameters());
     reportDefinition.addDataSetDefinition(
-        "ALL", Mapped.mapStraightThrough(initQltyImpDataSet.constructInitQltyImpDataSet()));
-
-    // add a base cohort here to help in calculations running
-    reportDefinition.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(),
-            "endDate=${dataFinalAvaliacao},location=${location}"));
-
+        "MQ", Mapped.mapStraightThrough(mqDataSet.constructTMqDatset()));
     return reportDefinition;
   }
 
@@ -77,11 +69,7 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition,
-              "TEMPLATE_MELHORIA_QUALIDADE.xls",
-              "QUALITY IMPROVEMENT REPORT",
-              getExcelDesignUuid(),
-              null);
+              reportDefinition, "MQ.xls", "QUALITY IMPROVEMENT REPORT", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
@@ -95,10 +83,9 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
   @Override
   public List<Parameter> getParameters() {
     return Arrays.asList(
-        new Parameter("startDate", "Data Inicial Inclusão", Date.class),
-        new Parameter("endDate", "Data Final Inclusão", Date.class),
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
-        new Parameter("location", "Unidade Sanitária", Location.class),
-        new Parameter("testStart", "Testar Iniciar", Boolean.class));
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class),
+        new Parameter("endInclusionDate", "  Data Final Inclusão", Date.class),
+        new Parameter("endRevisionDate", "Data Final Revisão", Date.class),
+        new Parameter("location", "Unidade Sanitária", Location.class));
   }
 }

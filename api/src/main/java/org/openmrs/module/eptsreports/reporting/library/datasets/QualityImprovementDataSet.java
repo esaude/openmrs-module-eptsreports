@@ -55,6 +55,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientInARVSampleWithEncounterIn7DaysAfterDianosis(),
                 mappingsWitshEvaluate));
+
     consultanic.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
 
     addRow(
