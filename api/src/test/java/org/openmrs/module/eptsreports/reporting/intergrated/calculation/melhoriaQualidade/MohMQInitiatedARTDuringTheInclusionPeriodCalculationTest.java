@@ -10,21 +10,16 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.eptsreports.reporting.calculation.melhoriaQualidade.SecondFollowingEncounterAfterOldestARTStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.melhoriaQualidade.MohMQInitiatedARTDuringTheInclusionPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
-public class SecondFollowingEncounterAfterOldestARTStartDateCalculationTest
+public class MohMQInitiatedARTDuringTheInclusionPeriodCalculationTest
     extends BasePatientCalculationTest {
-
-  @Before
-  public void init() throws Exception {
-    executeDataSet("SecondEncounterAfterOldestARTstartDateCalculation.xml");
-  }
 
   @Override
   public PatientCalculation getCalculation() {
     return Context.getRegisteredComponents(
-            SecondFollowingEncounterAfterOldestARTStartDateCalculation.class)
+            MohMQInitiatedARTDuringTheInclusionPeriodCalculation.class)
         .get(0);
   }
 
@@ -36,6 +31,11 @@ public class SecondFollowingEncounterAfterOldestARTStartDateCalculationTest
   @Override
   public CalculationResultMap getResult() {
     return new CalculationResultMap();
+  }
+
+  @Before
+  public void init() throws Exception {
+    executeDataSet("mohMQInitiatedARTDuringTheInclusionPeriodCalculation.xml");
   }
 
   @Test
@@ -64,7 +64,7 @@ public class SecondFollowingEncounterAfterOldestARTStartDateCalculationTest
 
     Calendar expectedResultCalendar =
         DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
-    expectedResultCalendar.set(2019, Calendar.NOVEMBER, 18);
+    expectedResultCalendar.set(2019, Calendar.SEPTEMBER, 26);
     Assert.assertEquals(expectedResultCalendar.getTime(), result.getValue());
   }
 }

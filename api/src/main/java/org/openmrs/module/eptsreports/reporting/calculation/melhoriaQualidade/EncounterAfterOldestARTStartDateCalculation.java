@@ -42,7 +42,8 @@ public class EncounterAfterOldestARTStartDateCalculation extends AbstractPatient
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
 
     PatientCalculation patientCalculation =
-        Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0);
+        Context.getRegisteredComponents(MohMQInitiatedARTDuringTheInclusionPeriodCalculation.class)
+            .get(0);
 
     CalculationResultMap artStartDates =
         calculate(patientCalculation, cohort, parameterValues, context);

@@ -40,10 +40,10 @@
 
     <!-- global_property -->
     <global_property
-            property="eptsreports.apssPrevencaoPositivaSeguimentoEncounterTypeUuid"
-            property_value="f4aa93fe-8737-4f70-9532-542b768459d7"
-            description="UUID for the APSS: PREVENÇÃO POSITIVA - SEGUIMENTO encounter type"
-            uuid="25a9f568-7d4f-4496-b372-939950af7ddc"
+            property="eptsreports.masterCardDrugPickupEncounterTypeUuid"
+            property_value="3521545a-4046-11eb-8324-5311c1c75d07"
+            description="UUID for the Levantamento de ARV Master Card encounter type"
+            uuid="a3c435ee-4037-11eb-ae06-3b1b25df347d"
     />
     <global_property
             property="eptsreports.masterCardEncounterType"
@@ -51,18 +51,26 @@
             description="UUID for the Master Card  Ficha Resumo encounter type"
             uuid="c9000eb4-388a-11eb-aff6-0b3a6a19dee8"/>
 
+
     <global_property
-            property="eptsreports.arvPlanConceptUuid"
-            property_value="e1d9ee10-1d5f-11e0-b929-000c29ad1d07"
-            description="UUID for the GESTÃO DE TARV concept"
+            property="eptsreports.preArtPickupDate"
+            property_value="7287f100-4046-11eb-8deb-83b0d4ecf975"
+            description="UUID for the Date of ART Pickup concept"
+            uuid="31f971de-388c-11eb-958f-4f462f97a667"
+    />
+
+    <global_property
+            property="eptsreports.artPickupConceptUuid"
+            property_value="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0"
+            description="UUID for the LEVANTOU ARV concept"
             uuid="0e405ffa-388c-11eb-be31-53c6fc8c15ce"
     />
 
     <global_property
-            property="eptsreports.startDrugs"
-            property_value="e1d9ef28-1d5f-11e0-b929-000c29ad1d07"
-            description="UUID for the START DRUGS concept"
-            uuid="31f971de-388c-11eb-958f-4f462f97a667"
+            property="eptsreports.yesConceptUuid"
+            property_value="9ea783f4-4046-11eb-97c0-83719b1c046c"
+            description="UUID for the SIM concept"
+            uuid="e1e286f0-4041-11eb-8cbe-83d160b4d1c7"
     />
 
     <global_property
@@ -72,11 +80,12 @@
             uuid="4f8c5c56-388d-11eb-941b-5bf07dec298d"
     />
 
-    <encounter_type encounter_type_id="35"
-                    name="APSS: PREVENÇÃO POSITIVA - SEGUIMENTO"
-                    description="Ficha de apoio psicossocial e prevenção positiva - Seguimento"
-                    creator="1" date_created="2014-07-09 08:16:00" retired="0"
-                    uuid="f4aa93fe-8737-4f70-9532-542b768459d7" />
+    <encounter_type encounter_type_id="52"
+                    name="Levantamento de ARV-Master Card"
+                    description="Registo de levantamento de ARV no Master Card"
+                    creator="1" date_created="2019-07-09 13:03:45" retired="0"
+                    uuid="3521545a-4046-11eb-8324-5311c1c75d07" />
+
 
     <encounter_type encounter_type_id="53"
                     name="Master Card Ficha Resumo"
@@ -84,23 +93,26 @@
                     creator="1" date_created="2008-10-13 04:32:34" retired="0"
                     uuid="e422ecf9-75dd-4367-b21e-54bccabc4763" />
 
-    <concept concept_id="1255" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="e1d9ee10-1d5f-11e0-b929-000c29ad1d07"/>
+    <concept concept_id="23866" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="7287f100-4046-11eb-8deb-83b0d4ecf975"/>
 
-    <concept concept_id="1256" retired="0" datatype_id="4" class_id="15" is_set="0" creator="1" date_created="2019-07-09 13:00:20" uuid="e1d9ef28-1d5f-11e0-b929-000c29ad1d07"/>
+    <concept concept_id="23865" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2019-07-09 13:00:20" uuid="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0"/>
+
+    <concept concept_id="1065" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2019-07-09 13:00:20" uuid="9ea783f4-4046-11eb-97c0-83719b1c046c"/>
 
     <concept concept_id="1190" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2005-02-09 00:00:00" uuid="e1d8f690-1d5f-11e0-b929-000c29ad1d07" />
 
     <encounter encounter_id="112" encounter_type="53" patient_id="1001" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="81c5a0a8-388b-11eb-944e-4fee60b94949" location_id="1" />
 
-    <encounter encounter_id="111" encounter_type="35" patient_id="1001" encounter_datetime="2019-10-20 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9896-7ad705f0e4e1" location_id="1" />
-
-    <encounter encounter_id="211" encounter_type="35" patient_id="1001" encounter_datetime="2019-11-18 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="7d214fd8-3891-11eb-ad6a-57263c715239" location_id="1" />
+    <encounter encounter_id="111" encounter_type="52" patient_id="1001" encounter_datetime="2019-10-20 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9896-7ad705f0e4e1" location_id="1" />
 
 
-    <!--
-        <obs obs_id="122" person_id="1001" concept_id="1255" encounter_id="112" obs_datetime="2019-09-26 00:00:00"  value_coded="1256"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c183947a-388b-11eb-b6a7-eb9d5a01c619" location_id="1" />
-    -->
+
+
     <obs obs_id="123" person_id="1001" concept_id="1190" encounter_id="112" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="76d70f0e-388d-11eb-927d-4fc160e49bf1" location_id="1" />
+
+    <obs obs_id="124" person_id="1001" concept_id="23866" encounter_id="111" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-10-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c0a7c0a0-4040-11eb-ae37-670c1f17452b" location_id="1" />
+
+    <obs obs_id="125" person_id="1001" concept_id="23865" encounter_id="111"  value_coded="1065" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="ca727012-4040-11eb-a8ef-db23fc4d92de" location_id="1" />
 
 
 

@@ -46,9 +46,9 @@
             uuid="25a9f568-7d4f-4496-b372-939950af7ddc"
     />
     <global_property
-            property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid"
-            property_value="e278f956-1d5f-11e0-b929-000c29ad1d07"
-            description="UUID for the S.TARV: ADULTO SEGUIMENTO encounter typee"
+            property="eptsreports.masterCardEncounterType"
+            property_value="e422ecf9-75dd-4367-b21e-54bccabc4763"
+            description="UUID for the Master Card  Ficha Resumo encounter type"
             uuid="c9000eb4-388a-11eb-aff6-0b3a6a19dee8"
     />
 
@@ -79,11 +79,11 @@
                     creator="1" date_created="2014-07-09 08:16:00" retired="0"
                     uuid="f4aa93fe-8737-4f70-9532-542b768459d7" />
 
-    <encounter_type encounter_type_id="6"
-                    name="S.TARV: ADULTO SEGUIMENTO"
-                    description="seguimento visita do paciente adulto"
+    <encounter_type encounter_type_id="53"
+                    name="Master Card Ficha Resumo"
+                    description="Ficha resumo no master card"
                     creator="1" date_created="2008-10-13 04:32:34" retired="0"
-                    uuid="e278f956-1d5f-11e0-b929-000c29ad1d07" />
+                    uuid="e422ecf9-75dd-4367-b21e-54bccabc4763" />
 
     <concept concept_id="1255" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="e1d9ee10-1d5f-11e0-b929-000c29ad1d07"/>
 
@@ -91,7 +91,7 @@
 
     <concept concept_id="1190" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2005-02-09 00:00:00" uuid="e1d8f690-1d5f-11e0-b929-000c29ad1d07" />
 
-    <encounter encounter_id="112" encounter_type="6" patient_id="1001" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="81c5a0a8-388b-11eb-944e-4fee60b94949" location_id="1" />
+    <encounter encounter_id="112" encounter_type="53" patient_id="1001" encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="81c5a0a8-388b-11eb-944e-4fee60b94949" location_id="1" />
 
     <encounter encounter_id="111" encounter_type="35" patient_id="1001" encounter_datetime="2019-10-02 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="d012e5e6-06ff-4a1c-9896-7ad705f0e4e1" location_id="1" />
 

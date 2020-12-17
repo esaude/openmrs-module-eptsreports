@@ -40,10 +40,13 @@ public class ConsultationUntilEndDateAfterStartingARTTest extends BasePatientCal
 
     PatientCalculationContext context = getEvaluationContext();
     Calendar endDate = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
+    Calendar startDate = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
 
     endDate.set(2019, Calendar.DECEMBER, 20);
+    startDate.set(2019, Calendar.SEPTEMBER, 21);
 
     context.addToCache("onOrBefore", endDate.getTime());
+    context.addToCache("onOrAfter", startDate.getTime());
 
     Map<String, Object> parameterValues = new HashMap<>();
 

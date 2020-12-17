@@ -2061,6 +2061,8 @@ public class QualityImprovement2020CohortQueries {
     cd.setName("APSS consultation after ART start date");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+
     cd.addCalculationParameter("considerTransferredIn", false);
     cd.addCalculationParameter("considerPharmacyEncounter", true);
     cd.addCalculationParameter("lowerBoundary", lowerBoundary);
@@ -2091,6 +2093,7 @@ public class QualityImprovement2020CohortQueries {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName("Category 11 Numerator session G");
+    compositionCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -2107,14 +2110,19 @@ public class QualityImprovement2020CohortQueries {
             20, 33, ThirdFollowingEncounterAfterOldestARTStartDateCalculation.class);
 
     compositionCohortDefinition.addSearch(
-        "firstApss", EptsReportUtils.map(firstApss, "onOrBefore=${endDate},location=${location}"));
+        "firstApss",
+        EptsReportUtils.map(
+            firstApss, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "secondApss",
-        EptsReportUtils.map(secondApss, "onOrBefore=${endDate},location=${location}"));
+        EptsReportUtils.map(
+            secondApss, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-        "thirdApss", EptsReportUtils.map(thirdApss, "onOrBefore=${endDate},location=${location}"));
+        "thirdApss",
+        EptsReportUtils.map(
+            thirdApss, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     compositionCohortDefinition.setCompositionString("firstApss AND secondApss AND thirdApss");
 
@@ -2367,6 +2375,8 @@ public class QualityImprovement2020CohortQueries {
         "Categoru 11 - numerator - Session I - Interval of 33 Daus for APSS consultations after ART start date");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+
     cd.addCalculationParameter("considerTransferredIn", false);
     cd.addCalculationParameter("considerPharmacyEncounter", true);
 
@@ -2432,8 +2442,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
-    compositionCohortDefinition.addSearch(
-        "G", EptsReportUtils.map(g, "endDate=${endDate},location=${location}"));
+    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING));
     compositionCohortDefinition.addSearch(
         "ADULTS",
         EptsReportUtils.map(
@@ -2574,8 +2583,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
-    compositionCohortDefinition.addSearch(
-        "G", EptsReportUtils.map(g, "endDate=${endDate},location=${location}"));
+    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING));
 
     compositionCohortDefinition.setCompositionString(
         "A AND B3 AND  C AND NOT D AND NOT E AND NOT F  AND G");
@@ -2706,8 +2714,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
-    compositionCohortDefinition.addSearch(
-        "G", EptsReportUtils.map(g, "endDate=${endDate},location=${location}"));
+    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING));
     compositionCohortDefinition.addSearch(
         "CHILDREN",
         EptsReportUtils.map(
@@ -2775,7 +2782,9 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
     compositionCohortDefinition.addSearch(
-        "I", EptsReportUtils.map(i, "onOrBefore=${endDate},location=${location}"));
+        "I",
+        EptsReportUtils.map(
+            i, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     compositionCohortDefinition.addSearch(
         "BABIES", EptsReportUtils.map(babies, "effectiveDate=${effectiveDate}"));
 
