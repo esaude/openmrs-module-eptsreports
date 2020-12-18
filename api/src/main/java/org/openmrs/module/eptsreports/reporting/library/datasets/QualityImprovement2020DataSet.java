@@ -1614,7 +1614,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQ15NUM(5),
                     "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "MQ15NUM6",
@@ -1626,7 +1626,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQ15NUM(6),
                     "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "MQ15NUM7",
@@ -1638,7 +1638,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQ15NUM(7),
                     "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "MQ15NUM8",
@@ -1650,7 +1650,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQ15NUM(8),
                     "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "MQ15NUM9",
@@ -1662,7 +1662,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQ15NUM(9),
                     "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "MQ15NUM10",
@@ -1674,7 +1674,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQ15NUM(10),
                     "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "MQ15NUM11",
@@ -1686,7 +1686,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQ15NUM(11),
                     "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "MQ15NUM12",
@@ -1698,7 +1698,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                     qualityImprovement2020CohortQueries.getMQ15NUM(12),
                     "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
-        "age=15+");
+        "");
 
     return dataSetDefinition;
   }

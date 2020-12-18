@@ -6034,13 +6034,13 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch("I", EptsReportUtils.map(i,MAPPING));
 
     comp.addSearch(
-        "AGES_2_9",
+        "AGES29",
         EptsReportUtils.map(
             genericCohortQueries.getAgeOnArtStartDate(2, 9, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     comp.addSearch(
-        "AGES_10_14",
+        "AGES1014",
         EptsReportUtils.map(
             genericCohortQueries.getAgeOnArtStartDate(10, 14, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
@@ -6067,28 +6067,27 @@ public class QualityImprovement2020CohortQueries {
       comp.setCompositionString("A AND NOT (B1 OR C OR D OR F) AND G2 AND I AND ADULT");
     } else if (num == 5) {
       comp.setCompositionString(
-          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND AGES_2_9");
+          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND AGES29");
     } else if (num == 6) {
       comp.setCompositionString(
-          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND AGES_10_14");
+          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND AGES1014");
     } else if (num == 7) {
       comp.setCompositionString(
-          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND H1 AND AGES_2_9");
+          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND H1 AND AGES29");
     } else if (num == 8) {
       comp.setCompositionString(
-          "(A2 OR A3) and NOT (B1 OR C OR D OR F) AND H1 AND AGES_10_14");
+          "(A2 OR A3) and NOT (B1 OR C OR D OR F) AND H1 AND AGES1014");
     } else if (num == 9) {
       comp.setCompositionString(
-          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND H2 AND AGES_2_9");
+          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND H2 AND AGES29");
     } else if (num == 10) {
       comp.setCompositionString(
-          "(A2 OR A3) and NOT (B1 OR C OR D OR F) AND G2 AND H2 AND AGES_10_14");
+          "(A2 OR A3) and NOT (B1 OR C OR D OR F) AND G2 AND H2 AND AGES1014");
     } else if (num == 11) {
       comp.setCompositionString(
-          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND I AND AGES_2_9");
+          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND I AND AGES29");
     } else if (num == 12) {
-      comp.setCompositionString(
-          "(A2 OR A3) and NOT (B1 OR C OR D OR F) AND G2 AND I AND AGES_10_14");
+      comp.setCompositionString("(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND I AND AGES1014");
     }
     return comp;
   }
