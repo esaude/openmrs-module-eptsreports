@@ -5022,4 +5022,98 @@ public class QualityImprovement2020CohortQueries {
 
     return cd;
   }
+  /**
+   * <b>M&Q Report - Cat 10 Indicator 10.3 - Numerator and Denominator<br>
+   *
+   * <p>Conta para o numerador: Crianças diagnosticadas através do teste de PCR (registados na ficha
+   * resumo, no campo Cuidados de HIV-Data-PCR) e que iniciaram o TARV no período de inclusão,
+   * dentro de 15 dias após a data do diagnóstico (isto é a diferença entre a data do diagnóstico
+   * através do PCR registada na ficha resumo e a data do início do TARV registada na ficha resumo
+   * deve ser igual ou inferior a 15 dias). Selecionar todos os que iniciaram TARV (1a Linha) no
+   * período de inclusão e Filtrar as Crianças ( 0 a 18m) excluindo Mulheres Grávidas, Lactantes,
+   * Criancas>18m, Adultos e Transferidos De, com a diferença entre a Data do Início TARV (Ficha
+   * Clínica) e a Data de Diagnóstico (Ficha Resumo - Data do PCR) é entre 0 a 15 dias.
+   *
+   * <ul>
+   *   <li>A - Select all patients who initiated ART during the Inclusion Period (startDateRevision
+   *       and endDateInclusion)
+   *   <li>B – Filter all patients diagnosed with the PCR test (registado na ficha resumo, no campo
+   *       Cuidados de HIV-Data-PCR)
+   *   <li>C - Exclude all transferred in patients
+   *   <li>D – Filter all patients with “ART Start Date”( the oldest date from A) minus “Diagnosis
+   *       Date” >=0 and <=15 days
+   * </ul>
+   *
+   * <p>10.3. % de crianças com PCR positivo para HIV que iniciaram TARV dentro de 2 semanas após o
+   * diagnóstico/entrega do resultado ao cuidador
+   *
+   * <ul>
+   *   <li>Denominator: # de crianças com idade compreendida entre 0 - 18 meses, diagnosticadas
+   *       através do teste de PCR (registados na ficha resumo, no campo Cuidados de HIV-Data-PCR) e
+   *       que iniciaram o TARV no período de inclusão. <b>A and B and NOT C and Age>=0months and
+   *       &lt;18months</b>
+   *   <li>Numerator: # crianças com idade compreendida entre 0 - 18 meses, diagnosticadas através
+   *       do PCR (registado na ficha resumo, no campo Cuidados de HIV-Data-PCR) que tenham iniciado
+   *       o TARV dentro de 15 dias após o diagnóstico através do PCR. <b>A and B and D and NOT C
+   *       and Age>=0months and <18months</b>
+   * </ul>
+   *
+   * <p>Age should be calculated on Patient ART Start Date
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ10NUMDEN103(String flag) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("MQ10NUMDEN103 Cohort definition");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addSearch(
+        "infant",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeInMonthsOnArtStartDate(0, 18),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            genericCohortQueries.getStartedArtOnPeriod(false, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "B",
+        EptsReportUtils.map(
+            commonCohortQueries.getMohMQPatientsOnCondition(
+                false,
+                true,
+                "once",
+                hivMetadata.getMasterCardDrugPickupEncounterType(),
+                hivMetadata.getTypeTestHIVConcept(),
+                Collections.singletonList(hivMetadata.getHivPCRQualitativeConceptUuid()),
+                hivMetadata.getTypeTestHIVConcept(),
+                Collections.singletonList(hivMetadata.getHivPCRQualitativeConceptUuid())),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(
+            commonCohortQueries.getMohMQPatientsOnCondition(
+                false,
+                true,
+                "once",
+                hivMetadata.getMasterCardEncounterType(),
+                commonMetadata.getTransferFromOtherFacilityConcept(),
+                Collections.singletonList(hivMetadata.getYesConcept()),
+                hivMetadata.getTypeOfPatientTransferredFrom(),
+                Collections.singletonList(hivMetadata.getArtStatus())),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            genericCohortQueries.getArtDateMinusDiagnosisDate(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    if (flag.equals("num")) {
+      cd.setCompositionString("(A AND B AND D AND infant) AND NOT C");
+    } else if (flag.equals("den")) {
+      cd.setCompositionString("(A AND B AND infant) AND NOT C");
+    }
+    return cd;
+  }
 }

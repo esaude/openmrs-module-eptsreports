@@ -637,4 +637,29 @@ public class GenericCohortQueries {
     cd.setMaxAgeUnit(DurationUnit.MONTHS);
     return cd;
   }
+
+  public CohortDefinition getAgeInMonthsOnArtStartDate(Integer minAge, Integer maxAge) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(AgeInMonthsOnArtStartDateCalculation.class).get(0));
+    cd.setName("Age in months based on ART start date");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addCalculationParameter("minAge", minAge);
+    cd.addCalculationParameter("maxAge", maxAge);
+
+    return cd;
+  }
+
+  public CohortDefinition getArtDateMinusDiagnosisDate() {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(ArtDateMinusDiagnosisDateCalculation.class).get(0));
+    cd.setName("ART date minus diagnosis date");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    return cd;
+  }
 }
