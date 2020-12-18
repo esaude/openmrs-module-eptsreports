@@ -687,7 +687,7 @@ public class APSSResumoTrimestralCohortQueries {
             + "        o.concept_id = ${adherenceEvaluationConcept} AND o.value_coded IN (${goodConcept}, ${arvAdherenceRiskConcept}, ${badConcept}) "
             + "        ) "
             + "    AND encounter_datetime "
-            + "        BETWEEN (SELECT DATE_ADD(min(art_startdate.min_date), INTERVAL 30 DAY) as min_min_date  "
+            + "        > (SELECT DATE_ADD(min(art_startdate.min_date), INTERVAL 30 DAY) as min_min_date  "
             + "FROM  "
             + "(  "
             + "    SELECT  p.patient_id as patient_id, min(pp.date_enrolled) AS min_date  "
@@ -774,9 +774,7 @@ public class APSSResumoTrimestralCohortQueries {
             + "        AND o2.concept_id = ${artDatePickupMasterCard} AND o2.value_datetime <= :endDate  "
             + "        GROUP BY p.patient_id  "
             + ") art_startdate   "
-            + "    WHERE art_startdate.patient_id=external.patient_id ) AND :endDate "
-            + "    AND encounter_datetime "
-            + "        >= :startDate AND encounter_datetime <= :endDate  "
+            + "    WHERE art_startdate.patient_id=external.patient_id ) AND encounter_datetime <=:endDate "
             + "    AND e.location_id = :location";
 
     StringSubstitutor sb = new StringSubstitutor(map);
