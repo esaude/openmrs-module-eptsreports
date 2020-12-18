@@ -240,6 +240,7 @@ public class IMER1DenominatorCohortQueries {
             + "                        ON pg.program_id = pp.program_id  "
             + "                WHERE  "
             + "                    p.voided = 0  "
+            + "                    AND pp.voided = 0  "
             + "                    AND pp.date_enrolled <= :endDate "
             + "                    AND pg.program_id = ${1}  "
             + "                    AND pp.location_id = :location  "
