@@ -34,13 +34,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupResumoTrimestralApssReport extends EptsDataExportManager {
 
-  private ResumoTrimestralApssDataSetDefinition resumoMensTrimestralApssDataSetDefinition;
+  private GenericCohortQueries genericCohortQueries;
 
-  @Autowired protected GenericCohortQueries genericCohortQueries;
+  private ResumoTrimestralApssDataSetDefinition resumoMensTrimestralApssDataSetDefinition;
 
   @Autowired
   public SetupResumoTrimestralApssReport(
+      GenericCohortQueries genericCohortQueries,
       ResumoTrimestralApssDataSetDefinition resumoMensTrimestralApssDataSetDefinition) {
+    this.genericCohortQueries = genericCohortQueries;
     this.resumoMensTrimestralApssDataSetDefinition = resumoMensTrimestralApssDataSetDefinition;
   }
 
@@ -56,12 +58,12 @@ public class SetupResumoTrimestralApssReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Resumo Trimestral das APSS e PP Reporting Module";
+    return "Resumo Trimestral das APSS e PP - MISAU";
   }
 
   @Override
   public String getDescription() {
-    return "Resumo Trimestral das APSS e PP Reporting Module";
+    return "Resumo Trimestral das APSS e PP - MISAU";
   }
 
   @Override

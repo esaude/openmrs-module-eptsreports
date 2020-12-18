@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TRFINDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
@@ -45,6 +46,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
   @Autowired private TxRttDataset txRttDataset;
 
   @Autowired private TxMlDataset txMlDataset;
+
+  @Autowired private TRFINDataset txTfrInDataset;
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
@@ -96,6 +99,9 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
     reportDefinition.addDataSetDefinition(
         "R", Mapped.mapStraightThrough(this.txRttDataset.constructTxRttDataset()));
+
+    reportDefinition.addDataSetDefinition(
+        "TR", Mapped.mapStraightThrough(this.txTfrInDataset.constructTxTRFIN()));
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(

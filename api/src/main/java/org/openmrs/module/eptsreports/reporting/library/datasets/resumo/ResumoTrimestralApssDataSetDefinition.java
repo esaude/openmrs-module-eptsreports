@@ -16,7 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.resumo;
 import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalAPSSCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoTrimestralAPSSCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -39,7 +39,7 @@ public class ResumoTrimestralApssDataSetDefinition extends BaseDataSet {
 
   private ResumoTrimestralAgeAndGenderDisaggregations resumoTrimestralAgeAndGenderDisaggregations;
 
-  private ResumoMensalAPSSCohortQueries resumoMensalAPSSCohortQueries;
+  private ResumoTrimestralAPSSCohortQueries resumoMensalAPSSCohortQueries;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -50,7 +50,7 @@ public class ResumoTrimestralApssDataSetDefinition extends BaseDataSet {
       EptsCommonDimension eptsCommonDimension,
       EptsGeneralIndicator eptsGeneralIndicator,
       ResumoTrimestralAgeAndGenderDisaggregations resumoMensalAandBdisaggregations,
-      ResumoMensalAPSSCohortQueries resumoMensalAPSSCohortQueries) {
+      ResumoTrimestralAPSSCohortQueries resumoMensalAPSSCohortQueries) {
     this.eptsCommonDimension = eptsCommonDimension;
     this.eptsGeneralIndicator = eptsGeneralIndicator;
     this.resumoTrimestralAgeAndGenderDisaggregations = resumoMensalAandBdisaggregations;

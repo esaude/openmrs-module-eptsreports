@@ -47,9 +47,6 @@ public class TxRttDataset extends BaseDataSet {
     definition.addParameters(this.getParameters());
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-    //    final String mappingsRealEndDate =
-    //
-    // "startDate=${startDate},endDate=${endDate},realEndDate=${endDate},location=${location}";
 
     final CohortDefinition patientsOnRttDefinition = this.txRTTCohortQueries.getPatientsOnRTT();
 
@@ -185,14 +182,22 @@ public class TxRttDataset extends BaseDataSet {
             mappings),
         "");
 
+    // TODO: Vai entrar na proxima versao
+    //		definition.addColumn("PLHIVUNKOWN", "PLHIV Unknown Desaggregation",
+    //				EptsReportUtils.map(
+    //						eptsGeneralIndicator.getIndicator("patients PLHIV With unknown date of IIT ",
+    //								EptsReportUtils.map(this.txRTTCohortQueries.getPLHIVUnknownDesaggregation(),
+    // mappings)),
+    //						mappings),
+    //				"");
+
     definition.addColumn(
-        "PLHIVUNKOWN",
-        "PLHIV Unknown Desaggregation",
+        "PLHIVTOTAL",
+        "PLHIV Total",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "patients PLHIV With unknown date of IIT ",
-                EptsReportUtils.map(
-                    this.txRTTCohortQueries.getPLHIVUnknownDesaggregation(), mappings)),
+                "Patients PLHIV - All",
+                EptsReportUtils.map(this.txRTTCohortQueries.getPLHIVTotal(), mappings)),
             mappings),
         "");
 

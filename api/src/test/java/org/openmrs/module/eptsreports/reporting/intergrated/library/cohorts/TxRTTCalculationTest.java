@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalAPSSCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoTrimestralAPSSCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -22,7 +22,7 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
   @Autowired private TxRTTCohortQueries txRTTCohortQueries;
 
-  @Autowired private ResumoMensalAPSSCohortQueries resumoMensalAPSSCohortQueries;
+  @Autowired private ResumoTrimestralAPSSCohortQueries resumoMensalAPSSCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {

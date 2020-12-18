@@ -9,7 +9,6 @@ import org.openmrs.module.eptsreports.reporting.calculation.rtt.TxRTTPLHIVLess12
 import org.openmrs.module.eptsreports.reporting.calculation.rtt.TxRTTPatientsWhoAreTransferedOutCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.rtt.TxRTTPatientsWhoExperiencedIITCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalculationCohortDefinition;
-import org.openmrs.module.eptsreports.reporting.library.queries.TxRttQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Component;
 public class TxRTTCohortQueries {
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
-
-  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @DocumentedDefinition(value = "TxRttPatientsOnRTT")
   public CohortDefinition getPatientsOnRTT() {
@@ -146,31 +143,28 @@ public class TxRTTCohortQueries {
     return compositionDefinition;
   }
 
-  @DocumentedDefinition(value = "C1")
-  public CohortDefinition testRTTFromEurico() {
+  @DocumentedDefinition(value = "TxRttPLHIVTotal")
+  public CohortDefinition getPLHIVTotal() {
 
-    final CompositionCohortDefinition compsitionDefinition = new CompositionCohortDefinition();
-    compsitionDefinition.setName("NumberOfPatientsWhoAreCurrentlyEnrolledOnArtMOHC1");
+    final CompositionCohortDefinition compositionDefinition = new CompositionCohortDefinition();
 
-    compsitionDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    compsitionDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    compsitionDefinition.addParameter(new Parameter("location", "location", Location.class));
+    compositionDefinition.setName("Tx RTT- Total PLHIV");
+    compositionDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    compositionDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compositionDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    compsitionDefinition.addSearch(
-        "TX-CURR",
-        EptsReportUtils.map(
-            this.txCurrCohortQueries.findPatientsWhoAreActiveOnART(),
-            "endDate=${endDate},location=${location}"));
+    final String mappings =
+        "startDate=${startDate},endDate=${endDate},realEndDate=${endDate},location=${location}";
 
-    compsitionDefinition.addSearch(
-        "IIT",
-        EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "patientsWithSeguimentoDeAdesao", TxRttQueries.QUERY.rttFromEurico),
-            "endDate=${startDate-1d},location=${location}"));
+    compositionDefinition.addSearch(
+        "RTT-GREATER12MONTHS",
+        EptsReportUtils.map(this.getPLHIVGreather12MonthCalculation(), mappings));
 
-    compsitionDefinition.setCompositionString("TX-CURR AND IIT");
+    compositionDefinition.addSearch(
+        "RTT-LESS12MONTHS", EptsReportUtils.map(this.getPLHIVLess12MonthCalculation(), mappings));
 
-    return compsitionDefinition;
+    compositionDefinition.setCompositionString("RTT-LESS12MONTHS OR RTT-GREATER12MONTHS");
+
+    return compositionDefinition;
   }
 }

@@ -32,13 +32,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ResumoMensalAPSSCohortQueries {
+public class ResumoTrimestralAPSSCohortQueries {
 
   private GenericCohortQueries genericCohortQueries;
   private ResumoMensalCohortQueries resumoMensalCohortQueries;
 
   @Autowired
-  public ResumoMensalAPSSCohortQueries(
+  public ResumoTrimestralAPSSCohortQueries(
       HivMetadata hivMetadata,
       GenericCohortQueries genericCohortQueries,
       ResumoMensalCohortQueries resumoMensalCohortQueries) {
