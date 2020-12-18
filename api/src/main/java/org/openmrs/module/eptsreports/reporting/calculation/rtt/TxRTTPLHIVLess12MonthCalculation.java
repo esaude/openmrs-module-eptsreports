@@ -17,6 +17,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxRttQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsDateUtil;
 import org.openmrs.module.eptsreports.reporting.utils.EptsListUtils;
 import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionService;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -90,7 +91,7 @@ public class TxRTTPLHIVLess12MonthCalculation extends BaseFghCalculation {
       if (calculationResult != null && calculationResult.getValue() != null) {
         Date iitDate = (Date) calculationResult.getValue();
         Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-        if (DateUtil.getDaysBetween(iiDatePlus29, minTxCurrDate) < DAYS_OF_YEAR) {
+        if (EptsDateUtil.getDaysBetween(iiDatePlus29, minTxCurrDate) < DAYS_OF_YEAR) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         }
       }
@@ -110,7 +111,7 @@ public class TxRTTPLHIVLess12MonthCalculation extends BaseFghCalculation {
       if (calculationResult != null && calculationResult.getValue() != null) {
         Date iitDate = (Date) calculationResult.getValue();
         Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-        if (DateUtil.getDaysBetween(iiDatePlus29, maxTxCurrDate) < DAYS_OF_YEAR) {
+        if (EptsDateUtil.getDaysBetween(iiDatePlus29, maxTxCurrDate) < DAYS_OF_YEAR) {
           resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
         }
       }

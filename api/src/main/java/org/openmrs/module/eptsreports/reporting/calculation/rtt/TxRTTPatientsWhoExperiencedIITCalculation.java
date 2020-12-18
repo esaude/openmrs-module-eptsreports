@@ -18,7 +18,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.TxRttNextSeg
 import org.openmrs.module.eptsreports.reporting.calculation.txml.TxMLPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.QueryDisaggregationProcessor;
-import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.eptsreports.reporting.utils.EptsDateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
@@ -142,7 +142,7 @@ public class TxRTTPatientsWhoExperiencedIITCalculation extends BaseFghCalculatio
     if (calculationNextResult != null && calculationNextResult.getValue() == null) {
       if (calculationLastResult != null) {
         Date lastDate = (Date) calculationLastResult.getValue();
-        if (DateUtil.getDaysBetween(lastDate, startDate) < 0) {
+        if (EptsDateUtil.getDaysBetween(lastDate, startDate) < 0) {
           resultMap.put(patientId, new SimpleResult(lastDate, this));
         }
       }

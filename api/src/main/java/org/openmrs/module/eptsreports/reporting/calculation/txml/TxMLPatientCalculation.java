@@ -17,7 +17,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.NextFilaDate
 import org.openmrs.module.eptsreports.reporting.calculation.generic.NextSeguimentoDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.OnArtInitiatedArvDrugsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
-import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.eptsreports.reporting.utils.EptsDateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 public abstract class TxMLPatientCalculation extends BaseFghCalculation {
@@ -109,7 +109,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
     if (calculationNextResult != null && calculationNextResult.getValue() == null) {
       if (calculationLastResult != null) {
         Date lastDate = (Date) calculationLastResult.getValue();
-        if (DateUtil.getDaysBetween(lastDate, endDate) >= 0) {
+        if (EptsDateUtil.getDaysBetween(lastDate, endDate) >= 0) {
           resultMap.put(patientId, new SimpleResult(lastDate, this));
         }
       }

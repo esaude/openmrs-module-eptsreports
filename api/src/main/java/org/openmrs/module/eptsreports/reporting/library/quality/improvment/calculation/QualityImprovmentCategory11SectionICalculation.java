@@ -14,8 +14,8 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterface;
+import org.openmrs.module.eptsreports.reporting.utils.EptsDateUtil;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
-import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.HqlQueryBuilder;
@@ -45,7 +45,7 @@ public class QualityImprovmentCategory11SectionICalculation extends BaseFghCalcu
 
       while (dateIterator.hasNext() && constantDelta) {
         Date nextDate = dateIterator.next();
-        int daysBetween = DateUtil.getDaysBetween(previousDate, nextDate);
+        int daysBetween = EptsDateUtil.getDaysBetween(previousDate, nextDate);
 
         // TODO: o Algoritmo considera que se a diferenca das datas for igual a zero,
         // entao pode ser que seja data quality. Confirmar com Eurico
