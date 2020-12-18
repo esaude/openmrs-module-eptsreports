@@ -1265,6 +1265,151 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
+    // Category 15 denominator indicators
+    dataSetDefinition.addColumn(
+        "MQ15DEN1",
+        "% de Adultos (15/+anos) inscritos há 12 meses em algum MDS  (DT ou GAAC) que continuam activos em TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN1",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(1),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN2",
+        "% de Adultos (15/+anos) inscritos há pelo menos 12 meses em algum MDS (DT ou GAAC) com pedido de pelo menos uma CV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN2",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(2),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=<15");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN3",
+        "% de Adultos (15/+anos) inscritos há 12 meses em algum MDS (DT ou GAAC) que receberam pelo menos um resultado de CV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN3",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(3),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN4",
+        "% de Adultos (15/+anos) inscritos há 12 meses em algum MDS (DT ou GAAC) com CV <1000 Cópias",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN4",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(4),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN5",
+        "% de Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) que continuam activos em TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN5",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(5),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN6",
+        "% de Crianças (10-14 anos) inscritas há 12 em algum MDS (DT) que continuam activos em TARV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN6",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(6),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN7",
+        "% de Crianças (2-9 anos de idade) inscritas há 12 meses em algum MDS (DT) com pedido de pelo menos uma CV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN7",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(7),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN8",
+        "% de Crianças (10-14 anos de idade) inscritas há 12 meses em algum MDS (DT) com pedido de pelo menos uma CV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN8",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(8),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN9",
+        "% de Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) que receberam pelo menos um resultado de CV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN9",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(9),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN10",
+        "% de Crianças (10-14 anos) inscritas há 12 meses em algum MDS (DT) que receberam pelo menos um resultado de CV",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN10",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(10),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN11",
+        "% de Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) com CV <1000 Cópias",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN11",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(11),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
+    dataSetDefinition.addColumn(
+        "MQ15DEN12",
+        "% de Crianças (10-14 anos) inscritas há 12 meses em algum MDS (DT) com CV <1000 Cópias",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ15DEN12",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ15DEN(12),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
+            "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "age=15+");
+
     return dataSetDefinition;
   }
 

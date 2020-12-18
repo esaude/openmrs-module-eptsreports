@@ -5573,4 +5573,230 @@ public class QualityImprovement2020CohortQueries {
 
     return cd;
   }
+
+  /**
+   * <b>MQ15Den: Melhoria de Qualidade Category 15 Denominator</b><br>
+   * <br>
+   * <i> DENOMINATOR 1: A and NOT B1 and NOT C and NOT D and NOT F and Age > 14 </i> <br>
+   * <br>
+   * <i> DENOMINATOR 2: A and NOT B1 and NOT C and NOT D and NOT F and Age > 14 </i> <br>
+   * <br>
+   * <i> DENOMINATOR 3: A and NOT B1 and NOT C and NOT D and NOT F and Age > 14 </i> <br>
+   * <br>
+   * <i> DENOMINATOR 4: A and NOT B1 and NOT C and NOT D and NOT F and Age > 14 </i> <br>
+   * <br>
+   * <i> DENOMINATOR 5: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 2 and 9
+   * </i> <br>
+   * <br>
+   * <i> DENOMINATOR 6: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and
+   * 14 </i> <br>
+   * <br>
+   * <i> DENOMINATOR 7: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 2 and 9
+   * </i> <br>
+   * <br>
+   * <i> DENOMINATOR 8: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and
+   * 14 </i> <br>
+   * <br>
+   * <i> DENOMINATOR 9: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 2 and 9
+   * </i> <br>
+   * <br>
+   * <i> DENOMINATOR 10: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and
+   * 14 </i> <br>
+   * <br>
+   * <i> DENOMINATOR 11: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 2 and 9
+   * </i> <br>
+   * <br>
+   * <i> DENOMINATOR 12: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and
+   * 14 </i> <br>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ15DEN(Integer den) {
+    CompositionCohortDefinition comp = new CompositionCohortDefinition();
+
+    switch (den) {
+      case 1:
+        comp.setName(
+            "% de Adultos (15/+anos) inscritos há 12 meses em algum MDS  (DT ou GAAC) que continuam activos em TARV");
+        break;
+      case 2:
+        comp.setName(
+            "% de Adultos (15/+anos) inscritos há pelo menos 12 meses em algum MDS (DT ou GAAC) com pedido de pelo menos uma CV");
+        break;
+      case 3:
+        comp.setName(
+            "% de Adultos (15/+anos) inscritos há 12 meses em algum MDS (DT ou GAAC) que receberam pelo menos um resultado de CV");
+        break;
+      case 4:
+        comp.setName(
+            "% de Adultos (15/+anos) inscritos há 12 meses em algum MDS (DT ou GAAC) com CV <1000 Cópias");
+        break;
+      case 5:
+        comp.setName(
+            "% de Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) que continuam activos em TARV");
+        break;
+      case 6:
+        comp.setName(
+            "% de Crianças (10-14 anos) inscritas há 12 em algum MDS (DT) que continuam activos em TARV");
+        break;
+      case 7:
+        comp.setName(
+            "% de Crianças (2-9 anos de idade) inscritas há 12 meses em algum MDS (DT) com pedido de pelo menos uma CV");
+        break;
+      case 8:
+        comp.setName(
+            "% de Crianças (10-14 anos de idade) inscritas há 12 meses em algum MDS (DT) com pedido de pelo menos uma CV");
+        break;
+      case 9:
+        comp.setName(
+            "% de Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) que receberam pelo menos um resultado de CV");
+        break;
+      case 10:
+        comp.setName(
+            "% de Crianças (10-14 anos) inscritas há 12 meses em algum MDS (DT) que receberam pelo menos um resultado de CV");
+        break;
+      case 11:
+        comp.setName(
+            "% de Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) com CV <1000 Cópias");
+        break;
+      case 12:
+        comp.setName(
+            "% de Crianças (10-14 anos) inscritas há 12 meses em algum MDS (DT) com CV <1000 Cópias");
+        break;
+    }
+
+    comp.addParameter(new Parameter("startDate", "startDate", Date.class));
+    comp.addParameter(new Parameter("endDate", "endDate", Date.class));
+    comp.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    comp.addParameter(new Parameter("location", "location", Date.class));
+
+    CohortDefinition queryA =
+        qualityImprovement2020Queries.getMQ15DenA(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getQuarterlyConcept().getConceptId(),
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId(),
+            hivMetadata.getTypeOfDispensationConcept().getConceptId());
+
+    CohortDefinition queryA2 =
+        qualityImprovement2020Queries.getMQ15DenA1orA2(
+            "A2",
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId());
+
+    CohortDefinition queryA3 =
+        qualityImprovement2020Queries.getMQ15DenA3(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getQuarterlyConcept().getConceptId(),
+            hivMetadata.getTypeOfDispensationConcept().getConceptId());
+
+    CohortDefinition queryB1 =
+        qualityImprovement2020Queries.getMQ15DenB1(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getCompletedConcept().getConceptId(),
+            hivMetadata.getQuarterlyConcept().getConceptId(),
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId(),
+            hivMetadata.getTypeOfDispensationConcept().getConceptId());
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            true,
+            false,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getPregnantConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition breastfeeding =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            true,
+            false,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getBreastfeeding(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition transferIn =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            true,
+            "once",
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getTransferFromOtherFacilityConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            hivMetadata.getTypeOfPatientTransferredFrom(),
+            Collections.singletonList(hivMetadata.getArtStatus()));
+
+    CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
+
+    comp.addSearch("A", EptsReportUtils.map(queryA, MAPPING));
+
+    comp.addSearch("A2", EptsReportUtils.map(queryA2, MAPPING));
+
+    comp.addSearch(
+        "A3",
+        EptsReportUtils.map(
+            queryA3, "startDate=${endDate-14m},endDate=${endDate-11m},location=${location}"));
+
+    comp.addSearch("B1", EptsReportUtils.map(queryB1, MAPPING));
+
+    comp.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+
+    comp.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+
+    comp.addSearch(
+        "E",
+        EptsReportUtils.map(
+            transferIn,
+            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
+
+    comp.addSearch(
+        "F",
+        EptsReportUtils.map(
+            transferOut,
+            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
+
+    comp.addSearch(
+        "AGES29",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnArtStartDate(2, 9, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    comp.addSearch(
+        "AGES1014",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnArtStartDate(10, 14, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    comp.addSearch(
+        "CHILDREN",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnArtStartDate(0, 14, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    comp.addSearch(
+        "ADULT",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnArtStartDate(15, null, false),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    if (den == 1 || den == 2 || den == 3 || den == 4) {
+      comp.setCompositionString("A AND NOT B1 AND NOT C AND NOT D AND NOT F AND ADULT");
+    } else if (den == 5 || den == 7 || den == 9 || den == 11) {
+      comp.setCompositionString("(A2 or A3) AND NOT B1 AND  NOT C AND NOT D AND NOT F AND AGES29");
+    } else if (den == 6 || den == 8 || den == 10 || den == 12) {
+      comp.setCompositionString(
+          "(A2 or A3) and NOT B1 and  NOT C and NOT D and NOT F and AGES1014");
+    }
+    return comp;
+  }
 }
