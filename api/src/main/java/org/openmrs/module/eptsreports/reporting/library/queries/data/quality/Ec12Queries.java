@@ -38,7 +38,7 @@ public class Ec12Queries {
             + " when ps.state = 8 then 'SUSPENDED TREATMENT' "
             + " when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' "
             + " when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state "
-            + " , l.name AS location_id "
+            + " , l.name AS location_name "
             + " FROM patient pa "
             + " INNER JOIN person pe ON pa.patient_id = pe.person_id "
             + " INNER JOIN patient_identifier pi ON pa.patient_id = pi.patient_id "
