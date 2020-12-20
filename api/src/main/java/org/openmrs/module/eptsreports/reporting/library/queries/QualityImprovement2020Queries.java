@@ -612,21 +612,23 @@ public class QualityImprovement2020Queries {
    * <b>MQ15NUM H </b></b><br>
    *
    * <ul>
-   *   <li>H1 - Select all patients from Ficha Clinica (encounter type 6) with concept “PEDIDO DE INVESTIGACOES LABORATORIAIS” (Concept Id 23722) 
-   * and value_coded “HIV CARGA VIRAL” (Concept id 856) and encounter_datetime (From H1) > encounter_datetime (From A, the most recent one) 
-   * and during the revision period
+   *   <li>H1 - Select all patients from Ficha Clinica (encounter type 6) with concept “PEDIDO DE
+   *       INVESTIGACOES LABORATORIAIS” (Concept Id 23722) and value_coded “HIV CARGA VIRAL”
+   *       (Concept id 856) and encounter_datetime (From H1) > encounter_datetime (From A, the most
+   *       recent one) and during the revision period
    * </ul>
    *
    * @return SqlCohortDefinition
    */
-  public static SqlCohortDefinition getMQ15NumH(Integer adultoSeguimentoEncounterType,
-  Integer startDrugs,
-  Integer quarterlyConcept,
-  Integer gaac,
-  Integer quarterlyDispensation,
-  Integer typeOfDispensationConcept, 
-  Integer labReq,
-  Integer viralLoad) {
+  public static SqlCohortDefinition getMQ15NumH(
+      Integer adultoSeguimentoEncounterType,
+      Integer startDrugs,
+      Integer quarterlyConcept,
+      Integer gaac,
+      Integer quarterlyDispensation,
+      Integer typeOfDispensationConcept,
+      Integer labReq,
+      Integer viralLoad) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
@@ -647,73 +649,73 @@ public class QualityImprovement2020Queries {
 
     String query =
         " SELECT  "
-    + "    p.patient_id  "
-    + "FROM  "
-    + "    patient p  "
-    + "        INNER JOIN  "
-    + "    encounter e ON e.patient_id = p.patient_id  "
-    + "        INNER JOIN  "
-    + "    obs o ON o.encounter_id = e.encounter_id  "
-    + "        INNER JOIN  "
-    + "    (SELECT   "
-    + "        patient_id, encounter_datetime  "
-    + "    FROM  "
-    + "        (SELECT   "
-    + "        patient_id, MAX(encounter_datetime) encounter_datetime  "
-    + "    FROM  "
-    + "        (SELECT   "
-    + "        p.patient_id, e.encounter_datetime  "
-    + "    FROM  "
-    + "        patient p  "
-    + "    INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-    + "    INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-    + "    WHERE  "
-    + "        p.voided = 0 AND e.voided = 0  "
-    + "            AND e.location_id = :location  "
-    + "            AND e.encounter_type = ${6}  "
-    + "            AND o.concept_id = ${23724}  "
-    + "            AND o.value_coded = ${1256}  "
-    + "            AND e.encounter_datetime <= :endDate  "
-    + "    GROUP BY p.patient_id UNION SELECT   "
-    + "        p.patient_id, e.encounter_datetime  "
-    + "    FROM  "
-    + "        patient p  "
-    + "    INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-    + "    INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-    + "    WHERE  "
-    + "        p.voided = 0 AND e.voided = 0  "
-    + "            AND e.location_id = :location  "
-    + "            AND e.encounter_type = ${6}  "
-    + "            AND o.concept_id = ${23730}  "
-    + "            AND o.value_coded = ${1256}  "
-    + "            AND e.encounter_datetime <= :endDate  "
-    + "    GROUP BY p.patient_id UNION SELECT   "
-    + "        p.patient_id, MAX(e.encounter_datetime) encounter_datetime  "
-    + "    FROM  "
-    + "        patient p  "
-    + "    INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-    + "    INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-    + "    WHERE  "
-    + "        p.voided = 0 AND e.voided = 0  "
-    + "            AND e.location_id = :location  "
-    + "            AND e.encounter_type = ${6}  "
-    + "            AND o.concept_id = ${23739}  "
-    + "            AND o.value_coded = ${23720}  "
-    + "            AND e.encounter_datetime <= :endDate  "
-    + "    GROUP BY p.patient_id) encounters  "
-    + "    WHERE  "
-    + "        encounters.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 14 MONTH)   "
-    + " AND DATE_SUB(:endDate, INTERVAL 11 MONTH)) AS result) queryA ON queryA.patient_id = p.patient_id  "
-    + "WHERE  "
-    + "    p.voided = 0 AND e.voided = 0  "
-    + "        AND o.voided = 0  "
-    + "        AND e.location_id = :location  "
-    + "        AND e.encounter_type = ${6}  "
-    + "        AND o.concept_id = ${23722}  "
-    + "        AND o.value_coded = ${856}  "
-    + "        AND DATE(e.encounter_datetime) > DATE(queryA.encounter_datetime)  "
-    + "        AND e.encounter_datetime BETWEEN :startDate   "
-    + "        AND :endDate;";
+            + "    p.patient_id  "
+            + "FROM  "
+            + "    patient p  "
+            + "        INNER JOIN  "
+            + "    encounter e ON e.patient_id = p.patient_id  "
+            + "        INNER JOIN  "
+            + "    obs o ON o.encounter_id = e.encounter_id  "
+            + "        INNER JOIN  "
+            + "    (SELECT   "
+            + "        patient_id, encounter_datetime  "
+            + "    FROM  "
+            + "        (SELECT   "
+            + "        patient_id, MAX(encounter_datetime) encounter_datetime  "
+            + "    FROM  "
+            + "        (SELECT   "
+            + "        p.patient_id, e.encounter_datetime  "
+            + "    FROM  "
+            + "        patient p  "
+            + "    INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "    INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
+            + "    WHERE  "
+            + "        p.voided = 0 AND e.voided = 0  "
+            + "            AND e.location_id = :location  "
+            + "            AND e.encounter_type = ${6}  "
+            + "            AND o.concept_id = ${23724}  "
+            + "            AND o.value_coded = ${1256}  "
+            + "            AND e.encounter_datetime <= :endDate  "
+            + "    GROUP BY p.patient_id UNION SELECT   "
+            + "        p.patient_id, e.encounter_datetime  "
+            + "    FROM  "
+            + "        patient p  "
+            + "    INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "    INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
+            + "    WHERE  "
+            + "        p.voided = 0 AND e.voided = 0  "
+            + "            AND e.location_id = :location  "
+            + "            AND e.encounter_type = ${6}  "
+            + "            AND o.concept_id = ${23730}  "
+            + "            AND o.value_coded = ${1256}  "
+            + "            AND e.encounter_datetime <= :endDate  "
+            + "    GROUP BY p.patient_id UNION SELECT   "
+            + "        p.patient_id, MAX(e.encounter_datetime) encounter_datetime  "
+            + "    FROM  "
+            + "        patient p  "
+            + "    INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "    INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
+            + "    WHERE  "
+            + "        p.voided = 0 AND e.voided = 0  "
+            + "            AND e.location_id = :location  "
+            + "            AND e.encounter_type = ${6}  "
+            + "            AND o.concept_id = ${23739}  "
+            + "            AND o.value_coded = ${23720}  "
+            + "            AND e.encounter_datetime <= :endDate  "
+            + "    GROUP BY p.patient_id) encounters  "
+            + "    WHERE  "
+            + "        encounters.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 14 MONTH)   "
+            + " AND DATE_SUB(:endDate, INTERVAL 11 MONTH)) AS result) queryA ON queryA.patient_id = p.patient_id  "
+            + "WHERE  "
+            + "    p.voided = 0 AND e.voided = 0  "
+            + "        AND o.voided = 0  "
+            + "        AND e.location_id = :location  "
+            + "        AND e.encounter_type = ${6}  "
+            + "        AND o.concept_id = ${23722}  "
+            + "        AND o.value_coded = ${856}  "
+            + "        AND DATE(e.encounter_datetime) > DATE(queryA.encounter_datetime)  "
+            + "        AND e.encounter_datetime BETWEEN :startDate   "
+            + "        AND :endDate;";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
@@ -725,23 +727,25 @@ public class QualityImprovement2020Queries {
    * <b>MQ15NUM H2 </b></b><br>
    *
    * <ul>
-   *   <li>H2 - Select all patients with results in “Laboratorio” (encounter type 13) with concept “HIV CARGA VIRAL” (Concept Id 856) 
-   * with value_numeric not null OR concept “Carga Viral Qualitative”   (Concept id 1305) with value_coded not null, 
-   * and encounter_datetime (From H2) > encounter_datetime (From H1, the most recent one) and during the revision period
+   *   <li>H2 - Select all patients with results in “Laboratorio” (encounter type 13) with concept
+   *       “HIV CARGA VIRAL” (Concept Id 856) with value_numeric not null OR concept “Carga Viral
+   *       Qualitative” (Concept id 1305) with value_coded not null, and encounter_datetime (From
+   *       H2) > encounter_datetime (From H1, the most recent one) and during the revision period
    * </ul>
    *
    * @return SqlCohortDefinition
    */
-  public static SqlCohortDefinition getMQ15NumH2(Integer adultoSeguimentoEncounterType,
-  Integer startDrugs,
-  Integer quarterlyConcept,
-  Integer gaac,
-  Integer quarterlyDispensation,
-  Integer typeOfDispensationConcept, 
-  Integer labReq,
-  Integer viralLoad,
-  Integer viralLoadQualitative,
-  Integer labEncounterType) {
+  public static SqlCohortDefinition getMQ15NumH2(
+      Integer adultoSeguimentoEncounterType,
+      Integer startDrugs,
+      Integer quarterlyConcept,
+      Integer gaac,
+      Integer quarterlyDispensation,
+      Integer typeOfDispensationConcept,
+      Integer labReq,
+      Integer viralLoad,
+      Integer viralLoadQualitative,
+      Integer labEncounterType) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
@@ -764,89 +768,89 @@ public class QualityImprovement2020Queries {
 
     String query =
         " SELECT  "
-    + "     p.patient_id  "
-    + " FROM  "
-    + "     patient p  "
-    + "         INNER JOIN  "
-    + "     encounter e ON e.patient_id = p.patient_id  "
-    + "         INNER JOIN  "
-    + "     obs o ON o.encounter_id = e.encounter_id  "
-    + "         INNER JOIN  "
-    + "     (SELECT   "
-    + "         p.patient_id, e.encounter_datetime  "
-    + "     FROM  "
-    + "         patient p  "
-    + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
-    + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
-    + "     INNER JOIN (SELECT   "
-    + "         patient_id, encounter_datetime  "
-    + "     FROM  "
-    + "         (SELECT   "
-    + "         patient_id, MAX(encounter_datetime) encounter_datetime  "
-    + "     FROM  "
-    + "         (SELECT   "
-    + "         p.patient_id, e.encounter_datetime  "
-    + "     FROM  "
-    + "         patient p  "
-    + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-    + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-    + "     WHERE  "
-    + "         p.voided = 0 AND e.voided = 0  "
-    + "             AND e.location_id = :location  "
-    + "             AND e.encounter_type = ${6}  "
-    + "             AND o.concept_id = ${23724}  "
-    + "             AND o.value_coded = ${1256}  "
-    + "             AND e.encounter_datetime <= :endDate  "
-    + "     GROUP BY p.patient_id UNION SELECT   "
-    + "         p.patient_id, e.encounter_datetime  "
-    + "     FROM  "
-    + "         patient p  "
-    + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-    + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-    + "     WHERE  "
-    + "         p.voided = 0 AND e.voided = 0  "
-    + "             AND e.location_id = :location  "
-    + "             AND e.encounter_type = ${6}  "
-    + "             AND o.concept_id = ${23730}  "
-    + "             AND o.value_coded = ${1256}  "
-    + "             AND e.encounter_datetime <= :endDate  "
-    + "     GROUP BY p.patient_id UNION SELECT   "
-    + "         p.patient_id, MAX(e.encounter_datetime) encounter_datetime  "
-    + "     FROM  "
-    + "         patient p  "
-    + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-    + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-    + "     WHERE  "
-    + "         p.voided = 0 AND e.voided = 0  "
-    + "             AND e.location_id = :location  "
-    + "             AND e.encounter_type = ${6}  "
-    + "             AND o.concept_id = ${23739}  "
-    + "             AND o.value_coded = ${23720}  "
-    + "             AND e.encounter_datetime <= :endDate  "
-    + "     GROUP BY p.patient_id) encounters  "
-    + "     WHERE  "
-    + "         encounters.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 14 MONTH)  " 
-    + " AND DATE_SUB(:endDate, INTERVAL 11 MONTH)) AS result) queryA ON queryA.patient_id = p.patient_id  "
-    + "     WHERE  "
-    + "         p.voided = 0 AND e.voided = 0  "
-    + "             AND o.voided = 0  "
-    + "             AND e.location_id = :location  "
-    + "             AND e.encounter_type = ${6}  "
-    + "             AND o.concept_id = ${23722}  "
-    + "             AND o.value_coded = ${856}  "
-    + "             AND DATE(e.encounter_datetime) > DATE(queryA.encounter_datetime)  "
-    + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate) queryH1 ON queryH1.patient_id = p.patient_id  "
-    + " WHERE  "
-    + "     p.voided = 0 AND e.voided = 0  "
-    + "         AND o.voided = 0  "
-    + "         AND e.location_id = :location  "
-    + "         AND e.encounter_type = ${13}  "
-    + "         AND (o.concept_id = ${856}  "
-    + "         AND o.value_numeric IS NOT NULL)  "
-    + "         OR (o.concept_id = ${1305}   "
-    + "         AND o.value_coded IS NOT NULL)  "
-    + "         AND DATE(e.encounter_datetime) > DATE(queryH1.encounter_datetime)  "
-    + "         AND e.encounter_datetime BETWEEN :startDate AND :endDate";
+            + "     p.patient_id  "
+            + " FROM  "
+            + "     patient p  "
+            + "         INNER JOIN  "
+            + "     encounter e ON e.patient_id = p.patient_id  "
+            + "         INNER JOIN  "
+            + "     obs o ON o.encounter_id = e.encounter_id  "
+            + "         INNER JOIN  "
+            + "     (SELECT   "
+            + "         p.patient_id, e.encounter_datetime  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "     INNER JOIN (SELECT   "
+            + "         patient_id, encounter_datetime  "
+            + "     FROM  "
+            + "         (SELECT   "
+            + "         patient_id, MAX(encounter_datetime) encounter_datetime  "
+            + "     FROM  "
+            + "         (SELECT   "
+            + "         p.patient_id, e.encounter_datetime  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND o.concept_id = ${23724}  "
+            + "             AND o.value_coded = ${1256}  "
+            + "             AND e.encounter_datetime <= :endDate  "
+            + "     GROUP BY p.patient_id UNION SELECT   "
+            + "         p.patient_id, e.encounter_datetime  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND o.concept_id = ${23730}  "
+            + "             AND o.value_coded = ${1256}  "
+            + "             AND e.encounter_datetime <= :endDate  "
+            + "     GROUP BY p.patient_id UNION SELECT   "
+            + "         p.patient_id, MAX(e.encounter_datetime) encounter_datetime  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND o.concept_id = ${23739}  "
+            + "             AND o.value_coded = ${23720}  "
+            + "             AND e.encounter_datetime <= :endDate  "
+            + "     GROUP BY p.patient_id) encounters  "
+            + "     WHERE  "
+            + "         encounters.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 14 MONTH)  "
+            + " AND DATE_SUB(:endDate, INTERVAL 11 MONTH)) AS result) queryA ON queryA.patient_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND o.voided = 0  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND o.concept_id = ${23722}  "
+            + "             AND o.value_coded = ${856}  "
+            + "             AND DATE(e.encounter_datetime) > DATE(queryA.encounter_datetime)  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate) queryH1 ON queryH1.patient_id = p.patient_id  "
+            + " WHERE  "
+            + "     p.voided = 0 AND e.voided = 0  "
+            + "         AND o.voided = 0  "
+            + "         AND e.location_id = :location  "
+            + "         AND e.encounter_type = ${13}  "
+            + "         AND (o.concept_id = ${856}  "
+            + "         AND o.value_numeric IS NOT NULL)  "
+            + "         OR (o.concept_id = ${1305}   "
+            + "         AND o.value_coded IS NOT NULL)  "
+            + "         AND DATE(e.encounter_datetime) > DATE(queryH1.encounter_datetime)  "
+            + "         AND e.encounter_datetime BETWEEN :startDate AND :endDate";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -859,23 +863,25 @@ public class QualityImprovement2020Queries {
    * <b>MQ15NUM I </b></b><br>
    *
    * <ul>
-   *   <li>I - Select all patients with results in “Laboratorio” (encounter type 13) with concept “HIV CARGA VIRAL” (Concept Id 856)
-   *  with value_numeric < 1000 OR concept “Carga Viral Qualitative”   (Concept id 1305) 
-   * with value_coded not null, and encounter_datetime(From I) > encounter_datetime(From H1, the most recent one) and during the revision period
+   *   <li>I - Select all patients with results in “Laboratorio” (encounter type 13) with concept
+   *       “HIV CARGA VIRAL” (Concept Id 856) with value_numeric < 1000 OR concept “Carga Viral
+   *       Qualitative” (Concept id 1305) with value_coded not null, and encounter_datetime(From I)
+   *       > encounter_datetime(From H1, the most recent one) and during the revision period
    * </ul>
    *
    * @return SqlCohortDefinition
    */
-  public static SqlCohortDefinition getMQ15NumI(Integer adultoSeguimentoEncounterType,
-  Integer startDrugs,
-  Integer quarterlyConcept,
-  Integer gaac,
-  Integer quarterlyDispensation,
-  Integer typeOfDispensationConcept, 
-  Integer labReq,
-  Integer viralLoad,
-  Integer viralLoadQualitative,
-  Integer labEncounterType) {
+  public static SqlCohortDefinition getMQ15NumI(
+      Integer adultoSeguimentoEncounterType,
+      Integer startDrugs,
+      Integer quarterlyConcept,
+      Integer gaac,
+      Integer quarterlyDispensation,
+      Integer typeOfDispensationConcept,
+      Integer labReq,
+      Integer viralLoad,
+      Integer viralLoadQualitative,
+      Integer labEncounterType) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
@@ -898,89 +904,89 @@ public class QualityImprovement2020Queries {
 
     String query =
         " SELECT  "
-    + "     p.patient_id  "
-    + " FROM  "
-    + "     patient p  "
-    + "         INNER JOIN  "
-    + "     encounter e ON e.patient_id = p.patient_id  "
-    + "         INNER JOIN  "
-    + "     obs o ON o.encounter_id = e.encounter_id  "
-    + "         INNER JOIN  "
-    + "     (SELECT   "
-    + "         p.patient_id, e.encounter_datetime  "
-    + "     FROM  "
-    + "         patient p  "
-    + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
-    + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
-    + "     INNER JOIN (SELECT   "
-    + "         patient_id, encounter_datetime  "
-    + "     FROM  "
-    + "         (SELECT   "
-    + "         patient_id, MAX(encounter_datetime) encounter_datetime  "
-    + "     FROM  "
-    + "         (SELECT   "
-    + "         p.patient_id, e.encounter_datetime  "
-    + "     FROM  "
-    + "         patient p  "
-    + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-    + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-    + "     WHERE  "
-    + "         p.voided = 0 AND e.voided = 0  "
-    + "             AND e.location_id = :location  "
-    + "             AND e.encounter_type = ${6}  "
-    + "             AND o.concept_id = ${23724}  "
-    + "             AND o.value_coded = ${1256}  "
-    + "             AND e.encounter_datetime <= :endDate  "
-    + "     GROUP BY p.patient_id UNION SELECT   "
-    + "         p.patient_id, e.encounter_datetime  "
-    + "     FROM  "
-    + "         patient p  "
-    + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-    + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-    + "     WHERE  "
-    + "         p.voided = 0 AND e.voided = 0  "
-    + "             AND e.location_id = :location  "
-    + "             AND e.encounter_type = ${6}  "
-    + "             AND o.concept_id = ${23730}  "
-    + "             AND o.value_coded = ${1256}  "
-    + "             AND e.encounter_datetime <= :endDate  "
-    + "     GROUP BY p.patient_id UNION SELECT   "
-    + "         p.patient_id, MAX(e.encounter_datetime) encounter_datetime  "
-    + "     FROM  "
-    + "         patient p  "
-    + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-    + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-    + "     WHERE  "
-    + "         p.voided = 0 AND e.voided = 0  "
-    + "             AND e.location_id = :location  "
-    + "             AND e.encounter_type = ${6}  "
-    + "             AND o.concept_id = ${23739}  "
-    + "             AND o.value_coded = ${23720}  "
-    + "             AND e.encounter_datetime <= :endDate  "
-    + "     GROUP BY p.patient_id) encounters  "
-    + "     WHERE  "
-    + "         encounters.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 14 MONTH)  " 
-    + " AND DATE_SUB(:endDate, INTERVAL 11 MONTH)) AS result) queryA ON queryA.patient_id = p.patient_id  "
-    + "     WHERE  "
-    + "         p.voided = 0 AND e.voided = 0  "
-    + "             AND o.voided = 0  "
-    + "             AND e.location_id = :location  "
-    + "             AND e.encounter_type = ${6}  "
-    + "             AND o.concept_id = ${23722}  "
-    + "             AND o.value_coded = ${856}  "
-    + "             AND DATE(e.encounter_datetime) > DATE(queryA.encounter_datetime)  "
-    + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate) queryH1 ON queryH1.patient_id = p.patient_id  "
-    + " WHERE  "
-    + "     p.voided = 0 AND e.voided = 0  "
-    + "         AND o.voided = 0  "
-    + "         AND e.location_id = :location  "
-    + "         AND e.encounter_type = ${13}  "
-    + "         AND (o.concept_id = ${856}  "
-    + "         AND o.value_numeric < 1000 )  "
-    + "         OR (o.concept_id = ${1305}   "
-    + "         AND o.value_coded IS NOT NULL)  "
-    + "         AND DATE(e.encounter_datetime) > DATE(queryH1.encounter_datetime)  "
-    + "         AND e.encounter_datetime BETWEEN :startDate AND :endDate";
+            + "     p.patient_id  "
+            + " FROM  "
+            + "     patient p  "
+            + "         INNER JOIN  "
+            + "     encounter e ON e.patient_id = p.patient_id  "
+            + "         INNER JOIN  "
+            + "     obs o ON o.encounter_id = e.encounter_id  "
+            + "         INNER JOIN  "
+            + "     (SELECT   "
+            + "         p.patient_id, e.encounter_datetime  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "     INNER JOIN (SELECT   "
+            + "         patient_id, encounter_datetime  "
+            + "     FROM  "
+            + "         (SELECT   "
+            + "         patient_id, MAX(encounter_datetime) encounter_datetime  "
+            + "     FROM  "
+            + "         (SELECT   "
+            + "         p.patient_id, e.encounter_datetime  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND o.concept_id = ${23724}  "
+            + "             AND o.value_coded = ${1256}  "
+            + "             AND e.encounter_datetime <= :endDate  "
+            + "     GROUP BY p.patient_id UNION SELECT   "
+            + "         p.patient_id, e.encounter_datetime  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND o.concept_id = ${23730}  "
+            + "             AND o.value_coded = ${1256}  "
+            + "             AND e.encounter_datetime <= :endDate  "
+            + "     GROUP BY p.patient_id UNION SELECT   "
+            + "         p.patient_id, MAX(e.encounter_datetime) encounter_datetime  "
+            + "     FROM  "
+            + "         patient p  "
+            + "     INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "     INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND o.concept_id = ${23739}  "
+            + "             AND o.value_coded = ${23720}  "
+            + "             AND e.encounter_datetime <= :endDate  "
+            + "     GROUP BY p.patient_id) encounters  "
+            + "     WHERE  "
+            + "         encounters.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 14 MONTH)  "
+            + " AND DATE_SUB(:endDate, INTERVAL 11 MONTH)) AS result) queryA ON queryA.patient_id = p.patient_id  "
+            + "     WHERE  "
+            + "         p.voided = 0 AND e.voided = 0  "
+            + "             AND o.voided = 0  "
+            + "             AND e.location_id = :location  "
+            + "             AND e.encounter_type = ${6}  "
+            + "             AND o.concept_id = ${23722}  "
+            + "             AND o.value_coded = ${856}  "
+            + "             AND DATE(e.encounter_datetime) > DATE(queryA.encounter_datetime)  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate) queryH1 ON queryH1.patient_id = p.patient_id  "
+            + " WHERE  "
+            + "     p.voided = 0 AND e.voided = 0  "
+            + "         AND o.voided = 0  "
+            + "         AND e.location_id = :location  "
+            + "         AND e.encounter_type = ${13}  "
+            + "         AND (o.concept_id = ${856}  "
+            + "         AND o.value_numeric < 1000 )  "
+            + "         OR (o.concept_id = ${1305}   "
+            + "         AND o.value_coded IS NOT NULL)  "
+            + "         AND DATE(e.encounter_datetime) > DATE(queryH1.encounter_datetime)  "
+            + "         AND e.encounter_datetime BETWEEN :startDate AND :endDate";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 

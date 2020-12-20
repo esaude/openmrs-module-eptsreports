@@ -5814,26 +5814,26 @@ public class QualityImprovement2020CohortQueries {
    * <i> NUMERATOR 5: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 2 and 9
    * </i> <br>
    * <br>
-   * <i> NUMERATOR 6: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and
-   * 14 </i> <br>
+   * <i> NUMERATOR 6: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and 14
+   * </i> <br>
    * <br>
    * <i> NUMERATOR 7: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 2 and 9
    * </i> <br>
    * <br>
-   * <i> NUMERATOR 8: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and
-   * 14 </i> <br>
+   * <i> NUMERATOR 8: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and 14
+   * </i> <br>
    * <br>
    * <i> NUMERATOR 9: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 2 and 9
    * </i> <br>
    * <br>
-   * <i> NUMERATOR 10: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and
-   * 14 </i> <br>
+   * <i> NUMERATOR 10: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and 14
+   * </i> <br>
    * <br>
    * <i> NUMERATOR 11: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 2 and 9
    * </i> <br>
    * <br>
-   * <i> NUMERATOR 12: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and
-   * 14 </i> <br>
+   * <i> NUMERATOR 12: (A2 or A3) and NOT B1 and NOT C and NOT D and NOT F and Age between 10 and 14
+   * </i> <br>
    *
    * @return CohortDefinition
    */
@@ -5905,7 +5905,7 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getQuarterlyDispensation().getConceptId(),
             hivMetadata.getTypeOfDispensationConcept().getConceptId());
 
-            CohortDefinition queryA2 =
+    CohortDefinition queryA2 =
         qualityImprovement2020Queries.getMQ15DenA1orA2(
             "A2",
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
@@ -5962,39 +5962,42 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getTypeOfPatientTransferredFrom(),
             Collections.singletonList(hivMetadata.getArtStatus()));
 
-    CohortDefinition h1 = QualityImprovement2020Queries.getMQ15NumH(
-      hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-      hivMetadata.getStartDrugs().getConceptId(),
-      hivMetadata.getQuarterlyConcept().getConceptId(),
-      hivMetadata.getGaac().getConceptId(),
-      hivMetadata.getQuarterlyDispensation().getConceptId(),
-      hivMetadata.getTypeOfDispensationConcept().getConceptId(),
-      hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-      hivMetadata.getHivViralLoadConcept().getConceptId());
-      
-      CohortDefinition h2 = QualityImprovement2020Queries.getMQ15NumH2(
-      hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-      hivMetadata.getStartDrugs().getConceptId(),
-      hivMetadata.getQuarterlyConcept().getConceptId(),
-      hivMetadata.getGaac().getConceptId(),
-      hivMetadata.getQuarterlyDispensation().getConceptId(),
-      hivMetadata.getTypeOfDispensationConcept().getConceptId(),
-      hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-      hivMetadata.getHivViralLoadConcept().getConceptId(),
-      hivMetadata.getHivViralLoadQualitative().getConceptId(),
-      hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId());
+    CohortDefinition h1 =
+        QualityImprovement2020Queries.getMQ15NumH(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getQuarterlyConcept().getConceptId(),
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId(),
+            hivMetadata.getTypeOfDispensationConcept().getConceptId(),
+            hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId());
 
-      CohortDefinition i = QualityImprovement2020Queries.getMQ15NumI(
-      hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-      hivMetadata.getStartDrugs().getConceptId(),
-      hivMetadata.getQuarterlyConcept().getConceptId(),
-      hivMetadata.getGaac().getConceptId(),
-      hivMetadata.getQuarterlyDispensation().getConceptId(),
-      hivMetadata.getTypeOfDispensationConcept().getConceptId(),
-      hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-      hivMetadata.getHivViralLoadConcept().getConceptId(),
-      hivMetadata.getHivViralLoadQualitative().getConceptId(),
-      hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId());
+    CohortDefinition h2 =
+        QualityImprovement2020Queries.getMQ15NumH2(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getQuarterlyConcept().getConceptId(),
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId(),
+            hivMetadata.getTypeOfDispensationConcept().getConceptId(),
+            hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getHivViralLoadQualitative().getConceptId(),
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId());
+
+    CohortDefinition i =
+        QualityImprovement2020Queries.getMQ15NumI(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getStartDrugs().getConceptId(),
+            hivMetadata.getQuarterlyConcept().getConceptId(),
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId(),
+            hivMetadata.getTypeOfDispensationConcept().getConceptId(),
+            hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getHivViralLoadQualitative().getConceptId(),
+            hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId());
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
@@ -6025,13 +6028,16 @@ public class QualityImprovement2020CohortQueries {
             transferOut,
             "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
 
-    comp.addSearch("G2", EptsReportUtils.map(resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(),MAPPING));
+    comp.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(), MAPPING));
 
-    comp.addSearch("H1", EptsReportUtils.map(h1,MAPPING));
+    comp.addSearch("H1", EptsReportUtils.map(h1, MAPPING));
 
-    comp.addSearch("H2", EptsReportUtils.map(h2,MAPPING));
+    comp.addSearch("H2", EptsReportUtils.map(h2, MAPPING));
 
-    comp.addSearch("I", EptsReportUtils.map(i,MAPPING));
+    comp.addSearch("I", EptsReportUtils.map(i, MAPPING));
 
     comp.addSearch(
         "AGES29",
@@ -6066,28 +6072,22 @@ public class QualityImprovement2020CohortQueries {
     } else if (num == 4) {
       comp.setCompositionString("A AND NOT (B1 OR C OR D OR F) AND G2 AND I AND ADULT");
     } else if (num == 5) {
-      comp.setCompositionString(
-          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND AGES29");
+      comp.setCompositionString("(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND AGES29");
     } else if (num == 6) {
-      comp.setCompositionString(
-          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND AGES1014");
+      comp.setCompositionString("(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND AGES1014");
     } else if (num == 7) {
-      comp.setCompositionString(
-          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND H1 AND AGES29");
+      comp.setCompositionString("(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND H1 AND AGES29");
     } else if (num == 8) {
-      comp.setCompositionString(
-          "(A2 OR A3) and NOT (B1 OR C OR D OR F) AND H1 AND AGES1014");
+      comp.setCompositionString("(A2 OR A3) and NOT (B1 OR C OR D OR F) AND H1 AND AGES1014");
     } else if (num == 9) {
-      comp.setCompositionString(
-          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND H2 AND AGES29");
+      comp.setCompositionString("(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND H2 AND AGES29");
     } else if (num == 10) {
       comp.setCompositionString(
           "(A2 OR A3) and NOT (B1 OR C OR D OR F) AND G2 AND H2 AND AGES1014");
     } else if (num == 11) {
-      comp.setCompositionString(
-          "(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND I AND AGES29");
+      comp.setCompositionString("(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND I AND AGES29");
     } else if (num == 12) {
-      comp.setCompositionString("(A2 OR A3) AND NOT (B1 OR C OR D OR F) AND G2 AND I AND AGES1014");
+      comp.setCompositionString("(A2 OR A3) and NOT (B1 OR C OR D OR F) AND G2 AND I AND AGES1014");
     }
     return comp;
   }

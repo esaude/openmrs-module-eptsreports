@@ -1117,7 +1117,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         "age=15+");
 
     dataSetDefinition.addColumn(
-        "MQ13NUM4",
+        "MQ13NUM14",
         "Crianças na 2a linha de TARV que receberam o resultado da Carga Viral entre o sexto e o nono mês após o início da 2a linha de TARV",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -1555,7 +1555,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
-        // Category 15 Numerator indicators
+    // Category 15 Numerator indicators
     dataSetDefinition.addColumn(
         "MQ15NUM1",
         "% de Adultos (15/+anos) inscritos há 12 meses em algum MDS  (DT ou GAAC) que continuam activos em TARV",
