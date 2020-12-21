@@ -4419,6 +4419,17 @@ public class MQCohortQueries {
     definition.addSearch(
         "ADULT-B2",
         EptsReportUtils.map(this.findPatientsWhohaveCVMoreThan1000CopiesByQueryB2(), mappings));
+    
+    definition.addSearch(
+            "CHILDREN-B1",
+            EptsReportUtils.map(
+                this.findCHILDRENBETWEEN2AND15WhoHaveLastTerapeutcLineByQueryB1(), mappings));
+
+        definition.addSearch(
+            "CHILDREN-B2",
+            EptsReportUtils.map(
+                this.findCHILDRENBETWEEN2AND15WhohaveCVMoreThan1000CopiesByQueryB2(), mappings));
+
 
     definition.addSearch(
         "PREGNANT",
@@ -4432,7 +4443,7 @@ public class MQCohortQueries {
         "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(ADULT-B1 AND ADULT-B2 AND PREGNANT) NOT (BREASTFEEDING OR TRANSFERED-OUT)");
+        "((ADULT-B1 OR CHILDREN-B1) AND (ADULT-B2 OR CHILDREN-B2) AND PREGNANT) NOT (BREASTFEEDING OR TRANSFERED-OUT)");
     return definition;
   }
 
@@ -4563,6 +4574,17 @@ public class MQCohortQueries {
         "ADULT-H",
         EptsReportUtils.map(
             this.findPatientsWhoHaveRequestedCV120DaysAfterCVResultByQueryH(), mappings));
+    
+    definition.addSearch(
+            "CHILDREN-B1",
+            EptsReportUtils.map(
+                this.findCHILDRENBETWEEN2AND15WhoHaveLastTerapeutcLineByQueryB1(), mappings));
+
+        definition.addSearch(
+            "CHILDREN-B2",
+            EptsReportUtils.map(
+                this.findCHILDRENBETWEEN2AND15WhohaveCVMoreThan1000CopiesByQueryB2(), mappings));
+
     definition.addSearch(
         "PREGNANT",
         EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
@@ -4572,7 +4594,7 @@ public class MQCohortQueries {
     definition.addSearch(
         "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
     definition.setCompositionString(
-        "(ADULT-B1 AND ADULT-B2 AND PREGNANT AND ADULT-G AND ADULT-H) NOT (BREASTFEEDING OR TRANSFERED-OUT)");
+        "((ADULT-B1 OR CHILDREN-B1) AND (ADULT-B2 OR CHILDREN-B2)  AND PREGNANT AND ADULT-G AND ADULT-H) NOT (BREASTFEEDING OR TRANSFERED-OUT)");
     return definition;
   }
 }
