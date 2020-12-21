@@ -403,6 +403,19 @@ public class GenericCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getStartedArtBeforeDateMOH(boolean considerTransferredIn) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(StartedArtBeforeDateCalculationMOH.class).get(0));
+    cd.setName("Art start date");
+    cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
+
+    return cd;
+  }
+
   public CohortDefinition getNewlyOrPreviouslyEnrolledOnART(boolean isNewlyEnrolledOnArtSearch) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(

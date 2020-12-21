@@ -1835,7 +1835,8 @@ public class ResumoMensalCohortQueries {
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed() {
+  public CohortDefinition getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed(
+      boolean isMOH) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName(
         "Number of active patients in ART at the end of current month who performed Viral Load Test (Annual Notification)");
@@ -1846,7 +1847,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "common",
         map(
-            getActivePatientsInARTByEndOfCurrentMonth(),
+            getActivePatientsInARTByEndOfCurrentMonth(isMOH),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -1889,7 +1890,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B13",
         map(
-            getActivePatientsInARTByEndOfCurrentMonth(),
+            getActivePatientsInARTByEndOfCurrentMonth(false),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B1",
@@ -1935,7 +1936,7 @@ public class ResumoMensalCohortQueries {
    *
    * @return {@link CohortDefinition}
    */
-  private CohortDefinition getPatientsWithCodedObsAndAnswers(Concept question, Concept answer) {
+  public CohortDefinition getPatientsWithCodedObsAndAnswers(Concept question, Concept answer) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName(
         "Patients with lab request having question and answer - encounter date within boundaries");
@@ -2078,7 +2079,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "C",
         map(
-            getActivePatientsInARTByEndOfCurrentMonth(),
+            getActivePatientsInARTByEndOfCurrentMonth(false),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "VL",
@@ -2146,7 +2147,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "C",
         map(
-            getActivePatientsInARTByEndOfCurrentMonth(),
+            getActivePatientsInARTByEndOfCurrentMonth(false),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "SUPP",
@@ -2631,7 +2632,7 @@ public class ResumoMensalCohortQueries {
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getActivePatientsInARTByEndOfCurrentMonth() {
+  public CohortDefinition getActivePatientsInARTByEndOfCurrentMonth(boolean isMOH) {
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
@@ -2640,7 +2641,13 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
+    CohortDefinition startedArt = null;
+    if (isMOH) {
+      startedArt = genericCohortQueries.getStartedArtBeforeDateMOH(false);
+
+    } else {
+      startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
+    }
 
     CohortDefinition fila = getPatientsWithFILAEncounterAndNextPickupDate();
 
@@ -2658,7 +2665,14 @@ public class ResumoMensalCohortQueries {
     String mappingsOnDate = "onOrBefore=${endDate},location=${location}";
     String mappingsOnOrBeforeLocationList = "onOrBefore=${endDate},locationList=${location}";
 
-    cd.addSearch("startedArt", map(startedArt, mappingsOnDate));
+    if (isMOH) {
+      cd.addSearch(
+          "startedArt",
+          map(startedArt, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    } else {
+      cd.addSearch("startedArt", map(startedArt, mappingsOnDate));
+    }
     cd.addSearch("fila", map(fila, mappingsOnDate));
     cd.addSearch("masterCardPickup", map(masterCardPickup, mappingsOnDate));
     cd.addSearch("B5E", map(B5E, mappingsOnDate));

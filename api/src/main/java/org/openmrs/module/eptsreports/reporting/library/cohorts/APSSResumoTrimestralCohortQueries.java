@@ -223,7 +223,7 @@ public class APSSResumoTrimestralCohortQueries {
     String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     CohortDefinition activeInART =
-        this.resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth();
+        this.resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false);
 
     cd.addSearch("activeInART", EptsReportUtils.map(activeInART, mapping));
 

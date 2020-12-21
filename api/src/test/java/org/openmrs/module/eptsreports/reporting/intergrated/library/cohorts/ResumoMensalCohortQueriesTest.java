@@ -624,7 +624,8 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
 
   @Ignore("Query using IF function not supported in H2 database")
   public void getActivePatientsInARTByEndOfCurrentMonth() throws EvaluationException {
-    CohortDefinition cd = resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth();
+    CohortDefinition cd =
+        resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false);
 
     HashMap<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());

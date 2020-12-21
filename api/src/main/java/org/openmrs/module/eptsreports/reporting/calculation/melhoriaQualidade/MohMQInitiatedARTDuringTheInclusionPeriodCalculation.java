@@ -129,11 +129,13 @@ public class MohMQInitiatedARTDuringTheInclusionPeriodCalculation
       }
       if ((pickUpDateA1Obs == null || pickUpA1Obs == null) && startARTA2Obs != null) {
         // checking if the value datetime of ART start from A2 Obs is  during the inclusion period
-        if (startARTA2Obs.getValueDatetime().compareTo(onOrAfter) >= 0
-            && startARTA2Obs.getValueDatetime().compareTo(onOrBefore) <= 0) {
+        if (startARTA2Obs.getValueDatetime() != null) {
+          if (startARTA2Obs.getValueDatetime().compareTo(onOrAfter) >= 0
+              && startARTA2Obs.getValueDatetime().compareTo(onOrBefore) <= 0) {
 
-          calculationResultMap.put(
-              patientId, new SimpleResult(startARTA2Obs.getValueDatetime(), this));
+            calculationResultMap.put(
+                patientId, new SimpleResult(startARTA2Obs.getValueDatetime(), this));
+          }
         }
       }
 

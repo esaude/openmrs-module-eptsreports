@@ -77,7 +77,7 @@ public class MISAUKeyPopsCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition patientsCurrentlyInART =
-        resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth();
+        resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false);
 
     cd.addSearch(
         "patientsCurrentlyInART",

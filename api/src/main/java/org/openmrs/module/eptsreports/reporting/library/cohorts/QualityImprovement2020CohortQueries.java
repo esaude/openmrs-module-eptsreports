@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -538,24 +540,18 @@ public class QualityImprovement2020CohortQueries {
     return sqlCohortDefinition;
   }
 
-  /*
+  /**
+   * All patients ll patients with a clinical consultation(encounter type 6) during the Revision
+   * period with the following conditions:
    *
-   * All  patients ll patients with a clinical consultation(encounter type 6) during
-   * the Revision period with the following conditions:
-   *
-   * - with “Diagnótico TB activo” (concept_id 23761) value coded “SIM”(concept id 1065)
+   * <p>- with “Diagnótico TB activo” (concept_id 23761) value coded “SIM”(concept id 1065)
    * Encounter_datetime between:
    *
-   *  - Encounter_datetime (from the last colinical consultation with
-   * “PROFILAXIA COM ISONIAZIDA”(concept_id 6122) value coded “Inicio” (concept_id 1256))
-   * AND
-   * - Encounter_datetime (from the last colinical consultation with
-   * “PROFILAXIA COM ISONIAZIDA”(concept_id 6122) value coded “Inicio” (concept_id 1256))
-   * PLUS
-   * 9 MONTHS
-   *
+   * <p>- Encounter_datetime (from the last colinical consultation with “PROFILAXIA COM
+   * ISONIAZIDA”(concept_id 6122) value coded “Inicio” (concept_id 1256)) AND - Encounter_datetime
+   * (from the last colinical consultation with “PROFILAXIA COM ISONIAZIDA”(concept_id 6122) value
+   * coded “Inicio” (concept_id 1256)) PLUS 9 MONTHS
    */
-
   public CohortDefinition getPatientsWithTBDiagActive() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("Patients with TB Diagnosis Active");
@@ -615,24 +611,18 @@ public class QualityImprovement2020CohortQueries {
     return sqlCohortDefinition;
   }
 
-  /*
+  /**
+   * All patients ll patients with a clinical consultation(encounter type 6) during the Revision
+   * period with the following conditions:
    *
-   * All  patients ll patients with a clinical consultation(encounter type 6) during
-   * the Revision period with the following conditions:
+   * <p>- “TEM SINTOMAS DE TB” (concept_id 23758) value coded “SIM” or “NÃO”(concept_id IN [1065,
+   * 1066]) and Encounter_datetime between:
    *
-   * -  “TEM SINTOMAS DE TB” (concept_id 23758) value coded “SIM” or “NÃO”(concept_id IN [1065, 1066]) and
-   * Encounter_datetime between:
-   *
-   *  - Encounter_datetime (from the last colinical consultation with
-   * “PROFILAXIA COM ISONIAZIDA”(concept_id 6122) value coded “Inicio” (concept_id 1256))
-   * AND
-   * - Encounter_datetime (from the last colinical consultation with
-   * “PROFILAXIA COM ISONIAZIDA”(concept_id 6122) value coded “Inicio” (concept_id 1256))
-   * PLUS
-   * 9 MONTHS
-   *
+   * <p>- Encounter_datetime (from the last colinical consultation with “PROFILAXIA COM
+   * ISONIAZIDA”(concept_id 6122) value coded “Inicio” (concept_id 1256)) AND - Encounter_datetime
+   * (from the last colinical consultation with “PROFILAXIA COM ISONIAZIDA”(concept_id 6122) value
+   * coded “Inicio” (concept_id 1256)) PLUS 9 MONTHS
    */
-
   public CohortDefinition getPatientsWithTBSymtoms() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("Patients with TB Diagnosis Active");
@@ -693,22 +683,17 @@ public class QualityImprovement2020CohortQueries {
     return sqlCohortDefinition;
   }
 
-  /*
+  /**
+   * All patients ll patients with a clinical consultation(encounter type 6) during the Revision
+   * period with the following conditions:
    *
-   * All  patients ll patients with a clinical consultation(encounter type 6) during
-   * the Revision period with the following conditions:
-   *
-   * -  “TRATAMENTO DE TUBERCULOSE”(concept_id 1268) value coded “Inicio” or “Continua” or
+   * <p>- “TRATAMENTO DE TUBERCULOSE”(concept_id 1268) value coded “Inicio” or “Continua” or
    * “Fim”(concept_id IN [1256, 1257, 1267]) “Data Tratamento TB” (obs datetime 1268) between:
    *
-   *  - Encounter_datetime (from the last colinical consultation with
-   * “PROFILAXIA COM ISONIAZIDA”(concept_id 6122) value coded “Inicio” (concept_id 1256))
-   * AND
-   * - Encounter_datetime (from the last colinical consultation with
-   * “PROFILAXIA COM ISONIAZIDA”(concept_id 6122) value coded “Inicio” (concept_id 1256))
-   * PLUS
-   * 9 MONTHS
-   *
+   * <p>- Encounter_datetime (from the last colinical consultation with “PROFILAXIA COM
+   * ISONIAZIDA”(concept_id 6122) value coded “Inicio” (concept_id 1256)) AND - Encounter_datetime
+   * (from the last colinical consultation with “PROFILAXIA COM ISONIAZIDA”(concept_id 6122) value
+   * coded “Inicio” (concept_id 1256)) PLUS 9 MONTHS
    */
   public CohortDefinition getPatientsWithTBTreatment() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
@@ -3213,7 +3198,7 @@ public class QualityImprovement2020CohortQueries {
         "G",
         EptsReportUtils.map(
             resumoMensalCohortQueries
-                .getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed(),
+                .getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed(true),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B1",
@@ -3267,7 +3252,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "B2",
         EptsReportUtils.map(
-            getPatientsFromFichaClinicaDenominatorB("B2_12"),
+            getPatientsFromFichaClinicaDenominatorB("B2"),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B2E",
@@ -6031,7 +6016,7 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch(
         "G2",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(), MAPPING));
+            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(true), MAPPING));
 
     comp.addSearch("H1", EptsReportUtils.map(h1, MAPPING));
 
