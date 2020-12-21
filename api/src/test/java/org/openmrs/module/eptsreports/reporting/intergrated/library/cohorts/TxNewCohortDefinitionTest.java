@@ -31,7 +31,6 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
     final Date endDate = DateUtil.getDateTime(2020, 1, 20);
     final Date revisionDate = DateUtil.getDateTime(2020, 10, 20);
 
-
     final CohortDefinition txNewCompositionCohort =
         this.mQCategory13Section1CohortQueries.findDenominatorCategory13SectionIB();
 
@@ -49,8 +48,13 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
         this.evaluateCohortDefinition(txNewCompositionCohort, parameters);
 
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
-    System.out.println(evaluateCohortDefinition.size());
-//    System.out.println(evaluateCohortDefinition.getMemberIds());
+//    System.out.println(evaluateCohortDefinition.size());
+//        System.out.println(evaluateCohortDefinition.getMemberIds());
+        
+        for (int t : evaluateCohortDefinition.getMemberIds()) {
+            System.out.println(t);
+          }
+
   }
 
   @Override

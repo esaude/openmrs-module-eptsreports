@@ -149,22 +149,15 @@ public interface QualityImprovementQueriesInterfaceCategory13Section1 {
             + ") final";
 
     public static final String findNumeratorC =
-        "Select final.patient_id from ( "
-            + "Select cvPedido.patient_id,enc.encounter_datetime ultimaConsulta,max(cvPedido.dataPedidoCV) dataPedidoCV from ( "
+        "Select enc.patient_id from ( "
             + "Select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "where p.voided=0 and e.voided=0 and e.encounter_type=6 and "
-            + "e.encounter_datetime >:endInclusionDate and e.encounter_datetime<=:endRevisionDate   and e.location_id=:location "
+            + "e.encounter_datetime >:endInclusionDate and e.encounter_datetime<=:endRevisionDate and e.location_id=:location "
             + "group by p.patient_id "
             + ") enc "
-            + "inner join ( "
-            + "Select p.patient_id,o.obs_datetime as dataPedidoCV from patient p "
-            + "inner join encounter  e on e.patient_id=p.patient_id "
-            + "inner join obs o on o.encounter_id=e.encounter_id "
-            + "where  e.voided=0 and o.concept_id = 23722 and o.value_coded=856 and e.encounter_type=6 and o.voided=0 and e.location_id=:location "
-            + "group by p.patient_id "
-            + ") cvPedido on cvPedido.patient_id=enc.patient_id "
-            + "group by patient_id "
-            + ") final ";
+            + "inner join obs cvPedido on cvPedido.person_id=enc.patient_id "
+            + "where cvPedido.obs_datetime=enc.encounter_datetime and cvPedido.concept_id=23722 and cvPedido.value_coded=856 and cvPedido.voided=0 and "
+            + "cvPedido.location_id=:location ";
   }
 }
