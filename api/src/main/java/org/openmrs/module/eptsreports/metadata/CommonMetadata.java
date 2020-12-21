@@ -535,4 +535,20 @@ public class CommonMetadata extends Metadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.regimeChangeConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 21190</b>
+   *
+   * <p><b>Name:</b> REGIME ARV ALTERNATIVO A PRIMEIRA LINHA
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getRegimenAlternativeToFirstLineConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.regimenAlternativeToFirstLineConceptUuid");
+    return getConcept(uuid);
+  }
 }

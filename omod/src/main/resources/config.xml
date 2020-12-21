@@ -2440,6 +2440,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.regimenAlternativeToFirstLineConceptUuid</property>
+		<defaultValue>618650c6-90c3-4acd-ae4d-ffb2f6452a5b</defaultValue>
+		<description>
+			REGIME ARV ALTERNATIVO A PRIMEIRA LINHA concept
+		</description>
+	</globalProperty>
+
 	
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
