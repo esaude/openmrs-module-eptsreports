@@ -13,6 +13,44 @@ public interface QualityImprovementQueriesInterfaceCategory13Section1 {
             + "group by p.patient_id "
             + ")maxEnc";
 
+    public static final String findPatientsWithLastClinicalConsultationDenominatorB1AgeCalculation(
+        int startAge, int endAge) {
+
+      final String sql =
+          "Select final.patient_id  from ( "
+              + "Select maxEnc.patient_id,maxEnc.encounter_datetime from ( "
+              + "Select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
+              + "inner join encounter e on p.patient_id=e.patient_id "
+              + "where p.voided=0 and e.voided=0 and e.encounter_type=6 and "
+              + "e.encounter_datetime >:endInclusionDate and e.encounter_datetime<=:endRevisionDate  and e.location_id=:location "
+              + "group by p.patient_id "
+              + ")maxEnc "
+              + "INNER JOIN person pe ON maxEnc.patient_id=pe.person_id "
+              + "WHERE (TIMESTAMPDIFF(year,birthdate,maxEnc.encounter_datetime)) BETWEEN %s AND %s AND birthdate IS NOT NULL and pe.voided = 0 "
+              + " ) final ";
+
+      return String.format(sql, startAge, endAge);
+    }
+
+    public static final String
+        findPatientsWithLastClinicalConsultationDenominatorB1AgeCalculation15Plus(int startAge) {
+
+      final String sql =
+          "Select final.patient_id from ( "
+              + "Select maxEnc.patient_id,maxEnc.encounter_datetime from ( "
+              + "Select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
+              + "inner join encounter e on p.patient_id=e.patient_id "
+              + "where p.voided=0 and e.voided=0 and e.encounter_type=6 and "
+              + "e.encounter_datetime >:endInclusionDate and e.encounter_datetime<=:endRevisionDate  and e.location_id=:location "
+              + "group by p.patient_id "
+              + ")maxEnc "
+              + "INNER JOIN person pe ON maxEnc.patient_id=pe.person_id "
+              + "WHERE (TIMESTAMPDIFF(year,birthdate,maxEnc.encounter_datetime)) > %s AND birthdate IS NOT NULL and pe.voided = 0 "
+              + ") final";
+
+      return String.format(sql, startAge);
+    }
+
     public static final String
         findPatientsWithLastClinicalConsultationwhoAreInFistLineDenominatorB2 =
             "Select final.patient_id from ( "

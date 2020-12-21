@@ -14,6 +14,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries1
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries13_3;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.MQAgeDimensions;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -35,6 +36,7 @@ public class MQDataSet extends BaseDataSet {
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
   @Autowired private EptsCommonDimension eptsCommonDimension;
+  @Autowired private MQAgeDimensions mQAgeDimensions;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -58,8 +60,7 @@ public class MQDataSet extends BaseDataSet {
     dataSetDefinition.addDimension("gender", map(eptsCommonDimension.gender(), ""));
 
     dataSetDefinition.addDimension(
-        "age",
-        map(eptsCommonDimension.mqAgeDimention(ageDimensionCohort), "effectiveDate=${endDate}"));
+        "age", EptsReportUtils.map(this.mQAgeDimensions.getDimension(), mappings));
 
     final CohortIndicator CAT3ADULTODENOMINATOR =
         this.eptsGeneralIndicator.getIndicator(

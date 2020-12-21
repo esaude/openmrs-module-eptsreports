@@ -105,7 +105,7 @@ public class MQCategory13Section2CohortQueries {
         EptsReportUtils.map(
             mQCategory13Section1CohortQueries.findPatientsWithRequestCVDenominatorB5E(), mappings));
 
-    definition.setCompositionString("B1 AND ((B2 NOT B2E)  NOT (B4E OR B5E))");
+    definition.setCompositionString("(B1 AND (B2 NOT B2E))  NOT (B4E OR B5E)");
 
     return definition;
   }

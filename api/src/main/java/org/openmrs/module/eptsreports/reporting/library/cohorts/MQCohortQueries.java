@@ -3987,50 +3987,6 @@ public class MQCohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(
-      value = "findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodByH")
-  public CohortDefinition findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodByH() {
-
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-
-    definition.setName("findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodByH");
-    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    String query =
-        QualityImprovementQueriesCAT13NuminatorP2.QUERY
-            .findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodByH;
-
-    definition.setQuery(query);
-
-    return definition;
-  }
-
-  @DocumentedDefinition(
-      value = "findPatientsWhoAreRequestForLaboratoryInvestigationAndPregnantInclusionPeriodByJ")
-  public CohortDefinition
-      findPatientsWhoAreRequestForLaboratoryInvestigationAndPregnantInclusionPeriodByJ() {
-
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-
-    definition.setName(
-        "findPatientsWhoAreRequestForLaboratoryInvestigationAndPregnantInclusionPeriodByJ");
-    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    String query =
-        QualityImprovementQueriesCAT13NuminatorP2.QUERY
-            .findPatientsWhoAreRequestForLaboratoryInvestigationAndPregnantInclusionPeriodByJ;
-
-    definition.setQuery(query);
-
-    return definition;
-  }
-
   @DocumentedDefinition(value = "findPatientsWhoHaveCVResultAfter33DaysOfRequestByK")
   public CohortDefinition findPatientsWhoHaveCVResultAfter33DaysOfRequestByK() {
 
@@ -4177,7 +4133,8 @@ public class MQCohortQueries {
     definition.addSearch(
         "ADULT-H",
         EptsReportUtils.map(
-            this.findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodByH(),
+            this
+                .findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodCAT13DenumeratorP2ByB3(),
             mappings));
 
     definition.addSearch(
@@ -4218,7 +4175,8 @@ public class MQCohortQueries {
     definition.addSearch(
         "ADULT-J",
         EptsReportUtils.map(
-            this.findPatientsWhoAreRequestForLaboratoryInvestigationAndPregnantInclusionPeriodByJ(),
+            this
+                .findPatientsWhoAreRequestForLaboratoryInvestigationAndPregnantInclusionPeriodCAT13DenumeratorP2ByB4(),
             mappings));
 
     definition.addSearch(
