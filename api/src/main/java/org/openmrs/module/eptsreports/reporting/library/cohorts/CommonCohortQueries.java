@@ -808,15 +808,14 @@ public class CommonCohortQueries {
     map.put("23866", artDatePickupMasterCard);
 
     String query =
-        "  SELECT	patient_id "
-            + "      FROM	("
-            + "          SELECT	p.patient_id, Min(value_datetime) data_inicio "
-            + "                    FROM	patient p "
+        " SELECT patient_id "
+            + "        FROM   (SELECT p.patient_id, Min(value_datetime) art_date "
+            + "                    FROM patient p "
             + "              INNER JOIN encounter e "
             + "                  ON p.patient_id = e.patient_id "
             + "              INNER JOIN obs o "
             + "                  ON e.encounter_id = o.encounter_id "
-            + "          WHERE 	p.voided = 0 "
+            + "          WHERE  p.voided = 0 "
             + "              AND e.voided = 0 "
             + "              AND o.voided = 0 "
             + "              AND e.encounter_type = ${53} "
@@ -824,28 +823,9 @@ public class CommonCohortQueries {
             + "              AND o.value_datetime IS NOT NULL "
             + "              AND o.value_datetime <= :endDate "
             + "              AND e.location_id = :location "
-            + "          GROUP  BY p.patient_id "
-            + "          UNION "
-            + "          SELECT 	p.patient_id, Min(pickupdate.value_datetime) AS data_inicio "
-            + "          FROM   	patient p "
-            + "              JOIN encounter e "
-            + "                ON p.patient_id = e.patient_id "
-            + "              JOIN obs pickup "
-            + "                ON e.encounter_id = pickup.encounter_id "
-            + "              JOIN obs pickupdate "
-            + "                ON e.encounter_id = pickupdate.encounter_id "
-            + "          WHERE  	p.voided = 0 "
-            + "              AND pickup.voided = 0 "
-            + "              AND pickup.concept_id = ${23865} "
-            + "              AND pickup.value_coded = ${1065} "
-            + "              AND pickupdate.voided = 0 "
-            + "              AND pickupdate.concept_id = ${23866} "
-            + "              AND pickupdate.value_datetime <= :endDate "
-            + "              AND e.encounter_type = ${52} "
-            + "              AND e.voided = 0 "
-            + "              AND e.location_id = :location "
-            + "          GROUP  BY p.patient_id) inicio "
-            + "      GROUP  BY patient_id ";
+            + "          GROUP  BY p.patient_id  )  "
+            + "               union_tbl  "
+            + "        WHERE  union_tbl.art_date BETWEEN :startDate AND :endDate";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 

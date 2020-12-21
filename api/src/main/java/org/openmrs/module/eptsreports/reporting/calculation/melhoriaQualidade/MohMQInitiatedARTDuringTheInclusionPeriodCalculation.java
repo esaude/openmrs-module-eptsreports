@@ -71,30 +71,6 @@ public class MohMQInitiatedARTDuringTheInclusionPeriodCalculation
     EPTSCalculationService eptsCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
 
-    CalculationResultMap pickUpDateA1Map =
-        eptsCalculationService.firstObs(
-            hivMetadata.getArtDatePickupMasterCard(),
-            null,
-            location,
-            false,
-            null,
-            onOrBefore,
-            Arrays.asList(hivMetadata.getMasterCardDrugPickupEncounterType()),
-            cohort,
-            context);
-
-    CalculationResultMap pickUpA1Map =
-        eptsCalculationService.firstObs(
-            hivMetadata.getArtPickupConcept(),
-            hivMetadata.getPatientFoundYesConcept(),
-            location,
-            false,
-            null,
-            onOrBefore,
-            Arrays.asList(hivMetadata.getMasterCardDrugPickupEncounterType()),
-            cohort,
-            context);
-
     CalculationResultMap startARTA2Map =
         eptsCalculationService.firstObs(
             hivMetadata.getARVStartDateConcept(),
@@ -109,47 +85,15 @@ public class MohMQInitiatedARTDuringTheInclusionPeriodCalculation
 
     for (Integer patientId : cohort) {
 
-      Obs pickUpDateA1Obs = EptsCalculationUtils.obsResultForPatient(pickUpDateA1Map, patientId);
-
-      Obs pickUpA1Obs = EptsCalculationUtils.obsResultForPatient(pickUpA1Map, patientId);
-
       Obs startARTA2Obs = EptsCalculationUtils.obsResultForPatient(startARTA2Map, patientId);
 
-      if (pickUpDateA1Obs != null && pickUpA1Obs != null && startARTA2Obs == null) {
-        // checking if the 2 obs from A1 belong to the same encounter
-        if (isObs1AndObs2inTheSameEncounter(pickUpDateA1Obs, pickUpA1Obs)) {
-          // checking if the value datetime pickUpDate from A1 Obs is  during the inclusion period
-          if (pickUpDateA1Obs.getValueDatetime().compareTo(onOrAfter) >= 0
-              && pickUpDateA1Obs.getValueDatetime().compareTo(onOrBefore) <= 0) {
-
-            calculationResultMap.put(
-                patientId, new SimpleResult(pickUpDateA1Obs.getValueDatetime(), this));
-          }
-        }
-      }
-      if ((pickUpDateA1Obs == null || pickUpA1Obs == null) && startARTA2Obs != null) {
+      if (startARTA2Obs != null) {
         // checking if the value datetime of ART start from A2 Obs is  during the inclusion period
         if (startARTA2Obs.getValueDatetime() != null) {
           if (startARTA2Obs.getValueDatetime().compareTo(onOrAfter) >= 0
               && startARTA2Obs.getValueDatetime().compareTo(onOrBefore) <= 0) {
-
             calculationResultMap.put(
                 patientId, new SimpleResult(startARTA2Obs.getValueDatetime(), this));
-          }
-        }
-      }
-
-      if (pickUpDateA1Obs != null && pickUpA1Obs != null && startARTA2Obs != null) {
-        // checking if the 2 obs from A1 belong to the same encounter
-        if (isObs1AndObs2inTheSameEncounter(pickUpDateA1Obs, pickUpA1Obs)) {
-          Date earliestDate =
-              getTheEarliastDate(
-                  pickUpDateA1Obs.getValueDatetime(), startARTA2Obs.getValueDatetime());
-
-          // checking if the value datetime of ART start from A2 Obs is  during the inclusion period
-          if (earliestDate.compareTo(onOrAfter) >= 0 && earliestDate.compareTo(onOrBefore) <= 0) {
-
-            calculationResultMap.put(patientId, new SimpleResult(earliestDate, this));
           }
         }
       }
