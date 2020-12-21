@@ -4960,7 +4960,7 @@ public class QualityImprovement2020CohortQueries {
                 false,
                 true,
                 "once",
-                hivMetadata.getMasterCardDrugPickupEncounterType(),
+                hivMetadata.getMasterCardEncounterType(),
                 hivMetadata.getTypeTestHIVConcept(),
                 Collections.singletonList(hivMetadata.getHivPCRQualitativeConceptUuid()),
                 hivMetadata.getTypeTestHIVConcept(),

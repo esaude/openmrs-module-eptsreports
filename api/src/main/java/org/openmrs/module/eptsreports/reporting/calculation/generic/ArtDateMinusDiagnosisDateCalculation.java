@@ -42,7 +42,7 @@ public class ArtDateMinusDiagnosisDateCalculation extends AbstractPatientCalcula
     CalculationResultMap diagnosisDateMap =
         eptsCalculationService.getObs(
             hivMetadata.getTypeTestHIVConcept(),
-            Arrays.asList(hivMetadata.getMasterCardDrugPickupEncounterType()),
+            Arrays.asList(hivMetadata.getMasterCardEncounterType()),
             cohort,
             Arrays.asList(location),
             Arrays.asList(hivMetadata.getHivPCRQualitativeConceptUuid()),
