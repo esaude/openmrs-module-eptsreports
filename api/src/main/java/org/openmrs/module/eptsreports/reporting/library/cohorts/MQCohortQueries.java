@@ -4419,17 +4419,16 @@ public class MQCohortQueries {
     definition.addSearch(
         "ADULT-B2",
         EptsReportUtils.map(this.findPatientsWhohaveCVMoreThan1000CopiesByQueryB2(), mappings));
-    
+
     definition.addSearch(
-            "CHILDREN-B1",
-            EptsReportUtils.map(
-                this.findCHILDRENBETWEEN2AND15WhoHaveLastTerapeutcLineByQueryB1(), mappings));
+        "CHILDREN-B1",
+        EptsReportUtils.map(
+            this.findCHILDRENBETWEEN2AND15WhoHaveLastTerapeutcLineByQueryB1(), mappings));
 
-        definition.addSearch(
-            "CHILDREN-B2",
-            EptsReportUtils.map(
-                this.findCHILDRENBETWEEN2AND15WhohaveCVMoreThan1000CopiesByQueryB2(), mappings));
-
+    definition.addSearch(
+        "CHILDREN-B2",
+        EptsReportUtils.map(
+            this.findCHILDRENBETWEEN2AND15WhohaveCVMoreThan1000CopiesByQueryB2(), mappings));
 
     definition.addSearch(
         "PREGNANT",
@@ -4574,16 +4573,16 @@ public class MQCohortQueries {
         "ADULT-H",
         EptsReportUtils.map(
             this.findPatientsWhoHaveRequestedCV120DaysAfterCVResultByQueryH(), mappings));
-    
-    definition.addSearch(
-            "CHILDREN-B1",
-            EptsReportUtils.map(
-                this.findCHILDRENBETWEEN2AND15WhoHaveLastTerapeutcLineByQueryB1(), mappings));
 
-        definition.addSearch(
-            "CHILDREN-B2",
-            EptsReportUtils.map(
-                this.findCHILDRENBETWEEN2AND15WhohaveCVMoreThan1000CopiesByQueryB2(), mappings));
+    definition.addSearch(
+        "CHILDREN-B1",
+        EptsReportUtils.map(
+            this.findCHILDRENBETWEEN2AND15WhoHaveLastTerapeutcLineByQueryB1(), mappings));
+
+    definition.addSearch(
+        "CHILDREN-B2",
+        EptsReportUtils.map(
+            this.findCHILDRENBETWEEN2AND15WhohaveCVMoreThan1000CopiesByQueryB2(), mappings));
 
     definition.addSearch(
         "PREGNANT",

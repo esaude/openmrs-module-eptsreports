@@ -699,7 +699,14 @@ public class MQCohortQueries13_3 {
                 .findPatientsGreaterThan2LessThan15ExcludeAllHaveLaboratoryInvestigationRequestsAndViralChargeCategory13_3_B2(),
             mappings));
 
-    definition.setCompositionString("B2 NOT (PREGNANT or BREASTFEEDING or TRANSFERED-OUT)");
+    definition.addSearch(
+        "I",
+        EptsReportUtils.map(
+            this
+                .findPatientsFromClinicalConsultationWhoHaveViralChargeSecondLineDateCategory13_3_I(),
+            mappings));
+
+    definition.setCompositionString("(B2 AND I) NOT (PREGNANT or BREASTFEEDING or TRANSFERED-OUT)");
 
     return definition;
   }
@@ -768,7 +775,7 @@ public class MQCohortQueries13_3 {
             mappings));
 
     definition.setCompositionString(
-        "((START-TARV NOT TRANSFERED-IN AND G) OR (B1 AND H)) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
+        "(((START-TARV NOT TRANSFERED-IN) AND G) OR (B1 AND H)) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -837,7 +844,7 @@ public class MQCohortQueries13_3 {
             mappings));
 
     definition.setCompositionString(
-        "((START-TARV NOT TRANSFERED-IN AND G) OR (B1 AND H)) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
+        "(((START-TARV NOT TRANSFERED-IN) AND G) OR (B1 AND H)) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -906,7 +913,7 @@ public class MQCohortQueries13_3 {
             mappings));
 
     definition.setCompositionString(
-        "((START-TARV NOT TRANSFERED-IN AND G) OR (B1 AND H)) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
+        "(((START-TARV NOT TRANSFERED-IN) AND G) OR (B1 AND H)) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -975,7 +982,7 @@ public class MQCohortQueries13_3 {
             mappings));
 
     definition.setCompositionString(
-        "((START-TARV NOT TRANSFERED-IN AND G) OR (B1 AND H)) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
+        "(((START-TARV NOT TRANSFERED-IN) AND G) OR (B1 AND H)) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
 
     return definition;
   }

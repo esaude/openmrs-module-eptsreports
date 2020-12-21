@@ -42,7 +42,8 @@ public class MQCohortTest extends DefinitionsFGHLiveTest {
         new Parameter(EptsReportConstants.END_REVISION_DATE, "End Date", Date.class), revisionDate);
 
     CohortDefinition cohortDefinition =
-        mQCohortQueries.findAChildrenInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line69ColumnDNumerator();
+        mQCohortQueries
+            .findAChildrenInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line69ColumnDNumerator();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(cohortDefinition, parameters);

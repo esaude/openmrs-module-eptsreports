@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCategory13Section1CohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries13_3;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -21,18 +21,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
   //  @Autowired private MQCohortQueries mqCohortQueries;
-  @Autowired private MQCategory13Section1CohortQueries mQCategory13Section1CohortQueries;
+  @Autowired private MQCohortQueries13_3 mQCategory13Section1CohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(223);
-    final Date startDate = DateUtil.getDateTime(2019, 10, 21);
+    final Date startDate = DateUtil.getDateTime(2016, 1, 21);
     final Date endDate = DateUtil.getDateTime(2020, 1, 20);
     final Date revisionDate = DateUtil.getDateTime(2020, 10, 20);
 
     final CohortDefinition txNewCompositionCohort =
-        this.mQCategory13Section1CohortQueries.findDenominatorCategory13SectionIB();
+        this.mQCategory13Section1CohortQueries
+            .findPatientsFromClinicalConsultationWhoHaveViralChargeSecondLineDateCategory13_3_I();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 
@@ -48,13 +49,12 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
         this.evaluateCohortDefinition(txNewCompositionCohort, parameters);
 
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
-//    System.out.println(evaluateCohortDefinition.size());
-//        System.out.println(evaluateCohortDefinition.getMemberIds());
-        
-        for (int t : evaluateCohortDefinition.getMemberIds()) {
-            System.out.println(t);
-          }
+    //    System.out.println(evaluateCohortDefinition.size());
+    //        System.out.println(evaluateCohortDefinition.getMemberIds());
 
+    for (int t : evaluateCohortDefinition.getMemberIds()) {
+      System.out.println(t);
+    }
   }
 
   @Override
