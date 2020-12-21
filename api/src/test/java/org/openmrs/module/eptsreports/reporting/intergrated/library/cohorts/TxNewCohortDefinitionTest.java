@@ -27,19 +27,21 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(223);
-    final Date startDate = DateUtil.getDateTime(2020, 1, 21);
-    final Date endDate = DateUtil.getDateTime(2020, 9, 20);
+    final Date startDate = DateUtil.getDateTime(2019, 10, 21);
+    final Date endDate = DateUtil.getDateTime(2020, 1, 20);
+    final Date revisionDate = DateUtil.getDateTime(2020, 10, 20);
+
 
     final CohortDefinition txNewCompositionCohort =
-        this.mQCategory13Section1CohortQueries.findNumeratorCategory13Section1C();
+        this.mQCategory13Section1CohortQueries.findDenominatorCategory13SectionIB();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 
     parameters.put(new Parameter("startInclusionDate", "Start Date", Date.class), startDate);
 
-    parameters.put(new Parameter("endInclusionDate", "End Date", Date.class), startDate);
+    parameters.put(new Parameter("endInclusionDate", "End Date", Date.class), endDate);
 
-    parameters.put(new Parameter("endRevisionDate", "End Date", Date.class), endDate);
+    parameters.put(new Parameter("endRevisionDate", "End Date", Date.class), revisionDate);
 
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
@@ -47,7 +49,8 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
         this.evaluateCohortDefinition(txNewCompositionCohort, parameters);
 
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
-    System.out.println(evaluateCohortDefinition.getMemberIds());
+    System.out.println(evaluateCohortDefinition.size());
+//    System.out.println(evaluateCohortDefinition.getMemberIds());
   }
 
   @Override
