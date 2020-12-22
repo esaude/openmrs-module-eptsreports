@@ -234,11 +234,6 @@ public class MQCohortQueriesCAT11Versao2 {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "ADULT",
-        EptsReportUtils.map(
-            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation(), mappings));
-
-    definition.addSearch(
         "ADULT-B3",
         EptsReportUtils.map(this.findPatientsWhoArePregnantDuringInclusionPeriodByB3(), mappings));
 
@@ -260,7 +255,7 @@ public class MQCohortQueriesCAT11Versao2 {
         "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(ADULT AND ADULT-B3 AND PREGNANT) NOT(BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+        "(ADULT-B3 AND PREGNANT) NOT(BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -333,40 +328,20 @@ public class MQCohortQueriesCAT11Versao2 {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "ADULT",
+        "DENOMINADOR",
         EptsReportUtils.map(
-            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation(), mappings));
-
-    definition.addSearch(
-        "ADULT-B3",
-        EptsReportUtils.map(this.findPatientsWhoArePregnantDuringInclusionPeriodByB3(), mappings));
-
-    definition.addSearch(
-        "PREGNANT",
-        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
-
-    definition.addSearch(
-        "BREASTFEEDING",
-        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
-
-    definition.addSearch(
-        "TRANSFERED-IN",
-        EptsReportUtils.map(
-            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
+            this
+                .findPregnantOnARTStartedExcludingBreastfeedingAndTransferredInCategory11DenominatorVersion2(),
             mappings));
 
     definition.addSearch(
-        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
-
-    definition.addSearch(
-        "APSS-PP",
+        "G-APSS-PP",
         EptsReportUtils.map(
             this
                 .findAdultsOnARTWithMinimum3APSSFollowupConsultationsIntheFirst3MonthsAfterStartingARTCategory11NumeratorAdult(),
             mappings));
 
-    definition.setCompositionString(
-        "(ADULT AND APSS-PP AND PREGNANT AND ADULT-B3) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+    definition.setCompositionString("(DENOMINADOR AND G-APSS-PP)");
 
     return definition;
   }
@@ -391,30 +366,25 @@ public class MQCohortQueriesCAT11Versao2 {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "B1", EptsReportUtils.map(this.findPatientsWhoHaveLastFirstLineTerapeutic(), mappings));
+        "DENOMINADOR",
+        EptsReportUtils.map(
+            this
+                .findPregnantOnARTStartedExcludingBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11DenominatorVersion2(),
+            mappings));
+
     definition.addSearch(
-        "B2", EptsReportUtils.map(this.findAdultWithCVOver1000CopiesCategory11B2(), mappings));
+        "ADULT-B3",
+        EptsReportUtils.map(this.findPatientsWhoArePregnantDuringInclusionPeriodByB3(), mappings));
+
     definition.addSearch(
         "H",
         EptsReportUtils.map(
             this
                 .findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH(),
             mappings));
-    definition.addSearch(
-        "PREGNANT",
-        EptsReportUtils.map(this.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
-    definition.addSearch(
-        "BREASTFEEDING",
-        EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
-    definition.addSearch(
-        "TRANSFERED-IN",
-        EptsReportUtils.map(
-            this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
-            mappings));
-    definition.addSearch(
-        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
-    definition.setCompositionString(
-        "(B1 AND B2 AND H AND PREGNANT) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+
+    definition.setCompositionString("(DENOMINADOR AND ADULT-B3 AND H)");
+
     return definition;
   }
 }

@@ -1858,11 +1858,12 @@ public class MQDataSet extends BaseDataSet {
         EptsReportUtils.map(CAT11Children1000CVNUMERATOR, mappings),
         "");
 
-    dataSetDefinition.addColumn(
-        "CAT11Least9APSSConsultationDENOMINATOR",
-        "CAT11Least9APSSConsultationDENOMINATOR",
-        EptsReportUtils.map(CAT11Least9APSSConsultationDENOMINATOR, mappings),
-        "");
+    //    dataSetDefinition.addColumn(
+    //        "CAT11Least9APSSConsultationDENOMINATOR",
+    //        "CAT11Least9APSSConsultationDENOMINATOR",
+    //        EptsReportUtils.map(CAT11Least9APSSConsultationDENOMINATOR, mappings),
+    //        "");
+
     dataSetDefinition.addColumn(
         "CAT11Least9APSSConsultationNUMERATOR",
         "CAT11Least9APSSConsultationNUMERATOR",

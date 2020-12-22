@@ -324,6 +324,7 @@ public interface QualityImprovementQueriesInterface {
             + "where p.voided=0 and e.voided=0 and e.encounter_datetime between :startInclusionDate and :endInclusionDate and  "
             + "e.location_id=:location and e.encounter_type=6 and obsTBActiva.concept_id=23761 and obsTBActiva.value_coded=1065 and obsTBActiva.voided=0 "
             + "group by p.patient_id ";
+
     public static final String findPatientsWithPositiveTBScreeningInDurindPeriodCategory7 =
         "select p.patient_id from patient p "
             + "inner join encounter e on e.patient_id=p.patient_id "
@@ -408,9 +409,7 @@ public interface QualityImprovementQueriesInterface {
                 + " inner join encounter terceira_consulta on tx_new.patient_id = terceira_consulta.patient_id and terceira_consulta.voided = 0 and terceira_consulta.encounter_type = 35 and "
                 + " terceira_consulta.location_id = :location and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 20 and 33 "
                 + " WHERE art_start_date BETWEEN :startInclusionDate AND :endInclusionDate "
-                + " ) adult "
-                + " inner join person on person_id = adult.patient_id "
-                + " WHERE (TIMESTAMPDIFF(year,birthdate,art_start_date)) >=15 AND birthdate IS NOT NULL and voided = 0";
+                + " ) adult ";
 
     public static final String findAdultWithCVOver1000CopiesCategory11B2 =
         "select carga_viral.patient_id from ( "
@@ -451,76 +450,41 @@ public interface QualityImprovementQueriesInterface {
 
     public static final String
         findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH =
-            " Select carga_viral.patient_id "
-                + " from ( "
-                + " select ultima_carga.patient_id,ultima_carga.data_carga,obs.value_numeric valor_carga from ( "
-                + " Select p.patient_id, min(o.obs_datetime) data_carga from patient p "
-                + " inner join encounter e on p.patient_id = e.patient_id "
-                + " inner join obs o on e.encounter_id = o.encounter_id "
-                + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
-                + " o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location "
-                + " group by p.patient_id  "
-                + " ) ultima_carga "
-                + " inner join obs on obs.person_id = ultima_carga.patient_id and obs.obs_datetime = ultima_carga.data_carga "
-                + " where obs.voided = 0 and obs.concept_id = 856 and obs.value_numeric > 1000  and obs.location_id = :location "
-                + " ) carga_viral "
-                + " inner join encounter primeira_consulta on carga_viral.patient_id = primeira_consulta.patient_id and primeira_consulta.voided = 0 and primeira_consulta.encounter_type = 35 "
-                + " inner join encounter segunda_consulta on carga_viral.patient_id = segunda_consulta.patient_id and segunda_consulta.voided = 0 and segunda_consulta.encounter_type = 35 "
-                + " and (TIMESTAMPDIFF(DAY, carga_viral.data_carga, segunda_consulta.encounter_datetime)) between 20 and 33 "
-                + " inner join encounter terceira_consulta on carga_viral.patient_id = terceira_consulta.patient_id and terceira_consulta.voided = 0 and terceira_consulta.encounter_type = 35 "
-                + " and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 20 and 33 "
-                + " inner join person pe on pe.person_id = carga_viral.patient_id "
-                + " WHERE (TIMESTAMPDIFF(year, pe.birthdate, carga_viral.data_carga)) >= 15 AND birthdate IS NOT NULL and pe.voided = 0";
+            "select carga_viral.patient_id from ( "
+                + "Select p.patient_id, max(o.obs_datetime) data_carga from patient p "
+                + "inner join encounter e on p.patient_id = e.patient_id "
+                + "inner join obs o on e.encounter_id=o.encounter_id "
+                + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
+                + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000 "
+                + "group by p.patient_id "
+                + ") carga_viral "
+                + "inner join encounter primeira_consulta on carga_viral.patient_id = primeira_consulta.patient_id and primeira_consulta.voided = 0 and primeira_consulta.encounter_type = 35 and "
+                + "primeira_consulta.encounter_datetime=carga_viral.data_carga "
+                + "inner join encounter segunda_consulta on carga_viral.patient_id = segunda_consulta.patient_id and segunda_consulta.voided = 0 and segunda_consulta.encounter_type = 35 "
+                + "and (TIMESTAMPDIFF(DAY, carga_viral.data_carga, segunda_consulta.encounter_datetime)) between 20 and 33 "
+                + "inner join encounter terceira_consulta on carga_viral.patient_id = terceira_consulta.patient_id and terceira_consulta.voided = 0 and terceira_consulta.encounter_type = 35 "
+                + "and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 20 and 33 "
+                + "inner join person pe on pe.person_id = carga_viral.patient_id "
+                + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) >= 15 AND birthdate IS NOT NULL and voided = 0 ";
 
     public static final String
         findChildrenOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorChildrenH =
-            " Select carga_viral.patient_id "
-                + " from ( "
-                + " select ultima_carga.patient_id,ultima_carga.data_carga,obs.value_numeric valor_carga from ( "
-                + " Select p.patient_id, min(o.obs_datetime) data_carga from patient p "
-                + " inner join encounter e on p.patient_id = e.patient_id "
-                + " inner join obs o on e.encounter_id = o.encounter_id "
-                + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
-                + " o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location "
-                + " group by p.patient_id  "
-                + " ) ultima_carga "
-                + " inner join obs on obs.person_id = ultima_carga.patient_id and obs.obs_datetime = ultima_carga.data_carga "
-                + " where obs.voided = 0 and obs.concept_id = 856 and obs.value_numeric > 1000  and obs.location_id = :location "
-                + " ) carga_viral "
-                + " inner join encounter primeira_consulta on carga_viral.patient_id = primeira_consulta.patient_id and primeira_consulta.voided = 0 and primeira_consulta.encounter_type = 35 "
-                + " inner join encounter segunda_consulta on carga_viral.patient_id = segunda_consulta.patient_id and segunda_consulta.voided = 0 and segunda_consulta.encounter_type = 35 "
-                + " and (TIMESTAMPDIFF(DAY, carga_viral.data_carga, segunda_consulta.encounter_datetime)) between 25 and 33 "
-                + " inner join encounter terceira_consulta on carga_viral.patient_id = terceira_consulta.patient_id and terceira_consulta.voided = 0 and terceira_consulta.encounter_type = 35 "
-                + " and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 25 and 33 "
-                + " inner join person pe on pe.person_id = carga_viral.patient_id "
-                + " WHERE (TIMESTAMPDIFF(year, pe.birthdate, carga_viral.data_carga)) < 15 AND birthdate IS NOT NULL and pe.voided = 0";
-
-    public static final String
-        findChildrenOnARTWithMinimum3APSSFollowupConsultationsIntheFirst3MonthsAfterStartingARTCategory11NumeratorChildren =
-            " SELECT patient_id FROM ( "
-                + " select tx_new.patient_id, tx_new.art_start_date, primeira_consulta.encounter_datetime as APSS_data1, "
-                + " segunda_consulta.encounter_datetime as APSS_data2, terceira_consulta.encounter_datetime as APSS_data3 from ( "
-                + " SELECT patient_id, MIN(art_start_date) art_start_date "
-                + " FROM ( "
-                + " SELECT p.patient_id, MIN(value_datetime) art_start_date FROM patient p "
-                + " INNER JOIN encounter e ON p.patient_id = e.patient_id "
-                + " INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-                + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.encounter_type = 53 "
-                + " AND o.concept_id = 1190 AND o.value_datetime is NOT NULL AND o.value_datetime <= :endInclusionDate AND e.location_id = :location "
-                + " GROUP BY p.patient_id "
-                + " ) art_start "
-                + " GROUP BY patient_id "
-                + " ) tx_new "
-                + " inner join encounter primeira_consulta on tx_new.patient_id = primeira_consulta.patient_id and primeira_consulta.voided = 0 and primeira_consulta.encounter_type = 35 and "
-                + " primeira_consulta.location_id = :location and (TIMESTAMPDIFF(DAY, tx_new.art_start_date, primeira_consulta.encounter_datetime)) between 25 and 33 "
-                + " inner join encounter segunda_consulta on tx_new.patient_id = segunda_consulta.patient_id and segunda_consulta.voided = 0 and segunda_consulta.encounter_type = 35 and "
-                + " segunda_consulta.location_id = :location and (TIMESTAMPDIFF(DAY, primeira_consulta.encounter_datetime, segunda_consulta.encounter_datetime)) between 25 and 33 "
-                + " inner join encounter terceira_consulta on tx_new.patient_id = terceira_consulta.patient_id and terceira_consulta.voided = 0 and terceira_consulta.encounter_type = 35 and "
-                + " terceira_consulta.location_id = :location and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 25 and 33 "
-                + " WHERE art_start_date BETWEEN :startInclusionDate AND :endInclusionDate"
-                + " ) adult "
-                + " inner join person on person_id = adult.patient_id "
-                + " WHERE (TIMESTAMPDIFF(year,birthdate,art_start_date)) < 15 AND birthdate IS NOT NULL and voided = 0 ";
+            "select carga_viral.patient_id from ( "
+                + "Select p.patient_id, max(o.obs_datetime) data_carga from patient p "
+                + "inner join encounter e on p.patient_id = e.patient_id "
+                + "inner join obs o on e.encounter_id=o.encounter_id "
+                + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
+                + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000 "
+                + "group by p.patient_id "
+                + ") carga_viral "
+                + "inner join encounter primeira_consulta on carga_viral.patient_id = primeira_consulta.patient_id and primeira_consulta.voided = 0 and primeira_consulta.encounter_type = 35 and "
+                + "primeira_consulta.encounter_datetime=carga_viral.data_carga "
+                + "inner join encounter segunda_consulta on carga_viral.patient_id = segunda_consulta.patient_id and segunda_consulta.voided = 0 and segunda_consulta.encounter_type = 35 "
+                + "and (TIMESTAMPDIFF(DAY, carga_viral.data_carga, segunda_consulta.encounter_datetime)) between 20 and 33 "
+                + "inner join encounter terceira_consulta on carga_viral.patient_id = terceira_consulta.patient_id and terceira_consulta.voided = 0 and terceira_consulta.encounter_type = 35 "
+                + "and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 20 and 33 "
+                + "inner join person pe on pe.person_id = carga_viral.patient_id "
+                + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) < 15 AND birthdate IS NOT NULL and voided = 0 ";
 
     public static final String findAdultWithCVOver1000CopiesCategory11DenominatorAdult =
         "Select carga_viral.patient_id  from ( "
@@ -606,7 +570,7 @@ public interface QualityImprovementQueriesInterface {
                 + "BY patient_id "
                 + ") tx_new "
                 + "INNER JOIN person pe ON tx_new.patient_id=pe.person_id "
-                + "WHERE (TIMESTAMPDIFF(year,birthdate,art_start_date)) BETWEEN 0 AND 2 AND birthdate IS NOT NULL and pe.voided = 0 "
+                + "WHERE (TIMESTAMPDIFF(month,birthdate,art_start_date)) <= 9 AND birthdate IS NOT NULL and pe.voided = 0 "
                 + "AND art_start_date BETWEEN :startInclusionDate AND :endInclusionDate ";
 
     public static final String
