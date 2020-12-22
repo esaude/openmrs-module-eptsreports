@@ -18,10 +18,13 @@ import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinitio
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MQCohortQueries {
+
+  @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
 
   @DocumentedDefinition(value = "findPatientsWhoAreNewlyEnrolledOnARTRF05")
   public CohortDefinition findPatientsWhoAreNewlyEnrolledOnARTRF05() {
@@ -3227,6 +3230,7 @@ public class MQCohortQueries {
           "findAdultInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionCategory12Line14ColumnE(")
   public CohortDefinition
       findAdultInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line64ColumnDNumerator() {
+
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName(
@@ -3238,7 +3242,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},endDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "ADULT-FIRST-LINE",
@@ -3256,7 +3260,9 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "B13-RESUMO-MENSAL",
-        EptsReportUtils.map(this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
 
     definition.setCompositionString(
         "(ADULT-FIRST-LINE AND B13-RESUMO-MENSAL) NOT (B1E-NOTFIRSTLINE)");
@@ -3334,7 +3340,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},endDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "ADULT-SECOND-LINE",
@@ -3352,7 +3358,9 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "B13-RESUMO-MENSAL",
-        EptsReportUtils.map(this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
 
     definition.setCompositionString(
         "(ADULT-SECOND-LINE AND B13-RESUMO-MENSAL) NOT (B2E-NOTSECONDLINE)");
@@ -3430,7 +3438,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},endDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "CHILDREN-FIRST-LINE",
@@ -3448,7 +3456,9 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "B13-RESUMO-MENSAL",
-        EptsReportUtils.map(this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
 
     definition.setCompositionString(
         "(CHILDREN-FIRST-LINE AND B13-RESUMO-MENSAL) NOT (B1E-NOTFIRSTLINE)");
@@ -3526,7 +3536,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},endDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "ADULT-SECOND-LINE",
@@ -3544,7 +3554,9 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "B13-RESUMO-MENSAL",
-        EptsReportUtils.map(this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
 
     definition.setCompositionString(
         "(ADULT-SECOND-LINE AND B13-RESUMO-MENSAL) NOT (B2E-NOTSECONDLINE)");
@@ -3625,7 +3637,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},endDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "PREGNANT-FIRST-LINE",
@@ -3643,7 +3655,9 @@ public class MQCohortQueries {
 
     definition.addSearch(
         "B13-RESUMO-MENSAL",
-        EptsReportUtils.map(this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
 
     definition.setCompositionString(
         "(PREGNANT-FIRST-LINE AND B13-RESUMO-MENSAL) NOT (B1E-NOTFIRSTLINE)");

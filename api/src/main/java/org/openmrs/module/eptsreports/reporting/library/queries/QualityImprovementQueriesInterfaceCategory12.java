@@ -122,7 +122,7 @@ public interface QualityImprovementQueriesInterfaceCategory12 {
                 + "inner join "
                 + "( select p.patient_id, cc.encounter_datetime as dataret33 from patient p   "
                 + "inner join encounter cc on p.patient_id=cc.patient_id   "
-                + "WHERE cc.voided=0 and cc.encounter_type=6  and cc.location_id=:location  cc.encounter_datetime BETWEEN :startInclusionDate and :endRevisionDate"
+                + "WHERE cc.voided=0 and cc.encounter_type=6  and cc.location_id=:location and cc.encounter_datetime BETWEEN :startInclusionDate and :endRevisionDate "
                 + "union "
                 + "select p.patient_id, o.value_datetime as dataret33  from patient p  "
                 + "inner join encounter e on p.patient_id=e.patient_id   "

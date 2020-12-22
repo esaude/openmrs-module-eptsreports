@@ -465,7 +465,7 @@ public interface QualityImprovementQueriesInterface {
                 + "inner join encounter terceira_consulta on carga_viral.patient_id = terceira_consulta.patient_id and terceira_consulta.voided = 0 and terceira_consulta.encounter_type = 35 "
                 + "and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 20 and 33 "
                 + "inner join person pe on pe.person_id = carga_viral.patient_id "
-                + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) >= 15 AND birthdate IS NOT NULL and voided = 0 ";
+                + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) >= 15 AND birthdate IS NOT NULL ";
 
     public static final String
         findChildrenOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorChildrenH =
@@ -484,7 +484,7 @@ public interface QualityImprovementQueriesInterface {
                 + "inner join encounter terceira_consulta on carga_viral.patient_id = terceira_consulta.patient_id and terceira_consulta.voided = 0 and terceira_consulta.encounter_type = 35 "
                 + "and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 20 and 33 "
                 + "inner join person pe on pe.person_id = carga_viral.patient_id "
-                + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) < 15 AND birthdate IS NOT NULL and voided = 0 ";
+                + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) < 15 AND birthdate IS NOT NULL ";
 
     public static final String findAdultWithCVOver1000CopiesCategory11DenominatorAdult =
         "Select carga_viral.patient_id  from ( "
