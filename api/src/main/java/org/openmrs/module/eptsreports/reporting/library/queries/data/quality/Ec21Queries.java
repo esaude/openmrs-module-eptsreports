@@ -1,13 +1,12 @@
 package org.openmrs.module.eptsreports.reporting.library.queries.data.quality;
 
-public class Ec18Queries {
-
+public class Ec21Queries {
   /**
-   * EC18 The date of clinical consultation is before 1985
+   * EC21 The patient’s sex is not defined
    *
    * @return
    */
-  public static String getEc18CombinedQuery() {
+  public static String getEc21CombinedQuery() {
     String query =
         " SELECT "
             + " pe.person_id As patient_id, "
@@ -27,13 +26,11 @@ public class Ec18Queries {
             + " when programState.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' "
             + " end AS state, "
             + " DATE_FORMAT(programState.start_date, '%d-%m-%Y') AS state_date, "
-            + " DATE_FORMAT(consulta.encounter_datetime, '%d-%m-%Y') AS encounter_date, "
-            + " consulta.FormType, "
-            + " consulta.location_name AS location_name "
+            + " l.name AS location_name"
             + " FROM "
             + " person pe "
             + " INNER JOIN "
-            + " (	select pn1.* "
+            + " ( select pn1.* "
             + " from person_name pn1 "
             + " inner join "
             + " ( "
@@ -45,7 +42,7 @@ public class Ec18Queries {
             + " where pn1.person_id = pn2.person_id and pn1.person_name_id = pn2.id "
             + " ) pn on pn.person_id = pe.person_id "
             + " INNER JOIN "
-            + " (   select pid1.* "
+            + " ( select pid1.* "
             + " from patient_identifier pid1 "
             + " inner join "
             + " ( "
@@ -56,16 +53,7 @@ public class Ec18Queries {
             + " ) pid2 "
             + " where pid1.patient_id = pid2.patient_id and pid1.patient_identifier_id = pid2.id "
             + " ) pid on pid.patient_id = pe.person_id "
-            + " INNER JOIN "
-            + " ( "
-            + " Select p.patient_id, e.encounter_datetime, l.name  location_name, e.date_created, f.name AS FormType "
-            + " from 	patient p "
-            + " inner join encounter e on p.patient_id = e.patient_id "
-            + " inner join location l on l.location_id = e.location_id "
-            + " inner join form f on f.form_id = e.form_id and f.retired = 0 "
-            + " where p.voided = 0 and e.voided = 0 and e.encounter_type IN (6,9) and e.location_id IN (:location) "
-            + " AND e.encounter_datetime < '1985-01-01 00:00:00' "
-            + " ) consulta on consulta.patient_id = pe.person_id "
+            + " INNER JOIN location l ON l.location_id = pid.location_id "
             + " LEFT JOIN (SELECT pg.patient_id, pg.date_enrolled, ps.state, max(ps.start_date) AS start_date "
             + " FROM patient_program pg "
             + " INNER JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
@@ -75,7 +63,7 @@ public class Ec18Queries {
             + " AND pg.location_id IN (:location) "
             + " GROUP BY pg.patient_id "
             + " ) AS programState ON pe.person_id = programState.patient_id "
-            + " where pe.voided = 0";
+            + " where pe.voided = 0 and pe.gender is null ";
     return query;
   }
 }

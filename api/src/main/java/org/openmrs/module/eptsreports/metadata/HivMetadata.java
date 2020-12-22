@@ -735,6 +735,21 @@ public class HivMetadata extends ProgramsMetadata {
     return getConcept(uuid);
   }
 
+  // Concept 23821 Data da colheita concept id
+  public Concept getSampleDateCollectionConceptId() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.sampleDateCollection");
+    return getConcept(uuid);
+  }
+
+  // Concept 6246 Data de requisicao de testes de laboratório concept id
+  public Concept getDateApplicationLaboratoryConceptId() {
+    final String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateApplicationTestLaboratory");
+    return getConcept(uuid);
+  }
+
   // Concept 23946 Absence of Health Provider in Health Unit
   public Concept getAbsenceOfHealthProviderInHealthUnit() {
     final String uuid =
@@ -820,6 +835,13 @@ public class HivMetadata extends ProgramsMetadata {
     final String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.misauLaboratorioEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
+
+  // encounter_type 51
+  public EncounterType getFSREncounterType() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.fsrEncounterTypeUuid");
     return getEncounterType(uuid);
   }
 
