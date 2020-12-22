@@ -12,6 +12,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortCategory
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries10;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries13_3;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueriesCAT11Versao2;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.MQAgeDimensions;
@@ -30,6 +31,8 @@ import org.springframework.stereotype.Component;
 public class MQDataSet extends BaseDataSet {
 
   @Autowired private MQCohortQueries mqCohortQueries;
+
+  @Autowired private MQCohortQueriesCAT11Versao2 mqCohortQueriesCAT11Versao2;
 
   @Autowired private MQCategory13Section1CohortQueries mQCategory13Section1CohortQueries;
   @Autowired private MQCategory13Section2CohortQueries mqCategory13Section2CohortQueries;
@@ -711,6 +714,7 @@ public class MQDataSet extends BaseDataSet {
                 this.mqCohortQueries
                     .findChildernWith9MonthAnd2YearOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Denominator(),
                 mappings));
+
     CAT11Least9APSSConsultationDENOMINATOR.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     CAT11Least9APSSConsultationDENOMINATOR.addParameter(
@@ -719,6 +723,7 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT11Least9APSSConsultationDENOMINATOR.addParameter(
         new Parameter("location", "location", Date.class));
+
     final CohortIndicator CAT11Least9APSSConsultationNUMERATOR =
         this.eptsGeneralIndicator.getIndicator(
             "CAT11Least9APSSConsultationNUMERATOR",
@@ -726,6 +731,7 @@ public class MQDataSet extends BaseDataSet {
                 this.mqCohortQueries
                     .findChildernWith9MonthAnd2YearOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOutCategory11Numerator(),
                 mappings));
+
     CAT11Least9APSSConsultationNUMERATOR.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     CAT11Least9APSSConsultationNUMERATOR.addParameter(
@@ -734,6 +740,70 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT11Least9APSSConsultationNUMERATOR.addParameter(
         new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT11PREGNANTAPSSPPDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11PREGNANTAPSSPPDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueriesCAT11Versao2
+                    .findPregnantOnARTStartedExcludingBreastfeedingAndTransferredInCategory11DenominatorVersion2(),
+                mappings));
+
+    CAT11PREGNANTAPSSPPDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11PREGNANTAPSSPPDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11PREGNANTAPSSPPDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11PREGNANTAPSSPPDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT11PREGNANTAPSSPPNUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11PREGNANTAPSSPPNUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueriesCAT11Versao2
+                    .findPregnantOnARTStartedExcludingBreastfeedingAndTransferredInTRANSFEREDOUTCategory11NUMERATORVersion2(),
+                mappings));
+
+    CAT11PREGNANTAPSSPPNUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11PREGNANTAPSSPPNUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11PREGNANTAPSSPPNUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11PREGNANTAPSSPPNUMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT11PREGNANT1000CVDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11PREGNANT1000CVDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueriesCAT11Versao2
+                    .findPregnantOnARTStartedExcludingBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11DenominatorVersion2(),
+                mappings));
+
+    CAT11PREGNANT1000CVDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11PREGNANT1000CVDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11PREGNANT1000CVDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11PREGNANT1000CVDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT11PREGNANT1000CVNUMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT11PREGNANT1000CVNUMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueriesCAT11Versao2
+                    .findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11NUMERATOR(),
+                mappings));
+
+    CAT11PREGNANT1000CVNUMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT11PREGNANT1000CVNUMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT11PREGNANT1000CVNUMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT11PREGNANT1000CVNUMINATOR.addParameter(new Parameter("location", "location", Date.class));
 
     // Categoria 12 Adultos PARTE 1
 
@@ -2081,10 +2151,35 @@ public class MQDataSet extends BaseDataSet {
         "CAT13P4PregnantDENUMINATOR",
         EptsReportUtils.map(CAT13P4PregnantDENUMINATOR, mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT13P4PregnantNUMINATOR",
         "CAT13P4PregnantNUMINATOR",
         EptsReportUtils.map(CAT13P4PregnantNUMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT11PREGNANTAPSSPPDENOMINATOR",
+        "CAT11PREGNANTAPSSPPDENOMINATOR",
+        EptsReportUtils.map(CAT11PREGNANTAPSSPPDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT11PREGNANTAPSSPPNUMINATOR",
+        "CAT11PREGNANTAPSSPPNUMINATOR",
+        EptsReportUtils.map(CAT11PREGNANTAPSSPPNUMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT11PREGNANT1000CVDENOMINATOR",
+        "CAT11PREGNANT1000CVDENOMINATOR",
+        EptsReportUtils.map(CAT11PREGNANT1000CVDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT11PREGNANT1000CVNUMINATOR",
+        "CAT11PREGNANT1000CVNUMINATOR",
+        EptsReportUtils.map(CAT11PREGNANT1000CVNUMINATOR, mappings),
         "");
 
     this.addColumnsForCategory15(dataSetDefinition, mappings);
@@ -2235,6 +2330,7 @@ public class MQDataSet extends BaseDataSet {
   private void addColumnsForCategory15(
       CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
     // Categoria 15 DENOMINATOR
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_1_2_3_4_DENOMINATOR",
         "CAT15INDICATOR_1_2_3_4_DENOMINATOR",
@@ -2246,6 +2342,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_5_7_9_11_DENOMINATOR",
         "CAT15INDICATOR_5_7_9_11_DENOMINATOR",
@@ -2257,6 +2354,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_6_8_10_12_DENOMINATOR",
         "CAT15INDICATOR_6_8_10_12_DENOMINATOR",
@@ -2280,6 +2378,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_2_NUMERATOR",
         "CAT15INDICATOR_2_NUMERATOR",
@@ -2290,6 +2389,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_3_NUMERATOR",
         "CAT15INDICATOR_3_NUMERATOR",
@@ -2300,6 +2400,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_4_NUMERATOR",
         "CAT15INDICATOR_4_NUMERATOR",
@@ -2310,6 +2411,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_5_NUMERATOR",
         "CAT15INDICATOR_5_NUMERATOR",
@@ -2320,6 +2422,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_6_NUMERATOR",
         "CAT15INDICATOR_6_NUMERATOR",
@@ -2330,6 +2433,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_7_NUMERATOR",
         "CAT15INDICATOR_7_NUMERATOR",
@@ -2340,6 +2444,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_8_NUMERATOR",
         "CAT15INDICATOR_8_NUMERATOR",
@@ -2350,6 +2455,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_9_NUMERATOR",
         "CAT15INDICATOR_9_NUMERATOR",
@@ -2360,6 +2466,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_10_NUMERATOR",
         "CAT15INDICATOR_10_NUMERATOR",
@@ -2370,6 +2477,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_11_NUMERATOR",
         "CAT15INDICATOR_11_NUMERATOR",
@@ -2380,6 +2488,7 @@ public class MQDataSet extends BaseDataSet {
                 mappings),
             mappings),
         "");
+
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_12_NUMERATOR",
         "CAT15INDICATOR_12_NUMERATOR",
