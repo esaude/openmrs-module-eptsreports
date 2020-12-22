@@ -104,7 +104,7 @@ public class Ec7Queries {
         "SELECT pe.person_id as patient_id FROM  person pe  "
             + "LEFT JOIN  ( "
             + "SELECT p.patient_id patient_id, ps.start_date trasfered_date FROM patient p "
-            + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id  "
+            + "INNER JOIN patient_program pg ON p.patient_id=pg.patient_id AND pg.date_completed IS NULL "
             + "INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id  "
             + " WHERE  ps.state=7  AND pg.voided=0  AND ps.voided=0  AND pg.program_id=2 AND ps.start_date IS NOT NULL AND ps.end_date IS NULL  "
             + ") trasferedOut  on pe.person_id=trasferedOut.patient_id "

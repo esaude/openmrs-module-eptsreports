@@ -167,7 +167,17 @@ public class SummaryQueries {
    */
   public static String getPatientsWhoseYearOfBirthIsBeforeYear(int year) {
     String query =
-        "SELECT pa.patient_id FROM patient pa INNER JOIN person pe ON pa.patient_id=pe.person_id WHERE pe.birthdate IS NOT NULL AND YEAR(pe.birthdate) < %d ";
+        " SELECT "
+            + " DISTINCT(pa.patient_id) AS patient_id "
+            + " FROM patient pa "
+            + " INNER JOIN person pe ON pa.patient_id = pe.person_id "
+            + " INNER JOIN patient_identifier pi ON pa.patient_id = pi.patient_id "
+            + " INNER JOIN person_name pn ON pa.patient_id = pn.person_id "
+            + " LEFT  JOIN patient_program pg ON pa.patient_id = pg.patient_id AND pg.program_id = 2 "
+            + " LEFT JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
+            + " INNER JOIN location l ON pg.location_id = l.location_id "
+            + " WHERE pe.birthdate IS NOT NULL AND "
+            + " YEAR(pe.birthdate) < 1920 ";
     return String.format(query, year);
   }
 
