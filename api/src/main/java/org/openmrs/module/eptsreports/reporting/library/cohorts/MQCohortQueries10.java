@@ -27,7 +27,7 @@ public class MQCohortQueries10 {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterfaceCategory10.QUERY.findAllPatientsDiagnosedWithThePCRTest;
+        QualityImprovementQueriesInterfaceCategory10.QUERY.findAllPatientsDiagnosedWithThePCRTestB;
 
     definition.setQuery(query);
 
@@ -138,7 +138,7 @@ public class MQCohortQueries10 {
         "B",
         EptsReportUtils.map(this.findAllPatientsDiagnosedWithThePCRTestCategory10_B(), mappings));
 
-    definition.setCompositionString("A AND B NOT C");
+    definition.setCompositionString("(A AND B) NOT C");
 
     return definition;
   }
@@ -188,7 +188,7 @@ public class MQCohortQueries10 {
                 .findAllPatientsDiagnosedWithThePCRTestAndStartARTWithInMaximumOf15DaysCategory10_D(),
             mappings));
 
-    definition.setCompositionString("A AND B AND D NOT C");
+    definition.setCompositionString("((A AND B) AND D) NOT C");
 
     return definition;
   }
