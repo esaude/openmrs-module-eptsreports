@@ -10,6 +10,7 @@ import org.openmrs.module.eptsreports.reporting.library.queries.QualityImproveme
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesCAT13P4;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterfaceCategory12;
+import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -2436,9 +2437,8 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query =
-        QualityImprovementQueriesInterfaceCategory12.QUERY
-            .findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13;
+    String query = ResumoMensalQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13();
+
     definition.setQuery(query);
 
     return definition;
@@ -2922,7 +2922,7 @@ public class MQCohortQueries {
         "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "RF5 AND PREGNANT  NOT(BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+        "(RF5 AND PREGNANT)  NOT(BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -3199,11 +3199,8 @@ public class MQCohortQueries {
             this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
-    definition.addSearch(
-        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
-
     definition.setCompositionString(
-        "(START-ART-ADULT AND B1-FIRSTLINE) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT )");
+        "(START-ART-ADULT AND B1-FIRSTLINE) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN)");
 
     return definition;
   }
@@ -3224,7 +3221,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},endDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "ADULT-FIRST-LINE",
@@ -3244,7 +3241,8 @@ public class MQCohortQueries {
         "B13-RESUMO-MENSAL",
         EptsReportUtils.map(this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
 
-    definition.setCompositionString("ADULT-FIRST-LINE NOT (B1E-NOTFIRSTLINE OR B13-RESUMO-MENSAL)");
+    definition.setCompositionString(
+        "(ADULT-FIRST-LINE AND B13-RESUMO-MENSAL) NOT (B1E-NOTFIRSTLINE)");
 
     return definition;
   }
@@ -3297,11 +3295,8 @@ public class MQCohortQueries {
             this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
-    definition.addSearch(
-        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
-
     definition.setCompositionString(
-        "(START-ART-ADULT AND B2-SECONDLINE) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT )");
+        "(START-ART-ADULT AND B2-SECONDLINE) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN)");
 
     return definition;
   }
@@ -3322,7 +3317,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},endDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "ADULT-SECOND-LINE",
@@ -3343,7 +3338,7 @@ public class MQCohortQueries {
         EptsReportUtils.map(this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
 
     definition.setCompositionString(
-        "ADULT-SECOND-LINE NOT (B2E-NOTSECONDLINE OR B13-RESUMO-MENSAL)");
+        "(ADULT-SECOND-LINE AND B13-RESUMO-MENSAL) NOT (B2E-NOTSECONDLINE)");
 
     return definition;
   }
@@ -3396,11 +3391,8 @@ public class MQCohortQueries {
             this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
-    definition.addSearch(
-        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
-
     definition.setCompositionString(
-        "(START-ART-CHILDREN AND B1-FIRSTLINE) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT )");
+        "(START-ART-CHILDREN AND B1-FIRSTLINE) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN)");
 
     return definition;
   }
@@ -3421,7 +3413,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},endDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "CHILDREN-FIRST-LINE",
@@ -3442,7 +3434,7 @@ public class MQCohortQueries {
         EptsReportUtils.map(this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
 
     definition.setCompositionString(
-        "CHILDREN-FIRST-LINE NOT (B1E-NOTFIRSTLINE OR B13-RESUMO-MENSAL)");
+        "(CHILDREN-FIRST-LINE AND B13-RESUMO-MENSAL) NOT (B1E-NOTFIRSTLINE)");
 
     return definition;
   }
@@ -3495,11 +3487,8 @@ public class MQCohortQueries {
             this.findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
             mappings));
 
-    definition.addSearch(
-        "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
-
     definition.setCompositionString(
-        "(START-ART-CHILDREN AND B2-SECONDLINE) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT )");
+        "(START-ART-CHILDREN AND B2-SECONDLINE) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN)");
 
     return definition;
   }
@@ -3520,7 +3509,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},endDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "ADULT-SECOND-LINE",
@@ -3541,7 +3530,7 @@ public class MQCohortQueries {
         EptsReportUtils.map(this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
 
     definition.setCompositionString(
-        "ADULT-SECOND-LINE NOT (B2E-NOTSECONDLINE OR B13-RESUMO-MENSAL)");
+        "(ADULT-SECOND-LINE AND B13-RESUMO-MENSAL) NOT (B2E-NOTSECONDLINE)");
 
     return definition;
   }
@@ -3570,7 +3559,7 @@ public class MQCohortQueries {
         "START-ART",
         EptsReportUtils.map(
             this
-                .findPatientsWhoAreNewlyEnrolledOnARTByAge14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12AdultA(),
+                .findPatientsWhoAreNewlyEnrolledOnARTByAge14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12A(),
             mappings));
 
     definition.addSearch(
@@ -3598,7 +3587,7 @@ public class MQCohortQueries {
         "TRANSFERED-OUT", EptsReportUtils.map(this.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(START-ART AND  PREGNANT AND B1-FIRSTLINE) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT )");
+        "(START-ART AND  PREGNANT AND B1-FIRSTLINE) NOT (BREASTFEEDING OR TRANSFERED-IN)");
 
     return definition;
   }
@@ -3619,7 +3608,7 @@ public class MQCohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},endDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "PREGNANT-FIRST-LINE",
@@ -3640,7 +3629,7 @@ public class MQCohortQueries {
         EptsReportUtils.map(this.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
 
     definition.setCompositionString(
-        "PREGNANT-FIRST-LINE NOT (B1E-NOTFIRSTLINE OR B13-RESUMO-MENSAL)");
+        "(PREGNANT-FIRST-LINE AND B13-RESUMO-MENSAL) NOT (B1E-NOTFIRSTLINE)");
 
     return definition;
   }

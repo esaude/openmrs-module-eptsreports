@@ -413,50 +413,41 @@ public interface QualityImprovementQueriesInterface {
                 + " WHERE (TIMESTAMPDIFF(year,birthdate,art_start_date)) >=15 AND birthdate IS NOT NULL and voided = 0";
 
     public static final String findAdultWithCVOver1000CopiesCategory11B2 =
-        " Select carga_viral.patient_id from ( "
-            + " select ultima_carga.patient_id, ultima_carga.data_carga, obs.value_numeric valor_carga from ( "
-            + " Select p.patient_id, min(o.obs_datetime) data_carga from patient p "
-            + " inner join encounter e on p.patient_id = e.patient_id "
-            + " inner join obs o on e.encounter_id=o.encounter_id "
-            + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
-            + " o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location "
-            + " group by p.patient_id "
-            + " ) ultima_carga "
-            + " inner join obs on obs.person_id = ultima_carga.patient_id and obs.obs_datetime = ultima_carga.data_carga "
-            + " where obs.voided = 0 and obs.concept_id = 856 and obs.value_numeric > 1000  and obs.location_id = :location "
-            + " ) carga_viral "
-            + " inner join person on person_id = carga_viral.patient_id WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) >= 15 AND birthdate IS NOT NULL and voided = 0 ";
+        "select carga_viral.patient_id from ( "
+            + "Select p.patient_id, max(o.obs_datetime) data_carga from patient p "
+            + "inner join encounter e on p.patient_id = e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
+            + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000 "
+            + "group by p.patient_id "
+            + ") carga_viral "
+            + "inner join person on person_id = carga_viral.patient_id WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) >= 15 AND birthdate IS NOT NULL and voided = 0  ";
 
     public static final String findChildrenWithCVOver1000CopiesCategory11B2 =
-        " Select carga_viral.patient_id from ( "
-            + " select ultima_carga.patient_id, ultima_carga.data_carga, obs.value_numeric valor_carga from ( "
-            + " Select p.patient_id, min(o.obs_datetime) data_carga from patient p "
-            + " inner join encounter e on p.patient_id = e.patient_id "
-            + " inner join obs o on e.encounter_id = o.encounter_id "
-            + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
-            + " o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location "
-            + " group by p.patient_id "
-            + " ) ultima_carga "
-            + " inner join obs on obs.person_id = ultima_carga.patient_id and obs.obs_datetime = ultima_carga.data_carga "
-            + " where obs.voided = 0 and obs.concept_id = 856 and obs.value_numeric > 1000  and obs.location_id = :location "
-            + " ) carga_viral "
-            + " inner join person on person_id = carga_viral.patient_id WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) < 15 AND birthdate IS NOT NULL and voided = 0 ";
+        "select carga_viral.patient_id from ( "
+            + "Select p.patient_id, max(o.obs_datetime) data_carga from patient p "
+            + "inner join encounter e on p.patient_id = e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
+            + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000 "
+            + "group by p.patient_id "
+            + ") carga_viral "
+            + "inner join person on person_id = carga_viral.patient_id WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) < 15 AND birthdate IS NOT NULL and voided = 0  ";
 
     public static final String findPatientsWhoHaveLastFirstLineTerapeutic =
-        "Select patient_id from ( "
-            + "Select maxEnc.patient_id,max(obsLinha.obs_datetime) from ( "
-            + "Select p.patient_id,max(e.encounter_datetime) data_linha from patient p "
-            + "inner join encounter e on p.patient_id=e.patient_id "
-            + "where p.voided=0 and e.voided=0 and e.encounter_type=6 and "
-            + "e.encounter_datetime BETWEEN :startInclusionDate and :endInclusionDate and e.location_id=:location  "
+        "select firstLine.patient_id from ( "
+            + "select maxLinha.patient_id, maxLinha.maxDataLinha from ( "
+            + "select p.patient_id,max(o.obs_datetime) maxDataLinha from patient p "
+            + "join encounter e on p.patient_id=e.patient_id "
+            + "join obs o on o.encounter_id=e.encounter_id "
+            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 "
+            + "and o.concept_id=21151 and e.location_id=:location "
+            + "and o.obs_datetime between :startInclusionDate and :endInclusionDate "
             + "group by p.patient_id "
-            + ") maxEnc "
-            + "inner join encounter  e on e.patient_id=maxEnc.patient_id "
-            + "inner join obs obsLinha on obsLinha.encounter_id=e.encounter_id "
-            + "where obsLinha.concept_id=21151 and obsLinha.value_coded=21150 and obsLinha.voided=0 and e.voided=0 "
-            + "group by maxEnc.patient_id "
-            + ") final "
-            + "group by final.patient_id ";
+            + " ) maxLinha "
+            + "inner join obs on obs.person_id=maxLinha.patient_id and maxLinha.maxDataLinha=obs.obs_datetime "
+            + "where obs.concept_id=21151 and obs.value_coded=21150 and obs.voided=0 and obs.location_id=:location "
+            + ") firstLine ";
 
     public static final String
         findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH =
