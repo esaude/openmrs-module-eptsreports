@@ -84,12 +84,6 @@ public class MQCategory13Section2CohortQueries {
             mappings));
 
     definition.addSearch(
-        "B2",
-        EptsReportUtils.map(
-            this.findPatientsWithLastClinicalConsultationwhoAreInSecondLineDenominatorB2(),
-            mappings));
-
-    definition.addSearch(
         "B2E",
         EptsReportUtils.map(
             this.findPatientsWithLastClinicalConsultationwhoAreNotInSecondLineDenominatorB2E(),
@@ -105,7 +99,7 @@ public class MQCategory13Section2CohortQueries {
         EptsReportUtils.map(
             mQCategory13Section1CohortQueries.findPatientsWithRequestCVDenominatorB5E(), mappings));
 
-    definition.setCompositionString("(B1 AND (B2 NOT B2E))  NOT (B4E OR B5E)");
+    definition.setCompositionString("(B1 AND B2E)  NOT (B4E OR B5E)");
 
     return definition;
   }

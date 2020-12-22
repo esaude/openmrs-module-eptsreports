@@ -119,9 +119,8 @@ public interface QualityImprovementQueriesInterfaceCategory13Section1 {
 
     public static final String
         findPatientsWithLastClinicalConsultationwhoAreDiferentFirstLineLinhaAternativaDenominatorB3E =
-            "Select final.patient_id from ( "
-                + "Select diferenteDePrimeiraLinha.patient_id,diferenteDePrimeiraLinha.dataLinha, diferenteDePrimeiraLinha.ultimaConsulta,obsLinhaAlternativa.obs_datetime dataLinhaAlternativa from ( "
-                + "Select enc.patient_id,enc.encounter_datetime ultimaConsulta,min(obsLinha.obs_datetime) dataLinha from ( "
+            "Select linhaAlternativa.patient_id from ( "
+                + "Select enc.patient_id,enc.encounter_datetime ultimaConsulta,max(obsLinha.obs_datetime) dataLinha from ( "
                 + "Select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
                 + "inner join encounter e on p.patient_id=e.patient_id "
                 + "where p.voided=0 and e.voided=0 and e.encounter_type=6 and "
@@ -130,17 +129,16 @@ public interface QualityImprovementQueriesInterfaceCategory13Section1 {
                 + ") enc "
                 + "inner join encounter  e on e.patient_id=enc.patient_id "
                 + "inner join obs obsLinha on obsLinha.encounter_id=e.encounter_id "
-                + "where obsLinha.concept_id=21151 and e.encounter_type=6 and obsLinha.value_coded<>21150 "
-                + "and obsLinha.voided=0 and e.voided=0 and e.encounter_datetime<enc.encounter_datetime and e.location_id=:location "
+                + "where obsLinha.concept_id=21190 and e.encounter_type=53 "
+                + "and obsLinha.voided=0 and e.voided=0 and obsLinha.obs_datetime<enc.encounter_datetime and e.location_id=:location "
                 + "group by enc.patient_id "
-                + ") diferenteDePrimeiraLinha "
-                + "left join obs obsLinhaAlternativa on diferenteDePrimeiraLinha.patient_id=obsLinhaAlternativa.person_id  "
-                + "and obsLinhaAlternativa.voided=0 and obsLinhaAlternativa.concept_id=21190 "
-                + "and diferenteDePrimeiraLinha.dataLinha>obsLinhaAlternativa.obs_datetime  "
-                + "and diferenteDePrimeiraLinha.dataLinha<=diferenteDePrimeiraLinha.ultimaConsulta  "
-                + "and obsLinhaAlternativa.location_id=:location "
-                + "where (TIMESTAMPDIFF(MONTH,diferenteDePrimeiraLinha.dataLinha,diferenteDePrimeiraLinha.ultimaConsulta)) >= 6 and obsLinhaAlternativa.obs_datetime is null "
-                + ") final";
+                + ") linhaAlternativa "
+                + "left join obs obsDiferenteLinha on linhaAlternativa.patient_id=obsDiferenteLinha.person_id "
+                + "and obsDiferenteLinha.voided=0 and obsDiferenteLinha.concept_id=21151 and obsDiferenteLinha.value_coded<>21150 "
+                + "and obsDiferenteLinha.obs_datetime>linhaAlternativa.dataLinha "
+                + "and obsDiferenteLinha.obs_datetime<=linhaAlternativa.ultimaConsulta "
+                + "and obsDiferenteLinha.location_id=:location "
+                + "where (TIMESTAMPDIFF(MONTH,linhaAlternativa.dataLinha,linhaAlternativa.ultimaConsulta)) >= 6 and obsDiferenteLinha.obs_datetime is null ";
 
     public static final String findPatientsWithCVDenominatorB4E =
         "Select final.patient_id from ( "

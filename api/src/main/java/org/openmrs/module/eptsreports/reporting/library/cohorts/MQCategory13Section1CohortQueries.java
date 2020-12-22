@@ -200,21 +200,9 @@ public class MQCategory13Section1CohortQueries {
             this.findPatientsWithLastClinicalConsultationDenominatorB1(), mappings));
 
     definition.addSearch(
-        "B2",
-        EptsReportUtils.map(
-            this.findPatientsWithLastClinicalConsultationwhoAreInFistLineDenominatorB2(),
-            mappings));
-
-    definition.addSearch(
         "B2E",
         EptsReportUtils.map(
             this.findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2E(),
-            mappings));
-
-    definition.addSearch(
-        "B3",
-        EptsReportUtils.map(
-            this.findPatientsWithLastClinicalConsultationwhoAreInLinhaAlternativaDenominatorB3(),
             mappings));
 
     definition.addSearch(
@@ -230,7 +218,7 @@ public class MQCategory13Section1CohortQueries {
     definition.addSearch(
         "B5E", EptsReportUtils.map(this.findPatientsWithRequestCVDenominatorB5E(), mappings));
 
-    definition.setCompositionString("(B1 and ((B2 not B2E) or (B3 not B3E))) not (B4E or B5E)");
+    definition.setCompositionString("(B1 and (B2E or B3E)) not (B4E or B5E)");
 
     return definition;
   }

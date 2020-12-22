@@ -699,14 +699,7 @@ public class MQCohortQueries13_3 {
                 .findPatientsGreaterThan2LessThan15ExcludeAllHaveLaboratoryInvestigationRequestsAndViralChargeCategory13_3_B2(),
             mappings));
 
-    definition.addSearch(
-        "I",
-        EptsReportUtils.map(
-            this
-                .findPatientsFromClinicalConsultationWhoHaveViralChargeSecondLineDateCategory13_3_I(),
-            mappings));
-
-    definition.setCompositionString("(B2 AND I) NOT (PREGNANT or BREASTFEEDING or TRANSFERED-OUT)");
+    definition.setCompositionString("B2 NOT (PREGNANT or BREASTFEEDING or TRANSFERED-OUT)");
 
     return definition;
   }
