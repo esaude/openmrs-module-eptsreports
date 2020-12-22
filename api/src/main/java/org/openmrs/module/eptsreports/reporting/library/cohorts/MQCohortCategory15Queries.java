@@ -2,9 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementCategory15QueriesInterface;
-import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -20,10 +18,6 @@ public class MQCohortCategory15Queries {
   @Autowired private MQCohortQueries mQCohortQueries;
 
   @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
-
-  @Autowired private GenericCohortQueries genericCohortQueries;
-
-  @Autowired private HivMetadata hivMetadata;
 
   @DocumentedDefinition(value = "NumeratorCategory15_Indicator_1")
   public CohortDefinition getNumeratorCategory15_Indicator_1() {
@@ -53,6 +47,66 @@ public class MQCohortCategory15Queries {
     return definition;
   }
 
+  @DocumentedDefinition(value = "findPatientsWithDTandGaacWithRequestForVLCategory15H1")
+  public CohortDefinition findPatientsWithDTandGaacWithRequestForVLCategory15H1() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementCategory15QueriesInterface.QUERY
+            .findPatientsWithDTandGaacWithRequestForVLCategory15H1;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWithDTandGaacWithRequestForVLCategory15H2")
+  public CohortDefinition findPatientsWithDTandGaacWithRequestForVLCategory15H2() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementCategory15QueriesInterface.QUERY
+            .findPatientsWithDTandGaacWithRequestForVLCategory15H2;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWithDTandGaacWithCV1000Category15I")
+  public CohortDefinition findPatientsWithDTandGaacWithCV1000Category15I() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        QualityImprovementCategory15QueriesInterface.QUERY
+            .findPatientsWithDTandGaacWithCV1000Category15I;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
   @DocumentedDefinition(value = "NumeratorCategory15_Indicator_2")
   public CohortDefinition getNumeratorCategory15_Indicator_2() {
 
@@ -70,13 +124,7 @@ public class MQCohortCategory15Queries {
     definition.addSearch(
         "H1",
         EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "VL",
-                ResumoMensalQueries.findPatietWithRequestForVL(
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-                    hivMetadata.getHivViralLoadConcept().getConceptId())),
-            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+            this.findPatientsWithDTandGaacWithRequestForVLCategory15H1(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
@@ -110,13 +158,7 @@ public class MQCohortCategory15Queries {
     definition.addSearch(
         "H2",
         EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "VL",
-                ResumoMensalQueries.findPatientWithVlResult(
-                    hivMetadata.getHivViralLoadConcept().getConceptId(),
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
-            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+            this.findPatientsWithDTandGaacWithRequestForVLCategory15H2(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
@@ -148,15 +190,7 @@ public class MQCohortCategory15Queries {
             "endDate=${endRevisionDate},location=${location}"));
 
     definition.addSearch(
-        "I",
-        EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "VL",
-                ResumoMensalQueries.findPatientWithVlResulLessThan1000(
-                    hivMetadata.getHivViralLoadConcept().getConceptId(),
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
-            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+        "I", EptsReportUtils.map(this.findPatientsWithDTandGaacWithCV1000Category15I(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
@@ -242,13 +276,7 @@ public class MQCohortCategory15Queries {
     definition.addSearch(
         "H1",
         EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "VL",
-                ResumoMensalQueries.findPatietWithRequestForVL(
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-                    hivMetadata.getHivViralLoadConcept().getConceptId())),
-            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+            this.findPatientsWithDTandGaacWithRequestForVLCategory15H1(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
@@ -276,13 +304,7 @@ public class MQCohortCategory15Queries {
     definition.addSearch(
         "H1",
         EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "VL",
-                ResumoMensalQueries.findPatietWithRequestForVL(
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-                    hivMetadata.getHivViralLoadConcept().getConceptId())),
-            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+            this.findPatientsWithDTandGaacWithRequestForVLCategory15H1(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
@@ -316,13 +338,7 @@ public class MQCohortCategory15Queries {
     definition.addSearch(
         "H2",
         EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "VL",
-                ResumoMensalQueries.findPatientWithVlResult(
-                    hivMetadata.getHivViralLoadConcept().getConceptId(),
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
-            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+            this.findPatientsWithDTandGaacWithRequestForVLCategory15H2(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
@@ -356,13 +372,7 @@ public class MQCohortCategory15Queries {
     definition.addSearch(
         "H2",
         EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "VL",
-                ResumoMensalQueries.findPatientWithVlResult(
-                    hivMetadata.getHivViralLoadConcept().getConceptId(),
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
-            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+            this.findPatientsWithDTandGaacWithRequestForVLCategory15H2(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
@@ -394,15 +404,7 @@ public class MQCohortCategory15Queries {
             "endDate=${endRevisionDate},location=${location}"));
 
     definition.addSearch(
-        "I",
-        EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "VL",
-                ResumoMensalQueries.findPatientWithVlResulLessThan1000(
-                    hivMetadata.getHivViralLoadConcept().getConceptId(),
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
-            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+        "I", EptsReportUtils.map(this.findPatientsWithDTandGaacWithCV1000Category15I(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
@@ -434,15 +436,7 @@ public class MQCohortCategory15Queries {
             "endDate=${endRevisionDate},location=${location}"));
 
     definition.addSearch(
-        "I",
-        EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "VL",
-                ResumoMensalQueries.findPatientWithVlResulLessThan1000(
-                    hivMetadata.getHivViralLoadConcept().getConceptId(),
-                    hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
-            "startDate=${startInclusionDate},endDate=${endRevisionDate},location=${location}"));
+        "I", EptsReportUtils.map(this.findPatientsWithDTandGaacWithCV1000Category15I(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
@@ -506,7 +500,7 @@ public class MQCohortCategory15Queries {
             mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation(),
             mappings));
 
-    definition.setCompositionString("A NOT (B1 OR C OR D OR E OR F) AND ADULT-AGE");
+    definition.setCompositionString("(A AND ADULT-AGE) NOT (B1 OR C OR D OR E OR F)");
 
     return definition;
   }
@@ -562,7 +556,7 @@ public class MQCohortCategory15Queries {
         EptsReportUtils.map(
             findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingAgeRange(2, 9), mappings));
 
-    definition.setCompositionString("(A2 OR A3) NOT (B1 OR C OR D OR F) AND CHILDREN-2-9");
+    definition.setCompositionString("((A2 OR A3) AND CHILDREN-2-9) NOT (B1 OR C OR D OR F)");
 
     return definition;
   }
@@ -618,7 +612,7 @@ public class MQCohortCategory15Queries {
         EptsReportUtils.map(
             findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingAgeRange(10, 14), mappings));
 
-    definition.setCompositionString("(A2 OR A3) NOT (B1 OR C OR D OR F) AND CHILDREN-10-14");
+    definition.setCompositionString("((A2 OR A3) AND CHILDREN-10-14) NOT (B1 OR C OR D OR F)");
 
     return definition;
   }
