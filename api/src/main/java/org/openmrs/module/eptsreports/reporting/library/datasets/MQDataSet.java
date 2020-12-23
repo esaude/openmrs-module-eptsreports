@@ -877,7 +877,7 @@ public class MQDataSet extends BaseDataSet {
 
     final CohortIndicator CAT12CHILDRENDENOMINADOR33DAYS =
         this.eptsGeneralIndicator.getIndicator(
-            "CAT12ADULTDENOMINATOR",
+            "CAT12CHILDRENDENOMINADOR33DAYS",
             EptsReportUtils.map(
                 this.mqCohortQueries
                     .findChildrenWhoStartedARTInTheInclusionPeriodCategory12ExcludingPreganantAndBreastfeedingAndTrasferedInOrOut(),
@@ -925,7 +925,7 @@ public class MQDataSet extends BaseDataSet {
 
     final CohortIndicator CAT12CHILDRENNUMERATOR99DAYS =
         this.eptsGeneralIndicator.getIndicator(
-            "CAT12ADULTNUMERATOR99DAYS",
+            "CAT12CHILDRENNUMERATOR99DAYS",
             EptsReportUtils.map(
                 this.mqCohortQueries
                     .findChildrenWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line63ColumnDInTheTemplateNumerator4(),
@@ -978,7 +978,7 @@ public class MQDataSet extends BaseDataSet {
             "CAT12PREGNANTENOMINADOR99DAYS",
             EptsReportUtils.map(
                 this.mqCohortQueries
-                    .findAdultsWhoStartedARTInTheInclusionPeriodCategory12ExcludingPreganantAndBreastfeedingAndTrasferedInOrOut(),
+                    .findPregnantWhoStartedARTInTheInclusionPeriodCategory12ExcludingBreastfeedingAndTrasferedInOrOut(),
                 mappings));
 
     CAT12PREGNANTENOMINADOR99DAYS.addParameter(
@@ -991,10 +991,10 @@ public class MQDataSet extends BaseDataSet {
 
     final CohortIndicator CAT12PREGNANTNUMERATOR99DAYS =
         this.eptsGeneralIndicator.getIndicator(
-            "CAT12ADULTNUMERATOR99DAYS",
+            "CAT12PREGNANTNUMERATOR99DAYS",
             EptsReportUtils.map(
                 this.mqCohortQueries
-                    .findAdultsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line63ColumnDInTheTemplateNumerator2(),
+                    .findPregnantWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12Line72ColumnDInTheTemplateNumerator6(),
                 mappings));
 
     CAT12PREGNANTNUMERATOR99DAYS.addParameter(
@@ -1081,7 +1081,7 @@ public class MQDataSet extends BaseDataSet {
 
     final CohortIndicator CAT12CHILDRENDENOMINATORFIRSTLINE =
         this.eptsGeneralIndicator.getIndicator(
-            "CAT12CHILDRENDENOMINATORSECONDLINE",
+            "CAT12CHILDRENDENOMINATORFIRSTLINE",
             EptsReportUtils.map(
                 this.mqCohortQueries
                     .findChildrenInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line69ColumnDDenominator(),
@@ -1133,7 +1133,7 @@ public class MQDataSet extends BaseDataSet {
 
     final CohortIndicator CAT12CHILDRENNUMERATORSECONDLINE =
         this.eptsGeneralIndicator.getIndicator(
-            "CAT12CHILDRENNUMERATORFIRSTLINE",
+            "CAT12CHILDRENNUMERATORSECONDLINE",
             EptsReportUtils.map(
                 this.mqCohortQueries
                     .findChildrenInTheSecondLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line70ColumnDNumerator(),
@@ -1601,585 +1601,492 @@ public class MQDataSet extends BaseDataSet {
     CAT13P4PregnantNUMINATOR.addParameter(new Parameter("location", "location", Date.class));
 
     dataSetDefinition.addColumn(
-        "CAT3ADULTODENOMINATOR",
-        "CAT3ADULTODENOMINATOR",
-        EptsReportUtils.map(CAT3ADULTODENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT3ADULTODENOMINATOR",
-        "CAT3ADULTODENOMINATOR",
-        EptsReportUtils.map(CAT3ADULTODENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT3ADULTONUMERATOR",
-        "CAT3ADULTONUMERATOR",
-        EptsReportUtils.map(CAT3ADULTONUMERATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT3CHIDRENDENOMINATOR",
-        "CAT3CHIDRENDENOMINATOR",
-        EptsReportUtils.map(CAT3CHIDRENDENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT3CHIDRENNUMERATOR",
-        "CAT3CHIDRENNUMERATOR",
-        EptsReportUtils.map(CAT3CHIDRENNUMERATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT4CHIDRENDENOMINATOR",
-        "CAT4CHIDRENDENOMINATOR",
-        EptsReportUtils.map(CAT4CHIDRENDENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT4CHIDRENNUMERATOR",
-        "CAT4CHIDRENNUMERATOR",
-        EptsReportUtils.map(CAT4CHIDRENNUMERATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT4PregnantDENOMINATOR",
-        "CAT4PregnantDENOMINATOR",
-        EptsReportUtils.map(CAT4PregnantDENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT4PregnantNUMERATOR",
-        "CAT4PregnantNUMERATOR",
-        EptsReportUtils.map(CAT4PregnantNUMERATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT5CHIDRENDENOMINATOR",
-        "CAT5CHIDRENDENOMINATOR",
-        EptsReportUtils.map(CAT5CHIDRENDENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT5CHIDRENNUMERATOR",
-        "CAT5CHIDRENNUMERATOR",
-        EptsReportUtils.map(CAT5CHIDRENNUMERATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT5PregnantDENOMINATOR",
-        "CAT5PregnantDENOMINATOR",
-        EptsReportUtils.map(CAT5PregnantDENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT5PregnantNUMERATOR",
-        "CAT5PregnantNUMERATOR",
-        EptsReportUtils.map(CAT5PregnantNUMERATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT6AdultoDENOMINATOR",
-        "CAT6AdultoDENOMINATOR",
-        EptsReportUtils.map(CAT6AdultoDENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT6AdultoNUMERATOR",
-        "CAT6AdultoNUMERATOR",
-        EptsReportUtils.map(CAT6AdultoNUMERATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT6ChildrenDENOMINATOR",
-        "CAT6ChildrenDENOMINATOR",
-        EptsReportUtils.map(CAT6ChildrenDENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT6ChildrenNUMERATOR",
-        "CAT6ChildrenNUMERATOR",
-        EptsReportUtils.map(CAT6ChildrenNUMERATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT6PregnantDENOMINATOR",
-        "CAT6PregnantDENOMINATOR",
-        EptsReportUtils.map(CAT6PregnantDENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT6PregnantNUMERATOR",
-        "CAT6PregnantNUMERATOR",
-        EptsReportUtils.map(CAT6PregnantNUMERATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT6BreastfeedingDENOMINATOR",
-        "CAT6BreastfeedingDENOMINATOR",
-        EptsReportUtils.map(CAT6BreastfeedingDENOMINATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
-        "CAT6BreastfeedingNUMERATOR",
-        "CAT6BreastfeedingNUMERATOR",
-        EptsReportUtils.map(CAT6BreastfeedingNUMERATOR, mappings),
-        "");
-
-    dataSetDefinition.addColumn(
         "CAT7AdultDENOMINATOR",
-        "CAT7AdultDENOMINATOR",
+        "7.1: Adultos (15/+anos) HIV+ em TARV elegiveis ao TPT e que iniciaram TPT Denominador",
         EptsReportUtils.map(CAT7AdultDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7AdultoNUMERATOR",
-        "CAT7AdultoNUMERATOR",
+        "7.1: Adultos (15/+anos) HIV+ em TARV elegiveis ao TPT e que iniciaram TPT Numerador",
         EptsReportUtils.map(CAT7AdultoNUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7ChildrenDENOMINATOR",
-        "CAT7ChildrenDENOMINATOR",
+        "7.3: Crianças HIV+ em TARV elegiveis ao TPT  e que iniciaram TPT Denominador",
         EptsReportUtils.map(CAT7ChildrenDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7ChildrenNUMERATOR",
-        "CAT7ChildrenNUMERATOR",
+        "7.3: Crianças HIV+ em TARV elegiveis ao TPT  e que iniciaram TPT Numerador",
         EptsReportUtils.map(CAT7ChildrenNUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7PregnantDENOMINATOR",
-        "CAT7PregnantDENOMINATOR",
+        "7.5: Mulheres grávidas HIV+ elegíveis ao TPI e que iniciaram TPI Denominador",
         EptsReportUtils.map(CAT7PregnantDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7PregnantNUMERATOR",
-        "CAT7PregnantNUMERATOR",
+        "7.5: Mlheres grávidas HIV+ elegíveis ao TPI e que iniciaram TPI Numerador",
         EptsReportUtils.map(CAT7PregnantNUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7AdultoTPIDENOMINATOR",
-        "CAT7AdultoTPIDENOMINATOR",
+        "7.2: Adultos (15/+anos) HIV+ em TARV elegiveis ao TPT que iniciaram e  completaram TPT Denominador",
         EptsReportUtils.map(CAT7AdultoTPIDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7AdultoTPINUMERATOR",
-        "CAT7AdultoTPINUMERATOR",
+        "7.2: Adultos (15/+anos) HIV+ em TARV elegiveis ao TPT que iniciaram e completaram TPT Numerador",
         EptsReportUtils.map(CAT7AdultoTPINUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7ChildrenTPIDENOMINATOR",
-        "CAT7ChildrenTPIDENOMINATOR",
+        "7.4: Crianças HIV+ em TARV elegíveis que iniciaram e completaram TPT Denominador",
         EptsReportUtils.map(CAT7ChildrenTPIDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7ChildrenTPINUMERATOR",
-        "CAT7ChildrenTPINUMERATOR",
+        "7.4: Crianças HIV+ em TARV elegíveis que iniciaram e completaram TPT Numerador",
         EptsReportUtils.map(CAT7ChildrenTPINUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7PragnantTPIDENOMINATOR",
-        "CAT7PragnantTPIDENOMINATOR",
+        "7.6: Mulheres Gravidas HIV+ em TARV que iniciou TPI e que terminou TPI Denominador",
         EptsReportUtils.map(CAT7PragnantTPIDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT7PragnantTPINUMERATOR",
-        "CAT7PragnantTPINUMERATOR",
+        "7.6: Mulheres Gravidas HIV+ em TARV que iniciou TPI e que terminou TPI Numerador",
         EptsReportUtils.map(CAT7PragnantTPINUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11AdultoAPSSPPDENOMINATOR",
-        "CAT11AdultoAPSSPPDENOMINATOR",
+        "11.1: Adultos (15/+anos) em TARV com o mínimo de 3 consultas de seguimento de "
+            + "adesão na FM-ficha de APSS/PP nos primeiros 3 meses após início do TARV Denominador",
         EptsReportUtils.map(CAT11AdultoAPSSPPDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11AdultoAPSSPPNUMERATOR",
-        "CAT11AdultoAPSSPPNUMERATOR",
+        "11.1: Adultos (15/+anos) em TARV com o mínimo de 3 consultas de seguimento de "
+            + "adesão na FM-ficha de APSS/PP nos primeiros 3 meses após início do TARV Numerador",
         EptsReportUtils.map(CAT11AdultoAPSSPPNUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11Adulto1000CVDENOMINATOR",
-        "CAT11Adulto1000CVDENOMINATOR",
+        "11.2: Adultos (15/+anos) na 1a linha de TARV com CV acima de 1000 cópias que tiveram "
+            + "3 consultas de APSS/PP mensais consecutivas para reforço de adesão Denominador",
         EptsReportUtils.map(CAT11Adulto1000CVDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11Adulto1000CVNUMERATOR",
-        "CAT11Adulto1000CVNUMERATOR",
+        "11.2: % de adultos (15/+anos) na 1a linha de TARV com CV acima de 1000 cópias "
+            + "que tiveram 3 consultas de APSS/PP mensais consecutivas para reforço de adesão ",
         EptsReportUtils.map(CAT11Adulto1000CVNUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
-        "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
+        "11.5: Crianças >2 anos de idade em TARV com registo mensal de seguimento da"
+            + " adesão na ficha de APSS/PP nos primeiros 99 dias de TARV Denominador",
         EptsReportUtils.map(CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
-        "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
+        "11.5: Crianças >2 anos de idade em TARV com registo mensal de seguimento da "
+            + "adesão na ficha de APSS/PP nos primeiros 99 dias de TARV Numerador ",
         EptsReportUtils.map(CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11Least9APSSConsultationDENOMINATOR",
-        "CAT11Least9APSSConsultationDENOMINATOR",
+        "11.6: Crianças <2 anos de idade em TARV com registo mensal de seguimento da "
+            + "adesão na ficha de APSS/PP no primeiro ano de TARV Denominador ",
         EptsReportUtils.map(CAT11Least9APSSConsultationDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11Least9APSSConsultationNUMERATOR",
-        "CAT11Least9APSSConsultationNUMERATOR",
+        "11.6: Crianças <2 anos de idade em TARV com registo mensal de seguimento da "
+            + "adesão na ficha de APSS/PP no primeiro ano de TARV Numerador ",
         EptsReportUtils.map(CAT11Least9APSSConsultationNUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11Children1000CVDENOMINATOR",
-        "CAT11Children1000CVDENOMINATOR",
+        "11.7: Crianças (0-14 anos) na 1a linha de TARV com CV acima de 1000 cópias que tiveram "
+            + "3 consultas mensais consecutivas de APSS/PP para reforço de adesão Denominador",
         EptsReportUtils.map(CAT11Children1000CVDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11Children1000CVNUMERATOR",
-        "CAT11Children1000CVNUMERATOR",
+        "11.7: Crianças (0-14 anos) na 1a linha de TARV com CV acima de 1000 cópias que tiveram"
+            + " 3 consultas mensais consecutivas de APSS/PP para reforço de adesão Numerador",
         EptsReportUtils.map(CAT11Children1000CVNUMERATOR, mappings),
         "");
 
-    //    dataSetDefinition.addColumn(
-    //        "CAT11Least9APSSConsultationDENOMINATOR",
-    //        "CAT11Least9APSSConsultationDENOMINATOR",
-    //        EptsReportUtils.map(CAT11Least9APSSConsultationDENOMINATOR, mappings),
-    //        "");
-
-    dataSetDefinition.addColumn(
-        "CAT11Least9APSSConsultationNUMERATOR",
-        "CAT11Least9APSSConsultationNUMERATOR",
-        EptsReportUtils.map(CAT11Least9APSSConsultationNUMERATOR, mappings),
-        "");
-
     dataSetDefinition.addColumn(
         "CAT12ADULTDENOMINADOR33DAYS",
-        "CAT12ADULTDENOMINADOR33DAYS",
+        "12.1: Adultos (15/+anos) em TARV  que retornaram para 2ª consulta clínica ou levantamento de "
+            + "ARVs dentro de 33 dias após início do TARV Denominador",
         EptsReportUtils.map(CAT12ADULTDENOMINADOR33DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12ADULTNUMERATOR33DAYS",
-        "CAT12ADULTNUMERATOR33DAYS",
+        "12.1: Adultos (15/+anos) em TARV  que retornaram para 2ª consulta clínica ou levantamento de "
+            + "ARVs dentro de 33 dias após início do TARV Numerador",
         EptsReportUtils.map(CAT12ADULTNUMERATOR33DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12ADULTDENOMINADOR99DAYS",
-        "CAT12ADULTDENOMINADOR99DAYS",
+        "12.2: Adultos (15/+anos) em TARV que tiveram no mínimo 3 consultas clínicas ou levantamento de "
+            + "ARVs dentro de 99 dias (nos primeiros 3 meses) após início do TARV Denominador",
         EptsReportUtils.map(CAT12ADULTDENOMINADOR99DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12ADULTNUMERATOR99DAYS",
-        "CAT12ADULTNUMERATOR99DAYS",
+        "12.2: Adultos (15/+anos) em TARV que tiveram no mínimo 3 consultas clínicas ou levantamento de "
+            + "ARVs dentro de 99 dias (nos primeiros 3 meses) após início do TARV Numerador",
         EptsReportUtils.map(CAT12ADULTNUMERATOR99DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENDENOMINADOR33DAYS",
-        "CAT12CHILDRENDENOMINADOR33DAYS",
+        "12.5: Crianças (0-14 anos) em TARV  que retornaram para 2ª consulta clínica ou levantamento de "
+            + "ARVs dentro de 33 dias após início do TARV Denominador",
         EptsReportUtils.map(CAT12CHILDRENDENOMINADOR33DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENNUMERATOR33DAYS",
-        "CAT12CHILDRENNUMERATOR33DAYS",
+        "12.5: Crianças (0-14 anos) em TARV  que retornaram para 2ª consulta clínica ou levantamento de "
+            + "ARVs dentro de 33 dias após início do TARV Numerador",
         EptsReportUtils.map(CAT12CHILDRENNUMERATOR33DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENDENOMINADOR99DAYS",
-        "CAT12CHILDRENDENOMINADOR99DAYS",
+        "12.6: Crianças em TARV (0-14 anos) com consultas clínicas mensais ou levantamento de ARVs dentro de "
+            + "99 dias (nos primeiros 3 meses) após início do TARV Denominador",
         EptsReportUtils.map(CAT12CHILDRENDENOMINADOR99DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENNUMERATOR99DAYS",
-        "CAT12CHILDRENNUMERATOR99DAYS",
+        "12.6: Crianças em TARV (0-14 anos) com consultas clínicas mensais ou levantamento de ARVs dentro de "
+            + "99 dias (nos primeiros 3 meses) após início do TARV Numerador",
         EptsReportUtils.map(CAT12CHILDRENNUMERATOR99DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12PREGNANTDENOMINADOR33DAYS",
-        "CAT12PREGNANTDENOMINADOR33DAYS",
+        "12.9: Mulheres grávidas HIV+ que iniciaram TARV na CPN e que retornaram para "
+            + "2ª consulta clínica ou levantamento de ARVs dentro de 33 dias após início do TARV Denominador",
         EptsReportUtils.map(CAT12PREGNANTDENOMINADOR33DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12PREGNANTNUMERATOR33DAYS",
-        "CAT12PREGNANTNUMERATOR33DAYS",
+        "12.9: Mulheres grávidas HIV+ que iniciaram TARV na CPN e que retornaram para "
+            + "2ª consulta clínica ou levantamento de ARVs dentro de 33 dias após início do TARV Numerador",
         EptsReportUtils.map(CAT12PREGNANTNUMERATOR33DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12PREGNANTENOMINADOR99DAYS",
-        "CAT12PREGNANTENOMINADOR99DAYS",
+        "12.10: Mulheres grávidas HIV+ que iniciaram TARV na CPN e tiveram "
+            + "3 consultas mensais/levantamentos de ARVs dentro de 99 dias (nos primeiros 3 meses) após início do TARV Denominador",
         EptsReportUtils.map(CAT12PREGNANTENOMINADOR99DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12PREGNANTNUMERATOR99DAYS",
-        "CAT12PREGNANTNUMERATOR99DAYS",
+        "12.10: Mulheres grávidas HIV+ que iniciaram TARV na CPN e tiveram "
+            + "3 consultas mensais/levantamentos de ARVs dentro de 99 dias (nos primeiros 3 meses) após início do TARV Numerador",
         EptsReportUtils.map(CAT12PREGNANTNUMERATOR99DAYS, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12ADULTDENOMINATORFIRSTLINE",
-        "CAT12ADULTDENOMINATORFIRSTLINE",
+        "12.3: Adultos (15/+anos) na 1ª linha que iniciaram TARV há 12 meses e que continuam activos na US Denominador",
         EptsReportUtils.map(CAT12ADULTDENOMINATORFIRSTLINE, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12ADULTNUMERATORFIRSTLINE",
-        "CAT12ADULTNUMERATORFIRSTLINE",
+        "12.3: Adultos (15/+anos) na 1ª linha que iniciaram TARV há 12 meses e que continuam activos na US Numerador",
         EptsReportUtils.map(CAT12ADULTNUMERATORFIRSTLINE, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12ADULTDENOMINATORSECONDLINE",
-        "CAT12ADULTDENOMINATORSECONDLINE",
+        "12.4: Adultos (15/+anos) na 2ª linha que iniciaram TARV há 12 meses e que continuam activos na US Denominador ",
         EptsReportUtils.map(CAT12ADULTDENOMINATORSECONDLINE, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12ADULTNUMERATORSECONDLINE",
-        "CAT12ADULTNUMERATORSECONDLINE",
+        "12.4: Adultos (15/+anos) na 2ª linha que iniciaram TARV há 12 meses e que continuam activos na US Numerador",
         EptsReportUtils.map(CAT12ADULTNUMERATORSECONDLINE, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENDENOMINATORFIRSTLINE",
-        "CAT12CHILDRENDENOMINATORFIRSTLINE",
+        "12.7: Crianças (0-14 anos) na 1ª linha que iniciaram TARV há 12 meses e que continuam activos na US Denominador",
         EptsReportUtils.map(CAT12CHILDRENDENOMINATORFIRSTLINE, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENNUMERATORFIRSTLINE",
-        "CAT12CHILDRENNUMERATORFIRSTLINE",
+        "12.7: Crianças (0-14 anos) na 1ª linha que iniciaram TARV há 12 meses e que continuam activos na US Numerador",
         EptsReportUtils.map(CAT12CHILDRENNUMERATORFIRSTLINE, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENDENOMINATORSECONDLINE",
-        "CAT12CHILDRENDENOMINATORSECONDLINE",
+        "12.8: Crianças (0-14 anos) na 2ª linha que iniciaram TARV há 12 meses e que continuam activos na US Denominador",
         EptsReportUtils.map(CAT12CHILDRENDENOMINATORSECONDLINE, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENNUMERATORSECONDLINE",
-        "CAT12CHILDRENNUMERATORSECONDLINE",
+        "12.8: Crianças (0-14 anos) na 2ª linha que iniciaram TARV há 12 meses e que continuam activos na US Numerador",
         EptsReportUtils.map(CAT12CHILDRENNUMERATORSECONDLINE, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12PREGNANTDENOMINATORFIRSTLINE",
-        "CAT12PREGNANTDENOMINATORFIRSTLINE",
+        "12.11: Mulheres gravidas na 1ª linha que iniciaram TARV há 12 meses e que continuam activos na US Denominador",
         EptsReportUtils.map(CAT12PREGNANTDENOMINATORFIRSTLINE, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT12PREGNANTNUMERATORFIRSTLINE",
-        "CAT12PREGNANTNUMERATORFIRSTLINE",
+        "12.11: Mulheres gravidas na 1ª linha que iniciaram TARV há 12 meses e que continuam activos na US Numerador",
         EptsReportUtils.map(CAT12PREGNANTNUMERATORFIRSTLINE, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVInTARVDENOMINATOR",
-        "CAT13P2PregnantWithCVInTARVDENOMINATOR",
+        "13.15: Mulheres Gravidas elegíveis a CV com registo de pedido de CV feito pelo clínico (MG que iniciaram TARV na CPN) Denominador",
         EptsReportUtils.map(CAT13P2PregnantWithCVInTARVDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR",
-        "CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR",
+        "13.16: Mulheres Gravidas elegíveis a CV com registo de pedido de "
+            + "CV feito pelo clínico na primeira CPN (MG que entraram em TARV na CPN) Denominador",
         EptsReportUtils.map(CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR",
-        "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR",
+        "13.17: Mulheres Gravidas que receberam o resultado da Carga Viral dentro de 33 dias após pedido Denominador",
         EptsReportUtils.map(
             CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVInTARVNUMINATOR",
-        "CAT13P2PregnantWithCVInTARVNUMINATOR",
+        "13:15: Mulheres Gravidas elegíveis a CV com registo de pedido de CV feito pelo clínico (MG que iniciaram TARV na CPN) Numerador",
         EptsReportUtils.map(CAT13P2PregnantWithCVInTARVNUMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR",
-        "CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR",
+        "13.16: Mulheres elegíveis a CV com registo de pedido de CV feito pelo clínico na primeira CPN (MG que entraram em TARV na CPN) Numerador",
         EptsReportUtils.map(CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR",
-        "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR",
+        "13.17: Mulheres Gravidas que receberam o resultado da Carga Viral dentro de 33 dias após pedido Numerador",
         EptsReportUtils.map(CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_2_DENOMINATOR",
-        "CAT13_PART_3_13_2_DENOMINATOR",
+        "13.2: Adultos (15/+anos) na 1a linha de TARV que receberam o resultado da CV entre o sexto e o nono mês após início do TARV Denominador",
         EptsReportUtils.map(CAT13_PART_3_13_2_DENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_2_NUMERATOR",
-        "CAT13_PART_3_13_2_NUMERATOR",
+        "13.2: Adultos (15/+anos) na 1a linha de TARV que receberam o resultado da CV entre o sexto e o nono mês após início do TARV Numerador",
         EptsReportUtils.map(CAT13_PART_3_13_2_NUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_9_DENOMINATOR",
-        "CAT13_PART_3_13_9_DENOMINATOR",
+        "13.9: Crianças  (0-4 anos de idade) na 1a linha de TARV que receberam o resultado da "
+            + "Carga Viral entre o sexto e o nono mês após o início do TARV Denominador",
         EptsReportUtils.map(CAT13_PART_3_13_9_DENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_9_NUMERATOR",
-        "CAT13_PART_3_13_9_NUMERATOR",
+        "13.9: Crianças  (0-4 anos de idade) na 1a linha de TARV que receberam o resultado da "
+            + "Carga Viral entre o sexto e o nono mês após o início do TARV Numerador",
         EptsReportUtils.map(CAT13_PART_3_13_9_NUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_10_DENOMINATOR",
-        "CAT13_PART_3_13_10_DENOMINATOR",
+        "13.10: Crianças  (5-9 anos de idade) na 1a linha de TARV que receberam o resultado da "
+            + "Carga Viral entre o sexto e o nono mês após o início do TARV Denominador",
         EptsReportUtils.map(CAT13_PART_3_13_10_DENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_10_NUMERATOR",
-        "CAT13_PART_3_13_10_NUMERATOR",
+        "13.10: Crianças  (5-9 anos de idade) na 1a linha de TARV que receberam o resultado da "
+            + "Carga Viral entre o sexto e o nono mês após o início do TARV Numerador",
         EptsReportUtils.map(CAT13_PART_3_13_10_NUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_11_DENOMINATOR",
-        "CAT13_PART_3_13_11_DENOMINATOR",
+        "13.11: Crianças  (10-14 anos de idade) na 1a linha de TARV que receberam o resultado da "
+            + "Carga Viral entre o sexto e o nono mês após o início do TARV Denominador",
         EptsReportUtils.map(CAT13_PART_3_13_11_DENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_11_NUMERATOR",
-        "CAT13_PART_3_13_11_NUMERATOR",
+        "13.11: Crianças  (10-14 anos de idade) na 1a linha de TARV que receberam o resultado da"
+            + " Carga Viral entre o sexto e o nono mês após o início do TARV Numerador",
         EptsReportUtils.map(CAT13_PART_3_13_11_NUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_5_DENOMINATOR",
-        "CAT13_PART_3_13_5_DENOMINATOR",
+        "13.5: Adultos (15/+anos) na 2a linha de TARV que receberam o resultado da CV entre o "
+            + "sexto e o nono mês após o início da 2a linha de TARV Denominador",
         EptsReportUtils.map(CAT13_PART_3_13_5_DENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_5_NUMERATOR",
-        "CAT13_PART_3_13_5_NUMERATOR",
+        "13.5: Adultos (15/+anos) na 2a linha de TARV que receberam o resultado da CV entre "
+            + "o sexto e o nono mês após o início da 2a linha de TARV Numerador",
         EptsReportUtils.map(CAT13_PART_3_13_5_NUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_14_DENOMINATOR",
-        "CAT13_PART_3_13_14_DENOMINATOR",
+        "13.14: Crianças  na 2a linha de TARV que receberam o resultado da Carga Viral entre o "
+            + "sexto e o nono mês após o início da 2a linha de TARV Denominador",
         EptsReportUtils.map(CAT13_PART_3_13_14_DENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_14_NUMERATOR",
-        "CAT13_PART_3_13_14_NUMERATOR",
+        "12.14: Crianças  na 2a linha de TARV que receberam o resultado da Carga Viral entre o "
+            + "sexto e o nono mês após o início da 2a linha de TARV Numerador",
         EptsReportUtils.map(CAT13_PART_3_13_14_NUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT10_10_3_DENOMINATOR",
-        "CAT10_10_3_DENOMINATOR",
+        "1.6: Crianças com PCR positivo  para HIV  que iniciaram TARV dentro de 2 semanas "
+            + "após o diagnóstico/entrega do resultado ao cuidador Denominador",
         EptsReportUtils.map(CAT10_10_3_DENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT10_10_3_NUMERATOR",
-        "CAT10_10_3_NUMERATOR",
+        "1.6: Crianças com PCR positivo  para HIV  que iniciaram TARV dentro de 2 semanas"
+            + " após o diagnóstico/entrega do resultado ao cuidador Numerador",
         EptsReportUtils.map(CAT10_10_3_NUMERATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P4AdultDENUMINATOR",
-        "CAT13P4AdultDENUMINATOR",
+        "13.3: Adultos (15/+anos) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º "
+            + "mês após terem recebido  o último resultado de CV acima de 1000 e terem  3 sessões consecutivas de APSS/PP (AMA) Denominador",
         EptsReportUtils.map(CAT13P4AdultDENUMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P4AdultNUMINATOR",
-        "CAT13P4AdultNUMINATOR",
+        "13.3: Adultos (15/+anos) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês "
+            + "após terem recebido  o último resultado de CV acima de 1000 e terem  3 sessões consecutivas de APSS/PP (AMA) Numerador",
         EptsReportUtils.map(CAT13P4AdultNUMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P4ChildrenDENUMINATOR",
-        "CAT13P4ChildrenDENUMINATOR",
+        "13.12: Crianças (>2 anos de idade) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês "
+            + "após terem recebido  o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP (AMA) Denominador",
         EptsReportUtils.map(CAT13P4ChildrenDENUMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P4ChildrenNUMINATOR",
-        "CAT13P4ChildrenNUMINATOR",
+        "13.12: Crianças (>2 anos de idade) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês "
+            + "após terem recebido  o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP (AMA) Numerador",
         EptsReportUtils.map(CAT13P4ChildrenNUMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P4PregnantDENUMINATOR",
-        "CAT13P4PregnantDENUMINATOR",
+        "13.18: Mulheres Gravidas na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º "
+            + "mês após terem recebido  o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP (AMA) Denominador",
         EptsReportUtils.map(CAT13P4PregnantDENUMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT13P4PregnantNUMINATOR",
-        "CAT13P4PregnantNUMINATOR",
+        "13.18: Mulheres gravidas na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º "
+            + "mês após terem recebido  o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP (AMA)",
         EptsReportUtils.map(CAT13P4PregnantNUMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11PREGNANTAPSSPPDENOMINATOR",
-        "CAT11PREGNANTAPSSPPDENOMINATOR",
+        "11.3: Mulheres Gravidas em TARV com o mínimo de 3 consultas de seguimento de adesão na "
+            + "FM-ficha de APSS/PP nos primeiros 3 meses após início do TARV Denominador",
         EptsReportUtils.map(CAT11PREGNANTAPSSPPDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11PREGNANTAPSSPPNUMINATOR",
-        "CAT11PREGNANTAPSSPPNUMINATOR",
+        "11.3: Mulheres Gravidas em TARV com o mínimo de 3 consultas de seguimento de adesão na "
+            + "FM-ficha de APSS/PP nos primeiros 3 meses após início do TARV Numerador",
         EptsReportUtils.map(CAT11PREGNANTAPSSPPNUMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11PREGNANT1000CVDENOMINATOR",
-        "CAT11PREGNANT1000CVDENOMINATOR",
+        "11.4: Mulheres Gravidas na 1a linha de TARV com CV acima de 1000 cópias que tiveram "
+            + "3 consultas de APSS/PP mensais consecutivas para reforço de adesão Denominador",
         EptsReportUtils.map(CAT11PREGNANT1000CVDENOMINATOR, mappings),
         "");
 
     dataSetDefinition.addColumn(
         "CAT11PREGNANT1000CVNUMINATOR",
-        "CAT11PREGNANT1000CVNUMINATOR",
+        "11.4: Mulheres Gravidas na 1a linha de TARV com CV acima de 1000 cópias que tiveram "
+            + "3 consultas de APSS/PP mensais consecutivas para reforço de adesão Numerador",
         EptsReportUtils.map(CAT11PREGNANT1000CVNUMINATOR, mappings),
         "");
 
@@ -2225,49 +2132,57 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT13CV15PLUSDENOMINATOR",
-        "CAT13CV15PLUSDENOMINATOR",
+        "13.1: Adultos (15/+anos) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram "
+            + "elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Denominador ",
         EptsReportUtils.map(CVDENOMINATORSECTION1, mappings),
         "age=15+");
 
     dataSetDefinition.addColumn(
         "CAT13CV04DENOMINATOR",
-        "CAT13CV04DENOMINATOR",
+        "13.6: Crianças (0-4 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram "
+            + "elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Denominador",
         EptsReportUtils.map(CVDENOMINATORSECTION1, mappings),
         "age=0-4");
 
     dataSetDefinition.addColumn(
         "CAT13CV59DENOMINATOR",
-        "CAT13CV59DENOMINATOR",
+        "13.7: Crianças (5-9 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram "
+            + "elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Denominador",
         EptsReportUtils.map(CVDENOMINATORSECTION1, mappings),
         "age=5-9");
 
     dataSetDefinition.addColumn(
         "CAT13CV1014DENOMINATOR",
-        "CAT13CV1014DENOMINATOR",
+        "13.8: Crianças (10-14 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram "
+            + "elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Denominador",
         EptsReportUtils.map(CVDENOMINATORSECTION1, mappings),
         "age=10-14");
 
     dataSetDefinition.addColumn(
         "CAT13CV15PLUSNUMERATOR",
-        "CAT13CV15PLUSNUMERATOR",
+        "13.1: Adultos (15/+anos) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram "
+            + "elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Numerador",
         EptsReportUtils.map(CVNUMERATORSECTION1, mappings),
         "age=15+");
 
     dataSetDefinition.addColumn(
         "CAT13CV04NUMERATOR",
-        "CAT13CV04NUMERATOR",
+        "13.6: Crianças (0-4 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram "
+            + "elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Numerador",
         EptsReportUtils.map(CVNUMERATORSECTION1, mappings),
         "age=0-4");
 
     dataSetDefinition.addColumn(
         "CAT13CV59NUMERATOR",
-        "CAT13CV59NUMERATOR",
+        "13.7: Crianças (5-9 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, "
+            + "eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Numerador",
         EptsReportUtils.map(CVNUMERATORSECTION1, mappings),
         "age=5-9");
 
     dataSetDefinition.addColumn(
         "CAT13CV1014NUMERATOR",
-        "CAT13CV1014NUMERATOR",
+        "13.8: Crianças (10-14 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram "
+            + "elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Numerador",
         EptsReportUtils.map(CVNUMERATORSECTION1, mappings),
         "age=10-14");
 
@@ -2305,25 +2220,25 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT13CV15PLUSDENOMINATOR_SECTION1_2",
-        "CAT13CV15PLUSDENOMINATOR_SECTION1_2",
+        "13.4: Adultos (15/+anos) na  2a linha de TARV elegíveis a CV  com registo de pedido de CV feito pelo clínico Denominador",
         EptsReportUtils.map(CVDENOMINATORSECTION2, mappings),
         "age=15+");
 
     dataSetDefinition.addColumn(
         "CAT13CV24DENOMINATOR_SECTION1_2",
-        "CAT13CV24DENOMINATOR_SECTION1_2",
+        "13.13: Crianças (2-14) na  2ª linha de TARV elegíveis ao pedido de CV  e com registo de pedido de CV feito pelo clínico Denominador",
         EptsReportUtils.map(CVDENOMINATORSECTION2, mappings),
         "age=2-14");
 
     dataSetDefinition.addColumn(
         "CAT13CV15PLUSNUMERATOR_SECTION1_2",
-        "CAT13CV15PLUSNUMERATOR_SECTION1_2",
+        "13.4: Adultos (15/+anos) na 2a linha de TARV elegíveis a CV com registo de pedido de CV feito pelo clínico Numerador",
         EptsReportUtils.map(CVNUMERATORSECTION2, mappings),
         "age=15+");
 
     dataSetDefinition.addColumn(
         "CAT13CV24NUMERATOR_SECTION1_2",
-        "CAT13CV24NUMERATOR_SECTION1_2",
+        "13.13: Crianças na 2ª linha de TARV elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Numerator",
         EptsReportUtils.map(CVNUMERATORSECTION2, mappings),
         "age=2-14");
   }
@@ -2334,7 +2249,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_1_2_3_4_DENOMINATOR",
-        "CAT15INDICATOR_1_2_3_4_DENOMINATOR",
+        "15.1: Adultos (15/+anos) inscritos há 12 meses em algum MDS  (DT ou GAAC) que continuam activos em TARV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries
@@ -2346,7 +2261,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_5_7_9_11_DENOMINATOR",
-        "CAT15INDICATOR_5_7_9_11_DENOMINATOR",
+        "15.5: Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) que continuam activos em TARV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries
@@ -2358,7 +2273,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_6_8_10_12_DENOMINATOR",
-        "CAT15INDICATOR_6_8_10_12_DENOMINATOR",
+        "13.6: Crianças (10-14 anos) inscritas há 12 em algum MDS (DT) que continuam activos em TARV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries
@@ -2371,7 +2286,7 @@ public class MQDataSet extends BaseDataSet {
     // Categoria 15 NUMERATOR
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_1_NUMERATOR",
-        "CAT15INDICATOR_1_NUMERATOR",
+        "15.1: Adultos (15/+anos) inscritos há 12 meses em algum MDS  (DT ou GAAC) que continuam activos em TARV Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_1(),
@@ -2382,7 +2297,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_2_NUMERATOR",
-        "CAT15INDICATOR_2_NUMERATOR",
+        "15.2: Adultos (15/+anos) inscritos há pelo menos 12 meses em algum MDS (DT ou GAAC) com pedido de pelo menos uma CV Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_2(),
@@ -2393,7 +2308,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_3_NUMERATOR",
-        "CAT15INDICATOR_3_NUMERATOR",
+        "13.3: Adultos (15/+anos) inscritos há 12 meses em algum MDS (DT ou GAAC) que receberam pelo menos um resultado de CV Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_3(),
@@ -2404,7 +2319,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_4_NUMERATOR",
-        "CAT15INDICATOR_4_NUMERATOR",
+        "13.4: Adultos (15/+anos) inscritos há 12 meses em algum MDS (DT ou GAAC) com CV <1000 Cópias Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_4(),
@@ -2415,7 +2330,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_5_NUMERATOR",
-        "CAT15INDICATOR_5_NUMERATOR",
+        "15.5: Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) que continuam activos em TARV Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_5(),
@@ -2426,7 +2341,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_6_NUMERATOR",
-        "CAT15INDICATOR_6_NUMERATOR",
+        "15.6: Crianças (10-14 anos) inscritas há 12 em algum MDS (DT) que continuam activos em TARV Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_6(),
@@ -2437,7 +2352,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_7_NUMERATOR",
-        "CAT15INDICATOR_7_NUMERATOR",
+        "15.7: Crianças (2-9 anos de idade) inscritas há 12 meses em algum MDS (DT) com pedido de pelo menos uma CV Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_7(),
@@ -2448,7 +2363,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_8_NUMERATOR",
-        "CAT15INDICATOR_8_NUMERATOR",
+        "15.8: Crianças (10-14 anos de idade) inscritas há 12 meses em algum MDS (DT) com pedido de pelo menos uma CV Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_8(),
@@ -2459,7 +2374,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_9_NUMERATOR",
-        "CAT15INDICATOR_9_NUMERATOR",
+        "15.9: Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) que receberam pelo menos um resultado de CV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_9(),
@@ -2470,7 +2385,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_10_NUMERATOR",
-        "CAT15INDICATOR_10_NUMERATOR",
+        "15.10: Crianças (10-14 anos) inscritas há 12 meses em algum MDS (DT) que receberam pelo menos um resultado de CV Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_10(),
@@ -2481,7 +2396,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_11_NUMERATOR",
-        "CAT15INDICATOR_11_NUMERATOR",
+        "15.11: Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) com CV <1000 Cópias Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_11(),
@@ -2492,7 +2407,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_12_NUMERATOR",
-        "CAT15INDICATOR_12_NUMERATOR",
+        "15.12: Crianças (10-14 anos) inscritas há 12 meses em algum MDS (DT) com CV <1000 Cópias Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_12(),
