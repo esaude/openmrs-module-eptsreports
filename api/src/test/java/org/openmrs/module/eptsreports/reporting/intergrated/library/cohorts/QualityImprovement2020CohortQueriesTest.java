@@ -35,6 +35,9 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(
+        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
+        this.getDataFinalAvaliacao());
     parameters.put(new Parameter("locationList", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -50,6 +53,9 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(
+        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
+        this.getDataFinalAvaliacao());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -66,6 +72,9 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(
+        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
+        this.getDataFinalAvaliacao());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -81,6 +90,9 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(
+        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
+        this.getDataFinalAvaliacao());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -96,6 +108,9 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(
+        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
+        this.getDataFinalAvaliacao());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -111,6 +126,9 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(
+        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
+        this.getDataFinalAvaliacao());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -126,6 +144,9 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
+    parameters.put(
+        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
+        this.getDataFinalAvaliacao());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -142,7 +163,7 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalRevisao", "Data Final Revisão", Date.class),
+        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
         this.getDataFinalAvaliacao());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
@@ -161,7 +182,7 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalRevisao", "Data Final Revisão", Date.class),
+        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
         this.getDataFinalAvaliacao());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 

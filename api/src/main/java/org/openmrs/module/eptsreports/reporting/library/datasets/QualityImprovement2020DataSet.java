@@ -75,7 +75,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MCC4D1",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC4D1(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
     dataSetDefinition.addColumn(
@@ -86,7 +86,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MCC4D2",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC4D2(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -127,7 +127,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ5DEN1",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ5A(true),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=<15");
 
@@ -139,7 +139,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ5DEN2",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ5B(true),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
@@ -152,7 +152,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ5NOM1",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ5A(false),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=<15");
 
@@ -164,7 +164,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ5NOM2",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ5B(false),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
@@ -177,7 +177,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ6DEN1",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ6A(1),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
@@ -189,7 +189,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ6DEN2",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ6A(2),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=<15");
 
@@ -201,7 +201,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ6DEN3",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ6A(3),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -213,7 +213,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ6DEN4",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ6A(4),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -226,7 +226,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7DEN1",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7A(1),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
@@ -238,7 +238,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7DEN2",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7A(2),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
@@ -250,7 +250,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7DEN3",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7A(3),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=<15");
 
@@ -262,7 +262,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7DEN4",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7A(4),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=<15");
 
@@ -274,7 +274,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7DEN5",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7A(5),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -286,7 +286,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7DEN6",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7A(6),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -299,7 +299,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7NUM1",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7B(1),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
@@ -311,7 +311,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7NUM2",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7B(2),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
@@ -323,7 +323,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7NUM3",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7B(3),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=<15");
 
@@ -335,7 +335,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7NUM4",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7B(4),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=<15");
 
@@ -347,7 +347,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7NUM5",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7B(5),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -359,7 +359,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ7NUM6",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ7B(6),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -372,7 +372,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11DEN1",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11DEN("A"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=14+");
 
@@ -384,7 +384,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11DEN2",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11DEN("B"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=14+");
 
@@ -396,7 +396,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11DEN3",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11DEN("C"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -408,7 +408,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11DEN4",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11DEN("D"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -420,7 +420,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11DEN5",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11DEN("E"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=2-14");
 
@@ -432,7 +432,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11DEN6",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11DEN("F"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "ageInMonths=<9m");
 
@@ -444,7 +444,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11DEN7",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11DEN("G"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=<15");
 
@@ -458,7 +458,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11NUM1",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFandGAdultss(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -471,7 +471,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries
                         .getMQC11NumB1nB2notCnotDnotEnotEnotFnHandAdultss(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -483,7 +483,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11NUM3",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11NumAnB3nCnotDnotEnotEnotFnG(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -495,7 +495,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11NUM4",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11NumB1nB2nB3nCnotDnotEnotEnotFnH(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -507,7 +507,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ11NUM5",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFnotGnChildren(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -520,7 +520,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries
                         .getMQC11NumAnotCnotDnotEnotFnotIlessThan9Month(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -533,7 +533,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries
                         .getMQC11NumB1nB2notCnotDnotEnotFnHChildren(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -619,7 +619,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ12DEN3",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC12P2DEN("A"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "ageBasedOnArt=adultsArt");
 
@@ -631,7 +631,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ12DEN4",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC12P2DEN("B"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "ageBasedOnArt=adultsArt");
 
@@ -643,7 +643,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ12DEN8",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC12P2DEN("C"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "ageBasedOnArt=childrenArt");
 
@@ -655,7 +655,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ12DEN9",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC12P2DEN("D"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "ageBasedOnArt=childrenArt");
 
@@ -667,7 +667,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ12DEN12",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC12P2DEN("E"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -680,7 +680,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ12NUM123",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ12NumeratorP2(3),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "ageBasedOnArt=adultsArt");
     dataSetDefinition.addColumn(
@@ -691,7 +691,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ12NUM124",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ12NumeratorP2(4),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "ageBasedOnArt=adultsArt");
     dataSetDefinition.addColumn(
@@ -702,7 +702,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ12NUM128",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ12NumeratorP2(8),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "ageBasedOnArt=childrenArt");
     dataSetDefinition.addColumn(
@@ -713,7 +713,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ12NUM129",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ12NumeratorP2(9),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "ageBasedOnArt=childrenArt");
     dataSetDefinition.addColumn(
@@ -724,7 +724,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ12NUM1212",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ12NumeratorP2(12),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -810,7 +810,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13DEN1",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(true, 1),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -822,7 +822,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13DEN4",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(true, 4),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -834,7 +834,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13DEN6",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(true, 6),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -846,7 +846,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13DEN7",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(true, 7),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -858,7 +858,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13DEN8",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(true, 8),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -870,7 +870,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13DEN13",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(true, 13),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -883,7 +883,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM1",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(false, 1),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -895,7 +895,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM4",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(false, 4),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -907,7 +907,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM6",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(false, 6),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -919,7 +919,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM7",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(false, 7),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -931,7 +931,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM8",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(false, 8),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -943,7 +943,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM13",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13(false, 13),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -1028,7 +1028,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13DEN3",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13P4(true, 3),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
@@ -1040,7 +1040,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13DEN12",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13P4(true, 12),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=2-14");
 
@@ -1052,7 +1052,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13DEN18",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13P4(true, 18),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -1137,7 +1137,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM3",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13P4(false, 3),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=15+");
 
@@ -1149,7 +1149,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM12",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13P4(false, 12),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "age=2-14");
 
@@ -1161,7 +1161,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM18",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ13P4(false, 18),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -1174,7 +1174,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13DEN15",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getgetMQC13P2DenMGInIncluisionPeriod(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -1187,7 +1187,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries
                         .getgetMQC13P2DenMGInIncluisionPeriod33Month(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -1200,7 +1200,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries
                         .getgetMQC13P2DenMGInIncluisionPeriod33Days(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
     // M&Q Report - Cat 10 Indicator 10.3 - Numerator and Denominator
@@ -1212,7 +1212,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ10NUMDEN1031",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ10NUMDEN103("den"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -1224,7 +1224,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ10NUMDEN1032",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQ10NUMDEN103("num"),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -1238,7 +1238,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM15",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC13P2Num1(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -1250,7 +1250,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM16",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC13P2Num2(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 
@@ -1262,7 +1262,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
                 "MQ13NUM17",
                 EptsReportUtils.map(
                     qualityImprovement2020CohortQueries.getMQC13P2Num3(),
-                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+                    "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}")),
             "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
 

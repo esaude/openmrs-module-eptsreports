@@ -48,6 +48,8 @@ public class QualityImprovement2020CohortQueries {
   private QualityImprovement2020Queries qualityImprovement2020Queries;
 
   private final String MAPPING = "startDate=${startDate},endDate=${endDate},location=${location}";
+  private final String MAPPING1 =
+      "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
 
   @Autowired
   public QualityImprovement2020CohortQueries(
@@ -104,7 +106,13 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getArtPickupConcept().getConceptId(),
             hivMetadata.getArtDatePickupMasterCard().getConceptId());
 
-    CohortDefinition transferredIn = this.getTransferredInPatients();
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
 
@@ -113,51 +121,6 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.setCompositionString("A AND NOT B");
 
     return compositionCohortDefinition;
-  }
-
-  private CohortDefinition getTransferredInPatients() {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("transferred in patients");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
-
-    Map<String, Integer> map = new HashMap<>();
-    map.put(
-        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
-    map.put(
-        "transferFromOtherFacilityConcept",
-        commonMetadata.getTransferFromOtherFacilityConcept().getConceptId());
-    map.put("patientFoundYesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
-    map.put(
-        "typeOfPatientTransferredFrom",
-        hivMetadata.getTypeOfPatientTransferredFrom().getConceptId());
-    map.put("artStatus", hivMetadata.getArtStatus().getConceptId());
-
-    String query =
-        "SELECT  p.patient_id "
-            + "FROM patient p "
-            + "    INNER JOIN encounter e "
-            + "        ON e.patient_id=p.patient_id "
-            + "    INNER JOIN obs obs1 "
-            + "        ON obs1.encounter_id=e.encounter_id "
-            + "    INNER JOIN obs obs2 "
-            + "        ON obs2.encounter_id=e.encounter_id "
-            + "WHERE p.voided =0  "
-            + "    AND e.voided = 0 "
-            + "    AND obs1.voided =0 "
-            + "    AND obs2.voided =0 "
-            + "    AND e.encounter_type = ${masterCardEncounterType}  "
-            + "    AND e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + "    AND e.location_id = :location "
-            + "    AND obs1.concept_id = ${transferFromOtherFacilityConcept} AND obs1.value_coded = ${patientFoundYesConcept} "
-            + "    AND obs2.concept_id = ${typeOfPatientTransferredFrom} AND obs2.value_coded = ${artStatus} ";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
-    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
-
-    return sqlCohortDefinition;
   }
 
   /**
@@ -188,6 +151,7 @@ public class QualityImprovement2020CohortQueries {
     cd.setName("MCC4D1 Patients");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     cd.addSearch(
@@ -254,6 +218,7 @@ public class QualityImprovement2020CohortQueries {
     cd.setName("MCC4D2 Patients");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     cd.addSearch(
@@ -794,6 +759,8 @@ public class QualityImprovement2020CohortQueries {
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART = getMQC3D1();
@@ -832,16 +799,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition nutSupport = getPatientsWithNutritionalStateAndNutritionalSupport();
 
@@ -853,7 +817,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
 
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
 
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(nutSupport, MAPPING));
 
@@ -905,6 +869,8 @@ public class QualityImprovement2020CohortQueries {
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART = getMQC3D1();
@@ -943,16 +909,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition nutSupport = getPatientsWithNutritionalStateAndNutritionalSupport();
 
@@ -964,7 +927,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
 
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
 
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(nutSupport, MAPPING));
 
@@ -1021,6 +984,8 @@ public class QualityImprovement2020CohortQueries {
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART = getMQC3D1();
@@ -1058,16 +1023,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
 
@@ -1077,7 +1039,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
 
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
 
     if (den == 1 || den == 2) {
       compositionCohortDefinition.setCompositionString("A AND NOT (B OR C OR D OR E)");
@@ -1153,6 +1115,8 @@ public class QualityImprovement2020CohortQueries {
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART = getMQC3D1();
@@ -1226,16 +1190,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
@@ -1253,10 +1214,9 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
 
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
 
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transferOut, MAPPING));
-
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
     if (den == 1 || den == 3) {
       compositionCohortDefinition.setCompositionString(
           "A AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
@@ -1270,6 +1230,7 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.setCompositionString(
           "(A AND B4 AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
     }
+
     return compositionCohortDefinition;
   }
 
@@ -1331,6 +1292,8 @@ public class QualityImprovement2020CohortQueries {
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART = getMQC3D1();
@@ -1404,16 +1367,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
@@ -1439,9 +1399,9 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
 
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
 
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transferOut, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
 
     compositionCohortDefinition.addSearch("G", EptsReportUtils.map(tbProphylaxyOnPeriod, MAPPING));
 
@@ -1506,6 +1466,8 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART = getMQC3D1(); // A
@@ -1540,16 +1502,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
 
@@ -1568,9 +1527,9 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
 
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
 
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
 
     if (indicatorFlag.equals("A") || indicatorFlag == "E" || indicatorFlag.equals("F"))
       compositionCohortDefinition.setCompositionString("A AND NOT (C OR D OR E OR F)");
@@ -1643,6 +1602,8 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART = getMQC3D1();
@@ -1677,18 +1638,15 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
-    CohortDefinition transfOut = commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod();
+    CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
 
     compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, mapping2));
 
@@ -1704,9 +1662,9 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
 
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
 
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
 
     if (indicatorFlag.equals("A") || indicatorFlag.equals("C"))
       compositionCohortDefinition.setCompositionString("(A AND B1) NOT (C OR D OR E)");
@@ -1805,16 +1763,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
 
@@ -1828,9 +1783,9 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
 
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
 
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
 
     if (indicatorFlag.equals("A")
         || indicatorFlag.equals("B")
@@ -2040,6 +1995,8 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.setName("Category 11 Numerator session G");
     compositionCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition firstApss =
@@ -2273,6 +2230,8 @@ public class QualityImprovement2020CohortQueries {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
     compositionCohortDefinition.addParameter(new Parameter("startDate", "Start date", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "End date", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     compositionCohortDefinition.setName("Category 11 Numerator session G");
@@ -2341,6 +2300,8 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition a = getMQC3D1();
@@ -2367,15 +2328,12 @@ public class QualityImprovement2020CohortQueries {
             null);
 
     CohortDefinition e =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition g = getMQC11NG();
@@ -2386,7 +2344,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
 
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
     compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING));
     compositionCohortDefinition.addSearch(
         "ADULTS",
@@ -2412,6 +2370,8 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition b1 = getPatientsFromFichaClinicaDenominatorB("B1");
@@ -2437,15 +2397,12 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
     CohortDefinition e =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition h = getMQC11NH();
     CohortDefinition adults = genericCohortQueries.getAgeOnMOHArtStartDate(15, 200, true);
@@ -2456,7 +2413,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
     compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING));
 
     compositionCohortDefinition.addSearch(
@@ -2482,6 +2439,8 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition a = getMQC3D1();
@@ -2506,17 +2465,14 @@ public class QualityImprovement2020CohortQueries {
             Collections.singletonList(hivMetadata.getYesConcept()),
             null,
             null);
-    ;
+
     CohortDefinition e =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
 
     CohortDefinition g = getMQC11NG();
@@ -2527,7 +2483,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
     compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING));
 
     compositionCohortDefinition.setCompositionString(
@@ -2549,6 +2505,8 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition b1 = getPatientsFromFichaClinicaDenominatorB("B1");
@@ -2576,15 +2534,12 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
     CohortDefinition e =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition h = getMQC11NH();
@@ -2595,7 +2550,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
     compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING));
 
     compositionCohortDefinition.setCompositionString(
@@ -2617,6 +2572,8 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition a = getMQC3D1();
@@ -2641,15 +2598,12 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
     CohortDefinition e =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition g = getMQC11NG();
     CohortDefinition children = genericCohortQueries.getAgeOnMOHArtStartDate(2, 14, true);
@@ -2658,7 +2612,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
     compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING));
     compositionCohortDefinition.addSearch(
         "CHILDREN",
@@ -2683,6 +2637,8 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition a = getMQC3D1();
@@ -2708,15 +2664,12 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
     CohortDefinition e =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition i = getMQC11NI();
     CohortDefinition babies = genericCohortQueries.getAgeInMonths(0, 8);
@@ -2725,7 +2678,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
     compositionCohortDefinition.addSearch(
         "I",
         EptsReportUtils.map(
@@ -2752,6 +2705,8 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition b1 = getPatientsFromFichaClinicaDenominatorB("B1");
@@ -2779,15 +2734,12 @@ public class QualityImprovement2020CohortQueries {
             null);
 
     CohortDefinition e =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition h = getMQC11NH();
@@ -2798,7 +2750,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
     compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING));
     compositionCohortDefinition.addSearch(
         "CHILDREN",
@@ -2899,16 +2851,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
@@ -2921,14 +2870,10 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch(
         "E",
         EptsReportUtils.map(
-            transferIn,
+            transferredIn,
             "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
 
-    comp.addSearch(
-        "F",
-        EptsReportUtils.map(
-            transferOut,
-            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
+    comp.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
 
     comp.addSearch(
         "CHILDREN",
@@ -3141,6 +3086,7 @@ public class QualityImprovement2020CohortQueries {
     }
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     // Start adding the definitions based on the requirements
@@ -3201,15 +3147,12 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "E",
         EptsReportUtils.map(
-            commonCohortQueries.getMohMQPatientsOnCondition(
-                false,
-                true,
-                "once",
-                hivMetadata.getMasterCardEncounterType(),
-                commonMetadata.getTransferFromOtherFacilityConcept(),
-                Collections.singletonList(hivMetadata.getYesConcept()),
-                hivMetadata.getTypeOfPatientTransferredFrom(),
-                Collections.singletonList(hivMetadata.getArtStatus())),
+            qualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B2",
@@ -3329,16 +3272,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
@@ -3375,14 +3315,10 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch(
         "E",
         EptsReportUtils.map(
-            transferIn,
+            transferredIn,
             "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
 
-    comp.addSearch(
-        "F",
-        EptsReportUtils.map(
-            transferOut,
-            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
+    comp.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
 
     comp.addSearch(
         "H",
@@ -3501,6 +3437,8 @@ public class QualityImprovement2020CohortQueries {
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition lastClinical = commonCohortQueries.getMOHPatientsLastClinicalConsultation();
@@ -3779,18 +3717,16 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "E",
         EptsReportUtils.map(
-            commonCohortQueries.getMohMQPatientsOnCondition(
-                false,
-                true,
-                "once",
-                hivMetadata.getMasterCardEncounterType(),
-                commonMetadata.getTransferFromOtherFacilityConcept(),
-                Collections.singletonList(hivMetadata.getYesConcept()),
-                hivMetadata.getTypeOfPatientTransferredFrom(),
-                Collections.singletonList(hivMetadata.getArtStatus())),
+            qualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
             MAPPING));
 
-    cd.addSearch("F", EptsReportUtils.map(commonCohortQueries.getTranferredOutPatients(), MAPPING));
+    cd.addSearch(
+        "F", EptsReportUtils.map(commonCohortQueries.getTranferredOutPatients(), MAPPING1));
 
     cd.addSearch("G", EptsReportUtils.map(getMQC13P3NUM_G(), MAPPING));
     cd.addSearch("H", EptsReportUtils.map(getMQC13P3NUM_H(), MAPPING));
@@ -4340,6 +4276,8 @@ public class QualityImprovement2020CohortQueries {
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition b1 =
@@ -4391,7 +4329,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
 
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transferOut, MAPPING));
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
 
     compositionCohortDefinition.addSearch("G", EptsReportUtils.map(G, MAPPING));
 
@@ -4769,6 +4707,7 @@ public class QualityImprovement2020CohortQueries {
     cd.setName(" CAT 13 DEN - part 2 - 13.15. % de MG elegíveis ");
     cd.addParameter(new Parameter("startDate", "StartDate", Date.class));
     cd.addParameter(new Parameter("endDate", "EndDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
@@ -4787,7 +4726,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch("A", EptsReportUtils.map(getMQC3D1(), MAPPING));
     cd.addSearch("B1", EptsReportUtils.map(getgetMQC13P2DenB1(), MAPPING));
     cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
-    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
     cd.addSearch(
         "ADULT",
         EptsReportUtils.map(
@@ -4809,6 +4748,7 @@ public class QualityImprovement2020CohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "StartDate", Date.class));
     cd.addParameter(new Parameter("endDate", "EndDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
@@ -4824,21 +4764,18 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     cd.addSearch("B2", EptsReportUtils.map(getgetMQC13P2DenB2(), MAPPING));
-    cd.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    cd.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
     cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
-    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
     cd.addSearch(
         "ADULT",
         EptsReportUtils.map(
@@ -4860,6 +4797,7 @@ public class QualityImprovement2020CohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "StartDate", Date.class));
     cd.addParameter(new Parameter("endDate", "EndDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
@@ -4875,16 +4813,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     cd.addSearch("A", EptsReportUtils.map(getMQC3D1(), MAPPING));
 
@@ -4893,9 +4828,9 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch("B3", EptsReportUtils.map(getgetMQC13P2DenB3(), MAPPING));
     cd.addSearch("B4", EptsReportUtils.map(getgetMQC13P2DenB4(), MAPPING));
 
-    cd.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    cd.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
     cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
-    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
     cd.addSearch(
         "ADULT",
         EptsReportUtils.map(
@@ -4951,6 +4886,7 @@ public class QualityImprovement2020CohortQueries {
     cd.setName("MQ10NUMDEN103 Cohort definition");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addSearch(
         "infant",
@@ -5014,6 +4950,7 @@ public class QualityImprovement2020CohortQueries {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.addParameter(new Parameter("startDate", "StartDate", Date.class));
     cd.addParameter(new Parameter("endDate", "EndDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.setName(" K - categoria 13 - Numerador - part 2");
@@ -5243,6 +5180,7 @@ public class QualityImprovement2020CohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "StartDate", Date.class));
     cd.addParameter(new Parameter("endDate", "EndDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
@@ -5262,7 +5200,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch("B1", EptsReportUtils.map(getgetMQC13P2DenB1(), MAPPING));
     cd.addSearch("H", EptsReportUtils.map(getgetMQC13P2DenB3(), MAPPING));
     cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
-    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
     cd.addSearch(
         "ADULT",
         EptsReportUtils.map(
@@ -5282,6 +5220,7 @@ public class QualityImprovement2020CohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "StartDate", Date.class));
     cd.addParameter(new Parameter("endDate", "EndDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
@@ -5297,22 +5236,19 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     cd.addSearch("B2", EptsReportUtils.map(getgetMQC13P2DenB2(), MAPPING));
     cd.addSearch("J", EptsReportUtils.map(getgetMQC13P2DenB4(), MAPPING));
-    cd.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    cd.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
     cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
-    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
 
     cd.addSearch(
         "ADULT",
@@ -5334,6 +5270,7 @@ public class QualityImprovement2020CohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "StartDate", Date.class));
     cd.addParameter(new Parameter("endDate", "EndDate", Date.class));
+    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
@@ -5349,16 +5286,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     cd.addSearch("A", EptsReportUtils.map(getMQC3D1(), MAPPING));
     cd.addSearch("B1", EptsReportUtils.map(getgetMQC13P2DenB1(), MAPPING));
@@ -5367,9 +5301,9 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch("B4", EptsReportUtils.map(getgetMQC13P2DenB4(), MAPPING));
     cd.addSearch("K", EptsReportUtils.map(getgetMQC13P2NumK(), MAPPING));
     cd.addSearch("L", EptsReportUtils.map(getgetMQC13P2NumL(), MAPPING));
-    cd.addSearch("E", EptsReportUtils.map(transferIn, MAPPING));
+    cd.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
     cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
-    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING));
+    cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
     cd.addSearch(
         "ADULT",
         EptsReportUtils.map(
@@ -5533,16 +5467,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
@@ -5564,14 +5495,10 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch(
         "E",
         EptsReportUtils.map(
-            transferIn,
+            transferredIn,
             "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
 
-    comp.addSearch(
-        "F",
-        EptsReportUtils.map(
-            transferOut,
-            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
+    comp.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
 
     comp.addSearch(
         "AGES29",
@@ -5759,16 +5686,13 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    CohortDefinition transferIn =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            true,
-            "once",
-            hivMetadata.getMasterCardEncounterType(),
-            commonMetadata.getTransferFromOtherFacilityConcept(),
-            Collections.singletonList(hivMetadata.getYesConcept()),
-            hivMetadata.getTypeOfPatientTransferredFrom(),
-            Collections.singletonList(hivMetadata.getArtStatus()));
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition h1 =
         QualityImprovement2020Queries.getMQ15NumH(
@@ -5827,14 +5751,10 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch(
         "E",
         EptsReportUtils.map(
-            transferIn,
+            transferredIn,
             "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
 
-    comp.addSearch(
-        "F",
-        EptsReportUtils.map(
-            transferOut,
-            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
+    comp.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
 
     comp.addSearch(
         "G2",
