@@ -105,7 +105,10 @@ public class TRFINDataset extends BaseDataSet {
             ""));
 
     dataSetDefinition.addColumn(
-        "C1All", "TRF_IN: All Transferred In", EptsReportUtils.map(txTRFINIndicator, mappings), "");
+        "TRANAll",
+        "TRF_IN: All Transferred In",
+        EptsReportUtils.map(txTRFINIndicator, mappings),
+        "");
 
     this.addColums(
         dataSetDefinition,
@@ -125,7 +128,7 @@ public class TRFINDataset extends BaseDataSet {
         ABOVE_FIFTY);
 
     dataSetDefinition.addColumn(
-        "C-malesUnknownM",
+        "TRAN-malesUnknownM",
         "unknownM",
         EptsReportUtils.map(txTRFINIndicator, mappings),
         this.getName(Gender.MALE, AgeRange.UNKNOWN)
@@ -133,7 +136,7 @@ public class TRFINDataset extends BaseDataSet {
             + this.getName(Gender.MALE, AgeRange.UNKNOWN));
 
     dataSetDefinition.addColumn(
-        "C-femalesUnknownF",
+        "TRAN-femalesUnknownF",
         "unknownF",
         EptsReportUtils.map(txTRFINIndicator, mappings),
         this.getName(Gender.FEMALE, AgeRange.UNKNOWN)
@@ -192,10 +195,10 @@ public class TRFINDataset extends BaseDataSet {
   }
 
   private String getName(final Gender gender, final AgeRange ageRange) {
-    String name = "C-males-" + ageRange.getName() + "" + gender.getName();
+    String name = "TRAN-males-" + ageRange.getName() + "" + gender.getName();
 
     if (gender.equals(Gender.FEMALE)) {
-      name = "C-females-" + ageRange.getName() + "" + gender.getName();
+      name = "TRAN-females-" + ageRange.getName() + "" + gender.getName();
     }
     return name;
   }
