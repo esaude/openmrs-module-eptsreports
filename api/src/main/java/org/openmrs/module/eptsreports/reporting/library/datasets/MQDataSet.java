@@ -2273,7 +2273,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_6_8_10_12_DENOMINATOR",
-        "13.6: Crianças (10-14 anos) inscritas há 12 em algum MDS (DT) que continuam activos em TARV Denominador",
+        "15.6: Crianças (10-14 anos) inscritas há 12 em algum MDS (DT) que continuam activos em TARV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries
@@ -2308,7 +2308,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_3_NUMERATOR",
-        "13.3: Adultos (15/+anos) inscritos há 12 meses em algum MDS (DT ou GAAC) que receberam pelo menos um resultado de CV Numerador",
+        "15.3: Adultos (15/+anos) inscritos há 12 meses em algum MDS (DT ou GAAC) que receberam pelo menos um resultado de CV Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_3(),
@@ -2319,7 +2319,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_4_NUMERATOR",
-        "13.4: Adultos (15/+anos) inscritos há 12 meses em algum MDS (DT ou GAAC) com CV <1000 Cópias Numerador",
+        "15.4: Adultos (15/+anos) inscritos há 12 meses em algum MDS (DT ou GAAC) com CV <1000 Cópias Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_4(),
