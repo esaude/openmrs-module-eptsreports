@@ -69,6 +69,13 @@ public class EptsReportsActivator extends BaseModuleActivator {
       Context.getAlertService().notifySuperUsers("eptsreports.startuperror.general", null);
       throw e;
     }
+    try {
+      log.debug("Deleting old reports...");
+      reportsInitializer.purgOldReports();
+    } catch (Exception e) {
+      throw e;
+    }
+    log.debug("Finished Deleting old reports...");
   }
 
   /** @see #stopped() */

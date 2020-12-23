@@ -1376,7 +1376,7 @@
 			UUID for the Viral load qualitative concept
 		</description>
 	</globalProperty>
-	
+
 	<!--42 -->
 	<globalProperty>
 		<property>eptsreports.pulmonaryTBConceptUuid</property>
@@ -1385,7 +1385,7 @@
 			UUID for the PULMONARY TB concept
 		</description>
 	</globalProperty>
-	
+
 	<!--1763 -->
 	<globalProperty>
 		<property>eptsreports.feverLastingMoreThan3Weeks</property>
@@ -1394,25 +1394,27 @@
 			UUID for the FEVER LASTING MORE THAN 3 WEEKS concept
 		</description>
 	</globalProperty>
-	
+
 	<!--1764 -->
 	<globalProperty>
 		<property>eptsreports.weightLossOfMoreThan3KgInLastMonth</property>
 		<defaultValue>e1de6a12-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-			UUID for the WEIGHT LOSS OF MORE THAN 3 KG IN LAST MONTH concept
+			UUID for the WEIGHT LOSS OF MORE THAN 3 KG IN LAST MONTH
+			concept
 		</description>
 	</globalProperty>
-	
+
 	<!--1762 -->
 	<globalProperty>
 		<property>eptsreports.nightsweatsLastingMoreThan3Weeks</property>
 		<defaultValue>e1de66e8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-			UUID for the NIGHTSWEATS LASTING MORE THAN 3 WEEKS concept
+			UUID for the NIGHTSWEATS LASTING MORE THAN 3 WEEKS
+			concept
 		</description>
 	</globalProperty>
-	
+
 	<!--1760 -->
 	<globalProperty>
 		<property>eptsreports.coughLastingMoreThan3Weeks</property>
@@ -1421,7 +1423,7 @@
 			UUID for the COUGH LASTING MORE THAN 3 WEEKS concept
 		</description>
 	</globalProperty>
-	
+
 	<!--23760 -->
 	<globalProperty>
 		<property>eptsreports.asthenia</property>
@@ -1430,7 +1432,7 @@
 			UUID for the ASTHENIA concept
 		</description>
 	</globalProperty>
-	
+
 	<!--1765 -->
 	<globalProperty>
 		<property>eptsreports.cohabitantBeingTreatedForTB</property>
@@ -1439,7 +1441,7 @@
 			UUID for the COHABITANT BEING TREATED FOR TB concept
 		</description>
 	</globalProperty>
-	
+
 	<!--161 -->
 	<globalProperty>
 		<property>eptsreports.lymphadenopathy</property>
@@ -1448,7 +1450,7 @@
 			UUID for the LYMPHADENOPATHY concept
 		</description>
 	</globalProperty>
-	
+
 	<!--23723 -->
 	<globalProperty>
 		<property>eptsreports.tbGenexpertTest</property>
@@ -1457,7 +1459,7 @@
 			UUID for the TB GENEXPERT TEST concept
 		</description>
 	</globalProperty>
-	
+
 	<!--23774 -->
 	<globalProperty>
 		<property>eptsreports.cultureTest</property>
@@ -1466,8 +1468,8 @@
 			UUID for the CULTURE TEST concept
 		</description>
 	</globalProperty>
-	
-	
+
+
 	<!--23951 -->
 	<globalProperty>
 		<property>eptsreports.tbLam</property>
@@ -1476,8 +1478,8 @@
 			UUID for the TB LAM concept
 		</description>
 	</globalProperty>
-	
-	
+
+
 	<!--23863 -->
 	<globalProperty>
 		<property>eptsreports.autoTransfer</property>
@@ -1486,7 +1488,7 @@
 			UUID for the AUTO TRANSFER concept
 		</description>
 	</globalProperty>
-	
+
 	<!--6272 -->
 	<globalProperty>
 		<property>eptsreports.stateOfStayPriorArtPatient</property>
@@ -1495,7 +1497,7 @@
 			UUID for the STATE OF STAY PRIOR ART PATIENT concept
 		</description>
 	</globalProperty>
-	
+
 	<!--1766 -->
 	<globalProperty>
 		<property>eptsreports.tbObservations</property>
@@ -1504,8 +1506,8 @@
 			UUID for the TB OBSERVATIONS concept
 		</description>
 	</globalProperty>
-	
-	
+
+
 	<!--307 -->
 	<globalProperty>
 		<property>eptsreports.sputumForAcidFastBacilli</property>
@@ -1514,25 +1516,29 @@
 			UUID for the SPUTUM FOR ACID FAST BACILLI concept
 		</description>
 	</globalProperty>
-	
+
 	<!--23944 -->
 	<globalProperty>
-		<property>eptsreports.reasonPatientNotFoundByActivistSecondVisit</property>
+		<property>eptsreports.reasonPatientNotFoundByActivistSecondVisit
+		</property>
 		<defaultValue>1ca778cc-509f-4ca3-ad97-f719e36f7b05</defaultValue>
 		<description>
-			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (2and Visit) concept
+			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (2and
+			Visit) concept
 		</description>
 	</globalProperty>
-	
+
 	<!--23945 -->
 	<globalProperty>
-		<property>eptsreports.reasonPatientNotFoundByActivistThirdVisit</property>
+		<property>eptsreports.reasonPatientNotFoundByActivistThirdVisit
+		</property>
 		<defaultValue>15906fed-6dd3-4e4c-bb8b-21ba5ff96011</defaultValue>
 		<description>
-			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (3rd Visit) concept
+			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (3rd
+			Visit) concept
 		</description>
 	</globalProperty>
-	
+
 	<!--2005 -->
 	<globalProperty>
 		<property>eptsreports.patientForgotVisitDate</property>
@@ -1541,7 +1547,7 @@
 			UUID for the PATIENT FORGOT VISIT DATE concept
 		</description>
 	</globalProperty>
-	
+
 	<!--2006 -->
 	<globalProperty>
 		<property>eptsreports.patientIsBedriddenAtHome</property>
@@ -1550,25 +1556,29 @@
 			UUID for the PATIENT IS BEDRIDDEN AT HOME concept
 		</description>
 	</globalProperty>
-	
+
 	<!--2007 -->
 	<globalProperty>
-		<property>eptsreports.distanceOrMoneyForTransportIsToMuchForPatient</property>
+		<property>eptsreports.distanceOrMoneyForTransportIsToMuchForPatient
+		</property>
 		<defaultValue>e1e076f4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-			UUID for the DISTANCE OR MONEY FOR TRANSPORT IS TO MUCH FOR PATIENT concept
+			UUID for the DISTANCE OR MONEY FOR TRANSPORT IS TO MUCH
+			FOR PATIENT concept
 		</description>
 	</globalProperty>
-	
+
 	<!--2010 -->
 	<globalProperty>
-		<property>eptsreports.patientIsDissatisfiedWithDayHospitalServices</property>
+		<property>eptsreports.patientIsDissatisfiedWithDayHospitalServices
+		</property>
 		<defaultValue>e1e079e2-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-			UUID for the PATIENT IS DISSATISFIED WITH DAY HOSPITAL SERVICES concept
+			UUID for the PATIENT IS DISSATISFIED WITH DAY HOSPITAL
+			SERVICES concept
 		</description>
 	</globalProperty>
-	
+
 	<!--23915 -->
 	<globalProperty>
 		<property>eptsreports.fearOfTheProvider</property>
@@ -1577,45 +1587,272 @@
 			UUID for the FEAR OF THE PROVIDER concept
 		</description>
 	</globalProperty>
-	
+
 	<!--23946 -->
 	<globalProperty>
 		<property>eptsreports.absenceOfHealthProviderInHealthUnit</property>
 		<defaultValue>558a66da-4900-4313-a02d-4ebb4f9948df</defaultValue>
 		<description>
-			UUID for the Absence of Health Provider in Health Unit concept
+			UUID for the Absence of Health Provider in Health Unit
+			concept
 		</description>
 	</globalProperty>
-	
+
 	<!--2013 -->
 	<globalProperty>
-		<property>eptsreports.patientIsTreatingHivWithTradittionalMedicine</property>
+		<property>eptsreports.patientIsTreatingHivWithTradittionalMedicine
+		</property>
 		<defaultValue>e1e07cda-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-				UUID for the PATIENT IS TREATING HIV WITH TRADITIONAL MEDICINE concept
+			UUID for the PATIENT IS TREATING HIV WITH TRADITIONAL MEDICINE concept
 		</description>
 	</globalProperty>
-	
+
 	<!--2017 -->
 	<globalProperty>
 		<property>eptsreports.otherReasonWhyPatientMissedVisit</property>
 		<defaultValue>e1e080cc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
-				UUID for the OTHER REASON WHY PATIENT MISSED VISIT concept
+			UUID for the OTHER REASON WHY PATIENT MISSED VISIT concept
 		</description>
 	</globalProperty>
-	
-		<!--person_attribute_type_id 24 -->
+
+	<!--person_attribute_type_id 24 -->
 	<globalProperty>
 		<property>eptsreports.personAttributeType24uuid</property>
 		<defaultValue>c89c90eb-5b03-4899-ab9f-06fecd123511</defaultValue>
 		<description>
-				UUID for person_attribute_type_id 24
+			UUID for person_attribute_type_id 24
+		</description>
+	</globalProperty>
+
+
+	<!--Reports to be Deleted -->
+	<globalProperty>
+		<property>eptsoldreports.d5f02dc5-5b94-449e-b894-6282f5f26414</property>
+		<defaultValue>d5f02dc5-5b94-449e-b894-6282f5f26414</defaultValue>
+		<description>
+			Report to be Deleted
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsoldreports.6cc94e82-98e9-4d57-bde3-fba6f5511100</property>
+		<defaultValue>6cc94e82-98e9-4d57-bde3-fba6f5511100</defaultValue>
+		<description>
+			Report to be Deleted
 		</description>
 	</globalProperty>
 	
+	<globalProperty>
+		<property>eptsoldreports.743eae85-4ee7-4007-9bce-3c7de42fa3f2</property>
+		<defaultValue>743eae85-4ee7-4007-9bce-3c7de42fa3f2</defaultValue>
+		<description>
+			Report to be Deleted
+		</description>
+	</globalProperty>
 	
+	<globalProperty>
+		<property>eptsoldreports.50f022db-ab6f-4a50-bc7b-804973cc2d91</property>
+		<defaultValue>50f022db-ab6f-4a50-bc7b-804973cc2d91</defaultValue>
+		<description>
+			Report to be Deleted
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.32603b87-d749-496f-8dc8-65e653bc085d</property>
+		<defaultValue>32603b87-d749-496f-8dc8-65e653bc085d</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.421b9f2b-bacd-4a0f-b7c4-7164071b2d31</property>
+		<defaultValue>421b9f2b-bacd-4a0f-b7c4-7164071b2d31</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.d98ff50e-e06c-46dc-aa22-36849848bba0</property>
+		<defaultValue>d98ff50e-e06c-46dc-aa22-36849848bba0</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.c6b01214-496b-4af0-8ed6-59883050d26b</property>
+		<defaultValue>c6b01214-496b-4af0-8ed6-59883050d26b</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.4d214046-4543-4ee7-8dc5-576024cb32dc</property>
+		<defaultValue>4d214046-4543-4ee7-8dc5-576024cb32dc</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.4a93b030-fb21-4a87-bc04-3058276d7733</property>
+		<defaultValue>4a93b030-fb21-4a87-bc04-3058276d7733</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.1dbebb4a-c1a4-4001-b998-85fdc8c8771b</property>
+		<defaultValue>1dbebb4a-c1a4-4001-b998-85fdc8c8771b</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
 
+	<globalProperty>
+		<property>eptsoldreports.d8640d81-722c-42ed-be26-0cbb0c248838</property>
+		<defaultValue>d8640d81-722c-42ed-be26-0cbb0c248838</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.a10dca38-5422-4382-980f-11cfc4241875</property>
+		<defaultValue>a10dca38-5422-4382-980f-11cfc4241875</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.70e22878-6002-4632-bda6-393b18e69aa2</property>
+		<defaultValue>70e22878-6002-4632-bda6-393b18e69aa2</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.1fae4474-f82e-4348-943b-62cdf3cb7ad8</property>
+		<defaultValue>1fae4474-f82e-4348-943b-62cdf3cb7ad8</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.45cca3f2-38c9-481e-90d5-76a90f998b77</property>
+		<defaultValue>45cca3f2-38c9-481e-90d5-76a90f998b77</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.b11c6539-5970-436c-b5b1-02356d50956d</property>
+		<defaultValue>b11c6539-5970-436c-b5b1-02356d50956d</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.70fc852b-aa1e-48d1-9dda-a3000fe599ab</property>
+		<defaultValue>70fc852b-aa1e-48d1-9dda-a3000fe599ab</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.6143d6b4-e393-4163-a6a4-3b94a9a72eee</property>
+		<defaultValue>6143d6b4-e393-4163-a6a4-3b94a9a72eee</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.9218d1bd-aaa9-447e-a1fb-a934941c5a76</property>
+		<defaultValue>9218d1bd-aaa9-447e-a1fb-a934941c5a76</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.69e21993-21e6-4059-8a85-d2590164886a</property>
+		<defaultValue>69e21993-21e6-4059-8a85-d2590164886a</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.8f925eb1-c999-43ab-a83e-d4bf2271619d</property>
+		<defaultValue>8f925eb1-c999-43ab-a83e-d4bf2271619d</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.d87c2bbd-c8d2-44a5-b53f-82d49c904225</property>
+		<defaultValue>d87c2bbd-c8d2-44a5-b53f-82d49c904225</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.df31d4fd-0e02-4839-a3f0-93598f7d091f</property>
+		<defaultValue>df31d4fd-0e02-4839-a3f0-93598f7d091f</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.05b21522-17fa-4b70-84dc-5b1a979de3ea</property>
+		<defaultValue>05b21522-17fa-4b70-84dc-5b1a979de3ea</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.fefc3fd1-2b92-4e1d-bae0-6e5339946ed9</property>
+		<defaultValue>fefc3fd1-2b92-4e1d-bae0-6e5339946ed9</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.1c957b6a-3844-4ac4-9a7a-df0160a83cde</property>
+		<defaultValue>1c957b6a-3844-4ac4-9a7a-df0160a83cde</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.ddeffb8d-a10e-4eaf-ba99-0523f54aabb6</property>
+		<defaultValue>ddeffb8d-a10e-4eaf-ba99-0523f54aabb6</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.bf3966c6-0f3c-485d-b1a4-b8bab816e7de</property>
+		<defaultValue>bf3966c6-0f3c-485d-b1a4-b8bab816e7de</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.efd1cbf0-5dcb-46f3-bade-944af6dff859</property>
+		<defaultValue>efd1cbf0-5dcb-46f3-bade-944af6dff859</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.0a8ac54b-b954-47a8-9ce0-d4dd19d0d148</property>
+		<defaultValue>0a8ac54b-b954-47a8-9ce0-d4dd19d0d148</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.22739045-d06b-4790-ba87-e79480303eec</property>
+		<defaultValue>22739045-d06b-4790-ba87-e79480303eec</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.f92ac516-f279-4267-9d1b-ae7ec8e7c8ee</property>
+		<defaultValue>f92ac516-f279-4267-9d1b-ae7ec8e7c8ee</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.ebf33f86-8ffc-4381-b336-a1fa9d8b6f86</property>
+		<defaultValue>ebf33f86-8ffc-4381-b336-a1fa9d8b6f86</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.23795fb5-1f16-41ad-acc8-16ff52e733dc</property>
+		<defaultValue>23795fb5-1f16-41ad-acc8-16ff52e733dc</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.04b24c2e-cfd9-4886-9a00-3f8d0d56b864</property>
+		<defaultValue>04b24c2e-cfd9-4886-9a00-3f8d0d56b864</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+
+	
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
