@@ -820,15 +820,11 @@ public class CommonCohortQueries {
   /**
    * 17 - MOH MQ: Patients who initiated ART during the inclusion period
    *
-   * <p>A1- All patients with first drugs pick up date (earliest concept ID 23866 value_datetime)
-   * set in mastercard pharmacy form “Recepção/Levantou ARV”(Encounter Type ID 52) with Levantou ARV
-   * (concept id 23865) = Yes (concept id 1065) earliest “Date of Pick up” Encounter Type Ids = 52
-   * The earliest “Data de Levantamento” (Concept Id 23866 value_datetime) <= endDate Levantou ARV
-   * (concept id 23865) = SIm (1065) OR A2-All patients who have the first historical start drugs
-   * date (earliest concept ID 1190) set in FICHA RESUMO (Encounter Type 53) earliest “historical
-   * start date” Encounter Type Ids = 53 The earliest “Historical Start Date” (Concept Id 1190)And
-   * historical start date(Value_datetime) <=EndDate And the earliest date from A1 and A2
-   * (identified as Patient ART Start Date) is >= startDateRevision and <=endDateInclusion
+   * <p>A2-All patients who have the first historical start drugs date (earliest concept ID 1190)
+   * set in FICHA RESUMO (Encounter Type 53) earliest “historical start date” Encounter Type Ids =
+   * 53 The earliest “Historical Start Date” (Concept Id 1190)And historical start
+   * date(Value_datetime) <=EndDate And the earliest date from A1 and A2 (identified as Patient ART
+   * Start Date) is >= startDateRevision and <=endDateInclusion
    *
    * @return SqlCohortDefinition
    */
@@ -875,6 +871,56 @@ public class CommonCohortQueries {
             + "          GROUP  BY p.patient_id  )  "
             + "               union_tbl  "
             + "        WHERE  union_tbl.art_date BETWEEN :startDate AND :endDate";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>Description:</b> MQ-MOH Query For pregnant or Breastfeeding patients
+   *
+   * <p><b>Technical Specs</b>
+   * <li>A - Select all female patients who are pregnant as following: all patients registered in
+   *     Ficha Resumo (encounter type=53) with “Gestante”(concept_id 1982) value coded equal to
+   *     “Yes” (concept_id 1065) and sex=Female
+   * <li>B - Select all female patients who are breastfeeding as following: all patients registered
+   *     in Ficha Resumo (encounter type=53) with “Lactante”(concept_id 6332) value coded equal to
+   *     “Yes” (concept_id 1065) and sex=Female
+   *
+   * @param question
+   * @param answer
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getMOHPregnantORBreastfeeding(int question, int answer) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Pregnant Or Breastfeeding");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("question", question);
+    map.put("answer", answer);
+
+    String query =
+        "SELECT p.person_id  "
+            + "FROM   person p  "
+            + "       JOIN encounter e  "
+            + "         ON e.patient_id = p.person_id  "
+            + "       JOIN obs o  "
+            + "         ON o.encounter_id = e.encounter_id  "
+            + "            AND encounter_type = ${53}  "
+            + "            AND o.concept_id = ${question}  "
+            + "            AND o.value_coded = ${answer}  "
+            + "            AND e.location_id = :location  "
+            + "            AND p.gender = 'F'  "
+            + "            AND e.voided = 0  "
+            + "            AND o.voided = 0  "
+            + "            AND p.voided = 0 ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
