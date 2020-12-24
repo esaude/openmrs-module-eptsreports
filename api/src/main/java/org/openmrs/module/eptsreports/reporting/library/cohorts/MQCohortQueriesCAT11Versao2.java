@@ -181,7 +181,8 @@ public class MQCohortQueriesCAT11Versao2 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName(
+        "findAdultsOnARTWithMinimum3APSSFollowupConsultationsIntheFirst3MonthsAfterStartingARTCategory11NumeratorAdult");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -201,7 +202,9 @@ public class MQCohortQueriesCAT11Versao2 {
           "findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH")
   public CohortDefinition
       findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH() {
+
     final SqlCohortDefinition definition = new SqlCohortDefinition();
+
     definition.setName(
         "findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
@@ -266,6 +269,7 @@ public class MQCohortQueriesCAT11Versao2 {
   public CohortDefinition
       findPregnantOnARTStartedExcludingBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11DenominatorVersion2() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
     definition.setName(
         "findPregnantOnARTStartedExcludingBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11DenominatorVersion2");
 

@@ -619,7 +619,9 @@ public class MQCohortCategory15Queries {
 
   @DocumentedDefinition(value = "PatientsFromFichaClinicaForGivenConceptsDenominadorCategoria15A")
   private CohortDefinition findPatientsFromFichaClinicaForGivenConceptsDenominadorCategoria15A() {
+
     final SqlCohortDefinition definition = new SqlCohortDefinition();
+
     definition.setName("MQ - PatientsFromFichaClinicaForGivenConceptsDenominadorCategoria15A");
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
@@ -635,7 +637,9 @@ public class MQCohortCategory15Queries {
           "PatientsWithLastGaacOrDispensaTrimestralInClinicaForGivenConceptsDenominadorCategoria15B1")
   private CohortDefinition
       findPatientsWithLastGaacOrDispensaTrimestralInClinicaForGivenConceptsDenominadorCategoria15B1() {
+
     final SqlCohortDefinition definition = new SqlCohortDefinition();
+
     definition.setName(
         "MQ - PatientsWithLastGaacOrDispensaTrimestralInClinicaForGivenConceptsDenominadorCategoria15B1");
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -651,7 +655,9 @@ public class MQCohortCategory15Queries {
       value = "PatientsWithDispensaTrimestralInicarInFichaClinicaDuringTheRevisionPeriodA2")
   private CohortDefinition
       findPatientsWithDispensaTrimestralInicarInFichaClinicaDuringTheRevisionPeriodA2() {
+
     final SqlCohortDefinition definition = new SqlCohortDefinition();
+
     definition.setName(
         "MQ - PatientsWithDispensaTrimestralInicarInFichaClinicaDuringTheRevisionPeriodA2");
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -667,7 +673,9 @@ public class MQCohortCategory15Queries {
       value = "PatientsWithLastTipoDeDispensaTrimestralInFichaClinicaWithinRevisionPeriodA3")
   private CohortDefinition
       findPatientsWithLastTipoDeDispensaTrimestralInFichaClinicaWithinRevisionPeriodA3() {
+
     final SqlCohortDefinition definition = new SqlCohortDefinition();
+
     definition.setName(
         "MQ - PatientsWithLastTipoDeDispensaTrimestralInFichaClinicaWithinRevisionPeriodA3");
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
