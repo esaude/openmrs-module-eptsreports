@@ -14,36 +14,21 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import java.util.List;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec6Queries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Ec6PatientListDataset extends BaseDataSet {
 
-  private HivMetadata hivMetadata;
-
-  @Autowired
-  public Ec6PatientListDataset(HivMetadata hivMetadata) {
-    this.hivMetadata = hivMetadata;
-  }
-
   public DataSetDefinition ec6PatientListDataset(List<Parameter> parameterList) {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC6");
     dsd.addParameters(parameterList);
-    dsd.setSqlQuery(
-        Ec6Queries.getEc6CombinedQuery(
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata
-                .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                .getProgramWorkflowStateId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+    dsd.setSqlQuery(Ec6Queries.getEc6CombinedQuery());
     return dsd;
   }
 }

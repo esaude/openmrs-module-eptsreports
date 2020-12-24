@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TRFINDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
@@ -46,6 +47,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
   @Autowired private TxMlDataset txMlDataset;
 
+  @Autowired private TRFINDataset txTfrInDataset;
+
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
   @Override
@@ -65,7 +68,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.4 Quarterly";
+    return "PEPFAR MER 2.5 Quarterly";
   }
 
   @Override
@@ -97,6 +100,9 @@ public class SetupMERQuarterly extends EptsDataExportManager {
     reportDefinition.addDataSetDefinition(
         "R", Mapped.mapStraightThrough(this.txRttDataset.constructTxRttDataset()));
 
+    reportDefinition.addDataSetDefinition(
+        "TR", Mapped.mapStraightThrough(this.txTfrInDataset.constructTxTRFIN()));
+
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
@@ -113,8 +119,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
       reportDesign =
           this.createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.4_QUARTERLY.xls",
-              "PEPFAR MER 2.4 Quarterly Report",
+              "PEPFAR_MER_2.5_QUARTERLY.xls",
+              "PEPFAR MER 2.5 Quarterly Report",
               this.getExcelDesignUuid(),
               null);
       final Properties props = new Properties();

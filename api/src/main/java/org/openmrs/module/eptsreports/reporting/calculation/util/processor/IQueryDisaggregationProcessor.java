@@ -4,13 +4,23 @@ public interface IQueryDisaggregationProcessor {
 
   class QUERY {
 
-    public static final String findMaxPatientStateDateByProgramAndPatientStateAndReportingPeriod =
-        "select pg.patient_id, max(ps.start_date) data_estado from patient p "
-            + "	   inner join patient_program pg on p.patient_id=pg.patient_id "
-            + "	   inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-            + "  where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s "
-            + "    and ps.state= %s and ps.end_date is null and ps.start_date<= :endDate "
-            + "    and location_id= :location group by pg.patient_id";
+    public static final String
+        findMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullInReportingPeriod =
+            "select pg.patient_id, max(ps.start_date) data_estado from patient p "
+                + "	   inner join patient_program pg on p.patient_id=pg.patient_id "
+                + "	   inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+                + "  where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s "
+                + "    and ps.state= %s and ps.end_date is null and ps.start_date<= :endDate "
+                + "    and location_id= :location group by pg.patient_id";
+
+    public static final String
+        findMaxPatientStateDateByProgramAndPatientStateAndPatientStateInReportingPeriod =
+            "select pg.patient_id, max(ps.start_date) data_estado from patient p "
+                + "	   inner join patient_program pg on p.patient_id=pg.patient_id "
+                + "	   inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+                + "  where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s "
+                + "    and ps.state= %s and ps.start_date<= :endDate "
+                + "    and location_id= :location group by pg.patient_id";
 
     public static final String findMaxObsDatetimeByEncounterTypeAndConceptsAndAnsweresInPeriod =
         "select p.patient_id, max(baseObs.obs_datetime) data_estado from patient p "
@@ -87,10 +97,33 @@ public interface IQueryDisaggregationProcessor {
             + "  select * from obs o join encounter e on e.encounter_id = o.encounter_id                                                       "
             + "  where o.voided = 0 and e.voided =0 and ((o.concept_id in(2031, 23944, 23945) and o.value_coded in(2024, 2026, 2011, 2032)) or o.concept_id = 2032 ) "
             + "     and e.encounter_type = 21 and o.encounter_id = obs.encounter_id and o.obs_datetime =  obs.obs_datetime                     "
-            + "	    and e.encounter_datetime >= :startDate and e.encounter_datetime  <= :endDate                                               "
+            + "	    and e.encounter_datetime >= :startDate and e.encounter_datetime bt <= :endDate                                               "
             + "	    and e.location_id =:location)                                                                                              "
             + "  and encounter.encounter_type = 21 and obs.concept_id = 1981 and obs.value_coded = 2160                                        "
             + "  and encounter.encounter_datetime >= :startDate and encounter.encounter_datetime  <= :endDate                                  "
             + "  and encounter.location_id =:location group by encounter.patient_id                                                            ";
+
+    public static final String findTransferredInPatientsUntilRerportEndingDate =
+        "select patient_id, max(data_estado) from ( select patient.patient_id, min(patient_state.start_date) data_estado from  patient               "
+            + "   join patient_program on patient_program.patient_id = patient.patient_id                      "
+            + "   join patient_state on patient_state.patient_program_id =patient_program.patient_program_id   "
+            + "   join program on program.program_id = patient_program.program_id                              "
+            + " where patient.voided = 0 and patient_program.voided =0 and patient_state.voided =0             "
+            + "   and patient_state.state=29 and program.program_id = 2                                        "
+            + "   and patient_state.start_date<=:realEndDate and location_id=:location			              "
+            + " group by patient.patient_id                                                                    "
+            + " union                                                                                          "
+            + "Select p.patient_id, min(obsInscricao.value_datetime) data_estado                                 "
+            + "from 	patient p                                                                                 "
+            + "		inner join encounter e on p.patient_id=e.patient_id                                       "
+            + "		inner join obs obsTrans on e.encounter_id=obsTrans.encounter_id and obsTrans.voided=0 and "
+            + "		obsTrans.concept_id=1369 and obsTrans.value_coded=1065                                    "
+            + "		inner join obs obsTarv on e.encounter_id=obsTarv.encounter_id and obsTarv.voided=0 and    "
+            + "		obsTarv.concept_id=6300 and obsTarv.value_coded=6276                         "
+            + "		inner join obs obsInscricao on e.encounter_id=obsInscricao.encounter_id      "
+            + "      and obsInscricao.voided=0 and obsInscricao.concept_id=23891                  "
+            + "where p.voided=0 and e.voided=0 and e.encounter_type=53 and                        "
+            + "		obsInscricao.value_datetime <= :realEndDate and e.location_id=:location      "
+            + "		group by p.patient_id ) transferidosde group by patient_id                        ";
   }
 }

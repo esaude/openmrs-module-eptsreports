@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.eptsreports.reporting.utils.EptsDateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
@@ -88,7 +88,8 @@ public class TxCurrPatientsOnArvDispenseLessThan3MonthCalculation
 
   private boolean isInExpectedFilaDisaggregationInterval(
       FilaPatientDisaggregated filaDisaggregation) {
-    return DateUtil.getDaysBetween(filaDisaggregation.getDate(), filaDisaggregation.getNextFila())
+    return EptsDateUtil.getDaysBetween(
+            filaDisaggregation.getDate(), filaDisaggregation.getNextFila())
         < DAYS_LESS_THAN_3_MONTHS;
   }
 }

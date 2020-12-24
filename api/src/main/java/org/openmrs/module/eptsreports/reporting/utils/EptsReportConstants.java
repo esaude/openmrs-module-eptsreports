@@ -24,4 +24,10 @@ public final class EptsReportConstants {
     PREGNANTWOMEN,
     BREASTFEEDINGWOMEN
   }
+
+  public static final String START_INCULSION_DATE = "startInclusionDate";
+
+  public static final String END_INCLUSION_DATE = "endInclusionDate";
+
+  public static final String END_REVISION_DATE = "endRevisionDate";
 }

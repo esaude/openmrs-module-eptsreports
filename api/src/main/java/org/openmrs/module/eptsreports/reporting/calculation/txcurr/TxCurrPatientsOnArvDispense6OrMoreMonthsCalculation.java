@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.eptsreports.reporting.utils.EptsDateUtil;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -92,7 +92,8 @@ public class TxCurrPatientsOnArvDispense6OrMoreMonthsCalculation
 
   private boolean isInExpectedFilaDisaggregationInterval(
       FilaPatientDisaggregated filaDisaggregation) {
-    return DateUtil.getDaysBetween(filaDisaggregation.getDate(), filaDisaggregation.getNextFila())
+    return EptsDateUtil.getDaysBetween(
+            filaDisaggregation.getDate(), filaDisaggregation.getNextFila())
         > DAYS_EQULAS_OR_GREATER_SIX_MONTHS;
   }
 }

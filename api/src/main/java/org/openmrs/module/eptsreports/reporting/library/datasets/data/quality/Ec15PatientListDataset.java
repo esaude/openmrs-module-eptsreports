@@ -14,24 +14,15 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import java.util.List;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec15Queries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
 public class Ec15PatientListDataset extends BaseDataSet {
-
-  private HivMetadata hivMetadata;
-
-  @Autowired
-  public Ec15PatientListDataset(HivMetadata hivMetadata) {
-    this.hivMetadata = hivMetadata;
-  }
 
   /**
    * @param parameterList
@@ -41,10 +32,7 @@ public class Ec15PatientListDataset extends BaseDataSet {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC15");
     dsd.addParameters(parameterList);
-    dsd.setSqlQuery(
-        Ec15Queries.getEc15CombinedQuery(
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+    dsd.setSqlQuery(Ec15Queries.getEc15CombinedQuery());
 
     return dsd;
   }

@@ -42,7 +42,14 @@ public class Ec3PatientListDataset extends BaseDataSet {
         Ec3Queries.getEc3CombinedQuery(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
-            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId()));
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+            hivMetadata.getPatientHasDiedConcept().getConceptId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickup().getConceptId()));
     return dsd;
   }
 }

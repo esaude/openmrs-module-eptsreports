@@ -8,6 +8,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQue
 import org.openmrs.module.eptsreports.reporting.library.datasets.Eri2MonthsDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.Eri4MonthsDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.EriDSDDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.IMR1Dataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
@@ -34,6 +35,8 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
   @Autowired private TxCurrDataset txCurrDataset;
 
   @Autowired private EriDSDDataset eriDSDDataset;
+
+  @Autowired private IMR1Dataset imr1Dataset;
 
   @Override
   public String getExcelDesignUuid() {
@@ -69,6 +72,9 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 
     rd.addDataSetDefinition(
         "C", Mapped.mapStraightThrough(this.txCurrDataset.constructTxCurrDataset(true)));
+
+    rd.addDataSetDefinition(
+        "I", Mapped.mapStraightThrough(this.imr1Dataset.constructIMR1DataSet()));
 
     rd.addDataSetDefinition(
         "ERI2", Mapped.mapStraightThrough(this.eri2MonthsDataset.constructEri2MonthsDatset()));

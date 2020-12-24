@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.MisauKeyPopDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.MisauKeyPopReportDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -33,12 +33,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupMisauKeyPopReport extends EptsDataExportManager {
 
-  private MisauKeyPopDataSetDefinition misauKeyPopDataSetDefinition;
+  private MisauKeyPopReportDataSetDefinition misauKeyPopDataSetDefinition;
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
   @Autowired
-  public SetupMisauKeyPopReport(MisauKeyPopDataSetDefinition misauKeyPopDataSetDefinition) {
+  public SetupMisauKeyPopReport(MisauKeyPopReportDataSetDefinition misauKeyPopDataSetDefinition) {
     this.misauKeyPopDataSetDefinition = misauKeyPopDataSetDefinition;
   }
 
@@ -54,12 +54,12 @@ public class SetupMisauKeyPopReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Relatorio de Populacao Chave - MISAU TEST";
+    return "Relatorio de Populacao Chave - MISAU";
   }
 
   @Override
   public String getDescription() {
-    return "Relatorio de Populacao Chave - MISAU TEST";
+    return "Relatorio de Populacao Chave - MISAU";
   }
 
   @Override
@@ -74,7 +74,7 @@ public class SetupMisauKeyPopReport extends EptsDataExportManager {
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
+                "baseCohortQuery", BaseQueries.getAdultBaseCohortQuery()),
             "endDate=${endDate},location=${location}"));
     return rd;
   }

@@ -18,6 +18,24 @@ import org.springframework.stereotype.Component;
 @Component
 public class QueryDisaggregationProcessor {
 
+  public Map<Integer, Date>
+      findMapMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullAndEndDate(
+          EvaluationContext context, Program program, ProgramWorkflowState state) {
+
+    SqlQueryBuilder qb =
+        new SqlQueryBuilder(
+            String.format(
+                IQueryDisaggregationProcessor.QUERY
+                    .findMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullInReportingPeriod,
+                program.getProgramId(),
+                state.getProgramWorkflowStateId()),
+            context.getParameterValues());
+
+    return Context.getRegisteredComponents(EvaluationService.class)
+        .get(0)
+        .evaluateToMap(qb, Integer.class, Date.class, context);
+  }
+
   public Map<Integer, Date> findMapMaxPatientStateDateByProgramAndPatientStateAndEndDate(
       EvaluationContext context, Program program, ProgramWorkflowState state) {
 
@@ -25,7 +43,7 @@ public class QueryDisaggregationProcessor {
         new SqlQueryBuilder(
             String.format(
                 IQueryDisaggregationProcessor.QUERY
-                    .findMaxPatientStateDateByProgramAndPatientStateAndReportingPeriod,
+                    .findMaxPatientStateDateByProgramAndPatientStateAndPatientStateInReportingPeriod,
                 program.getProgramId(),
                 state.getProgramWorkflowStateId()),
             context.getParameterValues());
@@ -178,5 +196,16 @@ public class QueryDisaggregationProcessor {
       listPatientDates.putInList((Integer) row[0], (Date) row[1]);
     }
     return listPatientDates;
+  }
+
+  public Map<Integer, Date> findTransferredInPatientsUntilRerportEndingDate(
+      EvaluationContext context) {
+    SqlQueryBuilder qb =
+        new SqlQueryBuilder(
+            IQueryDisaggregationProcessor.QUERY.findTransferredInPatientsUntilRerportEndingDate,
+            context.getParameterValues());
+    return Context.getRegisteredComponents(EvaluationService.class)
+        .get(0)
+        .evaluateToMap(qb, Integer.class, Date.class, context);
   }
 }

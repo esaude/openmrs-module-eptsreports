@@ -14,13 +14,11 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.data.quality;
 
 import java.util.List;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.Ec2Queries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -31,27 +29,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class Ec2PatientListDataset extends BaseDataSet {
 
-  private HivMetadata hivMetadata;
-
-  @Autowired
-  public Ec2PatientListDataset(HivMetadata hivMetadata) {
-    this.hivMetadata = hivMetadata;
-  }
-
   public DataSetDefinition ec2DataSetDefinition(List<Parameter> parameterList) {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("EC2");
     dsd.addParameters(parameterList);
-    dsd.setSqlQuery(
-        Ec2Queries.getEc2CombinedQuery(
-            hivMetadata.getPriorDeliveryDateConcept().getConceptId(),
-            hivMetadata.getCriteriaForArtStart().getConceptId(),
-            hivMetadata.getBreastfeeding().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId(),
-            hivMetadata.getPtvEtvProgram().getProgramId(),
-            hivMetadata.getPatientIsBreastfeedingWorkflowState().getProgramWorkflowStateId(),
-            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
+    dsd.setSqlQuery(Ec2Queries.getEc2CombinedQuery());
     return dsd;
   }
 }

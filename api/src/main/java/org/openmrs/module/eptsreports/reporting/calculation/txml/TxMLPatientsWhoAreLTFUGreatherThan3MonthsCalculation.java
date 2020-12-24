@@ -1,12 +1,13 @@
 package org.openmrs.module.eptsreports.reporting.calculation.txml;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.Set;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastRecepcaoLevantamentoCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
-import org.openmrs.module.reporting.common.DateUtil;
+import org.openmrs.module.eptsreports.reporting.utils.EptsDateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,7 @@ public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends TxMLPa
 
   @Override
   protected CalculationResultMap evaluateUsingCalculationRules(
+      Map<String, Object> parameterValues,
       EvaluationContext context,
       Set<Integer> cohort,
       Date startDate,
@@ -41,7 +43,7 @@ public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends TxMLPa
               TxMLPatientsWhoMissedNextApointmentCalculation.getLastRecepcaoLevantamentoPlus30(
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
       if (maxNextDate != null
-          && DateUtil.getDaysBetween(inicioRealDate, maxNextDate) >= GREATHER_THAN_3_MONTHS) {
+          && EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) >= GREATHER_THAN_3_MONTHS) {
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
         if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
             && nextDatePlus28.compareTo(endDate) < 0) {
@@ -54,6 +56,6 @@ public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends TxMLPa
             patientId, resultMap, endDate, lastSeguimentoCalculationResult, nextSeguimentoResult);
       }
     }
-    return filterUntracedAndTracedPatients(context, resultMap);
+    return resultMap;
   }
 }

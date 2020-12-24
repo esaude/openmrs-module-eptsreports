@@ -164,7 +164,6 @@ public class ResumoMensalCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
     cd.setName("Number of patientes who initiated TARV at this HF End Date");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));

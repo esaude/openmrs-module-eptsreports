@@ -3,16 +3,13 @@ package org.openmrs.module.eptsreports.reporting.calculation.txml;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastFilaCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastRecepcaoLevantamentoCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.LastSeguimentoCalculation;
@@ -20,12 +17,12 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.NextFilaDate
 import org.openmrs.module.eptsreports.reporting.calculation.generic.NextSeguimentoDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.OnArtInitiatedArvDrugsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
-import org.openmrs.module.eptsreports.reporting.calculation.util.processor.QueryDisaggregationProcessor;
-import org.openmrs.module.reporting.common.DateUtil;
-import org.openmrs.module.reporting.common.ListMap;
+import org.openmrs.module.eptsreports.reporting.utils.EptsDateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 
 public abstract class TxMLPatientCalculation extends BaseFghCalculation {
+
+  public static int DAYS_TO_LTFU = 28;
 
   @Override
   public CalculationResultMap evaluate(
@@ -63,6 +60,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
             .evaluate(lastSeguimentoCalculationResult.keySet(), parameterValues, context);
 
     return this.evaluateUsingCalculationRules(
+        parameterValues,
         context,
         cohort,
         startDate,
@@ -84,6 +82,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
   }
 
   protected abstract CalculationResultMap evaluateUsingCalculationRules(
+      Map<String, Object> parameterValues,
       EvaluationContext context,
       Set<Integer> cohort,
       Date startDate,
@@ -110,7 +109,7 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
     if (calculationNextResult != null && calculationNextResult.getValue() == null) {
       if (calculationLastResult != null) {
         Date lastDate = (Date) calculationLastResult.getValue();
-        if (DateUtil.getDaysBetween(lastDate, endDate) >= 0) {
+        if (EptsDateUtil.getDaysBetween(lastDate, endDate) >= 0) {
           resultMap.put(patientId, new SimpleResult(lastDate, this));
         }
       }
@@ -152,93 +151,5 @@ public abstract class TxMLPatientCalculation extends BaseFghCalculation {
       }
     }
     return result;
-  }
-
-  protected CalculationResultMap filterUntracedAndTracedPatients(
-      EvaluationContext context, CalculationResultMap resultMap) {
-    CalculationResultMap returnMap = new CalculationResultMap();
-    QueryDisaggregationProcessor queryDisaggregation =
-        Context.getRegisteredComponents(QueryDisaggregationProcessor.class).get(0);
-
-    Map<Integer, Date> criteriaOneData =
-        queryDisaggregation.findUntracedPatientsWithinReportingPeriodCriteriaOne(context);
-    ListMap<Integer, Date> criteriaTwoData =
-        queryDisaggregation.findUntracedByNotHavefilledDataInVisitSectionCriteriaTwo(context);
-    ListMap<Integer, Date> criteriaThreeData =
-        queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThree(context);
-    ListMap<Integer, Date> criteriaThreeNegationData =
-        queryDisaggregation.findTracedPatientsWithinReportingPeriodCriteriaThreeNegation(context);
-
-    for (Entry<Integer, CalculationResult> entry : resultMap.entrySet()) {
-      Integer patientId = entry.getKey();
-      Date maxNextDate = (Date) entry.getValue().getValue();
-
-      if (this.matchCriteriaOne(criteriaOneData, patientId, maxNextDate)) {
-        returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-        continue;
-      }
-
-      if (this.matchCriteriaTwo(criteriaTwoData, patientId, maxNextDate)) {
-        returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-        continue;
-      }
-
-      if (this.matchCriteriaThree(
-          criteriaThreeData, criteriaThreeNegationData, patientId, maxNextDate)) {
-        returnMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
-        continue;
-      }
-    }
-    return returnMap;
-  }
-
-  private boolean matchCriteriaOne(
-      Map<Integer, Date> criteriaOneData, Integer patientId, Date maxNextDate) {
-    Date maxHomeCardVist = criteriaOneData.get(patientId);
-    if (maxHomeCardVist == null
-        || (maxHomeCardVist != null && maxHomeCardVist.compareTo(maxNextDate) < 0)) {
-      return true;
-    }
-    return false;
-  }
-
-  private boolean matchCriteriaTwo(
-      ListMap<Integer, Date> criteriaTwoData, Integer patientId, Date maxNextDate) {
-    List<Date> homeCardVisitDates = criteriaTwoData.get(patientId);
-
-    if (homeCardVisitDates == null || homeCardVisitDates.isEmpty()) {
-      return false;
-    }
-    for (Date homeCardVisitDate : homeCardVisitDates) {
-      if (homeCardVisitDate != null && homeCardVisitDate.compareTo(maxNextDate) >= 0) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private boolean matchCriteriaThree(
-      ListMap<Integer, Date> criteriaThreeData,
-      ListMap<Integer, Date> criteriaThreeNegationData,
-      Integer patientId,
-      Date maxNextDate) {
-    List<Date> homeCardVisitDates = criteriaThreeData.get(patientId);
-    List<Date> homeCardVisitDatesNegation = criteriaThreeNegationData.get(patientId);
-
-    if (homeCardVisitDates != null
-        && !homeCardVisitDates.isEmpty()
-        && homeCardVisitDatesNegation != null
-        && !homeCardVisitDatesNegation.isEmpty()) {
-      return false;
-    }
-
-    if (homeCardVisitDates != null && !homeCardVisitDates.isEmpty()) {
-      for (Date homeCardVisitDate : homeCardVisitDates) {
-        if (homeCardVisitDate != null && homeCardVisitDate.compareTo(maxNextDate) >= 0) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 }

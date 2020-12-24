@@ -23,6 +23,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryEc20DataQualityCohorts;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.*;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec10PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec11PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec12PatientListDataset;
@@ -35,6 +36,7 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec19PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec1PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec20PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec23PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec2PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec3PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec4PatientListDataset;
@@ -61,8 +63,6 @@ import org.springframework.stereotype.Component;
 public class SetupDataQualityReport extends EptsDataExportManager {
 
   private SummaryDataQualityDataset summaryDataQualityDataset;
-
-  private SummaryDataQualityCohorts summaryDataQualityCohorts;
 
   private Ec1PatientListDataset ec1PatientListDataset;
 
@@ -102,11 +102,14 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec19PatientListDataset ec19PatientListDataset;
 
-  private SummaryEc20DataQualityCohorts summaryEc20DataQualityCohorts;
-
   private SummaryEc20DataQualityDataset summaryEc20DataQualityDataset;
 
   private Ec20PatientListDataset ec20PatientListDataset;
+
+  private Ec23PatientListDataset ec23PatientListDataset;
+  private Ec21PatientListDataset ec21PatientListDataset;
+
+  private Ec22PatientListDataset ec22PatientListDataset;
 
   private GetCustomConfigurationDataset getCustomConfigurationDataset;
 
@@ -136,12 +139,14 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Ec18PatientListDataset ec18PatientListDataset,
       Ec19PatientListDataset ec19PatientListDataset,
       Ec20PatientListDataset ec20PatientListDataset,
+      Ec21PatientListDataset ec21PatientListDataset,
+      Ec22PatientListDataset ec22PatientListDataset,
       SummaryEc20DataQualityDataset summaryEc20DataQualityDataset,
       SummaryEc20DataQualityCohorts summaryEc20DataQualityCohorts,
       GetCustomConfigurationDataset getCustomConfigurationDataset,
-      HivMetadata hivMetadata) {
+      HivMetadata hivMetadata,
+      Ec23PatientListDataset ec23PatientListDataset) {
     this.summaryDataQualityDataset = summaryDataQualityDataset;
-    this.summaryDataQualityCohorts = summaryDataQualityCohorts;
     this.ec1PatientListDataset = ec1PatientListDataset;
     this.ec2PatientListDataset = ec2PatientListDataset;
     this.ec3PatientListDataset = ec3PatientListDataset;
@@ -162,8 +167,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec18PatientListDataset = ec18PatientListDataset;
     this.ec19PatientListDataset = ec19PatientListDataset;
     this.ec20PatientListDataset = ec20PatientListDataset;
+    this.ec23PatientListDataset = ec23PatientListDataset;
+    this.ec21PatientListDataset = ec21PatientListDataset;
+    this.ec22PatientListDataset = ec22PatientListDataset;
     this.summaryEc20DataQualityDataset = summaryEc20DataQualityDataset;
-    this.summaryEc20DataQualityCohorts = summaryEc20DataQualityCohorts;
 
     this.hivMetadata = hivMetadata;
     this.getCustomConfigurationDataset = getCustomConfigurationDataset;
@@ -197,18 +204,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.setDescription(getDescription());
     rd.addParameters(getDataParameters());
 
-    // add a base cohort here to help in calculations running
-    rd.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            summaryDataQualityCohorts.getQualityDataReportBaseCohort(),
-            "startDate=${startDate},endDate=${endDate},location=${location},state=${state}"));
-    // adding a data set to help us get configuration parameters
-    // adding respective data sets for the reports
-
     rd.addDataSetDefinition(
         "S",
         Mapped.mapStraightThrough(
-            summaryDataQualityDataset.constructSummaryDataQualityDatset(getDataParameters())));
+            summaryDataQualityDataset.constructSummaryDataQualityDatset(getDataParametersEC20())));
 
     rd.addDataSetDefinition(
         "S20",
@@ -294,18 +293,26 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "EC20",
         Mapped.mapStraightThrough(
-            ec20PatientListDataset.ec20PatientListDatset(getDataParametersEC20())));
+            ec20PatientListDataset.ec20PatientListDatset(getDataParameters())));
+    rd.addDataSetDefinition(
+        "EC23",
+        Mapped.mapStraightThrough(
+            ec23PatientListDataset.ec23PatientListDatset(getDataParameters())));
+
+    rd.addDataSetDefinition(
+        "EC21",
+        Mapped.mapStraightThrough(
+            ec21PatientListDataset.ec21PatientListDataset(getDataParameters())));
+
+    rd.addDataSetDefinition(
+        "EC22",
+        Mapped.mapStraightThrough(
+            ec22PatientListDataset.ec22PatientListDataset(getDataParameters())));
 
     rd.addDataSetDefinition(
         "EC01",
         Mapped.mapStraightThrough(
             getCustomConfigurationDataset.configDataSetDefinition(getDataParameters())));
-
-    rd.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            summaryEc20DataQualityCohorts.getEc20DataQualityReportBaseCohort(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
     return rd;
   }
 
@@ -328,7 +335,8 @@ public class SetupDataQualityReport extends EptsDataExportManager {
       Properties props = new Properties();
       props.put(
           "repeatingSections",
-          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6 | sheet:8,row:7,dataset:EC7 | sheet:9,row:7,dataset:EC8 | sheet:10,row:7,dataset:EC9 | sheet:11,row:7,dataset:EC10 | sheet:12,row:7,dataset:EC11 | sheet:13,row:7,dataset:EC12 | sheet:14,row:7,dataset:EC13 | sheet:15,row:7,dataset:EC14 | sheet:16,row:7,dataset:EC15 | sheet:17,row:7,dataset:EC16 | sheet:18,row:7,dataset:EC17 | sheet:19,row:7,dataset:EC18 | sheet:20,row:7,dataset:EC19 |sheet:21,row:7,dataset:EC20");
+          "sheet:2,row:7,dataset:EC1 | sheet:3,row:7,dataset:EC2 | sheet:4,row:7,dataset:EC3 | sheet:5,row:7,dataset:EC4 | sheet:6,row:7,dataset:EC5 | sheet:7,row:7,dataset:EC6 | sheet:8,row:7,dataset:EC7 | sheet:9,row:7,dataset:EC8 | sheet:10,row:7,dataset:EC9 | sheet:11,row:7,dataset:EC10 | sheet:12,row:7,dataset:EC11 | sheet:13,row:7,dataset:EC12 | sheet:14,row:7,dataset:EC13 | sheet:15,row:7,dataset:EC14 | sheet:16,row:7,dataset:EC15 | sheet:17,row:7,dataset:EC16 | sheet:18,row:7,dataset:EC17 | sheet:19,row:7,dataset:EC18 | sheet:20,row:7,dataset:EC19 |sheet:21,row:7,dataset:EC20 |sheet:22,row:7,dataset:EC21 |sheet:23,row:7,dataset:EC22 |sheet:24,row:7,dataset:EC23");
+      props.put("sortWeight", "5000");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {

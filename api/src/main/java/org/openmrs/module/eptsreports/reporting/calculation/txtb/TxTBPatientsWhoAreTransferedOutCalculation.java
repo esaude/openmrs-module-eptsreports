@@ -31,10 +31,11 @@ public class TxTBPatientsWhoAreTransferedOutCalculation extends BaseFghCalculati
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
 
     Map<Integer, Date> transferedOutByProgram =
-        queryDisaggregation.findMapMaxPatientStateDateByProgramAndPatientStateAndEndDate(
-            context,
-            hivMetadata.getARTProgram(),
-            hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState());
+        queryDisaggregation
+            .findMapMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullAndEndDate(
+                context,
+                hivMetadata.getARTProgram(),
+                hivMetadata.getTransferredOutToAnotherHealthFacilityWorkflowState());
 
     Map<Integer, Date> deadInHomeVisitForm =
         queryDisaggregation.findMapMaxObsDatetimeByEncounterAndQuestionsAndAnswersInPeriod(
