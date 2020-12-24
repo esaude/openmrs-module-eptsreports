@@ -1851,6 +1851,18 @@
 		<defaultValue>04b24c2e-cfd9-4886-9a00-3f8d0d56b864</defaultValue>
 		<description>Report to be Deleted</description>
 	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.f9693d22-c137-42fb-a1f2-bd764b82fe0f</property>
+		<defaultValue>f9693d22-c137-42fb-a1f2-bd764b82fe0f</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.64eb9b48-59ac-4466-ac92-f2f3efc896c7</property>
+		<defaultValue>64eb9b48-59ac-4466-ac92-f2f3efc896c7</defaultValue>
+		<description>Report to be Deleted</description>
+	</globalProperty>
 
 	
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
