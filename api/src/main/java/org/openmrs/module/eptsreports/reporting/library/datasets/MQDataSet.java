@@ -2001,7 +2001,7 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_14_NUMERATOR",
-        "12.14: Crianças  na 2a linha de TARV que receberam o resultado da Carga Viral entre o "
+        "13.14: Crianças  na 2a linha de TARV que receberam o resultado da Carga Viral entre o "
             + "sexto e o nono mês após o início da 2a linha de TARV Numerador",
         EptsReportUtils.map(CAT13_PART_3_13_14_NUMERATOR, mappings),
         "");
