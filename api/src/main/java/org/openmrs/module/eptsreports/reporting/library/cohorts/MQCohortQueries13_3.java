@@ -39,7 +39,7 @@ public class MQCohortQueries13_3 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName("findPatientsWhoArePregnantInclusionDateRF08");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -58,7 +58,7 @@ public class MQCohortQueries13_3 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName("findPatientsWhoAreBreastfeedingInclusionDateRF09");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -78,7 +78,7 @@ public class MQCohortQueries13_3 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName("findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -100,7 +100,8 @@ public class MQCohortQueries13_3 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName(
+        "findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragationBetween5And9");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -123,7 +124,8 @@ public class MQCohortQueries13_3 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName(
+        "findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragationBetween10And14");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -145,7 +147,8 @@ public class MQCohortQueries13_3 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName(
+        "findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragationBetween0To4");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -167,7 +170,8 @@ public class MQCohortQueries13_3 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName(
+        "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -187,7 +191,7 @@ public class MQCohortQueries13_3 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName("findPatientsWhoTransferedOutRF07");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -208,7 +212,8 @@ public class MQCohortQueries13_3 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("B1");
+    definition.setName(
+        "findPatientsWhoAlternativeLineFirstLineExcludePatintsFromClinicalConsultationWithTherapheuticLineDiferentFirstLineCategory13_3_B1");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -231,7 +236,8 @@ public class MQCohortQueries13_3 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("Category13_3_B2E");
+    definition.setName(
+        "findPatientsFromClinicalConsultationWhoHaveLaboratoriesInvestigationRequestsCategory13_3_B2E");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));

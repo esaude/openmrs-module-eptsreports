@@ -84,7 +84,8 @@ public class MQCohortQueries10 {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName(
+        "findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));

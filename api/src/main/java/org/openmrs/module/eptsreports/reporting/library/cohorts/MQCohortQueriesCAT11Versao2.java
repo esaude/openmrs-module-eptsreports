@@ -202,7 +202,9 @@ public class MQCohortQueriesCAT11Versao2 {
           "findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH")
   public CohortDefinition
       findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH() {
+
     final SqlCohortDefinition definition = new SqlCohortDefinition();
+
     definition.setName(
         "findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
