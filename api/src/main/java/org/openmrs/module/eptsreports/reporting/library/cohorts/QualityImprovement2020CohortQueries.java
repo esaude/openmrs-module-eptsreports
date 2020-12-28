@@ -92,15 +92,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART =
-        commonCohortQueries.getMOHArtStartDate(
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getYesConcept().getConceptId(),
-            hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-            hivMetadata.getArtPickupConcept().getConceptId(),
-            hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition transferredIn =
         qualityImprovement2020Queries.getTransferredInPatients(
@@ -117,6 +109,56 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.setCompositionString("A AND NOT B");
 
     return compositionCohortDefinition;
+  }
+  /**
+   * 17 - MOH MQ: Patients who initiated ART during the inclusion period
+   *
+   * <p>A2-All patients who have the first historical start drugs date (earliest concept ID 1190)
+   * set in FICHA RESUMO (Encounter Type 53) earliest “historical start date” Encounter Type Ids =
+   * 53 The earliest “Historical Start Date” (Concept Id 1190)And historical start
+   * date(Value_datetime) <=EndDate And the earliest date from A1 and A2 (identified as Patient ART
+   * Start Date) is >= startDateRevision and <=endDateInclusion
+   *
+   * @return SqlCohortDefinition
+   */
+  public SqlCohortDefinition getMOHArtStartDate() {
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName(" All patients that started ART during inclusion period ");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("1065", hivMetadata.getYesConcept().getConceptId());
+    map.put("1190", hivMetadata.getHistoricalDrugStartDateConcept().getConceptId());
+
+    String query =
+        " SELECT patient_id "
+            + "        FROM   (SELECT p.patient_id, Min(value_datetime) art_date "
+            + "                    FROM patient p "
+            + "              INNER JOIN encounter e "
+            + "                  ON p.patient_id = e.patient_id "
+            + "              INNER JOIN obs o "
+            + "                  ON e.encounter_id = o.encounter_id "
+            + "          WHERE  p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND o.voided = 0 "
+            + "              AND e.encounter_type = ${53} "
+            + "              AND o.concept_id = ${1190} "
+            + "              AND o.value_datetime IS NOT NULL "
+            + "              AND o.value_datetime <= :endDate "
+            + "              AND e.location_id = :location "
+            + "          GROUP  BY p.patient_id  )  "
+            + "               union_tbl  "
+            + "        WHERE  union_tbl.art_date BETWEEN :startDate AND :endDate";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
   }
 
   /**
@@ -150,18 +192,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
-    cd.addSearch(
-        "A",
-        EptsReportUtils.map(
-            commonCohortQueries.getMOHArtStartDate(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                hivMetadata.getYesConcept().getConceptId(),
-                hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-                hivMetadata.getArtPickupConcept().getConceptId(),
-                hivMetadata.getArtDatePickupMasterCard().getConceptId()),
-            MAPPING));
+    cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
     cd.addSearch(
         "B",
         EptsReportUtils.map(
@@ -217,18 +248,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
-    cd.addSearch(
-        "A",
-        EptsReportUtils.map(
-            commonCohortQueries.getMOHArtStartDate(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                hivMetadata.getYesConcept().getConceptId(),
-                hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-                hivMetadata.getArtPickupConcept().getConceptId(),
-                hivMetadata.getArtDatePickupMasterCard().getConceptId()),
-            MAPPING));
+    cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
     cd.addSearch(
         "B",
         EptsReportUtils.map(
@@ -759,7 +779,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART = getMQC3D1();
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition nutritionalClass =
         commonCohortQueries.getMohMQPatientsOnCondition(
@@ -856,7 +876,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART = getMQC3D1();
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition nutritionalClass =
         commonCohortQueries.getMohMQPatientsOnCondition(
@@ -959,7 +979,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART = getMQC3D1();
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition tbActive =
         commonCohortQueries.getMohMQPatientsOnCondition(
@@ -1077,7 +1097,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART = getMQC3D1();
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition tbActive =
         commonCohortQueries.getMohMQPatientsOnCondition(
@@ -1242,7 +1262,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART = getMQC3D1();
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition tbActive =
         commonCohortQueries.getMohMQPatientsOnCondition(
@@ -1404,7 +1424,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART = getMQC3D1(); // A
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition patientsFromFichaClinicaLinhaTerapeutica =
         getPatientsFromFichaClinicaDenominatorB("B1");
@@ -1532,7 +1552,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART = getMQC3D1();
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition b1 = getPatientsFromFichaClinicaDenominatorB("B1");
 
@@ -1660,7 +1680,7 @@ public class QualityImprovement2020CohortQueries {
     String mapping2 =
         "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
 
-    CohortDefinition startedART = getMQC3D1();
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition b1Patients = getPatientsOnRegimeChangeBI1AndNotB1E_B1();
 
@@ -2219,7 +2239,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition a = getMQC3D1();
+    CohortDefinition a = getMOHArtStartDate();
 
     CohortDefinition c =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
@@ -2337,7 +2357,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition a = getMQC3D1();
+    CohortDefinition a = getMOHArtStartDate();
     CohortDefinition b3 = getPatientsWithClinicalConsultationB3();
 
     CohortDefinition c =
@@ -2449,7 +2469,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition a = getMQC3D1();
+    CohortDefinition a = getMOHArtStartDate();
     CohortDefinition c =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
             commonMetadata.getPregnantConcept().getConceptId(),
@@ -2502,7 +2522,7 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition a = getMQC3D1();
+    CohortDefinition a = getMOHArtStartDate();
     CohortDefinition c =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
             commonMetadata.getPregnantConcept().getConceptId(),
@@ -2664,7 +2684,7 @@ public class QualityImprovement2020CohortQueries {
     comp.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     comp.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART = getMQC3D1();
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition pregnant =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
@@ -2915,18 +2935,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     // Start adding the definitions based on the requirements
-    cd.addSearch(
-        "A",
-        EptsReportUtils.map(
-            commonCohortQueries.getMOHArtStartDate(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                hivMetadata.getYesConcept().getConceptId(),
-                hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-                hivMetadata.getArtPickupConcept().getConceptId(),
-                hivMetadata.getArtDatePickupMasterCard().getConceptId()),
-            MAPPING));
+    cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
     cd.addSearch(
         "G",
         EptsReportUtils.map(
@@ -3062,7 +3071,7 @@ public class QualityImprovement2020CohortQueries {
     comp.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
     comp.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART = getMQC3D1();
+    CohortDefinition startedART = getMOHArtStartDate();
 
     CohortDefinition pregnant =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
@@ -3473,18 +3482,7 @@ public class QualityImprovement2020CohortQueries {
         "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
 
     // Start adding the definitions based on the requirements
-    cd.addSearch(
-        "A",
-        EptsReportUtils.map(
-            commonCohortQueries.getMOHArtStartDate(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
-                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                hivMetadata.getYesConcept().getConceptId(),
-                hivMetadata.getHistoricalDrugStartDateConcept().getConceptId(),
-                hivMetadata.getArtPickupConcept().getConceptId(),
-                hivMetadata.getArtDatePickupMasterCard().getConceptId()),
-            MAPPING));
+    cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
 
     cd.addSearch("B1", EptsReportUtils.map(getPatientsOnRegimeChangeBI1AndNotB1E_B1(), mapping2));
 
@@ -4501,7 +4499,7 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    cd.addSearch("A", EptsReportUtils.map(getMQC3D1(), MAPPING));
+    cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
     cd.addSearch("B1", EptsReportUtils.map(getgetMQC13P2DenB1(), MAPPING));
     cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
     cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
@@ -4599,7 +4597,7 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
             hivMetadata.getArtStatus().getConceptId());
 
-    cd.addSearch("A", EptsReportUtils.map(getMQC3D1(), MAPPING));
+    cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
 
     cd.addSearch("B1", EptsReportUtils.map(getgetMQC13P2DenB1(), MAPPING));
     cd.addSearch("B2", EptsReportUtils.map(getgetMQC13P2DenB2(), MAPPING));
@@ -4974,7 +4972,7 @@ public class QualityImprovement2020CohortQueries {
             null,
             null);
 
-    cd.addSearch("A", EptsReportUtils.map(getMQC3D1(), MAPPING));
+    cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
     cd.addSearch("B1", EptsReportUtils.map(getgetMQC13P2DenB1(), MAPPING));
     cd.addSearch("H", EptsReportUtils.map(getgetMQC13P2DenB3(), MAPPING));
     cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
@@ -5072,7 +5070,7 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
             hivMetadata.getArtStatus().getConceptId());
 
-    cd.addSearch("A", EptsReportUtils.map(getMQC3D1(), MAPPING));
+    cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
     cd.addSearch("B1", EptsReportUtils.map(getgetMQC13P2DenB1(), MAPPING));
     cd.addSearch("B2", EptsReportUtils.map(getgetMQC13P2DenB2(), MAPPING));
     cd.addSearch("B3", EptsReportUtils.map(getgetMQC13P2DenB3(), MAPPING));

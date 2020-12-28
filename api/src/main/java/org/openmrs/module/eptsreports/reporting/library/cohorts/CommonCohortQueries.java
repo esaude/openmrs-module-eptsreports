@@ -818,68 +818,6 @@ public class CommonCohortQueries {
   }
 
   /**
-   * 17 - MOH MQ: Patients who initiated ART during the inclusion period
-   *
-   * <p>A2-All patients who have the first historical start drugs date (earliest concept ID 1190)
-   * set in FICHA RESUMO (Encounter Type 53) earliest “historical start date” Encounter Type Ids =
-   * 53 The earliest “Historical Start Date” (Concept Id 1190)And historical start
-   * date(Value_datetime) <=EndDate And the earliest date from A1 and A2 (identified as Patient ART
-   * Start Date) is >= startDateRevision and <=endDateInclusion
-   *
-   * @return SqlCohortDefinition
-   */
-  public SqlCohortDefinition getMOHArtStartDate(
-      int adultoSeguimentoEncounterType,
-      int masterCardDrugPickupEncounterType,
-      int masterCardEncounterType,
-      int yesConcept,
-      int historicalDrugStartDateConcept,
-      int artPickupConcept,
-      int artDatePickupMasterCard) {
-
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName(" All patients that started ART during inclusion period ");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
-
-    Map<String, Integer> map = new HashMap<>();
-    map.put("6", adultoSeguimentoEncounterType);
-    map.put("52", masterCardDrugPickupEncounterType);
-    map.put("53", masterCardEncounterType);
-    map.put("1065", yesConcept);
-    map.put("1190", historicalDrugStartDateConcept);
-    map.put("23865", artPickupConcept);
-    map.put("23866", artDatePickupMasterCard);
-
-    String query =
-        " SELECT patient_id "
-            + "        FROM   (SELECT p.patient_id, Min(value_datetime) art_date "
-            + "                    FROM patient p "
-            + "              INNER JOIN encounter e "
-            + "                  ON p.patient_id = e.patient_id "
-            + "              INNER JOIN obs o "
-            + "                  ON e.encounter_id = o.encounter_id "
-            + "          WHERE  p.voided = 0 "
-            + "              AND e.voided = 0 "
-            + "              AND o.voided = 0 "
-            + "              AND e.encounter_type = ${53} "
-            + "              AND o.concept_id = ${1190} "
-            + "              AND o.value_datetime IS NOT NULL "
-            + "              AND o.value_datetime <= :endDate "
-            + "              AND e.location_id = :location "
-            + "          GROUP  BY p.patient_id  )  "
-            + "               union_tbl  "
-            + "        WHERE  union_tbl.art_date BETWEEN :startDate AND :endDate";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
-    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
-
-    return sqlCohortDefinition;
-  }
-
-  /**
    * <b>Description:</b> MQ-MOH Query For pregnant or Breastfeeding patients
    *
    * <p><b>Technical Specs</b>
