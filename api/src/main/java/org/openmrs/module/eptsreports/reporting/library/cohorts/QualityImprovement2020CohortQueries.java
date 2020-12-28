@@ -1437,10 +1437,10 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
 
     compositionCohortDefinition.addSearch(
-        "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING));
+        "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING1));
 
     compositionCohortDefinition.addSearch(
-        "B2", EptsReportUtils.map(patientsFromFichaClinicaCargaViral, MAPPING));
+        "B2", EptsReportUtils.map(patientsFromFichaClinicaCargaViral, MAPPING1));
 
     compositionCohortDefinition.addSearch(
         "B3", EptsReportUtils.map(patientsWithClinicalConsultation, MAPPING));
@@ -1453,14 +1453,18 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
 
-    if (indicatorFlag.equals("A") || indicatorFlag == "E" || indicatorFlag.equals("F"))
+    if (indicatorFlag.equals("A") || indicatorFlag.equals("E") || indicatorFlag.equals("F")) {
       compositionCohortDefinition.setCompositionString("A AND NOT (C OR D OR E OR F)");
-    if (indicatorFlag.equals("B") || indicatorFlag.equals("G"))
+    }
+    if (indicatorFlag.equals("B") || indicatorFlag.equals("G")) {
       compositionCohortDefinition.setCompositionString("(B1 AND B2) AND NOT (C OR D OR E OR F)");
-    if (indicatorFlag.equals("C"))
+    }
+    if (indicatorFlag.equals("C")) {
       compositionCohortDefinition.setCompositionString("(A AND B3 AND C) AND NOT (D OR E OR F)");
-    if (indicatorFlag.equals("D"))
-      compositionCohortDefinition.setCompositionString("(B1 AND B3 AND C) AND NOT (D OR E OR F)");
+    }
+    if (indicatorFlag.equals("D")) {
+      compositionCohortDefinition.setCompositionString("(B1 AND B2 AND C) AND NOT (D OR E OR F)");
+    }
 
     return compositionCohortDefinition;
   }
@@ -1560,11 +1564,19 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, mapping2));
 
-    compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, mapping2));
+    compositionCohortDefinition.addSearch(
+        "B1",
+        EptsReportUtils.map(
+            b1,
+            "startDate=${endDate-14m},endDate=${endDate-11m},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"));
 
     compositionCohortDefinition.addSearch("B1E", EptsReportUtils.map(b1E, mapping1));
 
-    compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, mapping2));
+    compositionCohortDefinition.addSearch(
+        "B2",
+        EptsReportUtils.map(
+            b2,
+            "startDate=${endDate-14m},endDate=${endDate-11m},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"));
 
     compositionCohortDefinition.addSearch("B2E", EptsReportUtils.map(b2E, mapping1));
 
@@ -1576,12 +1588,15 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
 
-    if (indicatorFlag.equals("A") || indicatorFlag.equals("C"))
+    if (indicatorFlag.equals("A") || indicatorFlag.equals("C")) {
       compositionCohortDefinition.setCompositionString("(A AND B1) NOT (C OR D OR E)");
-    if (indicatorFlag.equals("B") || indicatorFlag.equals("D"))
+    }
+    if (indicatorFlag.equals("B") || indicatorFlag.equals("D")) {
       compositionCohortDefinition.setCompositionString("(A AND B2) AND NOT (C OR D OR E)");
-    if (indicatorFlag.equals("E"))
+    }
+    if (indicatorFlag.equals("E")) {
       compositionCohortDefinition.setCompositionString("(A AND B1 AND C) AND NOT (D OR E)");
+    }
 
     return compositionCohortDefinition;
   }
@@ -1719,6 +1734,8 @@ public class QualityImprovement2020CohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+    sqlCohortDefinition.addParameter(
+        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("encounterType", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
@@ -1767,7 +1784,7 @@ public class QualityImprovement2020CohortQueries {
             + "                          AND p.voided = 0 AND e.voided = 0 "
             + "                          AND e.location_id = :location AND o.location_id = :location "
             + valueQuery
-            + "                          AND e.encounter_datetime BETWEEN  :startDate AND :endDate  "
+            + "                          AND e.encounter_datetime BETWEEN  :startDate AND :dataFinalAvaliacao  "
             + queryTermination;
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
@@ -2925,7 +2942,7 @@ public class QualityImprovement2020CohortQueries {
         "B1E",
         EptsReportUtils.map(
             getPatientsFromFichaClinicaDenominatorB("B1E"),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"));
 
     cd.addSearch(
         "C",
@@ -2955,12 +2972,12 @@ public class QualityImprovement2020CohortQueries {
         "B2",
         EptsReportUtils.map(
             getPatientsFromFichaClinicaDenominatorB("B2"),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"));
     cd.addSearch(
         "B2E",
         EptsReportUtils.map(
             getPatientsFromFichaClinicaDenominatorB("B2E"),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"));
     if (flag == 3) {
       cd.setCompositionString("(A AND B1 AND NOT (B1E OR C OR D OR E)) AND  G");
     } else if (flag == 4) {
