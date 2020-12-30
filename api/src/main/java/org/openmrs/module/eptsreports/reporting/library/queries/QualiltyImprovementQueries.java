@@ -108,7 +108,7 @@ public class QualiltyImprovementQueries {
         + " and ps.state="
         + transferredOutToAnotherHealthFacilityWorkflowState
         + "  "
-        + "        and ps.start_date <=:dataFinalAvaliacao  "
+        + "        and ps.start_date <=:revisionEndDate  "
         + "		                       "
         + "	union "
         + " "
@@ -121,7 +121,7 @@ public class QualiltyImprovementQueries {
         + arvProgram
         + " and ps.state="
         + pateintTransferedFromOtherFacilityWorkflowState
-        + " and ps.start_date<=:dataFinalAvaliacao  "
+        + " and ps.start_date<=:revisionEndDate  "
         + "	                       "
         + "	union "
         + " "
@@ -138,7 +138,7 @@ public class QualiltyImprovementQueries {
         + arvAdultInitialEncounterType
         + ","
         + adultoSeguimentoEncounterType
-        + ") and e.encounter_datetime <=:dataFinalAvaliacao "
+        + ") and e.encounter_datetime <=:revisionEndDate "
         + " "
         + "	union                     "
         + "		                       "
@@ -152,7 +152,7 @@ public class QualiltyImprovementQueries {
         + arvAdultInitialEncounterType
         + ","
         + adultoSeguimentoEncounterType
-        + ") and o.value_datetime<=:dataFinalAvaliacao                  "
+        + ") and o.value_datetime<=:revisionEndDate                  "
         + "		                       "
         + "	union "
         + "		                       "
@@ -160,7 +160,7 @@ public class QualiltyImprovementQueries {
         + "	from      patient_program pp  "
         + "	where pp.program_id="
         + ptvProgram
-        + " and pp.voided=0 and pp.date_enrolled<=:dataFinalAvaliacao  "
+        + " and pp.voided=0 and pp.date_enrolled<=:revisionEndDate  "
         + " "
         + "	union "
         + " "
@@ -172,7 +172,7 @@ public class QualiltyImprovementQueries {
         + " and pp.voided=0 and ps.voided=0 and ps.state="
         + psPregnant
         + " and ps.end_date is null and  "
-        + "	ps.start_date<=:dataFinalAvaliacao  "
+        + "	ps.start_date<=:revisionEndDate  "
         + " "
         + " "
         + "	union "
@@ -532,7 +532,7 @@ public class QualiltyImprovementQueries {
         + "	inner join encounter e on p.patient_id=e.patient_id  "
         + "	inner join obs o on o.encounter_id=e.encounter_id  "
         + "	where e.voided=0 and p.voided=0 and o.voided=0  "
-        + "	and o.value_datetime between :startDate and :dataFinalAvaliacao  "
+        + "	and o.value_datetime between :startDate and :revisionEndDate  "
         + "	and o.concept_id="
         + isoniazidProphylaxisEndDate
         + "	and e.encounter_type in ("
@@ -1262,7 +1262,7 @@ public class QualiltyImprovementQueries {
         + "		select p.patient_id, e.encounter_datetime data_consulta "
         + "		from 	patient p  "
         + "		inner join encounter e on p.patient_id=e.patient_id "
-        + "		where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :dataFinalAvaliacao and  "
+        + "		where 	p.voided=0 and e.voided=0 and e.encounter_datetime between :startDate and :revisionEndDate and  "
         + "		e.location_id=:location and e.encounter_type in ("
         + adultoSeguimentoEncounterType
         + ","
@@ -1270,7 +1270,7 @@ public class QualiltyImprovementQueries {
         + ") "
         + "	) consulta on inicio_real.patient_id = consulta.patient_id and consulta.data_consulta > inicio_real.data_inicio "
         + "	group by inicio_real.patient_id "
-        + "	having count(*)>=round(datediff(:dataFinalAvaliacao,inicio_real.data_inicio)/30)-1 "
+        + "	having count(*)>=round(datediff(:revisionEndDate,inicio_real.data_inicio)/30)-1 "
         + ") domain";
   }
 
@@ -1430,11 +1430,11 @@ public class QualiltyImprovementQueries {
         + "   "
         + "		and e.location_id=:location  "
         + "	) seguimentos_mensais on inicio_real.patient_id=seguimentos_mensais.patient_id   "
-        + "		and seguimentos_mensais.data_consulta between date_add(inicio_real.data_inicio, interval 1 day) and :dataFinalAvaliacao  "
+        + "		and seguimentos_mensais.data_consulta between date_add(inicio_real.data_inicio, interval 1 day) and :revisionEndDate  "
         + "		and round(datediff(data_inicio,pe.birthdate)/365)<=2  "
         + "	group by inicio_real.patient_id  "
         + "	having count(seguimentos3.data_consulta)>=3  "
-        + "		or count(seguimentos_mensais.data_consulta)>=round(datediff(:dataFinalAvaliacao,inicio_real.data_inicio)/30)-1  "
+        + "		or count(seguimentos_mensais.data_consulta)>=round(datediff(:revisionEndDate,inicio_real.data_inicio)/30)-1  "
         + ") domain";
   }
   /**

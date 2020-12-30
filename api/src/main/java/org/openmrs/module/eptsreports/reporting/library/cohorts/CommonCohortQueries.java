@@ -296,7 +296,7 @@ public class CommonCohortQueries {
     sqlCohortDefinition.setName("Patients From Ficha Clinica");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(
-        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
@@ -324,7 +324,7 @@ public class CommonCohortQueries {
             + "                       AND e.voided = 0 "
             + "                       AND e.location_id = :location "
             + "                       AND e.encounter_type = ${6} "
-            + "                       AND e.encounter_datetime <= :dataFinalAvaliacao "
+            + "                       AND e.encounter_datetime <= :revisionEndDate "
             + "                       AND o.voided = 0 "
             + "                       AND o.concept_id = ${6273} "
             + "                       AND o.value_coded = ${1706} "
@@ -341,7 +341,7 @@ public class CommonCohortQueries {
             + "                       AND e.voided = 0 "
             + "                       AND e.location_id = :location "
             + "                       AND e.encounter_type = ${53} "
-            + "                       AND o.obs_datetime BETWEEN :startDate AND :dataFinalAvaliacao "
+            + "                       AND o.obs_datetime BETWEEN :startDate AND :revisionEndDate "
             + "                       AND o.voided = 0 "
             + "                       AND o.concept_id = ${6272} "
             + "                       AND o.value_coded = ${1706} "
@@ -359,7 +359,7 @@ public class CommonCohortQueries {
             + "                                                 AND "
             + "              e.encounter_datetime > transferout_date "
             + "                                                 AND "
-            + "              e.encounter_datetime <= :dataFinalAvaliacao "
+            + "              e.encounter_datetime <= :revisionEndDate "
             + "                                          UNION "
             + "                                          SELECT p.patient_id "
             + "                                          FROM   patient p "
@@ -377,7 +377,7 @@ public class CommonCohortQueries {
             + "                                                 AND o.value_datetime > "
             + "                                                     transferout_date "
             + "                                                 AND o.value_datetime <= "
-            + "                                                     :dataFinalAvaliacao)  ";
+            + "                                                     :revisionEndDate)  ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 

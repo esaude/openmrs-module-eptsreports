@@ -33,10 +33,10 @@ public class QualityImprovementDataSet extends BaseDataSet {
   public DataSetDefinition constructInitQltyImpDataSet() {
 
     final String mappingsAll =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location},testStart=${testStart}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location},testStart=${testStart}";
 
     final String mappingsWitshEvaluate =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
     CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
     dataSetDefinition.setName("Quality Improvement DataSet");
@@ -56,7 +56,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientInARVSampleWithEncounterIn7DaysAfterDianosis(),
                 mappingsWitshEvaluate));
-    consultanic.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    consultanic.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -72,8 +72,8 @@ public class QualityImprovementDataSet extends BaseDataSet {
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPatientStartedARVInInclusionPeriodWithAtLeastOneEncounter(),
-                "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"));
-    coortenic.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+                "startDate=${startDate},endDate=${endDate},location=${location},revisionEndDate=${revisionEndDate}"));
+    coortenic.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -81,7 +81,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
         "MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO",
         EptsReportUtils.map(
             coortenic,
-            "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"),
+            "startDate=${startDate},endDate=${endDate},location=${location},revisionEndDate=${revisionEndDate}"),
         getDisagregateAdultsAndChildrenSColumn());
 
     /* RASTREIOTB */
@@ -91,7 +91,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
             EptsReportUtils.map(
                 qualityImprovementCohortQueries.getPatientsInARVSampleNotInTBTrackEncounter(),
                 mappingsWitshEvaluate));
-    reatreioTB.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    reatreioTB.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -108,7 +108,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries.getPregnantPatientsInTBTrackForEachEncounter(),
                 mappingsWitshEvaluate));
     reatreioGravida.addParameter(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     dataSetDefinition.addColumn(
         "RASTREIOTBGRAVIDA",
@@ -140,7 +140,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientsInARVSampleElegibleToProfilaxiaWithIzonzidaTPI(),
                 mappingsWitshEvaluate));
-    tpiNum1.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Avaliacao", Date.class));
+    tpiNum1.addParameter(new Parameter("revisionEndDate", "Data Final Avaliacao", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -157,7 +157,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientsInARVSampleElegibleToProfilaxiaWithIzonzidaInAPeriod(),
                 mappingsWitshEvaluate));
-    tpiDeNom1.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    tpiDeNom1.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
     addRow(
         dataSetDefinition,
         "TPIDENOM1.IDADE",
@@ -173,7 +173,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientsInARVSampleElegibleToProphilaxisIzoniazidWhomCompleted(),
                 mappingsWitshEvaluate));
-    tpiNum2.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    tpiNum2.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -190,7 +190,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientInARVSampleElegibleToProphylaxisIsoniazisStaredShouldComplete(),
                 mappingsWitshEvaluate));
-    tpiDeNom2.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    tpiDeNom2.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -206,15 +206,15 @@ public class QualityImprovementDataSet extends BaseDataSet {
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPatientsEnrolledInARVSamplePregantElegibleProphylaxisIsoniazidAndReceived(),
-                "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}"));
-    tpiNum3.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+    tpiNum3.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     dataSetDefinition.addColumn(
         "TPINUM3",
         "MQ_GRAVIDAS INSCRITAS NO SERVICO TARV (AMOSTRA GRAVIDA) ELEGIVEIS A PROFILAXIA COM ISONIAZIDA E QUE RECEBERAM",
         EptsReportUtils.map(
             tpiNum3,
-            "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}"),
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
     /*TPIDENOM3*/
@@ -225,14 +225,14 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientsEnrolledInARVSamplePregantElegibleProphylaxisIsoniazid(),
                 mappingsWitshEvaluate));
-    tpiDeNom3.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    tpiDeNom3.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     dataSetDefinition.addColumn(
         "TPIDENOM3",
         "MQ_GRAVIDAS INSCRITAS NO SERVICO TARV (AMOSTRA GRAVIDA) ELEGIVEIS A PROFILAXIA COM ISONIAZIDA",
         EptsReportUtils.map(
             tpiDeNom3,
-            "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}"),
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
     /*RASTREIOITS*/
@@ -243,7 +243,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPacientsInARVSampleWhichHadScreeningForSTIInEncounterAnalisisPeriod(),
                 mappingsWitshEvaluate));
-    rastreioITS.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    rastreioITS.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -260,7 +260,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPacientsInARVWithCD4SampleRegisteredWithin35Days(),
                 mappingsWitshEvaluate));
-    cd4num.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    cd4num.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -277,7 +277,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPacientsInARVSampleStartedIn15DaysAfterBeingDeclaredAsElegible(),
                 mappingsWitshEvaluate));
-    elegibility.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    elegibility.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -294,7 +294,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPacientsARVInAPeriodWhoReturnedToEncounter33DaysAfterBegining(),
                 mappingsWitshEvaluate));
-    retnunm5.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    retnunm5.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
     retnunm5.addParameter(new Parameter("testStart", "Test Start", Boolean.class));
 
     addRow(
@@ -312,7 +312,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPacientsARVSampleWhoHadAtLeast3Encounters3MonthsAfterTARVStartNew(),
                 mappingsWitshEvaluate));
-    retnum1.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    retnum1.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
     retnum1.addParameter(new Parameter("testStart", "Test Start", Boolean.class));
 
     addRow(
@@ -330,7 +330,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientInTARVSampleWhoHaddAtLeast3AdherenceEvaluationWithin3MothsARIEL(),
                 mappingsWitshEvaluate));
-    retnum2.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    retnum2.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
     retnum2.addParameter(new Parameter("testStart", "Test Start", Boolean.class));
 
     addRow(
@@ -348,7 +348,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientInTARVSampleWhomHadMonthEncountersAfterTARVInitialization(),
                 mappingsWitshEvaluate));
-    retnum3.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    retnum3.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -365,7 +365,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientInTARVSampleWhomHadAPSSMonthEncountersAfterTARVInitialization(),
                 mappingsWitshEvaluate));
-    retnum7.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    retnum7.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -418,8 +418,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
                 qualityImprovementCohortQueries
                     .getPatientsElegibleInDiffModelAndAreEnrolledInDiffModel(),
                 mappingsWitshEvaluate));
-    modeloDifNum.addParameter(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+    modeloDifNum.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -435,9 +434,8 @@ public class QualityImprovementDataSet extends BaseDataSet {
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPatientInARTElegibleToBeEnrolledInSomeDiffModel(),
-                "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"));
-    modeloDifNom.addParameter(
-        new Parameter("dataFinalAvaliacao", "Data Final Avaliacao", Date.class));
+                "startDate=${startDate},endDate=${endDate},location=${location},revisionEndDate=${revisionEndDate}"));
+    modeloDifNom.addParameter(new Parameter("revisionEndDate", "Data Final Avaliacao", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -445,7 +443,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
         "PACIENTES ACTUALMENTE EM TARV ELEGIVEIS PARA SEREM INSCRITOS EM ALGUM MODELO DIFERENCIADO",
         EptsReportUtils.map(
             modeloDifNom,
-            "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"),
+            "startDate=${startDate},endDate=${endDate},location=${location},revisionEndDate=${revisionEndDate}"),
         getDisagregateAdultsAndChildrenSColumn());
 
     /*CVNUM*/
@@ -471,8 +469,8 @@ public class QualityImprovementDataSet extends BaseDataSet {
             EptsReportUtils.map(
                 qualityImprovementCohortQueries
                     .getPatientStartedARVInInclusionPeriodWithAtLeastOneEncounter(),
-                "startDate=${startDate},endDate=${endDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"));
-    cvdenom.addParameter(new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class));
+                "startDate=${startDate},endDate=${endDate},location=${location},revisionEndDate=${revisionEndDate}"));
+    cvdenom.addParameter(new Parameter("revisionEndDate", "Data Final Revisão", Date.class));
 
     addRow(
         dataSetDefinition,
@@ -480,7 +478,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
         "MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO",
         EptsReportUtils.map(
             cvdenom,
-            "startDate=${dataFinalAvaliacao-12m+1d},endDate=${startDate},location=${location},dataFinalAvaliacao=${dataFinalAvaliacao}"),
+            "startDate=${revisionEndDate-12m+1d},endDate=${startDate},location=${location},revisionEndDate=${revisionEndDate}"),
         getDisagregateAdultsAndChildrenSColumn());
 
     /*FALENCIANUM*/
@@ -531,7 +529,7 @@ public class QualityImprovementDataSet extends BaseDataSet {
     return Arrays.asList(
         new Parameter("startDate", "Data Inicial Inclusão", Date.class),
         new Parameter("endDate", "Data Final Inclusão", Date.class),
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
         new Parameter("location", "Unidade Sanitária", Location.class),
         new Parameter("testStart", "Testar Iniciar", Boolean.class));
   }

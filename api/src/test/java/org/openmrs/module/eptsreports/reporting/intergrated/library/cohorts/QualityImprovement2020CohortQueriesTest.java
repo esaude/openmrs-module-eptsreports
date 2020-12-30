@@ -36,8 +36,8 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
-        this.getDataFinalAvaliacao());
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
+        this.getrevisionEndDate());
     parameters.put(new Parameter("locationList", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -54,8 +54,8 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
-        this.getDataFinalAvaliacao());
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
+        this.getrevisionEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -73,8 +73,8 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
-        this.getDataFinalAvaliacao());
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
+        this.getrevisionEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -91,8 +91,8 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
-        this.getDataFinalAvaliacao());
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
+        this.getrevisionEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -109,8 +109,8 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
-        this.getDataFinalAvaliacao());
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
+        this.getrevisionEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -127,8 +127,8 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
-        this.getDataFinalAvaliacao());
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
+        this.getrevisionEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -145,8 +145,8 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
-        this.getDataFinalAvaliacao());
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
+        this.getrevisionEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -163,8 +163,8 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
-        this.getDataFinalAvaliacao());
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
+        this.getrevisionEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -182,8 +182,8 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
-        this.getDataFinalAvaliacao());
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
+        this.getrevisionEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
@@ -191,7 +191,7 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     assertNotNull(evaluatedCohort.getMemberIds());
   }
 
-  private Date getDataFinalAvaliacao() {
+  private Date getrevisionEndDate() {
     return DateUtil.getDateTime(2019, 5, 27);
   }
 

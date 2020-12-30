@@ -55,7 +55,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
     sqlCohortDefinition.addParameter(
-        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     String query =
         QualiltyImprovementQueries.getPatientStartedTarvInInclusionPeriodWithAtLeastOneEncounter(
@@ -121,11 +121,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappingsAmostraARV =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
     String mappingsConsulta = "startDate=${startDate},endDate=${endDate},location=${location}";
     cd.addSearch(
         "AMOSTRATARV",
@@ -172,11 +172,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappingsAmostraARV =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
     String mappingsConsulta = "startDate=${startDate},endDate=${endDate},location=${location}";
     cd.addSearch(
         "AMOSTRATARV",
@@ -235,7 +235,7 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
@@ -436,11 +436,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappingsAmostraARV =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
     cd.addSearch(
         "AMOSTRATARV",
@@ -474,13 +474,13 @@ public class QualityImprovementCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType()),
                 Arrays.asList(commonMetadata.getYesConcept())),
-            "onOrAfter=${startDate},onOrBefore=${dataFinalAvaliacao},locationList=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${revisionEndDate},locationList=${location}"));
 
     cd.addSearch(
         "TRATAMENTOTB",
         EptsReportUtils.map(
             getPatientsWhichWhereNotifiedOfTBTreatmentInARV(),
-            "startDate=${startDate-2y},endDate=${dataFinalAvaliacao},location=${location}"));
+            "startDate=${startDate-2y},endDate=${revisionEndDate},location=${location}"));
 
     cd.setCompositionString("AMOSTRATARV NOT (TRATAMENTOTB OR RASTREIOPOSITIVO OR PROFILAXIATPI)");
     return cd;
@@ -524,17 +524,17 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
     cd.addSearch(
         "PROFILAXIAINICIO",
         EptsReportUtils.map(
             getPatientsWhoStartedProfilaxiaWithIzoniazida(),
-            "value1=${startDate},value2=${dataFinalAvaliacao},locationList=${location}"));
+            "value1=${startDate},value2=${revisionEndDate},locationList=${location}"));
     cd.addSearch(
         "AMOSTRAELEGIVELTPI",
         EptsReportUtils.map(
@@ -562,7 +562,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(
-        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
@@ -586,11 +586,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
     cd.addSearch(
         "ELEGIVEIS",
         EptsReportUtils.map(
@@ -639,11 +639,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
     cd.addSearch(
         "PROFILAXIATPI",
@@ -668,7 +668,7 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     // PACIENTES COM RASTREIO DE TUBERCULOSE POSITIVO
@@ -683,7 +683,7 @@ public class QualityImprovementCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType()),
                 Arrays.asList(commonMetadata.getYesConcept())),
-            "onOrAfter=${startDate},onOrBefore=${dataFinalAvaliacao},locationList=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${revisionEndDate},locationList=${location}"));
 
     // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV E QUE INICIARAM TARV NO PERIODO DE INCLUSAO (AMOSTRA
     // GRAVIDA)
@@ -714,7 +714,7 @@ public class QualityImprovementCohortQueries {
         "TRATAMENTOTB",
         EptsReportUtils.map(
             getPatientsWhichWhereNotifiedOfTBTreatmentInARV(),
-            "startDate=${startDate-2y},endDate=${dataFinalAvaliacao},location=${location}"));
+            "startDate=${startDate-2y},endDate=${revisionEndDate},location=${location}"));
 
     cd.setCompositionString(
         "AMOSTRAGRAVIDA NOT (PROFILAXIAINH OR TRATAMENTOTB OR RASTREIOPOSITIVO)");
@@ -731,11 +731,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
     // MQ_GRAVIDAS INSCRITAS NO SERVICO TARV (AMOSTRA GRAVIDA) ELEGIVEIS A PROFILAXIA COM ISONIAZIDA
     cd.addSearch(
@@ -757,14 +757,14 @@ public class QualityImprovementCohortQueries {
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
                     tbMetadata.getTBRastreioEncounterType()),
                 Arrays.asList(commonMetadata.getYesConcept())),
-            "onOrAfter=${startDate},onOrBefore=${dataFinalAvaliacao},locationList=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${revisionEndDate},locationList=${location}"));
 
     // PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA
     cd.addSearch(
         "PROFILAXIAINHINICIO",
         EptsReportUtils.map(
             getPatientsWhoStartedProfilaxiaWithIzoniazida(),
-            "value1=${startDate},value2=${dataFinalAvaliacao},locationList=${location}"));
+            "value1=${startDate},value2=${revisionEndDate},locationList=${location}"));
 
     cd.setCompositionString("(PROFILAXIAINH OR PROFILAXIAINHINICIO) AND GRAVIDAELEGINH");
 
@@ -785,7 +785,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(
-        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
@@ -806,11 +806,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
     // MQ_PACIENTES QUE TIVERAM CONSULTA CLINICA NUM PERIODO E QUE TIVERAM RASTREIO DE ITS EM CADA
     // VISITA
     cd.addSearch(
@@ -862,11 +862,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
     // MQ_PACIENTES COM CD4 REGISTADO DENTRO DE 33 DIAS APOS A INSCRICAO
     cd.addSearch(
         "CD4",
@@ -920,11 +920,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
     // MQ_PACIENTES QUE INICIARAM TARV DENTRO DE 15 DIAS DEPOIS DA INSCRICAO
     cd.addSearch(
         "ELEGIVEIS",
@@ -984,12 +984,12 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("testStart", "Test Start", Boolean.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
     // PACIENTES QUE INICIARAM TARV NUM PERIODO E QUE TIVERAM SEGUNDO LEVANTAMENTO OU CONSULTA
     // CLINICA DENTRO DE 33 DIAS DEPOIS DO INICIO
     cd.addSearch(
@@ -1048,12 +1048,12 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("testStart", "Test Start", Boolean.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
     // MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO
     cd.addSearch(
@@ -1117,12 +1117,12 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("testStart", "Test Start", Boolean.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
     // MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO
     cd.addSearch(
@@ -1153,7 +1153,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(
-        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
@@ -1180,11 +1180,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
     // MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO
     cd.addSearch(
@@ -1214,7 +1214,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
     sqlCohortDefinition.addParameter(
-        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
@@ -1246,11 +1246,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
     // MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO
     cd.addSearch(
@@ -1976,7 +1976,7 @@ public class QualityImprovementCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
@@ -2009,7 +2009,7 @@ public class QualityImprovementCohortQueries {
         "KAPOSI",
         EptsReportUtils.map(
             getPatientsNotifiedSarcomaKaposi(),
-            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
+            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
     // MQ_PACIENTES QUE INICIARAM TRATAMENTO DE TUBERCULOSE E NAO TERMINARAM ATE PERIODO FINAL
     cd.addSearch(
@@ -2078,11 +2078,11 @@ public class QualityImprovementCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mappings =
-        "startDate=${startDate},endDate=${endDate},dataFinalAvaliacao=${dataFinalAvaliacao},location=${location}";
+        "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
     // PACIENTES ACTUALMENTE EM TARV ELEGIVEIS  PARA SEREM  INSCRITOS EM ALGUM MODELO DIFERENCIADO
     cd.addSearch(
@@ -2094,7 +2094,7 @@ public class QualityImprovementCohortQueries {
         "INSCRITOSGAAC",
         EptsReportUtils.map(
             getPatientsEnrolledInGaacInAPeriod(),
-            "startDate=${startDate},endDate=${dataFinalAvaliacao},location=${location}"));
+            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
     // PACIENTES QUE TIVERAM LEVANTAMENTO DE ARVs NOS ULTIMOS 5 MESES E QUE FORAM MARCADOS PARA
     // PROXIMO LEVANTAMENTO PARA 3 MESES
@@ -2102,7 +2102,7 @@ public class QualityImprovementCohortQueries {
         "LEVANTAMENTO3MESES",
         EptsReportUtils.map(
             getPatientsTookARVInLast5MonthAndWereMarkedToNextEncounter(),
-            "endDate=${dataFinalAvaliacao},location=${location}"));
+            "endDate=${revisionEndDate},location=${location}"));
 
     // PACIENTES QUE TIVERAM CONSULTA CLINICA NOS ULTIMOS 7 MESES E QUE FORAM MARCADOS PARA CONSULTA
     // SEGUINTE PARA 6 MESES
@@ -2110,7 +2110,7 @@ public class QualityImprovementCohortQueries {
         "CONSULTA6MESES",
         EptsReportUtils.map(
             getPatientsWhoHadEnconterInLast7MonthAndWereMarkedToNextEncounterIn6Months(),
-            "endDate=${dataFinalAvaliacao},location=${location}"));
+            "endDate=${revisionEndDate},location=${location}"));
 
     cd.setCompositionString(
         "ELEGIVEIS AND (INSCRITOSGAAC OR LEVANTAMENTO3MESES OR CONSULTA6MESES)");

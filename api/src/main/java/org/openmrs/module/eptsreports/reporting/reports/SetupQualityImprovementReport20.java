@@ -94,7 +94,7 @@ public class SetupQualityImprovementReport20 extends EptsDataExportManager {
     return Arrays.asList(
         new Parameter("startDate", "Data Inicial Inclusão", Date.class),
         new Parameter("endDate", "Data Final Inclusão", Date.class),
-        new Parameter("dataFinalAvaliacao", "Data Final Revisão", Date.class),
+        new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
         new Parameter("location", "Unidade Sanitária", Location.class));
   }
 }

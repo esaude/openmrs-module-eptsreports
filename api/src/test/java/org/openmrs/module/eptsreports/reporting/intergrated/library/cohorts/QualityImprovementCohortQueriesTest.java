@@ -119,8 +119,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
     parameters.put(
-        new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class),
-        getDataFinalAvaliacao());
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class), getrevisionEndDate());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohortDefinition, parameters);
 
@@ -175,7 +174,7 @@ public class QualityImprovementCohortQueriesTest extends DefinitionsTest {
     assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
 
-  private Date getDataFinalAvaliacao() {
+  private Date getrevisionEndDate() {
     return DateUtil.getDateTime(2019, 5, 26);
   }
 
