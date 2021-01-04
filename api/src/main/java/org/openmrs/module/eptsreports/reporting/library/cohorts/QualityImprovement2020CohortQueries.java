@@ -1758,11 +1758,11 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
-    map.put("encounterType", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put("therapeuticLineConcept", hivMetadata.getTherapeuticLineConcept().getConceptId());
-    map.put("firstLineConcept", hivMetadata.getFirstLineConcept().getConceptId());
-    map.put("secondLineConcept", hivMetadata.getSecondLineConcept().getConceptId());
-    map.put("viralLoadConcept", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("21151", hivMetadata.getTherapeuticLineConcept().getConceptId());
+    map.put("21150", hivMetadata.getFirstLineConcept().getConceptId());
+    map.put("21148", hivMetadata.getSecondLineConcept().getConceptId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
 
     String query =
         "SELECT p.patient_id FROM patient p INNER JOIN (SELECT p.patient_id, MAX(e.encounter_datetime), e.encounter_id ";
@@ -1771,27 +1771,23 @@ public class QualityImprovement2020CohortQueries {
     String valueQuery = "";
 
     if (key.equals("B1")) {
-      valueQuery =
-          " AND o.concept_id = ${therapeuticLineConcept} AND o.value_coded = ${firstLineConcept} ";
+      valueQuery = " AND o.concept_id = ${21151} AND o.value_coded = ${21150} ";
     }
     if (key.equals("B1E")) {
-      valueQuery =
-          " AND o.concept_id = ${therapeuticLineConcept} AND o.value_coded <> ${firstLineConcept} ";
+      valueQuery = " AND o.concept_id = ${21151} AND o.value_coded <> ${21150} ";
     }
     if (key.equals("B2_11")) {
       query = "SELECT p.patient_id ";
-      valueQuery = " AND o.concept_id = ${viralLoadConcept} AND o.value_numeric > 1000 ";
+      valueQuery = " AND o.concept_id = ${856} AND o.value_numeric > 1000 ";
       queryTermination = "";
     }
     if (key.equals("B2_12")) {
 
-      valueQuery =
-          " AND o.concept_id = ${therapeuticLineConcept} AND o.value_coded = ${secondLineConcept} ";
+      valueQuery = " AND o.concept_id = ${21151} AND o.value_coded = ${21148} ";
     }
 
     if (key.equals("B2E")) {
-      valueQuery =
-          " AND o.concept_id = ${therapeuticLineConcept} AND o.value_coded <> ${secondLineConcept} ";
+      valueQuery = " AND o.concept_id = ${21151} AND o.value_coded <> ${21148} ";
     }
 
     query +=
@@ -1800,11 +1796,11 @@ public class QualityImprovement2020CohortQueries {
             + "                        ON e.patient_id = p.patient_id  "
             + "                    JOIN obs o  "
             + "                        ON o.encounter_id = e.encounter_id  "
-            + "                   WHERE  e.encounter_type = ${encounterType}  "
+            + "                   WHERE  e.encounter_type = ${6}  "
             + "                          AND p.voided = 0 AND e.voided = 0 "
             + "                          AND e.location_id = :location AND o.location_id = :location "
             + valueQuery
-            + "                          AND e.encounter_datetime BETWEEN  :startDate AND :revisionEndDate  "
+            + "                          AND e.encounter_datetime BETWEEN  :startDate AND :endDate  "
             + queryTermination;
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
