@@ -2267,7 +2267,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
-    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING));
+    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING1));
     compositionCohortDefinition.addSearch(
         "ADULTS",
         EptsReportUtils.map(
@@ -2386,7 +2386,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
-    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING));
+    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING1));
 
     compositionCohortDefinition.setCompositionString(
         "A AND B3 AND  C AND NOT D AND NOT E AND NOT F  AND G");
@@ -2492,7 +2492,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
-    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING));
+    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING1));
     compositionCohortDefinition.addSearch(
         "CHILDREN",
         EptsReportUtils.map(
