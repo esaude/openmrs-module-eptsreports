@@ -1950,12 +1950,14 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch(
         "secondApss",
         EptsReportUtils.map(
-            secondApss, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            secondApss,
+            "onOrAfter=${startDate},onOrBefore=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "thirdApss",
         EptsReportUtils.map(
-            thirdApss, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            thirdApss,
+            "onOrAfter=${startDate},onOrBefore=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.setCompositionString("firstApss AND secondApss AND thirdApss");
 
