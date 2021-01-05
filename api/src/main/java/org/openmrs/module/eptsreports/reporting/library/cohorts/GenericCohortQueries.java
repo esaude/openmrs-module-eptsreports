@@ -32,6 +32,7 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.*;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
 import org.openmrs.module.reporting.common.DurationUnit;
@@ -674,5 +675,15 @@ public class GenericCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     return cd;
+  }
+
+  public CohortDefinition getPatientAgeBasedOnFirstViralLoadDate(int minAge, int maxAge) {
+    return generalSql(
+        "getPatientAgeBasedOnFirstViralLoadDate",
+        ViralLoadQueries.getPatientAgeBasedOnFirstViralLoadDate(
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            minAge,
+            maxAge));
   }
 }

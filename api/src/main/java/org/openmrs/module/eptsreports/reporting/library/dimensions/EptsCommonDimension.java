@@ -408,4 +408,23 @@ public class EptsCommonDimension {
 
     return dim;
   }
+
+  /**
+   * Dimension for returning patients age based on the first viral load date
+   *
+   * @return @{@link CohortDefinitionDimension}
+   */
+  public CohortDefinitionDimension getPatientAgeBasedOnFirstViralLoadDate() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("startDate", "startDate", Date.class));
+    dim.addParameter(new Parameter("endDate", "endDate", Date.class));
+    dim.addParameter(new Parameter("location", "location", Location.class));
+    dim.setName("Patients having age based on first viral load date by reporting end date MOH");
+    dim.addCohortDefinition(
+        "MqAdults",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnFirstViralLoadDate(15, 200),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    return dim;
+  }
 }
