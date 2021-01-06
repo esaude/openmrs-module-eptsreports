@@ -4721,8 +4721,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "A",
         EptsReportUtils.map(
-            genericCohortQueries.getStartedArtOnPeriod(false, true),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+                getMOHArtStartDate(), MAPPING));
     cd.addSearch(
         "B",
         EptsReportUtils.map(
