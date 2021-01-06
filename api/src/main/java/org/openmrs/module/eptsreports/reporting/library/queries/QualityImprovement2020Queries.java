@@ -270,6 +270,8 @@ public class QualityImprovement2020Queries {
         "Patients that returned for another clinical consultation or ARV pickup between 25 and 33 days after ART start date(Oldest date From A)");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -291,11 +293,13 @@ public class QualityImprovement2020Queries {
             + "                      ON e.encounter_id = o.encounter_id "
             + "       WHERE  p.voided = 0 "
             + "              AND e.voided = 0 "
+            + "              AND o.voided = 0 "
             + "              AND e.location_id = :location "
             + "              AND e.encounter_type = ${6} "
             + "              AND ( o.concept_id = ${23724} OR o.concept_id = ${23730} ) "
             + "              AND o.value_coded = ${1256} "
-            + "              AND e.encounter_datetime <= :endDate "
+            + "              AND e.encounter_datetime BETWEEN Date_sub(:revisionEndDate, INTERVAL 14 month) "
+            + "              AND Date_sub(:revisionEndDate, INTERVAL 11 month) "
             + "       GROUP  BY p.patient_id "
             + "        UNION  "
             + "        SELECT p.patient_id, "
@@ -307,14 +311,14 @@ public class QualityImprovement2020Queries {
             + "                       ON e.encounter_id = o.encounter_id "
             + "        WHERE  p.voided = 0 "
             + "               AND e.voided = 0 "
+            + "               AND o.voided = 0 "
             + "               AND e.location_id = :location "
             + "               AND e.encounter_type = ${6} "
             + "               AND o.concept_id = ${23739} "
             + "               AND o.value_coded = ${23720} "
-            + "               AND e.encounter_datetime <= :endDate "
-            + "        GROUP  BY p.patient_id) encounters "
-            + "WHERE  encounters.encounter_datetime BETWEEN Date_sub(:endDate, INTERVAL 14 month) "
-            + "       AND Date_sub(:endDate, INTERVAL 11 month) ";
+            + "               AND e.encounter_datetime BETWEEN Date_sub(:revisionEndDate, INTERVAL 14 month) "
+            + "               AND Date_sub(:revisionEndDate, INTERVAL 11 month) "
+            + "        GROUP  BY p.patient_id) encounters ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -342,6 +346,8 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.setName("Patients who started GAAC)");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -363,13 +369,15 @@ public class QualityImprovement2020Queries {
             + "        INNER JOIN obs o "
             + "                ON e.encounter_id = o.encounter_id "
             + " WHERE  p.voided = 0 "
+            + "        AND o.voided = 0 "
             + "        AND e.voided = 0 "
             + "        AND e.location_id = :location "
             + "        AND e.encounter_type = ${6} "
             + "        AND "
             + middleQuery
             + "        AND o.value_coded = ${1256} "
-            + "        AND e.encounter_datetime <= :endDate "
+            + "        AND e.encounter_datetime BETWEEN Date_sub(:revisionEndDate, INTERVAL 14 month) "
+            + "        AND Date_sub(:revisionEndDate, INTERVAL 11 month) "
             + " GROUP  BY p.patient_id; ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
@@ -392,6 +400,8 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.setName("Patients who started GAAC)");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -410,11 +420,13 @@ public class QualityImprovement2020Queries {
             + "                       ON e.encounter_id = o.encounter_id "
             + "        WHERE  p.voided = 0 "
             + "               AND e.voided = 0 "
+            + "               AND o.voided = 0 "
             + "               AND e.location_id = :location "
             + "               AND e.encounter_type = ${6} "
             + "               AND o.concept_id = ${23739} "
             + "               AND o.value_coded = ${23720} "
-            + "               AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "               AND e.encounter_datetime BETWEEN Date_sub(:revisionEndDate, INTERVAL 14 month) "
+            + "               AND Date_sub(:revisionEndDate, INTERVAL 11 month) "
             + "        GROUP  BY p.patient_id) a3 ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
@@ -452,6 +464,8 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.setName("M&Q Category 15 B1)");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -480,21 +494,24 @@ public class QualityImprovement2020Queries {
             + "                                                  ON e.encounter_id = o.encounter_id "
             + "                                   WHERE  p.voided = 0 "
             + "                                          AND e.voided = 0 "
+            + "                                          AND o.voided = 0 "
             + "                                          AND e.location_id = :location "
             + "                                          AND e.encounter_type = ${6} "
             + "                                          AND o.concept_id = ${23724} "
             + "                                          AND o.value_coded = ${1256} "
-            + "                                          AND e.encounter_datetime <= :endDate "
+            + "                                          AND e.encounter_datetime BETWEEN Date_sub(:revisionEndDate, INTERVAL 14 month) "
+            + "                                          AND Date_sub(:revisionEndDate, INTERVAL 11 month) "
             + "                                   GROUP  BY p.patient_id) started_gaac "
             + "                               ON p.patient_id = started_gaac.patient_id "
             + "                WHERE  p.voided = 0 "
             + "                       AND e.voided = 0 "
+            + "                       AND o.voided = 0 "
             + "                       AND e.location_id = :location "
             + "                       AND e.encounter_type = ${6} "
             + "                       AND o.concept_id = ${23724} "
             + "                       AND o.value_coded = ${1267} "
             + "                       AND e.encounter_datetime > started_gaac.encounter_datetime "
-            + "                       AND e.encounter_datetime <= :endDate "
+            + "                       AND e.encounter_datetime <= :revisionEndDate "
             + "                GROUP  BY p.patient_id) ended_gaac "
             + "        UNION "
             + "        SELECT ended_dt.patient_id "
@@ -512,21 +529,24 @@ public class QualityImprovement2020Queries {
             + "                                                  ON e.encounter_id = o.encounter_id "
             + "                                   WHERE  p.voided = 0 "
             + "                                          AND e.voided = 0 "
+            + "                                          AND o.voided = 0 "
             + "                                          AND e.location_id = :location "
             + "                                          AND e.encounter_type = ${6} "
             + "                                          AND o.concept_id = ${23730} "
             + "                                          AND o.value_coded = ${1256} "
-            + "                                          AND e.encounter_datetime <= :endDate "
+            + "                                          AND e.encounter_datetime BETWEEN Date_sub(:revisionEndDate, INTERVAL 14 month) "
+            + "                                          AND Date_sub(:revisionEndDate, INTERVAL 11 month) "
             + "                                   GROUP  BY p.patient_id) started_dt "
             + "                               ON p.patient_id = started_dt.patient_id "
             + "                WHERE  p.voided = 0 "
             + "                       AND e.voided = 0 "
+            + "                       AND o.voided = 0 "
             + "                       AND e.location_id = :location "
             + "                       AND e.encounter_type = ${6} "
             + "                       AND o.concept_id = ${23730} "
             + "                       AND o.value_coded = ${1267} "
             + "                       AND e.encounter_datetime > started_dt.encounter_datetime "
-            + "                       AND e.encounter_datetime <= :endDate "
+            + "                       AND e.encounter_datetime <= :revisionEndDate "
             + "                GROUP  BY p.patient_id) ended_dt "
             + "        UNION "
             + "        SELECT not_dt.patient_id "
@@ -545,21 +565,24 @@ public class QualityImprovement2020Queries {
             + "                                                  ON e.encounter_id = o.encounter_id "
             + "                                   WHERE  p.voided = 0 "
             + "                                          AND e.voided = 0 "
+            + "                                          AND o.voided = 0 "
             + "                                          AND e.location_id = :location "
             + "                                          AND e.encounter_type = ${6} "
             + "                                          AND o.concept_id = ${23739} "
             + "                                          AND o.value_coded = ${23720} "
-            + "                                          AND e.encounter_datetime <= :endDate "
+            + "                                          AND e.encounter_datetime BETWEEN Date_sub(:revisionEndDate, INTERVAL 14 month) "
+            + "                                          AND Date_sub(:revisionEndDate, INTERVAL 11 month) "
             + "                                   GROUP  BY p.patient_id) a3 "
             + "                       ON p.patient_id = a3.patient_id "
             + "                WHERE  p.voided = 0 "
             + "                       AND e.voided = 0 "
+            + "                       AND o.voided = 0 "
             + "                       AND e.location_id = :location "
             + "                       AND e.encounter_type = ${6} "
             + "                       AND o.concept_id = ${23739} "
             + "                       AND o.value_coded <> ${23720} "
-            + "                       AND e.encounter_datetime <= :endDate "
-            + "                GROUP  BY p.patient_id) not_dt) b1; ";
+            + "                       AND e.encounter_datetime <= :revisionEndDate "
+            + "                GROUP  BY p.patient_id) not_dt) b1 ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
