@@ -594,7 +594,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             cohortIndicator,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "mqAge=MqAdults");
+        "age=<15");
 
     // Numerator CAT 11
     cohortIndicator =
@@ -612,7 +612,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             cohortIndicator,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "mqAge=MqAdults");
 
     cohortIndicator =
         eptsGeneralIndicator.getIndicator(
@@ -630,7 +630,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             cohortIndicator,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "mqAge=MqAdults");
 
     cohortIndicator =
         eptsGeneralIndicator.getIndicator(
@@ -716,7 +716,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             cohortIndicator,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "age=<15");
 
     // Category 12 denominator indicators
     cohortIndicator =
