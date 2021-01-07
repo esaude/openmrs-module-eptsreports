@@ -215,7 +215,7 @@ public class TxMlQueries {
             + "FROM encounter e "
             + "         JOIN obs o ON e.encounter_id = o.encounter_id "
             + "         JOIN (SELECT patient_id, "
-            + " DATE_ADD(GREATEST(COALESCE(return_date_fila,0),COALESCE(return_date_consulta,0),COALESCE(return_date_master,0)), INTERVAL 28 DAY) AS return_date "
+            + " GREATEST(COALESCE(return_date_fila,0),COALESCE(return_date_consulta,0),COALESCE(return_date_master,0)) AS return_date "
             + "                           FROM (SELECT p.patient_id, "
             + "                                        (SELECT o.value_datetime"
             + "                                        FROM encounter e JOIN obs o ON e.encounter_id=o.encounter_id"
