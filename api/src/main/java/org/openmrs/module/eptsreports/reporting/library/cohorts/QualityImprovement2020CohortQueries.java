@@ -18,6 +18,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.melhoriaQualidade.Se
 import org.openmrs.module.eptsreports.reporting.calculation.melhoriaQualidade.ThirdFollowingEncounterAfterOldestARTStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovement2020Queries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -40,6 +41,7 @@ public class QualityImprovement2020CohortQueries {
   private CommonCohortQueries commonCohortQueries;
 
   private TbMetadata tbMetadata;
+  private TxPvlsCohortQueries txPvls;
 
   private QualityImprovement2020Queries qualityImprovement2020Queries;
 
@@ -55,7 +57,8 @@ public class QualityImprovement2020CohortQueries {
       GenderCohortQueries genderCohortQueries,
       ResumoMensalCohortQueries resumoMensalCohortQueries,
       CommonCohortQueries commonCohortQueries,
-      TbMetadata tbMetadata) {
+      TbMetadata tbMetadata,
+      TxPvlsCohortQueries txPvls) {
     this.genericCohortQueries = genericCohortQueries;
     this.hivMetadata = hivMetadata;
     this.commonMetadata = commonMetadata;
@@ -63,6 +66,7 @@ public class QualityImprovement2020CohortQueries {
     this.resumoMensalCohortQueries = resumoMensalCohortQueries;
     this.commonCohortQueries = commonCohortQueries;
     this.tbMetadata = tbMetadata;
+    this.txPvls = txPvls;
   }
 
   /**
@@ -4718,10 +4722,7 @@ public class QualityImprovement2020CohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.getAgeInMonthsOnArtStartDate(0, 18),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch(
-        "A",
-        EptsReportUtils.map(
-                getMOHArtStartDate(), MAPPING));
+    cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
     cd.addSearch(
         "B",
         EptsReportUtils.map(
@@ -5617,5 +5618,69 @@ public class QualityImprovement2020CohortQueries {
       comp.setCompositionString("(A2 OR A3) and NOT (B1 OR C OR D OR F) AND G2 AND I AND AGES1014");
     }
     return comp;
+  }
+
+  /**
+   * <b>MQ14Den: M&Q Report - Categoria 14 Denominador</b><br>
+   * <i>A - Select all patientsTX PVLS DENOMINATOR: TX PVLS Denominator</i> <i>A1 - Filter all
+   * Pregnant Women from A</i> <i>A2 - Filter all Breastfeeding Women from A</i> <b>The following
+   * disaggregations will be outputed</b>
+   *
+   * <ul>
+   *   <li>14.1. % de adultos (15/+anos) em TARV com supressão viral - A and NOT A1 and NOT A2 and
+   *       Age > 14
+   *   <li>14.2.% de crianças (0-14 anos) em TARV com supressão viral - A and NOT A1 and NOT A2 and
+   *       Age <= 14
+   *   <li>14.3.% de MG em TARV com supressão viral - A and A1 and NOT A2
+   *   <li>14.4. % de ML em TARV com supressão viral - A and NOT A1 and A2
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ14DEN(Integer flag) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    switch (flag) {
+      case 1:
+        cd.setName("% de adultos (15/+anos) em TARV com supressão viral");
+        break;
+      case 2:
+        cd.setName("% de crianças (0-14 anos) em TARV com supressão viral");
+        break;
+      case 3:
+        cd.setName("% de MG em TARV com supressão viral");
+        break;
+      case 4:
+        cd.setName("% de ML em TARV com supressão viral");
+    }
+
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            txPvls.getPatientsWithViralLoadResultsAndOnArtForMoreThan3Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "A1",
+        EptsReportUtils.map(
+            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
+                EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "A2",
+        EptsReportUtils.map(
+            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
+                EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
+            "onOrBefore=${endDate},location=${location}"));
+    if (flag == 1 || flag == 2) {
+      cd.setCompositionString("A AND NOT (A1 OR A2)");
+    } else if (flag == 3) {
+      cd.setCompositionString("(A AND A1) AND NOT A2");
+    } else if (flag == 4) {
+      cd.setCompositionString("(A AND NOT A1) AND A2");
+    }
+
+    return cd;
   }
 }
