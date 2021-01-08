@@ -215,7 +215,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ6DEN1",
-        "Crianças em TARV com desnutrição (DAM ou DAG) e  com registo de prescrição de suplementação ou tratamento nutricional",
+        "% de adultos HIV+ em TARV rastreados para TB na última consulta clínica",
         EptsReportUtils.map(
             cohortIndicator,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -232,7 +232,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ6DEN2",
-        "",
+        "% de crianças HIV+ em TARV rastreadas para TB na última consulta clínica",
         EptsReportUtils.map(
             cohortIndicator,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
