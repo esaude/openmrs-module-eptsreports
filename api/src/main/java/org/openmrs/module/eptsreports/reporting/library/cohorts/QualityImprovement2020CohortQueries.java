@@ -5652,31 +5652,95 @@ public class QualityImprovement2020CohortQueries {
     }
 
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
-    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "Revision Date", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addSearch(
         "A",
         EptsReportUtils.map(
             txPvls.getPatientsWithViralLoadResultsAndOnArtForMoreThan3Months(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
     cd.addSearch(
         "A1",
         EptsReportUtils.map(
             txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
                 EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
-            "onOrBefore=${endDate},location=${location}"));
+            "onOrBefore=${revisionEndDate},location=${location}"));
     cd.addSearch(
         "A2",
         EptsReportUtils.map(
             txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
                 EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
-            "onOrBefore=${endDate},location=${location}"));
+            "onOrBefore=${revisionEndDate},location=${location}"));
     if (flag == 1 || flag == 2) {
       cd.setCompositionString("A AND NOT (A1 OR A2)");
     } else if (flag == 3) {
       cd.setCompositionString("(A AND A1) AND NOT A2");
     } else if (flag == 4) {
       cd.setCompositionString("(A AND NOT A1) AND A2");
+    }
+
+    return cd;
+  }
+
+  /**
+   * <b>MQ14Num: M&Q Report - Categoria 14 Numerator</b><br>
+   * <i>B - Select all patientsTX PVLS NUMERATOR: TX PVLS NUMERATOR</i> <i>B1 - Filter all Pregnant
+   * Women from B</i> <i>B2 - Filter all Breastfeeding Women from B</i> <b>The following
+   * disaggregations will be outputed</b>
+   *
+   * <ul>
+   *   <li>14.1. % de adultos (15/+anos) em TARV com supressão viral - B and NOT B1 and NOT B2 and
+   *       Age > 14
+   *   <li>14.2.% de crianças (0-14 anos) em TARV com supressão viral - B and NOT B1 and NOT B2 and
+   *       Age <= 14
+   *   <li>14.3.% de MG em TARV com supressão viral - B and B1 and NOT B2
+   *   <li>14.4. % de ML em TARV com supressão viral - B and NOT B1 and B2
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ14NUM(Integer flag) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    switch (flag) {
+      case 1:
+        cd.setName("% de adultos (15/+anos) em TARV com supressão viral");
+        break;
+      case 2:
+        cd.setName("% de crianças (0-14 anos) em TARV com supressão viral");
+        break;
+      case 3:
+        cd.setName("% de MG em TARV com supressão viral");
+        break;
+      case 4:
+        cd.setName("% de ML em TARV com supressão viral");
+    }
+
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "Revision Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "B",
+        EptsReportUtils.map(
+            txPvls.getPatientsWithViralLoadSuppressionWhoAreOnArtMoreThan3Months(),
+            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "B1",
+        EptsReportUtils.map(
+            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
+                EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
+            "onOrBefore=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "B2",
+        EptsReportUtils.map(
+            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
+                EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
+            "onOrBefore=${revisionEndDate},location=${location}"));
+    if (flag == 1 || flag == 2) {
+      cd.setCompositionString("B AND NOT (B1 OR B2)");
+    } else if (flag == 3) {
+      cd.setCompositionString("(B AND B1) AND NOT B2");
+    } else if (flag == 4) {
+      cd.setCompositionString("(B AND NOT B1) AND B2");
     }
 
     return cd;
