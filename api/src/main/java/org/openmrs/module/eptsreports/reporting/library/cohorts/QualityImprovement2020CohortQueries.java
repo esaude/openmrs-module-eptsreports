@@ -5768,25 +5768,25 @@ public class QualityImprovement2020CohortQueries {
     }
 
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
-    cd.addParameter(new Parameter("revisionEndDate", "Revision Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addSearch(
         "A",
         EptsReportUtils.map(
             txPvls.getPatientsWithViralLoadResultsAndOnArtForMoreThan3Months(),
-            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "A1",
         EptsReportUtils.map(
             txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
                 EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
-            "onOrBefore=${revisionEndDate},location=${location}"));
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "A2",
         EptsReportUtils.map(
             txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
                 EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
-            "onOrBefore=${revisionEndDate},location=${location}"));
+            "onOrBefore=${endDate},location=${location}"));
     if (flag == 1 || flag == 2) {
       cd.setCompositionString("A AND NOT (A1 OR A2)");
     } else if (flag == 3) {
@@ -5832,25 +5832,25 @@ public class QualityImprovement2020CohortQueries {
     }
 
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("revisionEndDate", "Revision Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "B",
         EptsReportUtils.map(
             txPvls.getPatientsWithViralLoadSuppressionWhoAreOnArtMoreThan3Months(),
-            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B1",
         EptsReportUtils.map(
             txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
                 EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
-            "onOrBefore=${revisionEndDate},location=${location}"));
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B2",
         EptsReportUtils.map(
             txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
                 EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
-            "onOrBefore=${revisionEndDate},location=${location}"));
+            "onOrBefore=${endDate},location=${location}"));
     if (flag == 1 || flag == 2) {
       cd.setCompositionString("B AND NOT (B1 OR B2)");
     } else if (flag == 3) {
