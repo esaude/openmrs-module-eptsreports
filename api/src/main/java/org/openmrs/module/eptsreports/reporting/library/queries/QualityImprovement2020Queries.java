@@ -1020,4 +1020,65 @@ public class QualityImprovement2020Queries {
 
     return sqlCohortDefinition;
   }
+
+  /**
+   * All patients ll patients with a clinical consultation(encounter type 6) during the Revision
+   * period with the following conditions:
+   *
+   * <p>- “TEM SINTOMAS DE TB” (concept_id 23758) value coded “SIM” or “NÃO”(concept_id IN [1065,
+   * 1066]) and Encounter_datetime between:
+   *
+   * <p>- Encounter_datetime between startDateRevision and endDateRevision (should be the last
+   * encounter during the revision period)
+   */
+  public static CohortDefinition getPatientsWithTBSymptoms(
+      int adultoSeguimentoEncounterType, int tbSymptomsConcept, int yesConcept, int noConcept) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("transferred in patients");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Location.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", adultoSeguimentoEncounterType);
+    map.put("23758", tbSymptomsConcept);
+    map.put("1065", yesConcept);
+    map.put("1066", noConcept);
+
+    String query =
+        " SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o"
+            + "               ON o.encounter_id = e.encounter_id "
+            + "       INNER JOIN (SELECT p.patient_id,"
+            + "                          Max(e.encounter_datetime) AS encounter_datetime "
+            + "                   FROM   patient p "
+            + "                          INNER JOIN encounter e "
+            + "                                  ON e.patient_id = p.patient_id "
+            + "                   WHERE  e.encounter_type = ${6} "
+            + "                          AND p.voided = 0 "
+            + "                          AND e.voided = 0 "
+            + "                          AND e.location_id = :location "
+            + "                          AND e.encounter_datetime BETWEEN "
+            + "                              :startDate AND :revisionEndDate "
+            + "                   GROUP  BY p.patient_id) filtered "
+            + "               ON p.patient_id = filtered.patient_id "
+            + "WHERE  e.encounter_datetime = filtered.encounter_datetime "
+            + "       AND e.location_id = :location "
+            + "       AND o.concept_id = ${23758} "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND o.value_coded IN ( ${1065}, ${1066}) "
+            + "       AND e.encounter_type = ${6}  ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
 }

@@ -1038,6 +1038,122 @@ public class QualityImprovement2020CohortQueries {
   }
 
   /**
+   * <b>MQ6NUM</b>: Melhoria de Qualidade Category 6 <br>
+   * <i> NUMERATOR 1: (A AND F) AND NOT (B OR C OR D OR E)</i> <br>
+   * <i> NUMERATOR 2: A AND F NOT (B OR C OR D OR E)</i> <br>
+   * <i> NUMERATOR 3: (A AND C AND F) AND NOT (B OR D OR E)</i> <br>
+   * <i> NUMERATOR 4: (A AND D AND F) AND NOT (B OR C OR E)</i> <br>
+   *
+   * <ul>
+   *   <li>A - Select all patients who initiated ART during the Inclusion period (startDateInclusion
+   *       and endDateInclusion)
+   *   <li>
+   *   <li>B - B - Filter all patients with the last clinical consultation(encounter type 6) with
+   *       “Diagnótico TB activo” (concept id 23761) and value coded “SIM”(concept id 1065) and
+   *       Encounter_datetime between startDateInclusion and endDateRevision
+   *   <li>
+   *   <li>C - All female patients registered as “Pregnant” on a clinical consultation during the
+   *       inclusion period (startDateInclusion and endDateInclusion)
+   *   <li>
+   *   <li>D - All female patients registered as “Breastfeeding” on a clinical consultation during
+   *       the inclusion period (startDateInclusion and endDateInclusion)
+   *   <li>
+   *   <li>E - All transferred IN patients during the inclusion period
+   *   <li>
+   *   <li>D - Filter all patients with the last Ficha Clinica(encounter type 6) during the revision
+   *       period with the following conditions: “TEM SINTOMAS DE TB” (concept id 23758) value coded
+   *       “SIM” or “NÃO”(concept id IN [1065, 1066]) and Encounter_datetime between
+   *       startDateRevision and endDateRevision (should be the last encounter during the revision
+   *       period)
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ6NUM(Integer num) {
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+
+    if (num == 1) {
+      compositionCohortDefinition.setName(
+          "% de adultos HIV+ em TARV rastreados para TB na última consulta clínica");
+    } else if (num == 2) {
+      compositionCohortDefinition.setName(
+          "% de crianças HIV+ em TARV rastreadas para TB na última consulta clínica");
+    } else if (num == 3) {
+      compositionCohortDefinition.setName(
+          "% de mulheres grávidas HIV+ rastreadas para TB na última consulta clínica");
+    } else if (num == 4) {
+      compositionCohortDefinition.setName(
+          "% de mulheres lactantes HIV+ rastreadas para TB  na última consulta");
+    }
+    compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    String mapping = "startDate=${startDate},endDate=${revisionEndDate},location=${location}";
+
+    CohortDefinition startedART = getMOHArtStartDate();
+
+    CohortDefinition tbActive =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "last",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getActiveTBConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getMOHPregnantORBreastfeeding(
+            commonMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition breastfeeding =
+        commonCohortQueries.getMOHPregnantORBreastfeeding(
+            commonMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+    CohortDefinition transferredIn =
+        qualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
+
+    CohortDefinition tbSymptoms =
+        qualityImprovement2020Queries.getPatientsWithTBSymptoms(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getTBSymptomsConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getNoConcept().getConceptId());
+
+    compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
+
+    compositionCohortDefinition.addSearch("B", EptsReportUtils.map(tbActive, mapping));
+
+    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+
+    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+
+    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
+
+    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(tbSymptoms, MAPPING1));
+
+    if (num == 1 || num == 2) {
+      compositionCohortDefinition.setCompositionString("(A AND F) AND NOT (B OR C OR D OR E)");
+    } else if (num == 3) {
+      compositionCohortDefinition.setCompositionString("(A AND C AND F) AND NOT (B OR D OR E)");
+    } else if (num == 4) {
+      compositionCohortDefinition.setCompositionString("(A AND D AND F) AND NOT (B OR C OR E)");
+    }
+
+    return compositionCohortDefinition;
+  }
+
+  /**
    * <b>MQ7</b>: Melhoria de Qualidade Category 7 <br>
    * <i> DENOMINATOR 1: A AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)</i> <br>
    * <i> DENOMINATOR 2: (A AND B4) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)</i> <br>
