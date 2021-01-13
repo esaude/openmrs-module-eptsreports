@@ -9,6 +9,7 @@ import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionC
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -2295,6 +2296,27 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${revisionEndDate},location=${location}"),
         "");
 
+    // MQ indicators category 9 denominator
+
+    dataSetDefinition.addColumn(
+        "MQ9DEN1",
+        "% de adultos  HIV+ em TARV que tiveram conhecimento do resultado do primeiro CD4 dentro de 33 dias após a inscrição",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                qualityImprovement2020CohortQueries.getMQ9Den(1),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+    dataSetDefinition.addColumn(
+        "MQ9DEN2",
+        "% de crianças HIV+ em TARV que tiveram conhecimento do resultado do primeiro CD4 dentro de 33 dias após a inscrição",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                qualityImprovement2020CohortQueries.getMQ9Den(2),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+
     return dataSetDefinition;
   }
 
@@ -2311,5 +2333,12 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         new Parameter("endDate", "Data Final Inclusão", Date.class),
         new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
         new Parameter("location", "Unidade Sanitária", Location.class));
+  }
+
+  private CohortIndicator customCohortIndicator(CohortDefinition cd, String mapping) {
+    CohortIndicator cohortIndicator =
+        eptsGeneralIndicator.getIndicator(cd.getName(), EptsReportUtils.map(cd, mapping));
+    cohortIndicator.addParameter(new Parameter("revisionEndDate", "Revision Date", Date.class));
+    return cohortIndicator;
   }
 }
