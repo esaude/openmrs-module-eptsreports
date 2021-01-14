@@ -3539,4 +3539,20 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.hivRapidTest1QualitativeConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 23807</b>
+   *
+   * <p><b>Name:</b> PRESUMPTIVE DIAGNOSIS IN CHILDREN LESS THAN 18 MONTHS
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPresumptiveDiagnosisInChildrenConcep() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.presumptiveDiagnosisInChildrenConceptUuid");
+    return getConcept(uuid);
+  }
 }

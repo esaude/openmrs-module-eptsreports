@@ -58,19 +58,36 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.getPatientAgeBasedOnFirstViralLoadDate(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    CohortIndicator initiatedART =
+    // Category 3 Denominator
+    CohortIndicator MQC3D1 =
         eptsGeneralIndicator.getIndicator(
-            "initiatedART",
+            "MQC3D1",
             EptsReportUtils.map(
                 this.qualityImprovement2020CohortQueries.getMQC3D1(),
                 "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     addRow(
         dataSetDefinition,
-        "ART",
-        "initiatedART",
+        "MQC3D1",
+        "Category 3 Denominator",
         EptsReportUtils.map(
-            initiatedART, "startDate=${startDate},endDate=${endDate},location=${location}"),
+            MQC3D1, "startDate=${startDate},endDate=${endDate},location=${location}"),
+        getDisagregateAdultsAndChildrenSColumn());
+
+    // Category 3 Numerator
+    CohortIndicator MQC3N1 =
+        eptsGeneralIndicator.getIndicator(
+            "MQC3N1",
+            EptsReportUtils.map(
+                this.qualityImprovement2020CohortQueries.getMQC3N1(),
+                "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    addRow(
+        dataSetDefinition,
+        "MQC3N1",
+        "Category 3 Numerator",
+        EptsReportUtils.map(
+            MQC3N1, "startDate=${startDate},endDate=${endDate},location=${location}"),
         getDisagregateAdultsAndChildrenSColumn());
 
     // Category 4 denominator indicators

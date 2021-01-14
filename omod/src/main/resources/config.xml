@@ -2392,6 +2392,24 @@
 		</description>
 	</globalProperty>
 
+	<!-- 22772 -->
+	<globalProperty>
+		<property>eptsreports.typeTestHIVConceptUuid</property>
+		<defaultValue>c7ac119c-d59d-474d-8334-0c5bdd2e9863</defaultValue>
+		<description>
+			TYPE OF HIV TEST
+		</description>
+	</globalProperty>
+
+	<!-- 23807 -->
+	<globalProperty>
+		<property>eptsreports.presumptiveDiagnosisInChildrenConceptUuid</property>
+		<defaultValue>b792c72c-eaf4-4386-b4a5-8f79c9a83746</defaultValue>
+		<description>
+			PRESUMPTIVE DIAGNOSIS IN CHILDREN LESS THAN 18 MONTHS
+		</description>
+	</globalProperty>
+
 	<globalProperty>
 		<property>eptsreports.nutritionalSupplememtConceptUuid</property>
 		<defaultValue>e1e205f0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -2448,7 +2466,7 @@
 		</description>
 	</globalProperty>
 
-	
+
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
