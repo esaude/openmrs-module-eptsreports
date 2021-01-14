@@ -503,6 +503,16 @@ public class QualityImprovement2020CohortQueries {
             getPregnantAndBreastfeedingStates(
                 hivMetadata.getBreastfeeding().getConceptId(),
                 hivMetadata.getYesConcept().getConceptId()),
+            "startDate=${startDate},endDate=${endcDate},location=${location}"));
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            QualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch("FEMALE", EptsReportUtils.map(genderCohortQueries.femaleCohort(), ""));
     cd.addSearch(
@@ -510,7 +520,7 @@ public class QualityImprovement2020CohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.getAgeOnMOHArtStartDate(0, 14, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("(A AND FEMALE AND CHILDREN) AND NOT (B OR C)");
+    cd.setCompositionString("(A AND NOT B AND NOT C AND NOT D) AND CHILDREN AND FEMALE");
     return cd;
   }
 
@@ -561,8 +571,18 @@ public class QualityImprovement2020CohortQueries {
                 hivMetadata.getYesConcept().getConceptId()),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch("FEMALE", EptsReportUtils.map(genderCohortQueries.femaleCohort(), ""));
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            QualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(A AND FEMALE) AND NOT (B OR C)");
+    cd.setCompositionString("((A AND B) AND NOT (C OR D)) AND FEMALE");
     return cd;
   }
 
