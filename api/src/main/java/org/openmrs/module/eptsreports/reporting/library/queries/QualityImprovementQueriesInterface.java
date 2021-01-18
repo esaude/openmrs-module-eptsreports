@@ -361,7 +361,7 @@ public interface QualityImprovementQueriesInterface {
         "select patient_id from( "
             + "select inicioTPI.patient_id,inicioTPI.dataInicioTPI,obsFimTPI.obs_datetime dataFimTPI, "
             + "obsTBActiva.obs_datetime dataTBActiva,obsRastreio.obs_datetime dataRastreioPositivo, obsTB.obs_datetime dataTB from  ( "
-            + "select p.patient_id,min(obsTPI.obs_datetime) dataInicioTPI from  patient p "
+            + "select p.patient_id,max(obsTPI.obs_datetime) dataInicioTPI from  patient p "
             + "inner join encounter e on e.patient_id=p.patient_id "
             + "inner join obs obsTPI on obsTPI.encounter_id=e.encounter_id "
             + "where p.voided=0 and e.voided=0 and obsTPI.obs_datetime between :startInclusionDate and :endInclusionDate and  "

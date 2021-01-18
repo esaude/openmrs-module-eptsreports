@@ -2136,7 +2136,7 @@ public class MQCohortQueries {
     definition.addSearch(
         "START-ART-CHILDREN",
         EptsReportUtils.map(
-            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen1neLess14(),
+            this.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation(),
             mappings));
 
     definition.addSearch(

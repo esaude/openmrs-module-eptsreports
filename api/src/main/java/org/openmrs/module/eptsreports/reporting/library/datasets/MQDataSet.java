@@ -1601,6 +1601,126 @@ public class MQDataSet extends BaseDataSet {
     CAT13P4PregnantNUMINATOR.addParameter(new Parameter("location", "location", Date.class));
 
     dataSetDefinition.addColumn(
+        "CAT3ADULTODENOMINATOR",
+        "3.1: Adultos (15/+anos) HIV+ em TARV que tiveram consulta clínica dentro de 7 dias após  diagnóstico Denominador",
+        EptsReportUtils.map(CAT3ADULTODENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT3ADULTONUMERATOR",
+        "3.1: Adultos (15/+anos) HIV+ em TARV que tiveram consulta clínica dentro de 7 dias após  diagnóstico Numerador",
+        EptsReportUtils.map(CAT3ADULTONUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT3CHIDRENDENOMINATOR",
+        "3.2: Crianças  HIV+ que tiveram consulta clínica dentro de 7 dias após diagnóstico Denominador",
+        EptsReportUtils.map(CAT3CHIDRENDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT3CHIDRENNUMERATOR",
+        "3.2: Crianças  HIV+ que tiveram consulta clínica dentro de 7 dias após diagnóstico Numerador",
+        EptsReportUtils.map(CAT3CHIDRENNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT4CHIDRENDENOMINATOR",
+        "4.1: Crianças em TARV com o estado (grau) da avaliação nutricional registado na última consulta clínica Denominador",
+        EptsReportUtils.map(CAT4CHIDRENDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT4CHIDRENNUMERATOR",
+        "4.1: Crianças em TARV com o estado (grau) da avaliação nutricional registado na última consulta clínica Numerador",
+        EptsReportUtils.map(CAT4CHIDRENNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT4PregnantDENOMINATOR",
+        "4.2: MG em TARV com o estado (grau) da avaliação nutricional registado na última consulta clínica Denominador",
+        EptsReportUtils.map(CAT4PregnantDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT4PregnantNUMERATOR",
+        "4.2: MG em TARV com o estado (grau) da avaliação nutricional registado na última consulta clínica Numerador",
+        EptsReportUtils.map(CAT4PregnantNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT5CHIDRENDENOMINATOR",
+        "5.1: Crianças em TARV com desnutrição (DAM ou DAG) e  com registo de prescrição de suplementação ou tratamento nutricional Denominador",
+        EptsReportUtils.map(CAT5CHIDRENDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT5CHIDRENNUMERATOR",
+        "5.1: Crianças em TARV com desnutrição (DAM ou DAG) e  com registo de prescrição de suplementação ou tratamento nutricional Numerador",
+        EptsReportUtils.map(CAT5CHIDRENNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT5PregnantDENOMINATOR",
+        "5.2: MG em TARV com desnutrição (DAM ou DAG) e  com registo de prescrição de suplementação ou tratamento nutricional Denominador",
+        EptsReportUtils.map(CAT5PregnantDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT5PregnantNUMERATOR",
+        "5.2: MG em TARV com desnutrição (DAM ou DAG) e  com registo de prescrição de suplementação ou tratamento nutricional Numerador",
+        EptsReportUtils.map(CAT5PregnantNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT6AdultoDENOMINATOR",
+        "6.1: Adultos HIV+ em TARV rastreados para TB na última consulta clínica Denominador",
+        EptsReportUtils.map(CAT6AdultoDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT6AdultoNUMERATOR",
+        "6.1: Adultos HIV+ em TARV rastreados para TB na última consulta clínica Numerador",
+        EptsReportUtils.map(CAT6AdultoNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT6ChildrenDENOMINATOR",
+        "6.2: Crianças HIV+ em TARV rastreadas para TB na última consulta clínica Denominador",
+        EptsReportUtils.map(CAT6ChildrenDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT6ChildrenNUMERATOR",
+        "6.2: Crianças HIV+ em TARV rastreadas para TB na última consulta clínica Numerador",
+        EptsReportUtils.map(CAT6ChildrenNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT6PregnantDENOMINATOR",
+        "6.3: Mulheres grávidas HIV+ rastreadas para TB na última consulta clínica Denominador",
+        EptsReportUtils.map(CAT6PregnantDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT6PregnantNUMERATOR",
+        "6.3: Mulheres grávidas HIV+ rastreadas para TB na última consulta clínica Numerador",
+        EptsReportUtils.map(CAT6PregnantNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT6BreastfeedingDENOMINATOR",
+        "6.4: Mulheres lactantes HIV+ rastreadas para TB  na última consulta Denominador",
+        EptsReportUtils.map(CAT6BreastfeedingDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT6BreastfeedingNUMERATOR",
+        "6.4: Mulheres lactantes HIV+ rastreadas para TB  na última consulta Numerador",
+        EptsReportUtils.map(CAT6BreastfeedingNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
         "CAT7AdultDENOMINATOR",
         "7.1: Adultos (15/+anos) HIV+ em TARV elegiveis ao TPT e que iniciaram TPT Denominador",
         EptsReportUtils.map(CAT7AdultDENOMINATOR, mappings),
