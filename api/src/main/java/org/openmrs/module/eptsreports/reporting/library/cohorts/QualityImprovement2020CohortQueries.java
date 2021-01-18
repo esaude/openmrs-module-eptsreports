@@ -6335,4 +6335,91 @@ public class QualityImprovement2020CohortQueries {
 
     return cd;
   }
+
+  public CohortDefinition getMQ10Den(boolean adults) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    if (adults) {
+      cd.setName("Category 10 Denominator adults");
+    } else {
+      cd.setName("Category 10 Denominator children");
+    }
+
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            getMOHArtStartDate(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPregnantORBreastfeeding(
+                commonMetadata.getPregnantConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPregnantORBreastfeeding(
+                commonMetadata.getBreastfeeding().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "E",
+        EptsReportUtils.map(
+            QualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "CHILDREN",
+        EptsReportUtils.map(
+            getChildrenCompositionMore19Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "ADULT",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnMOHArtStartDate(15, null, false),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    if (adults) {
+      cd.setCompositionString("A AND NOT (C OR D OR E) AND ADULT");
+    } else {
+      cd.setCompositionString("A AND NOT (C OR D OR E) AND CHILDREN");
+    }
+
+    return cd;
+  }
+
+  private CohortDefinition getChildrenCompositionMore19Months() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "CHILDREN",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnMOHArtStartDate(0, 14, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "BABIES",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeInMonthsOnArtStartDate(0, 20),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("CHILDREN AND NOT BABIES");
+
+    return cd;
+  }
 }

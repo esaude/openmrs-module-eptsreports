@@ -2334,6 +2334,36 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
+    // MQ indicators category 10 denominator
+
+    CohortIndicator MQ10DEN1A =
+        eptsGeneralIndicator.getIndicator(
+            "",
+            EptsReportUtils.map(
+                qualityImprovement2020CohortQueries.getMQ10Den(true),
+                "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    dataSetDefinition.addColumn(
+        "MQ10DEN1A",
+        "%  % de adultos que iniciaram o TARV dentro de 15 dias após diagnóstico",
+        EptsReportUtils.map(
+            MQ10DEN1A, "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
+    CohortIndicator MQ10DEN1C =
+        eptsGeneralIndicator.getIndicator(
+            "",
+            EptsReportUtils.map(
+                qualityImprovement2020CohortQueries.getMQ10Den(false),
+                "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    dataSetDefinition.addColumn(
+        "MQ10DEN1C",
+        "% de crianças HIV+ que iniciaram TARV dentro de 15 dias após diagnóstico",
+        EptsReportUtils.map(
+            MQ10DEN1C, "startDate=${startDate},endDate=${endDate},location=${location}"),
+        "");
+
     return dataSetDefinition;
   }
 
