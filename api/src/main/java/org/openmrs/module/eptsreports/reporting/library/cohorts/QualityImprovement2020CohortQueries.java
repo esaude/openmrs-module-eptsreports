@@ -6422,4 +6422,154 @@ public class QualityImprovement2020CohortQueries {
 
     return cd;
   }
+
+  /**
+   *
+   *
+   * <ul>
+   *   <li>B: Filter all patients with CD4 (concept id 1695) result registered in Ficha Clinica
+   *       (encounter type 6) withinunder 33 days from the first clinical consultation (encounter
+   *       type 6) that occurred by endDateRevision, as following:
+   *       <ul>
+   *         <li>who have a clinical consultation (encounter type 6) with CD4 (concept id 1695)
+   *             result (value numeric not null) and encounter_datetime > first clinical
+   *             consultation (encounter type 6) encounter_datetime and <= first clinical
+   *             consultation (encounter type 6) encounter_datetime+33 days.
+   *       </ul>
+   * </ul>
+   *
+   * @return
+   */
+  public CohortDefinition getBFromCategory9Numerator() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setQuery(
+        "B: Filter all patients with CD4 within 33 days from the first clinical consultation");
+    sqlCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    String query =
+        ""
+            + " SELECT p.patient_id "
+            + " FROM patient p "
+            + "    INNER JOIN encounter e "
+            + "        ON e.patient_id = p.patient_id "
+            + "    INNER JOIN obs o "
+            + "        ON o.encounter_id = e.encounter_id "
+            + "    INNER JOIN      "
+            + "            ( "
+            + "                SELECT p.patient_id, MIN(e.encounter_datetime) AS date_time "
+            + "                FROM patient p "
+            + "                    INNER JOIN encounter e "
+            + "                        ON e.patient_id = p.patient_id "
+            + "                WHERE "
+            + "                    p.voided = 0 "
+            + "                    AND e.voided = 0 "
+            + "                    AND e.encounter_type  = ${6} "
+            + "                    AND e.encounter_datetime <= :revisionEndDate "
+            + "                    AND e.location_id = :location "
+            + "                GROUP BY p.patient_id "
+            + "            ) first_clinical_consultation "
+            + "        ON first_clinical_consultation.patient_id = p.patient_id "
+            + " WHERE "
+            + "    p.voided = 0 "
+            + "    AND e.voided = 0 "
+            + "    AND o.voided = 0 "
+            + "    AND e.encounter_type  = ${6} "
+            + "    AND o.concept_id = ${1695} "
+            + "    AND e.encounter_datetime  "
+            + "        BETWEEN first_clinical_consultation.date_time   "
+            + "            AND DATE_ADD(first_clinical_consultation.date_time, INTERVAL 33 DAY) "
+            + "    AND e.location_id = :location";
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("1695", hivMetadata.getCD4AbsoluteOBSConcept().getConceptId());
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    sqlCohortDefinition.setQuery(sb.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  public CohortDefinition getMQ9Num(int flag) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    switch (flag) {
+      case 1:
+        cd.setName(
+            "% de adultos  HIV+ em TARV que tiveram conhecimento do resultado do primeiro CD4 dentro de 33 dias após a inscrição");
+        break;
+      case 2:
+        cd.setName(
+            "% de crianças HIV+ em TARV que tiveram conhecimento do resultado do primeiro CD4 dentro de 33 dias após a inscrição");
+        break;
+    }
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            getMOHArtStartDate(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPregnantORBreastfeeding(
+                commonMetadata.getPregnantConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPregnantORBreastfeeding(
+                commonMetadata.getBreastfeeding().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "E",
+        EptsReportUtils.map(
+            QualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "F",
+        EptsReportUtils.map(
+            commonCohortQueries.getTranferredOutPatients(),
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+    cd.addSearch("FEMALE", EptsReportUtils.map(genderCohortQueries.femaleCohort(), ""));
+    cd.addSearch(
+        "CHILDREN",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnMOHArtStartDate(0, 14, true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "ADULT",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnMOHArtStartDate(15, null, false),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "B",
+        EptsReportUtils.map(
+            getBFromCategory9Numerator(),
+            "revisionEndDate=${revisionEndDate},location=${location}"));
+
+    if (flag == 1) {
+      cd.setCompositionString("A AND B AND NOT (C OR D OR E OR F) AND ADULT AND FEMALE");
+    } else if (flag == 2) {
+      cd.setCompositionString("A AND B AND NOT (C OR D OR E OR F) AND CHILDREN AND FEMALE");
+    }
+
+    return cd;
+  }
 }
