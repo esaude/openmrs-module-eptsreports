@@ -6572,4 +6572,83 @@ public class QualityImprovement2020CohortQueries {
 
     return cd;
   }
+
+  /**
+   * <b>M&Q Categoria 10 - Numerador</b>
+   *
+   * <ul>
+   *   <li>10.1. % de adultos (15/+anos) que iniciaram o TARV dentro de 15 dias após diagnóstico - A
+   *       AND F AND NOT (C OR D OR E) AND ADULTS
+   *   <li>10.3. % de crianças (0-14 anos) HIV+ que iniciaram TARV dentro de 15 dias após
+   *       diagnóstico - A AND F AND NOT (C OR D OR E) AND CHILDREN
+   * </ul>
+   */
+  public CohortDefinition getMQ10NUM(int flag) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    switch (flag) {
+      case 1:
+        cd.setName(
+            "% de adultos (15/+anos) que iniciaram o TARV dentro de 15 dias após diagnóstico");
+        break;
+      case 2:
+        cd.setName(
+            "% de crianças (0-14 anos) HIV+ que iniciaram TARV dentro de 15 dias após diagnóstico");
+        break;
+    }
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            getMOHArtStartDate(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPregnantORBreastfeeding(
+                commonMetadata.getPregnantConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPregnantORBreastfeeding(
+                commonMetadata.getBreastfeeding().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "E",
+        EptsReportUtils.map(
+            QualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "F",
+        EptsReportUtils.map(
+            genericCohortQueries.getArtDateMinusDiagnosisDate(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "CHILDREN",
+        EptsReportUtils.map(
+            getChildrenCompositionMore19Months(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "ADULT",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnMOHArtStartDate(15, null, false),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    if (flag == 1) {
+      cd.setCompositionString("A AND F AND NOT (C OR D OR E) AND ADULT");
+    } else if (flag == 3) {
+      cd.setCompositionString("A AND F AND NOT (C OR D OR E) AND CHILDREN");
+    }
+    return cd;
+  }
 }

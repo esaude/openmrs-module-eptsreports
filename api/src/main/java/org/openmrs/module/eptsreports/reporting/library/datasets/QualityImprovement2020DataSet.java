@@ -2363,6 +2363,29 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ10DEN1C, "startDate=${startDate},endDate=${endDate},location=${location}"),
         "");
+    // Category 10 numerator results dataset
+    dataSetDefinition.addColumn(
+        "MQ10NUM1",
+        "% de adultos (15/+anos) que iniciaram o TARV dentro de 15 dias após diagnóstico",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ10NUM1",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ10NUM(1),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"),
+        "");
+    dataSetDefinition.addColumn(
+        "MQ10NUM3",
+        "% de crianças (0-14 anos) HIV+ que iniciaram TARV dentro de 15 dias após diagnóstico",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "MQ10NUM3",
+                EptsReportUtils.map(
+                    qualityImprovement2020CohortQueries.getMQ10NUM(3),
+                    "startDate=${startDate},endDate=${endDate},location=${location}")),
+            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"),
+        "");
 
     // MQ indicators category 9 numerator
     dataSetDefinition.addColumn(
