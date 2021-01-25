@@ -41,6 +41,8 @@ public class TxRttCohortQueries {
 
   private CommonCohortQueries commonCohortQueries;
 
+  private HivCohortQueries hivCohortQueries;
+
   private final String DEFAULT_MAPPING =
       "startDate=${startDate},endDate=${endDate},location=${location}";
 
@@ -49,11 +51,13 @@ public class TxRttCohortQueries {
       HivMetadata hivMetadata,
       GenericCohortQueries genericCohortQueries,
       TxCurrCohortQueries txCurrCohortQueries,
-      CommonCohortQueries commonCohortQueries) {
+      CommonCohortQueries commonCohortQueries,
+      HivCohortQueries hivCohortQueries) {
     this.hivMetadata = hivMetadata;
     this.genericCohortQueries = genericCohortQueries;
     this.txCurrCohortQueries = txCurrCohortQueries;
     this.commonCohortQueries = commonCohortQueries;
+    this.hivCohortQueries = hivCohortQueries;
   }
 
   /**
@@ -137,7 +141,7 @@ public class TxRttCohortQueries {
     cd.addSearch(
         "transferredout",
         EptsReportUtils.map(
-            commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod(),
+            hivCohortQueries.getPatientsTransferredOut(),
             "onOrBefore=${startDate-1d},location=${location}"));
 
     cd.setCompositionString(
