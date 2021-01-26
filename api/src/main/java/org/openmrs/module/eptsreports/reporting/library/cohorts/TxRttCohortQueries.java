@@ -43,6 +43,8 @@ public class TxRttCohortQueries {
 
   private HivCohortQueries hivCohortQueries;
 
+  private ResumoMensalCohortQueries resumoMensalCohortQueries;
+
   private final String DEFAULT_MAPPING =
       "startDate=${startDate},endDate=${endDate},location=${location}";
 
@@ -52,11 +54,13 @@ public class TxRttCohortQueries {
       GenericCohortQueries genericCohortQueries,
       TxCurrCohortQueries txCurrCohortQueries,
       CommonCohortQueries commonCohortQueries,
+      ResumoMensalCohortQueries resumoMensalCohortQueries,
       HivCohortQueries hivCohortQueries) {
     this.hivMetadata = hivMetadata;
     this.genericCohortQueries = genericCohortQueries;
     this.txCurrCohortQueries = txCurrCohortQueries;
     this.commonCohortQueries = commonCohortQueries;
+    this.resumoMensalCohortQueries = resumoMensalCohortQueries;
     this.hivCohortQueries = hivCohortQueries;
   }
 
@@ -139,13 +143,19 @@ public class TxRttCohortQueries {
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
-        "transferredout",
+        "transferredOut",
         EptsReportUtils.map(
-            hivCohortQueries.getPatientsTransferredOut(),
+            commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod(),
             "onOrBefore=${startDate-1d},location=${location}"));
 
+    cd.addSearch(
+        "transferredIn",
+        EptsReportUtils.map(
+            this.getTransferredInPatients(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
     cd.setCompositionString(
-        "initiatedPreviousPeriod AND returned AND txcurr AND (LTFU AND NOT transferredout)");
+        "initiatedPreviousPeriod AND returned AND txcurr AND (LTFU AND NOT (transferredOut OR transferredIn))");
 
     return cd;
   }
@@ -433,5 +443,60 @@ public class TxRttCohortQueries {
     definition.setQuery(stringSubstitutor.replace(query));
 
     return definition;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Number Patients who were transferred in from other facility defined as following: - All
+   * patients enrolled in ART Program and who have been registered with the following state
+   * TRANSFERRED IN FROM OTHER FACILITY - All patients who have filled “Transferido de outra US” and
+   * checked “Em TARV” in Ficha Resumo with MasterCard file opening Date during reporting period -
+   * But excluding patients who were included in Tx CURR of previous reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getTransferredInPatients() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Number of Transferred In patients by end of current period");
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition transferredIn = resumoMensalCohortQueries.getTransferredInPatients(false);
+
+    CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort("txCurr", true);
+
+    CohortDefinition transferredOut =
+        commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod();
+
+    CohortDefinition homeVisitTrfOut =
+        txCurrCohortQueries.getPatientsTransferedOutInLastHomeVisitCard();
+
+    CohortDefinition clinicalVisit = this.getPatientsReturnedTreatmentDuringReportingPeriod();
+
+    String mappingsTrfIn = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}";
+    String mappingsCurr = "onOrBefore=${onOrBefore-3m},location=${location}";
+    String mappingsTrfOut = "onOrBefore=${onOrAfter-1d},location=${location}";
+    String mappingsHomeVisitTrfOut = "onOrBefore=${onOrAfter-1d},location=${location}";
+    String mappingsClinicalVisit =
+        "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
+
+    cd.addSearch("transferredIn", EptsReportUtils.map(transferredIn, mappingsTrfIn));
+    cd.addSearch("txCurr", EptsReportUtils.map(txCurr, mappingsCurr));
+    cd.addSearch("transferredOut", EptsReportUtils.map(transferredOut, mappingsTrfOut));
+    cd.addSearch("homeVisitTrfOut", EptsReportUtils.map(homeVisitTrfOut, mappingsHomeVisitTrfOut));
+    cd.addSearch("clinicalVisit", EptsReportUtils.map(clinicalVisit, mappingsClinicalVisit));
+
+    cd.setCompositionString(
+        "(transferredIn OR transferredOut OR homeVisitTrfOut) AND clinicalVisit AND NOT txCurr");
+
+    return cd;
   }
 }

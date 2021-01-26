@@ -15,7 +15,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -36,7 +35,6 @@ public class TransferredInCohortQueries {
       ResumoMensalCohortQueries resumoMensalCohortQueries,
       TxCurrCohortQueries txCurrCohortQueries,
       CommonCohortQueries commonCohortQueries,
-      HivMetadata hivMetadata,
       TxRttCohortQueries txRttCohortQueries) {
     this.resumoMensalCohortQueries = resumoMensalCohortQueries;
     this.txCurrCohortQueries = txCurrCohortQueries;
