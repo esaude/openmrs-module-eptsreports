@@ -49,6 +49,8 @@ public class MQDataSet extends BaseDataSet {
   @Autowired private MQCohortQueries13_3 mqCohortQueries13_3;
   @Autowired private MQCohortQueries10 mqCohortQueries10;
 
+  @Autowired private MQCategory14DataSet mqCategory14DataSet;
+
   public DataSetDefinition constructTMqDatset() {
 
     final CohortIndicatorDataSetDefinition dataSetDefinition =
@@ -64,6 +66,11 @@ public class MQDataSet extends BaseDataSet {
 
     dataSetDefinition.addDimension(
         "age", EptsReportUtils.map(this.mQAgeDimensions.getDimension(), mappings));
+
+    dataSetDefinition.addDimension(
+        "ageMq",
+        EptsReportUtils.map(
+            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
     final CohortIndicator CAT3ADULTODENOMINATOR =
         this.eptsGeneralIndicator.getIndicator(
@@ -2302,8 +2309,10 @@ public class MQDataSet extends BaseDataSet {
         EptsReportUtils.map(CAT09_92ChildrenDENOMINATOR, mappings),
         "");
 
+    this.mqCategory14DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.addColumnsForCategory15(dataSetDefinition, mappings);
     this.addColumnsForCategory13Part1_1And1_2(dataSetDefinition, mappings);
+
     return dataSetDefinition;
   }
 
@@ -2629,8 +2638,8 @@ public class MQDataSet extends BaseDataSet {
         "");
   }
 
-  private CohortIndicator setIndicatorWithAllParameters(
-      CohortDefinition cohortDefinition, String indicatorName, String mappings) {
+  public CohortIndicator setIndicatorWithAllParameters(
+      final CohortDefinition cohortDefinition, final String indicatorName, final String mappings) {
     final CohortIndicator indicator =
         this.eptsGeneralIndicator.getIndicator(
             indicatorName, EptsReportUtils.map(cohortDefinition, mappings));
