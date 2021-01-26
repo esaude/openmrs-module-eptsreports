@@ -1600,6 +1600,70 @@ public class MQDataSet extends BaseDataSet {
         new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     CAT13P4PregnantNUMINATOR.addParameter(new Parameter("location", "location", Date.class));
 
+    final CohortIndicator CAT09_91AdultNUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT09_91AdultNUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findAdultInARTWhoReceivedCD4ResultIn33DaysAfterFirstClinicalConsultaionCategory9_91_Numerator(),
+                mappings));
+
+    CAT09_91AdultNUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT09_91AdultNUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT09_91AdultNUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT09_91AdultNUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT09_91AdultDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT09_91AdultDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findAdultInARTWhoReceivedCD4ResultIn33DaysAfterFirstClinicalConsultaionCategory9_91_Denominator(),
+                mappings));
+
+    CAT09_91AdultDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT09_91AdultDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT09_91AdultDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT09_91AdultDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT09_92ChildrenNUMERATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT09_92ChildrenNUMERATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findChildrenInARTWhoReceivedCD4ResultIn33DaysAfterFirstClinicalConsultaionCategory9_92_Numerator(),
+                mappings));
+
+    CAT09_92ChildrenNUMERATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT09_92ChildrenNUMERATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT09_92ChildrenNUMERATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT09_92ChildrenNUMERATOR.addParameter(new Parameter("location", "location", Date.class));
+
+    final CohortIndicator CAT09_92ChildrenDENOMINATOR =
+        this.eptsGeneralIndicator.getIndicator(
+            "CAT09_92ChildrenDENOMINATOR",
+            EptsReportUtils.map(
+                this.mqCohortQueries
+                    .findChildrenInARTWhoReceivedCD4ResultIn33DaysAfterFirstClinicalConsultaionCategory9_92_Denominator(),
+                mappings));
+
+    CAT09_92ChildrenDENOMINATOR.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    CAT09_92ChildrenDENOMINATOR.addParameter(
+        new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    CAT09_92ChildrenDENOMINATOR.addParameter(
+        new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    CAT09_92ChildrenDENOMINATOR.addParameter(new Parameter("location", "location", Date.class));
+
     dataSetDefinition.addColumn(
         "CAT3ADULTODENOMINATOR",
         "3.1: Adultos (15/+anos) HIV+ em TARV que tiveram consulta clínica dentro de 7 dias após  diagnóstico Denominador",
@@ -2208,6 +2272,34 @@ public class MQDataSet extends BaseDataSet {
         "11.4: Mulheres Gravidas na 1a linha de TARV com CV acima de 1000 cópias que tiveram "
             + "3 consultas de APSS/PP mensais consecutivas para reforço de adesão Numerador",
         EptsReportUtils.map(CAT11PREGNANT1000CVNUMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT09_91AdultNUMERATOR",
+        "9.1. % de adultos HIV+ em TARV que tiveram conhecimento do resultado do primeiro\n"
+            + "CD4 dentro de 33 dias após a inscrição - Numerador",
+        EptsReportUtils.map(CAT09_91AdultNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT09_91AdultDENOMINATOR",
+        "9.1. % de adultos HIV+ em TARV que tiveram conhecimento do resultado do primeiro\n"
+            + "CD4 dentro de 33 dias após a inscrição - Denominador",
+        EptsReportUtils.map(CAT09_91AdultDENOMINATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT09_92ChildrenNUMERATOR",
+        "9.2. % de crianças HIV+ em TARV que tiveram conhecimento do resultado do primeiro\n"
+            + "CD4 dentro de 33 dias após a inscrição - Numerador ",
+        EptsReportUtils.map(CAT09_92ChildrenNUMERATOR, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "CAT09_92ChildrenDENOMINATOR",
+        "9.2. % de crianças HIV+ em TARV que tiveram conhecimento do resultado do primeiro\n"
+            + "CD4 dentro de 33 dias após a inscrição - Denominador ",
+        EptsReportUtils.map(CAT09_92ChildrenDENOMINATOR, mappings),
         "");
 
     this.addColumnsForCategory15(dataSetDefinition, mappings);

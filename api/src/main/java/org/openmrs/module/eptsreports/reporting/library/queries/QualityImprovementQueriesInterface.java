@@ -451,7 +451,7 @@ public interface QualityImprovementQueriesInterface {
     public static final String
         findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH =
             "select carga_viral.patient_id from ( "
-                + "Select p.patient_id, max(o.obs_datetime) data_carga from patient p "
+                + "Select p.patient_id, min(o.obs_datetime) data_carga from patient p "
                 + "inner join encounter e on p.patient_id = e.patient_id "
                 + "inner join obs o on e.encounter_id=o.encounter_id "
                 + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
@@ -470,7 +470,7 @@ public interface QualityImprovementQueriesInterface {
     public static final String
         findChildrenOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorChildrenH =
             "select carga_viral.patient_id from ( "
-                + "Select p.patient_id, max(o.obs_datetime) data_carga from patient p "
+                + "Select p.patient_id, min(o.obs_datetime) data_carga from patient p "
                 + "inner join encounter e on p.patient_id = e.patient_id "
                 + "inner join obs o on e.encounter_id=o.encounter_id "
                 + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
@@ -600,5 +600,18 @@ public interface QualityImprovementQueriesInterface {
                 + "	join person pe on pe.person_id= tx_new.patient_id                                                 			"
                 + "where (TIMESTAMPDIFF(year,birthdate,tx_new.art_start_date))<2 and birthdate is not null and pe.voided=0    			"
                 + "  and tx_new.art_start_date between :startInclusionDate and :endInclusionDate and tx_new.art_start_date < min_consultation.min_consultation_date";
+
+    public static final String
+        findPatientsWhithCD4RegistredInClinicalConsultationUnder33DaysFromTheFirstClinicalConsultation =
+            "select firstClinica.patient_id  from  ( "
+                + "select p.patient_id,min(e.encounter_datetime) encounter_datetime  from  patient p "
+                + "inner join encounter e on e.patient_id=p.patient_id "
+                + "where p.voided=0 and e.voided=0 and e.encounter_datetime <= :endRevisionDate and "
+                + "e.location_id=:location and e.encounter_type=6 "
+                + "group by p.patient_id "
+                + ") firstClinica "
+                + "inner join obs obsCD4 on obsCD4.person_id=firstClinica.patient_id "
+                + "where obsCD4.obs_datetime > firstClinica.encounter_datetime and obsCD4.obs_datetime <=  DATE_ADD(firstClinica.encounter_datetime, INTERVAL 33 DAY) and obsCD4.concept_id=1695 and obsCD4.value_numeric is not null and obsCD4.voided=0 "
+                + "and obsCD4.location_id = :location ";
   }
 }
