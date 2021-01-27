@@ -286,61 +286,45 @@ public class QualityImprovement2020CohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
-    map.put(
-        "adultoSeguimentoEncounterType",
-        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put(
-        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
-    map.put("typeTestHIVConcept", hivMetadata.getTypeTestHIVConcept().getConceptId());
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("22772", hivMetadata.getTypeTestHIVConcept().getConceptId());
 
     String query =
-        "SELECT final.patient_id  "
-            + "FROM  "
-            + "    (SELECT p.patient_id, MIN(e.encounter_datetime) AS first_consultation "
-            + "    FROM patient p "
-            + "        INNER JOIN encounter e "
-            + "            ON e.patient_id = p.patient_id "
-            + "        INNER JOIN (SELECT p_diagnostico.patient_id,  o_diagnostico.obs_datetime AS data_diagnostico "
-            + "                    FROM patient p_diagnostico "
-            + "                        INNER JOIN encounter e_diagnostico "
-            + "                            ON e_diagnostico.patient_id = p_diagnostico.patient_id "
-            + "                        INNER JOIN obs o_diagnostico "
-            + "                            ON o_diagnostico.encounter_id = e_diagnostico.encounter_id "
-            + "                    WHERE p_diagnostico.voided = 0 "
-            + "                        AND e_diagnostico.voided = 0 "
-            + "                        AND o_diagnostico.voided = 0 "
-            + "                        AND e_diagnostico.location_id = :location "
-            + "                        AND e_diagnostico.encounter_type = ${masterCardEncounterType} "
-            + "                        AND o_diagnostico.obs_datetime BETWEEN :startDate AND  :endDate "
-            + "                        AND o_diagnostico.concept_id = ${typeTestHIVConcept}) diagnostico "
-            + " "
-            + "                ON diagnostico.patient_id = p.patient_id "
-            + "        INNER JOIN (SELECT p_diag_plus_seven.patient_id, DATE_ADD(o_diag_plus_seven.obs_datetime, INTERVAL 7 DAY) AS data_diag_plus_seven "
-            + "                FROM patient p_diag_plus_seven "
-            + "                    INNER JOIN encounter e_diag_plus_seven "
-            + "                        ON e_diag_plus_seven.patient_id = p_diag_plus_seven.patient_id "
-            + "                    INNER JOIN obs o_diag_plus_seven "
-            + "                        ON o_diag_plus_seven.encounter_id = e_diag_plus_seven.encounter_id "
-            + "                WHERE p_diag_plus_seven.voided = 0 "
-            + "                    AND e_diag_plus_seven.voided = 0 "
-            + "                    AND o_diag_plus_seven.voided = 0 "
-            + "                    AND e_diag_plus_seven.location_id = :location "
-            + "                    AND e_diag_plus_seven.encounter_type = ${masterCardEncounterType} "
-            + "                    AND o_diag_plus_seven.obs_datetime BETWEEN :startDate AND  :endDate "
-            + "                    AND o_diag_plus_seven.concept_id = ${typeTestHIVConcept}) diag_plus_seven "
-            + "                ON    diag_plus_seven.patient_id = p.patient_id "
-            + "    WHERE p.voided = 0 "
-            + "        AND e.voided = 0 "
-            + "        AND e.location_id = :location "
-            + "        AND e.encounter_type = ${adultoSeguimentoEncounterType} "
-            + "        AND e.encounter_datetime >= diagnostico.data_diagnostico "
-            + "        AND e.encounter_datetime  "
-            + "            BETWEEN "
-            + "                diagnostico.data_diagnostico "
-            + "            AND  "
-            + "                diag_plus_seven.data_diag_plus_seven "
-            + "    GROUP BY  p.patient_id "
-            + "    ) AS final";
+        " SELECT p.patient_id   "
+            + " FROM patient p "
+            + "    INNER JOIN ( "
+            + "                    SELECT p.patient_id, MIN(e.encounter_datetime) AS encounterdatetime  "
+            + "                    FROM patient p  "
+            + "                        INNER JOIN encounter e  "
+            + "                            ON e.patient_id = p.patient_id  "
+            + "                    WHERE p.voided = 0  "
+            + "                        AND e.voided = 0  "
+            + "                        AND e.location_id = :location  "
+            + "                        AND e.encounter_type = ${6}  "
+            + "                    GROUP BY  p.patient_id  "
+            + "              )  first_consultation ON  first_consultation.patient_id = p.patient_id "
+            + "    INNER JOIN ( "
+            + "                    SELECT p_diagnostico.patient_id,  o_diagnostico.obs_datetime AS data_diagnostico  "
+            + "                    FROM patient p_diagnostico  "
+            + "                        INNER JOIN encounter e_diagnostico  "
+            + "                            ON e_diagnostico.patient_id = p_diagnostico.patient_id  "
+            + "                        INNER JOIN obs o_diagnostico  "
+            + "                            ON o_diagnostico.encounter_id = e_diagnostico.encounter_id  "
+            + "                    WHERE p_diagnostico.voided = 0  "
+            + "                        AND e_diagnostico.voided = 0  "
+            + "                        AND o_diagnostico.voided = 0  "
+            + "                        AND e_diagnostico.location_id = :location  "
+            + "                        AND e_diagnostico.encounter_type = ${53}  "
+            + "                        AND o_diagnostico.obs_datetime BETWEEN :startDate AND  :endDate  "
+            + "                        AND o_diagnostico.concept_id = ${22772} "
+            + "                ) diagnostico ON diagnostico.patient_id = p.patient_id  "
+            + "                 "
+            + " WHERE p.voided = 0 "
+            + "    AND  first_consultation.encounterdatetime >= diagnostico.data_diagnostico  "
+            + "    AND first_consultation.encounterdatetime  "
+            + "        BETWEEN  diagnostico.data_diagnostico  AND   "
+            + "                        DATE_ADD(diagnostico.data_diagnostico, INTERVAL 7 DAY) ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
