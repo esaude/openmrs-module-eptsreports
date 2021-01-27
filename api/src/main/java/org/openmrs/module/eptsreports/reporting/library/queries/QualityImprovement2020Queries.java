@@ -1,9 +1,14 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -1074,6 +1079,68 @@ public class QualityImprovement2020Queries {
             + "       AND o.voided = 0 "
             + "       AND o.value_coded IN ( ${1065}, ${1066}) "
             + "       AND e.encounter_type = ${6}  ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <<<<<<< HEAD <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * B1- Select all patients who have the LAST “LINHA TERAPEUTICA” (Concept Id 21151) recorded in
+   * Ficha Clinica (encounter type 6, encounter_datetime) with value coded “PRIMEIRA LINHA” (concept
+   * id 21150) during the inclusion period (startDateInclusion and endDateInclusion)
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public static CohortDefinition getMQ13DenB1(
+      EncounterType treatmentEncounter,
+      Concept treatmentConcept,
+      List<Concept> treatmentValueCoded) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Patients on treatment for 6 months from last clinical visit");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    List<Integer> answerIds = new ArrayList<>();
+
+    for (Concept concept : treatmentValueCoded) {
+      answerIds.add(concept.getConceptId());
+    }
+
+    String query =
+        " SELECT p.patient_id "
+            + " FROM patient p "
+            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + " INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + " INNER JOIN (SELECT p.patient_id, MAX(e.encounter_datetime) last_visit "
+            + "               FROM patient p "
+            + "               INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "               WHERE  p.voided = 0 AND e.voided = 0 "
+            + "                   AND e.encounter_type = ${treatmentEncounter} "
+            + "                   AND e.location_id = :location "
+            + "                   AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
+            + "               GROUP BY p.patient_id) last_linha_terapeutica ON last_linha_terapeutica.patient_id = e.patient_id "
+            + "               WHERE p.voided = 0 AND e.voided = 0  AND o.voided = 0 "
+            + "                   AND e.encounter_type = ${treatmentEncounter} "
+            + "                   AND e.location_id = :location "
+            + "                   AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
+            + "                   AND e.encounter_datetime = last_linha_terapeutica.last_visit "
+            + "                   AND o.concept_id = ${treatmentConcept} "
+            + "                   AND o.value_coded = ${treatmentValueCoded}";
+
+    Map<String, String> map = new HashMap<>();
+    map.put("treatmentEncounter", String.valueOf(treatmentEncounter.getEncounterTypeId()));
+    map.put("treatmentConcept", String.valueOf(treatmentConcept.getConceptId()));
+    map.put("treatmentValueCoded", StringUtils.join(answerIds, ","));
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
