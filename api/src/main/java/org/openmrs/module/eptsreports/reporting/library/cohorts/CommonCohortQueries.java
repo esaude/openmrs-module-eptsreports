@@ -219,13 +219,19 @@ public class CommonCohortQueries {
     if (occurType == "last") {
 
       query +=
-          "SELECT p.person_id FROM person p INNER JOIN "
-              + "(SELECT p.person_id, MAX(e.encounter_datetime) FROM person p INNER JOIN encounter e ";
+          "SELECT p.person_id FROM person p "
+              + " INNER JOIN  encounter e ON e.patient_id = p.person_id "
+              + " INNER JOIN  obs o ON o.encounter_id = e.encounter_id "
+              + " INNER JOIN (SELECT p.person_id, MAX(e.encounter_datetime) AS encounter_datetime"
+              + " FROM person p INNER JOIN encounter e ";
 
     } else if (occurType == "first") {
       query +=
-          "SELECT p.person_id FROM person p INNER JOIN "
-              + "(SELECT p.person_id, MIN(e.encounter_datetime) FROM person p INNER JOIN encounter e ";
+          "SELECT p.person_id FROM person p "
+              + " INNER JOIN  encounter e ON e.patient_id = p.person_id "
+              + " INNER JOIN  obs o ON o.encounter_id = e.encounter_id "
+              + " INNER JOIN (SELECT p.person_id, MIN(e.encounter_datetime) AS encounter_datetime"
+              + " FROM person p INNER JOIN encounter e ";
 
     } else if (occurType == "once") {
       query += "SELECT p.person_id FROM person p INNER JOIN encounter e ";
@@ -238,10 +244,16 @@ public class CommonCohortQueries {
     if (transfIn) {
       query += "INNER JOIN obs o2 " + "ON e.encounter_id = o2.encounter_id ";
     }
-    query +=
-        "WHERE e.location_id = :location AND e.encounter_type = ${encounterType} "
-            + "AND o.concept_id = ${question}  "
-            + "AND o.value_coded in (${answers}) ";
+    if (occurType == "last" || occurType == "first") {
+      query +=
+          "WHERE e.location_id = :location AND e.encounter_type = ${encounterType} "
+              + "AND o.concept_id = ${question}  ";
+    } else {
+      query +=
+          "WHERE e.location_id = :location AND e.encounter_type = ${encounterType} "
+              + "AND o.concept_id = ${question}  "
+              + "AND o.value_coded in (${answers}) ";
+    }
     if (transfIn) {
       query +=
           "AND o2.concept_id = ${question2}  "
@@ -254,7 +266,12 @@ public class CommonCohortQueries {
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0 ";
 
     if (occurType == "last" || occurType == "first") {
-      query += "GROUP BY p.person_id) list ON p.person_id = list.person_id";
+      query +=
+          "GROUP BY p.person_id) list ON p.person_id = list.person_id "
+              + " WHERE  e.encounter_datetime = list.encounter_datetime "
+              + " AND e.location_id = :location  AND e.encounter_type = ${encounterType} "
+              + " AND o.concept_id = ${question} AND e.voided = 0 "
+              + " AND o.voided = 0  AND o.value_coded in (${answers}) ";
     }
 
     Map<String, String> map = new HashMap<>();
