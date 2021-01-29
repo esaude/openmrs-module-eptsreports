@@ -425,6 +425,11 @@ public class EptsCommonDimension {
         EptsReportUtils.map(
             genericCohortQueries.getPatientAgeBasedOnFirstViralLoadDate(15, 200),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        "MqChildren",
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnFirstViralLoadDate(0, 14),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     return dim;
   }
 }
