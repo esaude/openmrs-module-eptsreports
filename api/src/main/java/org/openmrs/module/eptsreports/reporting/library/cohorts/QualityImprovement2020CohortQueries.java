@@ -667,27 +667,44 @@ public class QualityImprovement2020CohortQueries {
         "chronicMalnutritionConcept", hivMetadata.getChronicMalnutritionConcept().getConceptId());
 
     String query =
-        "SELECT max_date.patient_id "
-            + "FROM "
-            + "   ( "
-            + "    SELECT p.patient_id, MAX(encounter_datetime) AS max_encounter_date "
-            + "    FROM patient p "
-            + "        INNER JOIN encounter e "
-            + "            ON e.patient_id = p.patient_id "
-            + "        INNER JOIN obs o "
-            + "            ON o.encounter_id = e.encounter_id "
-            + "    WHERE "
-            + "        p.voided = 0 "
-            + "        AND e.voided = 0 "
-            + "        AND o.voided = 0 "
-            + "        AND e.encounter_type = ${adultoSeguimentoEncounterType} "
-            + "        AND e.location_id = :location "
-            + "        AND e.encounter_datetime  "
-            + "            BETWEEN :startDate AND :endDate "
-            + "        AND o.concept_id = ${classificationOfMalnutritionConcept} "
-            + "        AND o.value_coded IN (${normalConcept}, ${malnutritionLightConcept}, ${malnutritionConcept}, ${chronicMalnutritionConcept}) "
-            + "    GROUP BY patient_id "
-            + "    ) max_date";
+        "SELECT "
+            + " p.patient_id "
+            + " FROM "
+            + " patient p "
+            + " INNER JOIN "
+            + " encounter e "
+            + " ON e.patient_id = p.patient_id "
+            + " INNER JOIN "
+            + " obs o "
+            + " ON o.encounter_id = e.encounter_id "
+            + " INNER JOIN "
+            + " ( "
+            + " SELECT "
+            + " p.patient_id, "
+            + " Max(e.encounter_datetime) AS encounter_datetime "
+            + " FROM "
+            + " patient p "
+            + " INNER JOIN "
+            + " encounter e "
+            + " ON e.patient_id = p.patient_id "
+            + " WHERE "
+            + " e.encounter_type = ${adultoSeguimentoEncounterType} "
+            + " AND p.voided = 0 "
+            + " AND e.voided = 0 "
+            + " AND e.location_id = :location "
+            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + " GROUP BY "
+            + " p.patient_id "
+            + " ) filtered "
+            + " ON p.patient_id = filtered.patient_id "
+            + " WHERE "
+            + " e.encounter_datetime = filtered.encounter_datetime "
+            + " AND e.location_id = :location "
+            + " AND o.concept_id = ${classificationOfMalnutritionConcept} "
+            + " AND e.voided = 0 "
+            + " AND o.voided = 0 "
+            + " AND o.value_coded IN (${normalConcept}, ${malnutritionLightConcept}, ${malnutritionConcept}, ${chronicMalnutritionConcept}) "
+            + " AND e.encounter_type = ${adultoSeguimentoEncounterType} ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
@@ -4094,7 +4111,7 @@ public class QualityImprovement2020CohortQueries {
    *
    * <p>All age disaggreagtions should be based on the ART start date
    *
-   * @param indicatorFlag
+   * @param indicator
    * @return
    */
   public CohortDefinition getMQC13P3NUM(int indicator) {
