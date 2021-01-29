@@ -244,7 +244,8 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
-    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(getCqueryFromCat3(), MAPPING));
+    compositionCohortDefinition.addSearch(
+        "C", EptsReportUtils.map(getCqueryFromCat3(), "location=${location}"));
     compositionCohortDefinition.addSearch(
         "ADULTS",
         EptsReportUtils.map(
@@ -281,8 +282,6 @@ public class QualityImprovement2020CohortQueries {
 
   private CohortDefinition getCqueryFromCat3() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -316,7 +315,6 @@ public class QualityImprovement2020CohortQueries {
             + "                        AND o_diagnostico.voided = 0  "
             + "                        AND e_diagnostico.location_id = :location  "
             + "                        AND e_diagnostico.encounter_type = ${53}  "
-            + "                        AND o_diagnostico.obs_datetime BETWEEN :startDate AND  :endDate  "
             + "                        AND o_diagnostico.concept_id = ${22772} "
             + "                ) diagnostico ON diagnostico.patient_id = p.patient_id  "
             + "                 "
