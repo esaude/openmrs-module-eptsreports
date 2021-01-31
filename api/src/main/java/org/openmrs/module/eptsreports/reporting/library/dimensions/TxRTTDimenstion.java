@@ -36,20 +36,26 @@ public class TxRTTDimenstion {
     cdd.setName("B & A days difference");
 
     cdd.addCohortDefinition(
-        "<365", EptsReportUtils.map(getPatientsReturnedAndIITDays(true), MAPPINGS));
+        "<365",
+        EptsReportUtils.map(getPatientsReturnedAndIITDays(PLHIVDays.LESS_THAN_365), MAPPINGS));
     cdd.addCohortDefinition(
-        "365+", EptsReportUtils.map(getPatientsReturnedAndIITDays(false), MAPPINGS));
+        "365+",
+        EptsReportUtils.map(getPatientsReturnedAndIITDays(PLHIVDays.MORE_THAN_365), MAPPINGS));
+    cdd.addCohortDefinition(
+        "unk", EptsReportUtils.map(getPatientsReturnedAndIITDays(PLHIVDays.UNKNOWN), MAPPINGS));
 
     return cdd;
   }
 
-  public CohortDefinition getPatientsReturnedAndIITDays(boolean lessThan365Days) {
+  public CohortDefinition getPatientsReturnedAndIITDays(PLHIVDays period) {
     CalculationCohortDefinition calculationCohortDefinition =
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(ReturnedDateIITDateDaysCalculation.class).get(0));
-    if (lessThan365Days) {
+    if (period == PLHIVDays.UNKNOWN) {
+      calculationCohortDefinition.setName("unknown");
+    } else if (period == PLHIVDays.LESS_THAN_365) {
       calculationCohortDefinition.setName("lessThan365Days");
-    } else {
+    } else if (period == PLHIVDays.MORE_THAN_365) {
       calculationCohortDefinition.setName("moreThan365Days");
     }
 
@@ -57,7 +63,7 @@ public class TxRTTDimenstion {
     calculationCohortDefinition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     calculationCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    calculationCohortDefinition.addCalculationParameter("lessThan365Days", lessThan365Days);
+    calculationCohortDefinition.addCalculationParameter("period", period);
 
     return calculationCohortDefinition;
   }

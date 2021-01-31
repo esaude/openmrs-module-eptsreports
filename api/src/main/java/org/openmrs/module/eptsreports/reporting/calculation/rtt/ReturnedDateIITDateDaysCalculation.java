@@ -14,6 +14,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.PLHIVDays;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -26,7 +27,7 @@ public class ReturnedDateIITDateDaysCalculation extends AbstractPatientCalculati
   private final String ON_OR_AFTER = "onOrAfter";
   private final String ON_OR_BEFORE = "onOrBefore";
   private final String LOCATION = "location";
-  private final String LESS_THAN_360_DAYS = "lessThan365Days";
+  private final String PERIOD = "period";
 
   @Override
   public CalculationResultMap evaluate(
@@ -53,7 +54,7 @@ public class ReturnedDateIITDateDaysCalculation extends AbstractPatientCalculati
         getOldestDateForPatientWhoReturned(
             cohort, context, hivMetadata, location, onOrAfter, onOrBefore);
 
-    boolean lessThan365Days = (Boolean) parameterValues.get(LESS_THAN_360_DAYS);
+    PLHIVDays period = (PLHIVDays) parameterValues.get(PERIOD);
 
     for (Integer pId : cohort) {
 
@@ -62,15 +63,17 @@ public class ReturnedDateIITDateDaysCalculation extends AbstractPatientCalculati
 
       if (a != null && b != null) {
         int days = Days.daysIn(new Interval(a.getTime(), b.getTime())).getDays();
-        if (lessThan365Days) {
+        if (period == PLHIVDays.LESS_THAN_365) {
           if (days < YEAR_DAYS) {
             calculationResultMap.put(pId, new SimpleResult(days, this));
           }
-        } else {
+        } else if (period == PLHIVDays.MORE_THAN_365) {
           if (days >= YEAR_DAYS) {
             calculationResultMap.put(pId, new SimpleResult(days, this));
           }
         }
+      } else if ((a == null || b == null) && period == PLHIVDays.UNKNOWN) {
+        calculationResultMap.put(pId, new SimpleResult(null, this));
       }
     }
 
@@ -435,7 +438,7 @@ public class ReturnedDateIITDateDaysCalculation extends AbstractPatientCalculati
     return stringSubstitutor.replace(query2);
   }
 
-  String getReturnedInPeriodQuery(HivMetadata hivMetadata) {
+  private String getReturnedInPeriodQuery(HivMetadata hivMetadata) {
     Map<String, Integer> map = new HashMap<>();
     map.put(
         "adultoSeguimentoEncounterType",
