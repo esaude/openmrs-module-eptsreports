@@ -6440,7 +6440,6 @@ public class QualityImprovement2020CohortQueries {
         EptsReportUtils.map(
             commonCohortQueries.getTranferredOutPatients(),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-    cd.addSearch("FEMALE", EptsReportUtils.map(genderCohortQueries.femaleCohort(), ""));
     cd.addSearch(
         "CHILDREN",
         EptsReportUtils.map(
@@ -6453,9 +6452,9 @@ public class QualityImprovement2020CohortQueries {
             genericCohortQueries.getAgeOnMOHArtStartDate(15, null, false),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     if (flag == 1) {
-      cd.setCompositionString("A AND NOT (C OR D OR E OR F) AND ADULT AND FEMALE");
+      cd.setCompositionString("A AND NOT (C OR D OR E OR F) AND ADULT");
     } else if (flag == 2) {
-      cd.setCompositionString("A AND NOT (C OR D OR E OR F) AND CHILDREN AND FEMALE");
+      cd.setCompositionString("A AND NOT (C OR D OR E OR F) AND CHILDREN");
     }
 
     return cd;
