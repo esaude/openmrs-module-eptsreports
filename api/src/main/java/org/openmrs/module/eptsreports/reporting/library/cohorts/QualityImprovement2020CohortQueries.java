@@ -6573,38 +6573,45 @@ public class QualityImprovement2020CohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     String query =
-        ""
-            + " SELECT p.patient_id "
-            + " FROM patient p "
-            + "    INNER JOIN encounter e "
-            + "        ON e.patient_id = p.patient_id "
-            + "    INNER JOIN obs o "
-            + "        ON o.encounter_id = e.encounter_id "
-            + "    INNER JOIN      "
-            + "            ( "
-            + "                SELECT p.patient_id, MIN(e.encounter_datetime) AS date_time "
-            + "                FROM patient p "
-            + "                    INNER JOIN encounter e "
-            + "                        ON e.patient_id = p.patient_id "
-            + "                WHERE "
-            + "                    p.voided = 0 "
-            + "                    AND e.voided = 0 "
+        " SELECT p.patient_id  "
+            + " FROM patient p  "
+            + "    INNER JOIN       "
+            + "            (  "
+            + "                SELECT p.patient_id, MIN(e.encounter_datetime) AS e_encounter_datetime  "
+            + "                FROM patient p  "
+            + "                    INNER JOIN encounter e  "
+            + "                        ON e.patient_id = p.patient_id  "
+            + "                WHERE  "
+            + "                    p.voided = 0  "
+            + "                    AND e.voided = 0  "
             + "                    AND e.encounter_type  = ${6} "
-            + "                    AND e.encounter_datetime <= :revisionEndDate "
-            + "                    AND e.location_id = :location "
-            + "                GROUP BY p.patient_id "
-            + "            ) first_clinical_consultation "
-            + "        ON first_clinical_consultation.patient_id = p.patient_id "
-            + " WHERE "
-            + "    p.voided = 0 "
-            + "    AND e.voided = 0 "
-            + "    AND o.voided = 0 "
-            + "    AND e.encounter_type  = ${6} "
-            + "    AND o.concept_id = ${1695} "
-            + "    AND e.encounter_datetime  "
-            + "        BETWEEN first_clinical_consultation.date_time   "
-            + "            AND DATE_ADD(first_clinical_consultation.date_time, INTERVAL 33 DAY) "
-            + "    AND e.location_id = :location";
+            + "                    AND e.location_id = :location  "
+            + "                GROUP BY p.patient_id  "
+            + "            ) AS first_clinical_consultation  "
+            + "        ON first_clinical_consultation.patient_id = p.patient_id  "
+            + "         "
+            + "    INNER JOIN  "
+            + "            ( "
+            + "                SELECT p.patient_id, e.encounter_datetime AS e_encounter_datetime  "
+            + "                FROM patient p  "
+            + "                    INNER JOIN encounter e  "
+            + "                        ON e.patient_id = p.patient_id  "
+            + "                    INNER JOIN obs o  "
+            + "                        ON o.encounter_id = e.encounter_id "
+            + "                WHERE p.voided = 0  "
+            + "                    AND e.voided = 0  "
+            + "                    AND o.voided = 0  "
+            + "                    AND e.encounter_type  = ${6} "
+            + "                    AND o.concept_id = ${1695} "
+            + "                    AND o.value_numeric IS NOT NULL "
+            + "                    AND e.encounter_datetime <= :revisionEndDate  "
+            + "                    AND e.location_id = :location  "
+            + "            ) AS cd4 "
+            + "        ON cd4.patient_id =p.patient_id "
+            + " WHERE  "
+            + "    p.voided = 0  "
+            + "    AND cd4.e_encounter_datetime > first_clinical_consultation.e_encounter_datetime "
+            + "    AND cd4.e_encounter_datetime <= DATE_ADD(first_clinical_consultation.e_encounter_datetime, INTERVAL 33 DAY) ";
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
@@ -6689,9 +6696,9 @@ public class QualityImprovement2020CohortQueries {
             "revisionEndDate=${revisionEndDate},location=${location}"));
 
     if (flag == 1) {
-      cd.setCompositionString("A AND B AND NOT (C OR D OR E OR F) AND ADULT AND FEMALE");
+      cd.setCompositionString("A AND B AND NOT (C OR D OR E OR F) AND ADULT");
     } else if (flag == 2) {
-      cd.setCompositionString("A AND B AND NOT (C OR D OR E OR F) AND CHILDREN AND FEMALE");
+      cd.setCompositionString("A AND B AND NOT (C OR D OR E OR F) AND CHILDREN");
     }
 
     return cd;
