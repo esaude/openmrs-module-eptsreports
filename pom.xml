@@ -25,9 +25,9 @@
 	<url>https://wiki.openmrs.org/x/FQ4z</url>
 
 	<scm>
-		<connection>scm:git:https://github.com/esaude/openmrs-module-eptsreports</connection>
-		<developerConnection>scm:git:https://github.com/esaude/openmrs-module-eptsreports</developerConnection>
-		<url>https://github.com/esaude/openmrs-module-eptsreports/</url>
+		<connection>scm:git:https://github.com/FriendsInGlobalHealth/openmrs-module-eptsreports</connection>
+		<developerConnection>scm:git:https://github.com/FriendsInGlobalHealth/openmrs-module-eptsreports</developerConnection>
+		<url>https://github.com/FriendsInGlobalHealth/openmrs-module-eptsreports/</url>
 	  <tag>HEAD</tag>
   	</scm>
 
