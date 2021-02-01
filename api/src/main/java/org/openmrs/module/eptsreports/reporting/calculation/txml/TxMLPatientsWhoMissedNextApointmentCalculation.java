@@ -101,7 +101,8 @@ public class TxMLPatientsWhoMissedNextApointmentCalculation extends TxMLPatientC
                 Arrays.asList(
                     this.hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
                     this.hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
-                this.hivMetadata.getTransferOutToAnotherFacilityConcept());
+                Arrays.asList(
+                    this.hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId()));
 
     Map<Integer, Date> transferredOutInFichaResumo =
         this.disaggregationProcessor
@@ -186,7 +187,7 @@ public class TxMLPatientsWhoMissedNextApointmentCalculation extends TxMLPatientC
                 Arrays.asList(
                     this.hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
                     this.hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
-                this.hivMetadata.getPatientHasDiedConcept());
+                Arrays.asList(this.hivMetadata.getPatientHasDiedConcept().getConceptId()));
 
     Map<Integer, Date> deadFichaResumo =
         this.disaggregationProcessor
