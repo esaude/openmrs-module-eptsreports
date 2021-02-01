@@ -9,7 +9,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>eptsreports</artifactId>
-	<version>1.10.1-SNAPSHOT</version>
+	<version>1.11.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>EPTS reports</name>
 	<description>PEPFAR reports for EPTS project in Mozambique</description>
