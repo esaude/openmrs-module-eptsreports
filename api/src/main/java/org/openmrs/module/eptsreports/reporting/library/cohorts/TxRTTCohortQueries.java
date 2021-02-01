@@ -171,7 +171,14 @@ public class TxRTTCohortQueries {
     compositionDefinition.addSearch(
         "RTT-LESS12MONTHS", EptsReportUtils.map(this.getPLHIVLess12MonthCalculation(), mappings));
 
-    compositionDefinition.setCompositionString("RTT-LESS12MONTHS OR RTT-GREATER12MONTHS");
+    compositionDefinition.addSearch(
+        "RTT-PLHIVUNKNOWN",
+        EptsReportUtils.map(
+            this.getPLHIVUnknownDesaggregation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    compositionDefinition.setCompositionString(
+        "RTT-LESS12MONTHS OR RTT-GREATER12MONTHS OR RTT-PLHIVUNKNOWN");
 
     return compositionDefinition;
   }

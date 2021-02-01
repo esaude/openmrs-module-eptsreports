@@ -64,7 +64,8 @@ public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
               .get(0)
               .evaluate(parameters, this.getNewEvaluationContext(parameters));
 
-      this.calculateLessThan12MonthsDates(context, new ArrayList<>(cohort), iiTPatients, resultMap);
+      this.calculateGreaterOrEqual12MonthsDates(
+          context, new ArrayList<>(cohort), iiTPatients, resultMap);
 
     } catch (EvaluationException e) {
       throw new APIException(e);
@@ -72,7 +73,7 @@ public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
     return resultMap;
   }
 
-  private void calculateLessThan12MonthsDates(
+  private void calculateGreaterOrEqual12MonthsDates(
       EvaluationContext context,
       List<Integer> cohort,
       CalculationResultMap iiTPatients,
