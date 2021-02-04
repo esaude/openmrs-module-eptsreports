@@ -2466,6 +2466,38 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.patientElegibleForConceptUuid</property>
+		<defaultValue>8dbbb6c3-6b00-432e-9209-ef2aeef8fe03</defaultValue>
+		<description>
+			PATIENT ELIGIBLE FOR concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.elegibitilyDateConceptUuid</property>
+		<defaultValue>fee0a9c1-0228-43ca-a6e4-9c617f1bf808</defaultValue>
+		<description>
+			ELIGIBILITY DATE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.reintegrationConceptUuid</property>
+		<defaultValue>724da611-f24c-4cab-ba50-13cfe204f71a</defaultValue>
+		<description>
+			REINTEGRATION concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.livroRegistoDiarioChamadasVisitasTypeUuid</property>
+		<defaultValue>51a9154f-91cc-4e40-853f-62a3b0cd1ad8</defaultValue>
+		<description>
+			LIVRO DE REGISTO DIARIO DE CHAMADAS E VISITAS encounter-type
+		</description>
+	</globalProperty>
+
 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">

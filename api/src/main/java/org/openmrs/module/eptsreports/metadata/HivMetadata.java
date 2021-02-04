@@ -2520,6 +2520,22 @@ public class HivMetadata extends ProgramsMetadata {
     return getEncounterType(uuid);
   }
 
+  /**
+   * <b>encounterType_id = 61</b>
+   *
+   * <p><b>Name:</b> LIVRO DE REGISTO DIÁRIO DE CHAMADAS E VISITAS DOMICILIARES
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link EncounterType}
+   */
+  public EncounterType getLivroRegistoChamadasVisistasDomiciliaresEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.livroRegistoDiarioChamadasVisitasTypeUuid");
+    return getEncounterType(uuid);
+  }
+
   // Programs
 
   /**
@@ -3553,6 +3569,54 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.presumptiveDiagnosisInChildrenConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23996</b>
+   *
+   * <p><b>Name:</b> PACIENTE ELEGIVEL
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPatientElegibilityConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientElegibleForConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23993</b>
+   *
+   * <p><b>Name:</b> REINTEGRATION
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getReintegrationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.reintegrationConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23997</b>
+   *
+   * <p><b>Name:</b> Elegibility Date
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getElegibilityDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.elegibitilyDateConceptUuid");
     return getConcept(uuid);
   }
 }

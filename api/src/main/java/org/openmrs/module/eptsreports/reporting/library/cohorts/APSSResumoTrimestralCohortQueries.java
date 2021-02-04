@@ -323,11 +323,47 @@ public class APSSResumoTrimestralCohortQueries {
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getE1() {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName(
+        "E1: Número de pacientes faltosos e abandonos referidos para chamadas e/ou visitas de reintegração durante o trimestre");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
 
-    sqlCohortDefinition.setName("E1");
+    Map<String, Integer> map = new HashMap<>();
+    map.put(
+        "61",
+        hivMetadata
+            .getLivroRegistoChamadasVisistasDomiciliaresEncounterType()
+            .getEncounterTypeId());
+    map.put("23996", hivMetadata.getPatientElegibilityConcept().getConceptId());
+    map.put("23993", hivMetadata.getReintegrationConcept().getConceptId());
+    map.put("23997", hivMetadata.getElegibilityDateConcept().getConceptId());
 
-    return sqlCohortDefinition;
+    String query =
+        "SELECT p.patient_id "
+            + "FROM patient p "
+            + "    INNER JOIN encounter e  "
+            + "        ON p.patient_id = e.patient_id "
+            + "    INNER JOIN obs elegivel  "
+            + "        ON elegivel.encounter_id = e.encounter_id "
+            + "    INNER JOIN obs data_elegibilidade  "
+            + "        ON data_elegibilidade.encounter_id = e.encounter_id "
+            + "WHERE "
+            + "    p.voided = 0 "
+            + "    AND e.voided = 0 "
+            + "    AND elegivel.voided = 0 "
+            + "    AND data_elegibilidade.voided = 0 "
+            + "    AND e.encounter_type = ${61} "
+            + "    AND elegivel.concept_id = ${23996} AND elegivel.value_coded = ${23993} "
+            + "    AND data_elegibilidade.concept_id = ${23997} "
+            + "    AND data_elegibilidade.value_datetime BETWEEN :startDate AND :endDate "
+            + "    AND e.location_id = :location";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(query));
+
+    return cd;
   }
 
   /**

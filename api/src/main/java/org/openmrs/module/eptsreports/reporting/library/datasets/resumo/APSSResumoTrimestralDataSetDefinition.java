@@ -109,16 +109,15 @@ public class APSSResumoTrimestralDataSetDefinition extends BaseDataSet {
 
     dsd.addColumn("D1TG", "Total patients - Total Geral", getD1(), "");
 
-    // E1
-    /* addRow(
+    addRow(
         dsd,
         "E1",
-        "Nº pacientes faltosos e abandonos referidos para chamadas e/ou visitas de reintegração",
+        "E1: Número de pacientes faltosos e abandonos referidos para chamadas e/ou visitas de reintegração durante o trimestre",
         getE1(),
         getAPSSPPDisagg());
 
     dsd.addColumn("E1TG", "Total patients - Total Geral", getE1(), "");
-
+    /*
     // E2
     addRow(
         dsd,
