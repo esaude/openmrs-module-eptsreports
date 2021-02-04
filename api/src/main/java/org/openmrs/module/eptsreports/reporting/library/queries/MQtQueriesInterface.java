@@ -1,6 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-public class QualiltyImprovementQueries {
+public class MQtQueriesInterface {
 
   /**
    * MQ_INICIO TARV NO PERIODO DE INCLUSAO (AMOSTRA TARV) - NOVO

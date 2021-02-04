@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -33,7 +33,7 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
     final CohortDefinition txNewCompositionCohort =
         this.mQCategory13Section1CohortQueries
-            .findAdultInTheSecondLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line65ColumnDNumerator();
+            .findPatientsWhoArePregnantInFirstConsultationInclusionPeriodByB2();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 
@@ -59,11 +59,11 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
   @Override
   protected String username() {
-    return "domingos.bernardo";
+    return "admin";
   }
 
   @Override
   protected String password() {
-    return "dBernardo1";
+    return "eSaude123";
   }
 }

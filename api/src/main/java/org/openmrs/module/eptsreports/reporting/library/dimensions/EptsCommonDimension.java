@@ -144,6 +144,37 @@ public class EptsCommonDimension {
     return dim;
   }
 
+  public CohortDefinitionDimension ageEndInclusionDate(
+      final AgeDimensionCohortInterface ageDimensionCohort) {
+    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
+
+    dim.setParameters(ageDimensionCohort.getParameters());
+    dim.setName("age dimension");
+
+    dim.addCohortDefinition(
+        "<15", ageDimensionCohort.createXtoYAgeCohort("patients with age below 15", null, 14));
+
+    dim.addCohortDefinition(
+        "15+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 15", 15, null));
+
+    dim.addCohortDefinition(
+        "0-14",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 14 years", 0, 14));
+
+    dim.addCohortDefinition(
+        "2-14",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 4 years", 2, 14));
+
+    dim.addCohortDefinition(
+        "5-9",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 15 years", 5, 9));
+
+    dim.addCohortDefinition(
+        "3-14",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 15 years", 3, 14));
+    return dim;
+  }
+
   public CohortDefinitionDimension mqAgeDimention(
       final AgeDimensionCohortInterface ageDimensionCohort) {
     final CohortDefinitionDimension dim = new CohortDefinitionDimension();

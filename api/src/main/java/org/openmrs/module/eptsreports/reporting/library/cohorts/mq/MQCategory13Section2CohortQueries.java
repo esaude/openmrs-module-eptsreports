@@ -1,8 +1,8 @@
-package org.openmrs.module.eptsreports.reporting.library.cohorts;
+package org.openmrs.module.eptsreports.reporting.library.cohorts.mq;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterfaceCategory13Section2;
+import org.openmrs.module.eptsreports.reporting.library.queries.mq.MQCategory13Section2QueriesInterface;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -31,7 +31,7 @@ public class MQCategory13Section2CohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterfaceCategory13Section2.QUERY
+        MQCategory13Section2QueriesInterface.QUERY
             .findPatientsWithLastClinicalConsultationwhoAreInSecondLineDenominatorB2;
 
     definition.setQuery(query);
@@ -53,7 +53,7 @@ public class MQCategory13Section2CohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterfaceCategory13Section2.QUERY
+        MQCategory13Section2QueriesInterface.QUERY
             .findPatientsWithLastClinicalConsultationwhoAreNotInSecondLineDenominatorB2E;
 
     definition.setQuery(query);

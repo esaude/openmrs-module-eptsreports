@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.MQCohortCategory15Queries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCategory15CohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class MQCohortCategory15Test extends DefinitionsFGHLiveTest {
 
-  @Autowired private MQCohortCategory15Queries mQCohortQueriesCategory15;
+  @Autowired private MQCategory15CohortQueries mQCohortQueriesCategory15;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {

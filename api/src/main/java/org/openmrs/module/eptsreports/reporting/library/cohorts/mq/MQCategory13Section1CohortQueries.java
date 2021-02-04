@@ -1,8 +1,8 @@
-package org.openmrs.module.eptsreports.reporting.library.cohorts;
+package org.openmrs.module.eptsreports.reporting.library.cohorts.mq;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterfaceCategory13Section1;
+import org.openmrs.module.eptsreports.reporting.library.queries.mq.MQCategory13Section1QueriesInterface;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -26,7 +26,7 @@ public class MQCategory13Section1CohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterfaceCategory13Section1.QUERY
+        MQCategory13Section1QueriesInterface.QUERY
             .findPatientsWithLastClinicalConsultationDenominatorB1;
 
     definition.setQuery(query);
@@ -47,7 +47,7 @@ public class MQCategory13Section1CohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterfaceCategory13Section1.QUERY
+        MQCategory13Section1QueriesInterface.QUERY
             .findPatientsWithLastClinicalConsultationwhoAreInFistLineDenominatorB2;
 
     definition.setQuery(query);
@@ -69,7 +69,7 @@ public class MQCategory13Section1CohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterfaceCategory13Section1.QUERY
+        MQCategory13Section1QueriesInterface.QUERY
             .findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2E;
 
     definition.setQuery(query);
@@ -91,7 +91,7 @@ public class MQCategory13Section1CohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterfaceCategory13Section1.QUERY
+        MQCategory13Section1QueriesInterface.QUERY
             .findPatientsWithLastClinicalConsultationwhoAreInLinhaAlternativaDenominatorB3;
 
     definition.setQuery(query);
@@ -114,7 +114,7 @@ public class MQCategory13Section1CohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterfaceCategory13Section1.QUERY
+        MQCategory13Section1QueriesInterface.QUERY
             .findPatientsWithLastClinicalConsultationwhoAreDiferentFirstLineLinhaAternativaDenominatorB3E;
 
     definition.setQuery(query);
@@ -133,8 +133,7 @@ public class MQCategory13Section1CohortQueries {
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query =
-        QualityImprovementQueriesInterfaceCategory13Section1.QUERY.findPatientsWithCVDenominatorB4E;
+    String query = MQCategory13Section1QueriesInterface.QUERY.findPatientsWithCVDenominatorB4E;
 
     definition.setQuery(query);
 
@@ -153,8 +152,7 @@ public class MQCategory13Section1CohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterfaceCategory13Section1.QUERY
-            .findPatientsWithRequestCVDenominatorB5E;
+        MQCategory13Section1QueriesInterface.QUERY.findPatientsWithRequestCVDenominatorB5E;
 
     definition.setQuery(query);
 
@@ -172,7 +170,7 @@ public class MQCategory13Section1CohortQueries {
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query = QualityImprovementQueriesInterfaceCategory13Section1.QUERY.findNumeratorC;
+    String query = MQCategory13Section1QueriesInterface.QUERY.findNumeratorC;
 
     definition.setQuery(query);
 

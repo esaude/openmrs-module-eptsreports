@@ -1,6 +1,7 @@
-package org.openmrs.module.eptsreports.reporting.library.cohorts;
+package org.openmrs.module.eptsreports.reporting.library.cohorts.mq;
 
 import java.util.Date;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.PvlsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -10,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MQCohortQueryCategory14 {
+public class MQCategory14CohortQueries {
 
   @Autowired private PvlsCohortQueries pvlsCohortQueries;
 

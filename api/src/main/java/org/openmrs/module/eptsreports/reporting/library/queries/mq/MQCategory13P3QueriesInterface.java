@@ -1,6 +1,6 @@
-package org.openmrs.module.eptsreports.reporting.library.queries;
+package org.openmrs.module.eptsreports.reporting.library.queries.mq;
 
-public interface QualityImprovementQueriesInterfaceCategory13_3 {
+public interface MQCategory13P3QueriesInterface {
 
   class QUERY {
 
@@ -52,7 +52,7 @@ public interface QualityImprovementQueriesInterfaceCategory13_3 {
                 + ") final group by final.patient_id ";
 
     public static final String
-        findAllPatientsGreaterThan15WhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13_3_B2_Denominator =
+        findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2Denominator =
             "select patient_id from ( "
                 + " "
                 + "select max_tipo_despensa.* "
@@ -77,38 +77,6 @@ public interface QualityImprovementQueriesInterfaceCategory13_3 {
                 + "	pedidoCV.obs_datetime  >=date_add(:startInclusionDate, interval -3 MONTH) and pedidoCV.obs_datetime<=:startInclusionDate and pedidoCV.location_id=:location "
                 + "where pedidoCV.person_id is null "
                 + ") final "
-                + "INNER JOIN person pe ON final.patient_id=pe.person_id "
-                + "WHERE (TIMESTAMPDIFF(year,birthdate,:endInclusionDate))>=15 AND birthdate IS NOT NULL and pe.voided=0 "
-                + "group by final.patient_id ";
-
-    public static final String
-        findAllPatientsGreaterThan2LessThan15WhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13_3_B2_Denominator =
-            "select patient_id from ( "
-                + " "
-                + "select max_tipo_despensa.* "
-                + "from "
-                + "( "
-                + "	select max_tl.patient_id, max_tl.max_datatl "
-                + "	from "
-                + "	( "
-                + "		select p.patient_id,max(o.obs_datetime) max_datatl "
-                + "		from patient p "
-                + "			join encounter e on p.patient_id=e.patient_id "
-                + "			join obs o on o.encounter_id=e.encounter_id "
-                + "		where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 "
-                + "			and o.concept_id=21151 and e.location_id=:location "
-                + "			and o.obs_datetime between :startInclusionDate and :endInclusionDate "
-                + "		group by p.patient_id "
-                + "	) max_tl "
-                + "	join obs on obs.person_id=max_tl.patient_id and max_tl.max_datatl=obs.obs_datetime "
-                + "	where obs.concept_id=21151 and obs.value_coded=21148 and obs.voided=0 and obs.location_id=:location "
-                + ") max_tipo_despensa "
-                + "left join obs pedidoCV on pedidoCV.person_id=max_tipo_despensa.patient_id and pedidoCV.voided=0 and pedidoCV.concept_id=23722 and pedidoCV.value_coded=856 and "
-                + "	pedidoCV.obs_datetime  >=date_add(:startInclusionDate, interval -3 MONTH) and pedidoCV.obs_datetime<=:startInclusionDate and pedidoCV.location_id=:location "
-                + "where pedidoCV.person_id is null "
-                + ") final "
-                + "INNER JOIN person pe ON final.patient_id=pe.person_id "
-                + "WHERE (TIMESTAMPDIFF(year,birthdate,:endInclusionDate))>2 and (TIMESTAMPDIFF(year,birthdate,:endInclusionDate))<15 AND birthdate IS NOT NULL and pe.voided=0 "
                 + "group by final.patient_id ";
 
     public static final String

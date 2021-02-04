@@ -1,19 +1,22 @@
-package org.openmrs.module.eptsreports.reporting.library.cohorts;
+package org.openmrs.module.eptsreports.reporting.library.cohorts.mq;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterface;
-import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterfaceCategory10;
+import org.openmrs.module.eptsreports.reporting.library.queries.mq.MQCategory10QueriesInterface;
+import org.openmrs.module.eptsreports.reporting.library.queries.mq.MQQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MQCohortQueries10 {
+public class MQCategory10CohortQueries {
+
+  @Autowired private MQCohortQueries mQCohortQueries;
 
   @DocumentedDefinition(value = "findAllPatientsDiagnosedWithThePCRTestCategory10_B")
   public CohortDefinition findAllPatientsDiagnosedWithThePCRTestCategory10_B() {
@@ -26,8 +29,7 @@ public class MQCohortQueries10 {
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query =
-        QualityImprovementQueriesInterfaceCategory10.QUERY.findAllPatientsDiagnosedWithThePCRTestB;
+    String query = MQCategory10QueriesInterface.QUERY.findAllPatientsDiagnosedWithThePCRTestB;
 
     definition.setQuery(query);
 
@@ -48,29 +50,8 @@ public class MQCohortQueries10 {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterfaceCategory10.QUERY
+        MQCategory10QueriesInterface.QUERY
             .findAllPatientsDiagnosedWithThePCRTestAndStartDateARTMinusPCRTestDaysBetweenZeroAndFifteen;
-
-    definition.setQuery(query);
-
-    return definition;
-  }
-
-  @DocumentedDefinition(
-      value = "findPatientsWhoAreNewlyEnrolledOnARTAndAgeBetweenZeroAndEighteenMonths")
-  public CohortDefinition findPatientsWhoAreNewlyEnrolledOnARTAndAgeBetweenZeroAndEighteenMonths() {
-
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-
-    definition.setName("PCR_TEST_START_ARV");
-    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    String query =
-        QualityImprovementQueriesInterfaceCategory10.QUERY
-            .findPatientsWhoAreNewlyEnrolledOnARTAndAgeBetweenZeroAndEighteenMonths;
 
     definition.setQuery(query);
 
@@ -92,7 +73,7 @@ public class MQCohortQueries10 {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementQueriesInterface.QUERY
+        MQQueriesInterface.QUERY
             .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06;
 
     definition.setQuery(query);
@@ -110,7 +91,7 @@ public class MQCohortQueries10 {
       value =
           "findChildrenWithPCRTestPositiveForHIVAndStartARTWithinTwoWeeksCategory10_Denominador_10_3")
   public CohortDefinition
-      findChildrenWithPCRTestPositiveForHIVAndStartARTWithinTwoWeeksCategory10_Denominador_10_3() {
+      findPatientsWithPCRTestPositiveForHIVAndStartARTWithinTwoWeeksCategory10_Denominador_10_3() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName("PCR_TEST_START_TARV_15_DAYS_DENOMINATOR");
@@ -132,8 +113,7 @@ public class MQCohortQueries10 {
     definition.addSearch(
         "A",
         EptsReportUtils.map(
-            this.findPatientsWhoAreNewlyEnrolledOnARTAndAgeBetweenZeroAndEighteenMonths(),
-            mappings));
+            this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.addSearch(
         "B",
@@ -153,7 +133,7 @@ public class MQCohortQueries10 {
       value =
           "findChildrenWithPCRTestPositiveForHIVAndStartARTWithinTwoWeeksCategory10_Numerador_10_3")
   public CohortDefinition
-      findChildrenWithPCRTestPositiveForHIVAndStartARTWithinTwoWeeksCategory10_Numerador_10_3() {
+      findPatientsWithPCRTestPositiveForHIVAndStartARTWithinTwoWeeksCategory10_Numerador_10_3() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName("PCR_TEST_START_TARV_15_DAYS_NUMERATOR");
@@ -175,8 +155,7 @@ public class MQCohortQueries10 {
     definition.addSearch(
         "A",
         EptsReportUtils.map(
-            this.findPatientsWhoAreNewlyEnrolledOnARTAndAgeBetweenZeroAndEighteenMonths(),
-            mappings));
+            this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.addSearch(
         "B",

@@ -13,7 +13,7 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementQueriesInterface;
+import org.openmrs.module.eptsreports.reporting.library.queries.mq.MQQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.utils.EptsDateUtil;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.reporting.common.ListMap;
@@ -65,7 +65,7 @@ public class QualityImprovmentCategory11SectionICalculation extends BaseFghCalcu
 
     SqlQueryBuilder qb =
         new SqlQueryBuilder(
-            QualityImprovementQueriesInterface.QUERY
+            MQQueriesInterface.QUERY
                 .findFirstPatientChildrenAPSSConsultationWithinInclusionReportingPeriod,
             context.getParameterValues());
 

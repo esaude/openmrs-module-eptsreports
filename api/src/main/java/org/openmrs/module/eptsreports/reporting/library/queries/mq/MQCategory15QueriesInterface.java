@@ -1,6 +1,6 @@
-package org.openmrs.module.eptsreports.reporting.library.queries;
+package org.openmrs.module.eptsreports.reporting.library.queries.mq;
 
-public interface QualityImprovementCategory15QueriesInterface {
+public interface MQCategory15QueriesInterface {
 
   class QUERY {
 

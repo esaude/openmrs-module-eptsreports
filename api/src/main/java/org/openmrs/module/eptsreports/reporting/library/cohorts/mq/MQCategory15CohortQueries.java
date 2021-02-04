@@ -1,8 +1,9 @@
-package org.openmrs.module.eptsreports.reporting.library.cohorts;
+package org.openmrs.module.eptsreports.reporting.library.cohorts.mq;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovementCategory15QueriesInterface;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.mq.MQCategory15QueriesInterface;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -13,7 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MQCohortCategory15Queries {
+public class MQCategory15CohortQueries {
 
   @Autowired private MQCohortQueries mQCohortQueries;
 
@@ -59,8 +60,7 @@ public class MQCohortCategory15Queries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementCategory15QueriesInterface.QUERY
-            .findPatientsWithDTandGaacWithRequestForVLCategory15H1;
+        MQCategory15QueriesInterface.QUERY.findPatientsWithDTandGaacWithRequestForVLCategory15H1;
 
     definition.setQuery(query);
 
@@ -79,8 +79,7 @@ public class MQCohortCategory15Queries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementCategory15QueriesInterface.QUERY
-            .findPatientsWithDTandGaacWithRequestForVLCategory15H2;
+        MQCategory15QueriesInterface.QUERY.findPatientsWithDTandGaacWithRequestForVLCategory15H2;
 
     definition.setQuery(query);
 
@@ -99,8 +98,7 @@ public class MQCohortCategory15Queries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementCategory15QueriesInterface.QUERY
-            .findPatientsWithDTandGaacWithCV1000Category15I;
+        MQCategory15QueriesInterface.QUERY.findPatientsWithDTandGaacWithCV1000Category15I;
 
     definition.setQuery(query);
 
@@ -496,9 +494,7 @@ public class MQCohortCategory15Queries {
 
     definition.addSearch(
         "ADULT-AGE",
-        EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation(),
-            mappings));
+        EptsReportUtils.map(mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.setCompositionString("(A AND ADULT-AGE) NOT (B1 OR C OR D OR E OR F)");
 
@@ -626,7 +622,7 @@ public class MQCohortCategory15Queries {
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     String query =
-        QualityImprovementCategory15QueriesInterface.QUERY
+        MQCategory15QueriesInterface.QUERY
             .findPatientsFromFichaClinicaForGivenConceptsDenominadorCategoria15A;
     definition.setQuery(query);
     return definition;
@@ -645,7 +641,7 @@ public class MQCohortCategory15Queries {
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     String query =
-        QualityImprovementCategory15QueriesInterface.QUERY
+        MQCategory15QueriesInterface.QUERY
             .findPatientsWithLastGaacOrLastDispensaTrimestralRegisteredInFichaClinicaWithinRevisionPeriodB1;
     definition.setQuery(query);
     return definition;
@@ -663,7 +659,7 @@ public class MQCohortCategory15Queries {
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     String query =
-        QualityImprovementCategory15QueriesInterface.QUERY
+        MQCategory15QueriesInterface.QUERY
             .findPatientsWithDispensaTrimestralInicarInFichaClinicaDuringTheRevisionPeriodA2;
     definition.setQuery(query);
     return definition;
@@ -681,7 +677,7 @@ public class MQCohortCategory15Queries {
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
     String query =
-        QualityImprovementCategory15QueriesInterface.QUERY
+        MQCategory15QueriesInterface.QUERY
             .findPatientsWithLastTipoDeDispensaTrimestralInFichaClinicaWithinRevisionPeriodA3;
     definition.setQuery(query);
     return definition;
@@ -702,8 +698,8 @@ public class MQCohortCategory15Queries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        QualityImprovementCategory15QueriesInterface.QUERY
-            .findPatientsWhoAreNewlyEnrolledOnARTByAgeBetweenAgeRange(startAge, endAge);
+        MQCategory15QueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnARTByAgeBetweenAgeRange(
+            startAge, endAge);
 
     definition.setQuery(query);
 

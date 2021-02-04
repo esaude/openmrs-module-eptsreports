@@ -1,6 +1,6 @@
-package org.openmrs.module.eptsreports.reporting.library.queries;
+package org.openmrs.module.eptsreports.reporting.library.queries.mq;
 
-public interface QualityImprovementQueriesInterface {
+public interface MQQueriesInterface {
 
   class QUERY {
     public static final String findPatientsWhoAreNewlyEnrolledOnARTRF05 =
@@ -73,106 +73,6 @@ public interface QualityImprovementQueriesInterface {
             + "where 	pe.voided=0 and p.voided=0 and e.voided=0 and o.voided=0 and obsLactante.voided=0 and e.encounter_type=53 and e.location_id=:location and "
             + "o.concept_id=1190 and o.value_datetime is not null and o.value_datetime BETWEEN :startInclusionDate AND :endInclusionDate and "
             + "obsLactante.concept_id=6332 and obsLactante.value_coded=1065 and pe.gender='F' ";
-
-    public static final String
-        findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearAdultDesagragation =
-            "SELECT patient_id FROM ( "
-                + "SELECT patient_id, MIN(art_start_date) art_start_date FROM ( "
-                + "SELECT p.patient_id, MIN(value_datetime) art_start_date FROM patient p "
-                + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-                + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-                + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=53 "
-                + "AND o.concept_id=1190 AND o.value_datetime is NOT NULL AND o.value_datetime<=:endInclusionDate AND e.location_id=:location "
-                + "GROUP BY p.patient_id "
-                + ") art_start GROUP "
-                + "BY patient_id "
-                + ") tx_new "
-                + "INNER JOIN person pe ON tx_new.patient_id=pe.person_id "
-                + "WHERE (TIMESTAMPDIFF(year,birthdate,art_start_date))>=15 AND birthdate IS NOT NULL and pe.voided=0 "
-                + "AND art_start_date BETWEEN :startInclusionDate AND :endInclusionDate ";
-
-    public static final String
-        findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenDesagragation =
-            "SELECT patient_id FROM ( "
-                + "SELECT patient_id, MIN(art_start_date) art_start_date FROM ( "
-                + "SELECT p.patient_id, MIN(value_datetime) art_start_date FROM patient p "
-                + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-                + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-                + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=53 "
-                + "AND o.concept_id=1190 AND o.value_datetime is NOT NULL AND o.value_datetime<=:endInclusionDate AND e.location_id=:location "
-                + "GROUP BY p.patient_id "
-                + ") art_start GROUP "
-                + "BY patient_id "
-                + ") tx_new "
-                + "INNER JOIN person pe ON tx_new.patient_id=pe.person_id "
-                + "WHERE (TIMESTAMPDIFF(year,birthdate,art_start_date))< 15 AND birthdate IS NOT NULL and pe.voided=0 "
-                + "AND art_start_date BETWEEN :startInclusionDate AND :endInclusionDate ";
-
-    public static final String findPatientsWhoAreNewlyEnrolledOnARTByAChildrenWhit9Months =
-        "SELECT patient_id FROM ( "
-            + "SELECT patient_id, MIN(art_start_date) art_start_date FROM ( "
-            + "SELECT p.patient_id, MIN(value_datetime) art_start_date FROM patient p "
-            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-            + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=53 "
-            + "AND o.concept_id=1190 AND o.value_datetime is NOT NULL AND o.value_datetime<=:endInclusionDate AND e.location_id=:location "
-            + "GROUP BY p.patient_id "
-            + ") art_start GROUP "
-            + "BY patient_id "
-            + ") tx_new "
-            + "INNER JOIN person pe ON tx_new.patient_id=pe.person_id "
-            + "WHERE (TIMESTAMPDIFF(month,birthdate,art_start_date))< 9 AND birthdate IS NOT NULL and pe.voided=0 "
-            + "AND art_start_date BETWEEN :startInclusionDate AND :endInclusionDate ";
-
-    public static final String
-        findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen1neLess14 =
-            "SELECT patient_id FROM ( "
-                + "SELECT patient_id, MIN(art_start_date) art_start_date FROM ( "
-                + "SELECT p.patient_id, MIN(value_datetime) art_start_date FROM patient p "
-                + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-                + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-                + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=53 "
-                + "AND o.concept_id=1190 AND o.value_datetime is NOT NULL AND o.value_datetime<=:endInclusionDate AND e.location_id=:location "
-                + "GROUP BY p.patient_id "
-                + ") art_start GROUP "
-                + "BY patient_id "
-                + ") tx_new "
-                + "INNER JOIN person pe ON tx_new.patient_id=pe.person_id "
-                + "WHERE (TIMESTAMPDIFF(year,birthdate,art_start_date)) BETWEEN 1 AND 14 AND birthdate IS NOT NULL and pe.voided=0 "
-                + "AND art_start_date BETWEEN :startInclusionDate AND :endInclusionDate ";
-
-    public static final String
-        findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen2eLess14 =
-            "SELECT patient_id FROM ( "
-                + "SELECT patient_id, MIN(art_start_date) art_start_date FROM ( "
-                + "SELECT p.patient_id, MIN(value_datetime) art_start_date FROM patient p "
-                + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-                + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-                + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=53 "
-                + "AND o.concept_id=1190 AND o.value_datetime is NOT NULL AND o.value_datetime<=:endInclusionDate AND e.location_id=:location "
-                + "GROUP BY p.patient_id "
-                + ") art_start GROUP "
-                + "BY patient_id "
-                + ") tx_new "
-                + "INNER JOIN person pe ON tx_new.patient_id=pe.person_id "
-                + "WHERE (TIMESTAMPDIFF(year,birthdate,art_start_date)) BETWEEN 2 AND 14 AND birthdate IS NOT NULL and pe.voided=0 "
-                + "AND art_start_date BETWEEN :startInclusionDate AND :endInclusionDate ";
-
-    public static final String findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingMonth =
-        "SELECT patient_id FROM ( "
-            + "SELECT patient_id, MIN(art_start_date) art_start_date FROM ( "
-            + "SELECT p.patient_id, MIN(value_datetime) art_start_date FROM patient p "
-            + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-            + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=53 "
-            + "AND o.concept_id=1190 AND o.value_datetime is NOT NULL AND o.value_datetime<=:endInclusionDate AND e.location_id=:location "
-            + "GROUP BY p.patient_id "
-            + ") art_start "
-            + "GROUP BY patient_id "
-            + ") tx_new "
-            + "INNER JOIN person pe ON tx_new.patient_id=pe.person_id "
-            + "WHERE (TIMESTAMPDIFF(month,birthdate,art_start_date))<=18 AND birthdate IS NOT NULL and pe.voided=0 "
-            + "AND art_start_date BETWEEN :startInclusionDate AND :endInclusionDate ";
 
     public static final String
         findPatientsWhoAreNewEnrolledOnArtByAgeUsingYearAdulyAndHaveFirstConsultInclusionPeriodCategory3FR12Numerator =
@@ -387,7 +287,7 @@ public interface QualityImprovementQueriesInterface {
             + ")finalTPI ";
 
     public static final String
-        findAdultsOnARTWithMinimum3APSSFollowupConsultationsIntheFirst3MonthsAfterStartingARTCategory11NumeratorAdult =
+        findPatientsOnARTWithMinimum3APSSFollowupConsultationsIntheFirst3MonthsAfterStartingARTCategory11Numerator =
             " SELECT patient_id FROM ( "
                 + " select tx_new.patient_id, tx_new.art_start_date, primeira_consulta.encounter_datetime as APSS_data1, "
                 + " segunda_consulta.encounter_datetime as APSS_data2, terceira_consulta.encounter_datetime as APSS_data3 from ( "
@@ -411,7 +311,7 @@ public interface QualityImprovementQueriesInterface {
                 + " WHERE art_start_date BETWEEN :startInclusionDate AND :endInclusionDate "
                 + " ) adult ";
 
-    public static final String findAdultWithCVOver1000CopiesCategory11B2 =
+    public static final String findPatientWithCVOver1000CopiesCategory11B2 =
         "select carga_viral.patient_id from ( "
             + "Select p.patient_id, max(o.obs_datetime) data_carga from patient p "
             + "inner join encounter e on p.patient_id = e.patient_id "
@@ -419,19 +319,7 @@ public interface QualityImprovementQueriesInterface {
             + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
             + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000 "
             + "group by p.patient_id "
-            + ") carga_viral "
-            + "inner join person on person_id = carga_viral.patient_id WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) >= 15 AND birthdate IS NOT NULL and voided = 0  ";
-
-    public static final String findChildrenWithCVOver1000CopiesCategory11B2 =
-        "select carga_viral.patient_id from ( "
-            + "Select p.patient_id, max(o.obs_datetime) data_carga from patient p "
-            + "inner join encounter e on p.patient_id = e.patient_id "
-            + "inner join obs o on e.encounter_id=o.encounter_id "
-            + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
-            + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000 "
-            + "group by p.patient_id "
-            + ") carga_viral "
-            + "inner join person on person_id = carga_viral.patient_id WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) < 15 AND birthdate IS NOT NULL and voided = 0  ";
+            + ") carga_viral ";
 
     public static final String findPatientsWhoHaveLastFirstLineTerapeutic =
         "select firstLine.patient_id from ( "
@@ -449,7 +337,7 @@ public interface QualityImprovementQueriesInterface {
             + ") firstLine ";
 
     public static final String
-        findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH =
+        findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11Numerator =
             "select carga_viral.patient_id from ( "
                 + "Select p.patient_id, min(o.obs_datetime) data_carga from patient p "
                 + "inner join encounter e on p.patient_id = e.patient_id "
@@ -463,28 +351,7 @@ public interface QualityImprovementQueriesInterface {
                 + "inner join encounter segunda_consulta on carga_viral.patient_id = segunda_consulta.patient_id and segunda_consulta.voided = 0 and segunda_consulta.encounter_type = 35 "
                 + "and (TIMESTAMPDIFF(DAY, carga_viral.data_carga, segunda_consulta.encounter_datetime)) between 20 and 33 "
                 + "inner join encounter terceira_consulta on carga_viral.patient_id = terceira_consulta.patient_id and terceira_consulta.voided = 0 and terceira_consulta.encounter_type = 35 "
-                + "and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 20 and 33 "
-                + "inner join person pe on pe.person_id = carga_viral.patient_id "
-                + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) >= 15 AND birthdate IS NOT NULL ";
-
-    public static final String
-        findChildrenOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorChildrenH =
-            "select carga_viral.patient_id from ( "
-                + "Select p.patient_id, min(o.obs_datetime) data_carga from patient p "
-                + "inner join encounter e on p.patient_id = e.patient_id "
-                + "inner join obs o on e.encounter_id=o.encounter_id "
-                + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
-                + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000 "
-                + "group by p.patient_id "
-                + ") carga_viral "
-                + "inner join encounter primeira_consulta on carga_viral.patient_id = primeira_consulta.patient_id and primeira_consulta.voided = 0 and primeira_consulta.encounter_type = 35 and "
-                + "primeira_consulta.encounter_datetime=carga_viral.data_carga "
-                + "inner join encounter segunda_consulta on carga_viral.patient_id = segunda_consulta.patient_id and segunda_consulta.voided = 0 and segunda_consulta.encounter_type = 35 "
-                + "and (TIMESTAMPDIFF(DAY, carga_viral.data_carga, segunda_consulta.encounter_datetime)) between 20 and 33 "
-                + "inner join encounter terceira_consulta on carga_viral.patient_id = terceira_consulta.patient_id and terceira_consulta.voided = 0 and terceira_consulta.encounter_type = 35 "
-                + "and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 20 and 33 "
-                + "inner join person pe on pe.person_id = carga_viral.patient_id "
-                + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) < 15 AND birthdate IS NOT NULL ";
+                + "and (TIMESTAMPDIFF(DAY, segunda_consulta.encounter_datetime, terceira_consulta.encounter_datetime)) between 20 and 33 ";
 
     public static final String findAdultWithCVOver1000CopiesCategory11DenominatorAdult =
         "Select carga_viral.patient_id  from ( "
@@ -555,23 +422,6 @@ public interface QualityImprovementQueriesInterface {
                 + "and (TIMESTAMPDIFF(DAY, carga_viral.data_carga,e2.encounter_datetime)) between 58 and 6 "
                 + "inner join person on person_id = carga_viral.patient_id "
                 + "WHERE (TIMESTAMPDIFF(year,birthdate,carga_viral.data_carga))<15 AND birthdate IS NOT NULL and voided=0 ";
-
-    public static final String
-        findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingYearChildrenBiggerThen9MontheLess2 =
-            "SELECT patient_id FROM ( "
-                + "SELECT patient_id, MIN(art_start_date) art_start_date FROM ( "
-                + "SELECT p.patient_id, MIN(value_datetime) art_start_date FROM patient p "
-                + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-                + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-                + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=53 "
-                + "AND o.concept_id=1190 AND o.value_datetime is NOT NULL AND o.value_datetime<=:endInclusionDate AND e.location_id=:location "
-                + "GROUP BY p.patient_id "
-                + ") art_start GROUP "
-                + "BY patient_id "
-                + ") tx_new "
-                + "INNER JOIN person pe ON tx_new.patient_id=pe.person_id "
-                + "WHERE (TIMESTAMPDIFF(month,birthdate,art_start_date)) <= 9 AND birthdate IS NOT NULL and pe.voided = 0 "
-                + "AND art_start_date BETWEEN :startInclusionDate AND :endInclusionDate ";
 
     public static final String
         findFirstPatientChildrenAPSSConsultationWithinInclusionReportingPeriod =
