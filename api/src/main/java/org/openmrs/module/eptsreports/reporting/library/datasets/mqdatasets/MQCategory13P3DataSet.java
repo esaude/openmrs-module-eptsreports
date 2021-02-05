@@ -1,15 +1,21 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets;
 
+import java.util.Date;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCategory13P3CohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MQCategory13P3DataSet extends MQGenericDataSet {
+public class MQCategory13P3DataSet {
 
   @Autowired private MQCategory13P3CohortQueries mqCohortQueries13_3;
+  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   public void constructTMqDatset(
       CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
@@ -167,5 +173,19 @@ public class MQCategory13P3DataSet extends MQGenericDataSet {
                 mappings),
             mappings),
         "ageOnEndInclusionDate=3-14");
+  }
+
+  public CohortIndicator setIndicatorWithAllParameters(
+      final CohortDefinition cohortDefinition, final String indicatorName, final String mappings) {
+    final CohortIndicator indicator =
+        this.eptsGeneralIndicator.getIndicator(
+            indicatorName, EptsReportUtils.map(cohortDefinition, mappings));
+
+    indicator.addParameter(new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    indicator.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    indicator.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    indicator.addParameter(new Parameter("location", "location", Date.class));
+
+    return indicator;
   }
 }

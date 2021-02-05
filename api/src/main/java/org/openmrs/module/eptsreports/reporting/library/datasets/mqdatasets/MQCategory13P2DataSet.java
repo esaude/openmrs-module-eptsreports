@@ -1,15 +1,21 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets;
 
+import java.util.Date;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCategory13P2CohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MQCategory13P2DataSet extends MQGenericDataSet {
+public class MQCategory13P2DataSet {
 
   @Autowired private MQCategory13P2CohortQueries mQCohortQueriesCategory13P2;
+  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   public void constructTMqDatset(
       CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
@@ -24,7 +30,7 @@ public class MQCategory13P2DataSet extends MQGenericDataSet {
                 "CAT13P2PregnantWithCVInTARVDENOMINATOR",
                 mappings),
             mappings),
-        "gender=F|ageOnEndInclusionDate=15+");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR",
@@ -37,7 +43,7 @@ public class MQCategory13P2DataSet extends MQGenericDataSet {
                 "CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR",
                 mappings),
             mappings),
-        "gender=F|ageOnEndInclusionDate=15+");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR",
@@ -49,7 +55,7 @@ public class MQCategory13P2DataSet extends MQGenericDataSet {
                 "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR",
                 mappings),
             mappings),
-        "gender=F|ageOnEndInclusionDate=15+");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVInTARVNUMINATOR",
@@ -61,7 +67,7 @@ public class MQCategory13P2DataSet extends MQGenericDataSet {
                 "CAT13P2PregnantWithCVInTARVNUMINATOR",
                 mappings),
             mappings),
-        "gender=F|ageOnEndInclusionDate=15+");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR",
@@ -73,7 +79,7 @@ public class MQCategory13P2DataSet extends MQGenericDataSet {
                 "CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR",
                 mappings),
             mappings),
-        "gender=F|ageOnEndInclusionDate=15+");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR",
@@ -85,6 +91,20 @@ public class MQCategory13P2DataSet extends MQGenericDataSet {
                 "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR",
                 mappings),
             mappings),
-        "gender=F|ageOnEndInclusionDate=15+");
+        "ageOnEndInclusionDate=15+");
+  }
+
+  public CohortIndicator setIndicatorWithAllParameters(
+      final CohortDefinition cohortDefinition, final String indicatorName, final String mappings) {
+    final CohortIndicator indicator =
+        this.eptsGeneralIndicator.getIndicator(
+            indicatorName, EptsReportUtils.map(cohortDefinition, mappings));
+
+    indicator.addParameter(new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    indicator.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    indicator.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    indicator.addParameter(new Parameter("location", "location", Date.class));
+
+    return indicator;
   }
 }

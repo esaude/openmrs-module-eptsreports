@@ -108,6 +108,43 @@ public class MQCategory11CohortQueries {
             mappings));
 
     definition.setCompositionString("(DENOMINATOR AND G-APSS-PP)");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value =
+          "findPatientsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTransferedOutCategory11SectionAPSS_I")
+  public CohortDefinition
+      findPatientsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTransferedOutCategory11SectionAPSS_I() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName(
+        "findAdultsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTCategory11NUMERATOR");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "DENOMINATOR",
+        EptsReportUtils.map(
+            this.mQGenericCohortQueries
+                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOut(),
+            mappings));
+
+    definition.addSearch(
+        "I-APSS-PP",
+        EptsReportUtils.map(
+            this.mQCohortQueries
+                .findChildrenPatientsWithAtLeast9APSSConsultationByInclusionPeriod(),
+            mappings));
+
+    definition.setCompositionString("(DENOMINATOR AND I-APSS-PP)");
     return definition;
   }
 

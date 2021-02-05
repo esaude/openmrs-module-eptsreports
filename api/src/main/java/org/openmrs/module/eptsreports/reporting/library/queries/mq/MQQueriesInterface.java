@@ -448,8 +448,7 @@ public interface MQQueriesInterface {
                 + "	group by p.patient_id                                                            				  			"
                 + "	) min_consultation on min_consultation.patient_id = tx_new.patient_id	                          			"
                 + "	join person pe on pe.person_id= tx_new.patient_id                                                 			"
-                + "where (TIMESTAMPDIFF(year,birthdate,tx_new.art_start_date))<2 and birthdate is not null and pe.voided=0    			"
-                + "  and tx_new.art_start_date between :startInclusionDate and :endInclusionDate and tx_new.art_start_date < min_consultation.min_consultation_date";
+                + "where  tx_new.art_start_date between :startInclusionDate and :endInclusionDate and tx_new.art_start_date < min_consultation.min_consultation_date";
 
     public static final String
         findPatientsWhithCD4RegistredInClinicalConsultationUnder33DaysFromTheFirstClinicalConsultation =
@@ -463,5 +462,20 @@ public interface MQQueriesInterface {
                 + "inner join obs obsCD4 on obsCD4.person_id=firstClinica.patient_id "
                 + "where obsCD4.obs_datetime > firstClinica.encounter_datetime and obsCD4.obs_datetime <=  DATE_ADD(firstClinica.encounter_datetime, INTERVAL 33 DAY) and obsCD4.concept_id=1695 and obsCD4.value_numeric is not null and obsCD4.voided=0 "
                 + "and obsCD4.location_id = :location ";
+
+    public static final String findPatientsAgeRange =
+        "SELECT patient_id FROM patient "
+            + "INNER JOIN person ON patient_id = person_id WHERE patient.voided=0 AND person.voided=0 "
+            + "AND TIMESTAMPDIFF(year,birthdate,:endInclusionDate) BETWEEN %d AND %d AND birthdate IS NOT NULL";
+
+    public static final String findPatientsBiggerThan =
+        "SELECT patient_id FROM patient "
+            + "INNER JOIN person ON patient_id = person_id WHERE patient.voided=0 AND person.voided=0 "
+            + "AND TIMESTAMPDIFF(year,birthdate,:endInclusionDate) >  %d AND birthdate IS NOT NULL";
+
+    public static final String findPatientsLessThan =
+        "SELECT patient_id FROM patient "
+            + "INNER JOIN person ON patient_id = person_id WHERE patient.voided=0 AND person.voided=0 "
+            + "AND TIMESTAMPDIFF(year,birthdate,:endInclusionDate) <  %d AND birthdate IS NOT NULL";
   }
 }

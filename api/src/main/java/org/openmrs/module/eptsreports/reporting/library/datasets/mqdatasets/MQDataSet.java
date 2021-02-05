@@ -42,11 +42,14 @@ public class MQDataSet extends BaseDataSet {
   @Autowired private MQCategory13P2DataSet mQCategory13P2DataSet;
   @Autowired private MQCategory13P3DataSet mQCategory13P3DataSet;
   @Autowired private MQCategory15DataSet mQCategory15DataSet;
+  @Autowired private MQCategory13P4DataSet mQCategory13P4DataSet;
+  @Autowired private MQCategory9DataSet mQCategory9DataSet;
 
   public DataSetDefinition constructTMqDatset() {
 
     final CohortIndicatorDataSetDefinition dataSetDefinition =
         new CohortIndicatorDataSetDefinition();
+
     dataSetDefinition.setParameters(getParameters());
 
     final String mappings =
@@ -57,19 +60,19 @@ public class MQDataSet extends BaseDataSet {
     dataSetDefinition.addDimension("gender", map(eptsCommonDimension.gender(), ""));
 
     dataSetDefinition.addDimension(
+        "ageMqNewART",
+        EptsReportUtils.map(
+            this.mQAgeDimensions.getDimensionForPatientsWhoAreNewlyEnrolledOnART(), mappings));
+
+    dataSetDefinition.addDimension(
         "age",
         EptsReportUtils.map(
             this.mQAgeDimensions.getDimensionForLastClinicalConsultation(), mappings));
 
     dataSetDefinition.addDimension(
-        "ageMq",
+        "ageOnCV",
         EptsReportUtils.map(
-            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
-
-    dataSetDefinition.addDimension(
-        "ageMqNewART",
-        EptsReportUtils.map(
-            this.mQAgeDimensions.getDimensionForPatientsWhoAreNewlyEnrolledOnART(), mappings));
+            this.mQAgeDimensions.getDimensionForPatientsPatientWithCVOver1000Copies(), mappings));
 
     dataSetDefinition.addDimension(
         "ageMqNewARTRevisionDate",
@@ -78,30 +81,30 @@ public class MQDataSet extends BaseDataSet {
             mappings));
 
     dataSetDefinition.addDimension(
-        "ageOnCV",
-        EptsReportUtils.map(
-            this.mQAgeDimensions.getDimensionForPatientsPatientWithCVOver1000Copies(), mappings));
+        "ageOnEndInclusionDate",
+        EptsReportUtils.map(this.mQAgeDimensions.getDimensionAgeEndInclusionDate(), mappings));
 
     dataSetDefinition.addDimension(
-        "ageOnEndInclusionDate",
+        "ageMq",
         EptsReportUtils.map(
-            eptsCommonDimension.ageEndInclusionDate(ageDimensionCohort),
-            "effectiveDate=${endInclusionDate}"));
+            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
     this.mqCategory3DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory4Dataset.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory5DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory6Dataset.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory7Dataset.constructTMqDatset(dataSetDefinition, mappings);
+    this.mQCategory9DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory11DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory12DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory12SectionIIDataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory13DataSetSectionI.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory13DataSetSectionII.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory13P2DataSet.constructTMqDatset(dataSetDefinition, mappings);
-    this.mQCategory13P3DataSet.constructTMqDatset(dataSetDefinition, mappings);
-    this.mQCategory15DataSet.constructTMqDatset(dataSetDefinition, mappings);
+    //    this.mQCategory13P3DataSet.constructTMqDatset(dataSetDefinition, mappings);
+    this.mQCategory13P4DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mqCategory14DataSet.constructTMqDatset(dataSetDefinition, mappings);
+    this.mQCategory15DataSet.constructTMqDatset(dataSetDefinition, mappings);
 
     return dataSetDefinition;
   }
