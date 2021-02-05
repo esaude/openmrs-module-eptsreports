@@ -54,7 +54,7 @@ public class MQCategory4Dataset {
                 "CAT4PregnantDENOMINATOR",
                 mappings),
             mappings),
-        "");
+        "gender=F");
 
     dataSetDefinition.addColumn(
         "CAT4PregnantNUMERATOR",
@@ -66,7 +66,7 @@ public class MQCategory4Dataset {
                 "CAT4PregnantNUMERATOR",
                 mappings),
             mappings),
-        "");
+        "gender=F");
   }
 
   public CohortIndicator setIndicatorWithAllParameters(

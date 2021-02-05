@@ -18,13 +18,14 @@ public class MQCategory12P2CohortQueries {
 
   @DocumentedDefinition(
       value =
-          "findAdultInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionCategory12Line14ColumnE(")
+          "findPatientsInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line64ColumnDDenominator(")
   public CohortDefinition
       findPatientsInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line64ColumnDDenominator() {
+
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName(
-        "findAdultInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionCategory12Line14ColumnE");
+        "findPatientsInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line64ColumnDDenominator");
 
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));

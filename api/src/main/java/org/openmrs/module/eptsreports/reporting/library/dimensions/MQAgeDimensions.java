@@ -310,7 +310,7 @@ public class MQAgeDimensions {
     dimension.addCohortDefinition(
         "15+",
         EptsReportUtils.map(
-            this.findPatientsWhoAreNewlyEnrolledOnARTUntilRevisionDateByAdult(15), mappings));
+            this.findPatientsWhoAreNewlyEnrolledOnARTUntilRevisionDateByAdult(14), mappings));
 
     dimension.addCohortDefinition(
         "15-",
@@ -464,6 +464,12 @@ public class MQAgeDimensions {
 
     dimension.addCohortDefinition(
         "3-14", EptsReportUtils.map(this.calculateDefaulteAgeByAgeRenge(3, 14), mappings));
+
+    dimension.addCohortDefinition(
+        "0-4", EptsReportUtils.map(this.calculateDefaulteAgeByAgeRenge(0, 4), mappings));
+
+    dimension.addCohortDefinition(
+        "10-14", EptsReportUtils.map(this.calculateDefaulteAgeByAgeRenge(10, 14), mappings));
 
     return dimension;
   }

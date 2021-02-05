@@ -42,7 +42,7 @@ public class MQCategory13P3DataSet {
                 "CAT13_PART_3_13_2_NUMERATOR",
                 mappings),
             mappings),
-        "ageMqNewART=15+");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_9_DENOMINATOR",
@@ -55,7 +55,7 @@ public class MQCategory13P3DataSet {
                 "CAT13_PART_3_13_9_DENOMINATOR",
                 mappings),
             mappings),
-        "ageMqNewART=0-4");
+        "ageOnEndInclusionDate=0-4");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_9_NUMERATOR",
@@ -68,7 +68,7 @@ public class MQCategory13P3DataSet {
                 "CAT13_PART_3_13_9_NUMERATOR",
                 mappings),
             mappings),
-        "ageMqNewART=0-4");
+        "ageOnEndInclusionDate=0-4");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_10_DENOMINATOR",
@@ -81,7 +81,7 @@ public class MQCategory13P3DataSet {
                 "CAT13_PART_3_13_10_DENOMINATOR",
                 mappings),
             mappings),
-        "ageMqNewART=5-9");
+        "ageOnEndInclusionDate=5-9");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_10_NUMERATOR",
@@ -94,7 +94,7 @@ public class MQCategory13P3DataSet {
                 "CAT13_PART_3_13_10_NUMERATOR",
                 mappings),
             mappings),
-        "ageMqNewART=5-9");
+        "ageOnEndInclusionDate=5-9");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_11_DENOMINATOR",
@@ -107,7 +107,7 @@ public class MQCategory13P3DataSet {
                 "CAT13_PART_3_13_11_DENOMINATOR",
                 mappings),
             mappings),
-        "ageMqNewART=10-14");
+        "ageOnEndInclusionDate=10-14");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_11_NUMERATOR",
@@ -120,7 +120,7 @@ public class MQCategory13P3DataSet {
                 "CAT13_PART_3_13_11_NUMERATOR",
                 mappings),
             mappings),
-        "ageMqNewART=10-14");
+        "ageOnEndInclusionDate=10-14");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_5_DENOMINATOR",
