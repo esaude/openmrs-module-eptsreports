@@ -36,27 +36,28 @@ public class TxRTTPatientsWhoExperiencedIITCalculation extends BaseFghCalculatio
             .evaluate(parameterValues, context);
 
     // TODO: Este codigo vai entrar na release de Marco 2021
-    //    QueryDisaggregationProcessor queryDisaggregation =
-    //        Context.getRegisteredComponents(QueryDisaggregationProcessor.class).get(0);
+    // QueryDisaggregationProcessor queryDisaggregation =
+    // Context.getRegisteredComponents(QueryDisaggregationProcessor.class).get(0);
     //
-    //    Map<Integer, Date> transferredInToInclude =
-    //        queryDisaggregation.findTransferredInPatientsUntilRerportEndingDate(context);
+    // Map<Integer, Date> transferredInToInclude =
+    // queryDisaggregation.findTransferredInPatientsUntilRerportEndingDate(context);
     //
-    //    for (Entry<Integer, Date> entry : transferredInToInclude.entrySet()) {
-    //      CalculationResult calculationResult = inicioRealResult.get(entry.getKey());
-    //      if (calculationResult != null && calculationResult.getValue() != null) {
-    //        Date inicioDate = (Date) calculationResult.getValue();
-    //        if (inicioDate != null) {
-    //          if (entry.getValue().compareTo(inicioDate) >= 0) {
-    //            inicioRealResult.put(entry.getKey(), new SimpleResult(entry.getValue(), this));
-    //          }
-    //          // TODO: vai entrar na proxima release
-    //          //					if (entry.getValue().compareTo(startDate) > 0) {
-    //          //						inicioRealResult.remove(entry.getKey());
-    //          //					}
-    //        }
-    //      }
-    //    }
+    // for (Entry<Integer, Date> entry : transferredInToInclude.entrySet()) {
+    // CalculationResult calculationResult = inicioRealResult.get(entry.getKey());
+    // if (calculationResult != null && calculationResult.getValue() != null) {
+    // Date inicioDate = (Date) calculationResult.getValue();
+    // if (inicioDate != null) {
+    // if (entry.getValue().compareTo(inicioDate) >= 0) {
+    // inicioRealResult.put(entry.getKey(), new SimpleResult(entry.getValue(),
+    // this));
+    // }
+    // // TODO: vai entrar na proxima release
+    // // if (entry.getValue().compareTo(startDate) > 0) {
+    // // inicioRealResult.remove(entry.getKey());
+    // // }
+    // }
+    // }
+    // }
 
     Set<Integer> cohort = inicioRealResult.keySet();
     CalculationResultMap lastFilaCalculationResult =
@@ -113,17 +114,32 @@ public class TxRTTPatientsWhoExperiencedIITCalculation extends BaseFghCalculatio
               TxMLPatientCalculation.getLastRecepcaoLevantamentoPlus30(
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
 
-      if (maxNextDate == null) {
-        resultMap.put(patientId, new SimpleResult(null, this));
-      } else {
-
+      if (maxNextDate != null) {
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, 28);
 
         if (nextDatePlus28.compareTo(startDate) < 0) {
           resultMap.put(patientId, new SimpleResult(nextDatePlus28, this));
         }
+      } else {
+        this.checkConsultationsOrFilaWithoutNextConsultationDate(
+            patientId, resultMap, startDate, lastFilaCalculationResult, nextFilaResult);
+        this.checkConsultationsOrFilaWithoutNextConsultationDate(
+            patientId, resultMap, startDate, lastSeguimentoCalculationResult, nextSeguimentoResult);
       }
     }
+
+    //      if (maxNextDate == null) {
+    //        resultMap.put(patientId, new SimpleResult(null, this));
+    //      } else {
+    //
+    //        Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, 28);
+    //
+    //        if (nextDatePlus28.compareTo(startDate) < 0) {
+    //          resultMap.put(patientId, new SimpleResult(nextDatePlus28, this));
+    //        }
+    //      }
+    //    }
+    //
     return resultMap;
   }
 
