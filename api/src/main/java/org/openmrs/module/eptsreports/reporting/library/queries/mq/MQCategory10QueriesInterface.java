@@ -38,6 +38,5 @@ public interface MQCategory10QueriesInterface {
                 + "group by p.patient_id "
                 + ") PCR on PCR.patient_id = tx_new.patient_id and DATEDIFF(tx_new.art_start_date, PCR.obs_datetime) between 0 AND 15 and tx_new.art_start_date between :startInclusionDate and :endInclusionDate "
                 + ") final group by patient_id ";
-
   }
 }
