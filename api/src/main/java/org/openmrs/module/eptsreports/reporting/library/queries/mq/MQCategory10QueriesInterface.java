@@ -39,21 +39,5 @@ public interface MQCategory10QueriesInterface {
                 + ") PCR on PCR.patient_id = tx_new.patient_id and DATEDIFF(tx_new.art_start_date, PCR.obs_datetime) between 0 AND 15 and tx_new.art_start_date between :startInclusionDate and :endInclusionDate "
                 + ") final group by patient_id ";
 
-    public static final String
-        findPatientsWhoAreNewlyEnrolledOnARTAndAgeBetweenZeroAndEighteenMonths =
-            "SELECT patient_id  FROM ( "
-                + "SELECT patient_id, MIN(art_start_date) art_start_date FROM ( "
-                + "SELECT p.patient_id, MIN(value_datetime) art_start_date FROM patient p "
-                + "INNER JOIN encounter e ON p.patient_id=e.patient_id "
-                + "INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-                + "WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type=53 "
-                + "AND o.concept_id=1190 AND o.value_datetime is NOT NULL AND o.value_datetime<=:endInclusionDate AND e.location_id=:location "
-                + "GROUP BY p.patient_id "
-                + ") art_start GROUP "
-                + "BY patient_id "
-                + ") tx_new "
-                + "INNER JOIN person pe ON tx_new.patient_id=pe.person_id "
-                + "WHERE (TIMESTAMPDIFF(month,birthdate,art_start_date)) between 0 and 18 AND birthdate IS NOT NULL and pe.voided=0 "
-                + "AND art_start_date BETWEEN :startInclusionDate and :endInclusionDate ";
   }
 }
