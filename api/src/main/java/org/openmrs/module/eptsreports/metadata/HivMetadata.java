@@ -3619,4 +3619,20 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.elegibitilyDateConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 24004</b>
+   *
+   * <p><b>Name:</b> PATIENT CONTACTED
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPatientContactedConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientContactedConceptUuid");
+    return getConcept(uuid);
+  }
 }

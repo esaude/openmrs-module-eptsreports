@@ -2498,6 +2498,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.patientContactedConceptUuid</property>
+		<defaultValue>ee8262f1-9a13-42a0-b835-589366513750</defaultValue>
+		<description>
+			PATIENT CONTACTED concept
+		</description>
+	</globalProperty>
+
 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
