@@ -87,12 +87,13 @@ public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
       Date minTxCurrDate = entry.getValue();
 
       CalculationResult calculationResult = iiTPatients.get(patientId);
-
       if (calculationResult != null && calculationResult.getValue() != null) {
-        Date iitDate = (Date) calculationResult.getValue();
-        Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-        if (EptsDateUtil.getDaysBetween(iiDatePlus29, minTxCurrDate) >= DAYS_OF_YEAR) {
-          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        if (calculationResult.getValue() instanceof Date) {
+          Date iitDate = (Date) calculationResult.getValue();
+          Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
+          if (EptsDateUtil.getDaysBetween(iiDatePlus29, minTxCurrDate) >= DAYS_OF_YEAR) {
+            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          }
         }
       }
     }
@@ -109,10 +110,12 @@ public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
       CalculationResult calculationResult = iiTPatients.get(patientId);
 
       if (calculationResult != null && calculationResult.getValue() != null) {
-        Date iitDate = (Date) calculationResult.getValue();
-        Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-        if (EptsDateUtil.getDaysBetween(iiDatePlus29, maxTxCurrDate) >= DAYS_OF_YEAR) {
-          resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+        if (calculationResult.getValue() instanceof Date) {
+          Date iitDate = (Date) calculationResult.getValue();
+          Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
+          if (EptsDateUtil.getDaysBetween(iiDatePlus29, maxTxCurrDate) >= DAYS_OF_YEAR) {
+            resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
+          }
         }
       }
     }
