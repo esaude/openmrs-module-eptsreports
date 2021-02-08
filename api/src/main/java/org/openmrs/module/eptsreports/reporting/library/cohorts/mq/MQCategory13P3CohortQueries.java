@@ -379,24 +379,10 @@ public class MQCategory13P3CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "BREASTFEEDING",
-        EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
-
-    definition.addSearch(
-        "PREGNANT",
-        EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
-
-    definition.addSearch(
-        "TRANSFERED-OUT",
-        EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
-
-    definition.addSearch(
-        "B2",
+        "DENOMINATOR-B2",
         EptsReportUtils.map(
             this
-                .findPatientsExcludeAllHaveLaboratoryInvestigationRequestsAndViralChargeCategory13_3_B2(),
+                .findPatientsInSecondLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13_3_Denominador_13_5(),
             mappings));
 
     definition.addSearch(
@@ -406,7 +392,7 @@ public class MQCategory13P3CohortQueries {
                 .findPatientsFromClinicalConsultationWhoHaveViralChargeSecondLineDateCategory13_3_I(),
             mappings));
 
-    definition.setCompositionString("(B2 AND I) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
+    definition.setCompositionString("DENOMINATOR-B2 AND I");
 
     return definition;
   }
