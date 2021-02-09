@@ -24,7 +24,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_1_2_3_4_DENOMINATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_5_7_9_11_DENOMINATOR",
@@ -36,7 +36,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_5_7_9_11_DENOMINATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=2-9");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_6_8_10_12_DENOMINATOR",
@@ -48,7 +48,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_6_8_10_12_DENOMINATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=10-14");
 
     // Categoria 15 NUMERATOR
     dataSetDefinition.addColumn(
@@ -60,7 +60,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_1_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_2_NUMERATOR",
@@ -71,7 +71,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_2_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_3_NUMERATOR",
@@ -82,7 +82,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_3_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_4_NUMERATOR",
@@ -93,7 +93,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_4_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=15+");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_5_NUMERATOR",
@@ -104,7 +104,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_5_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=2-9");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_6_NUMERATOR",
@@ -115,7 +115,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_6_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=10-14");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_7_NUMERATOR",
@@ -126,7 +126,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_7_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=2-9");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_8_NUMERATOR",
@@ -137,7 +137,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_8_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=10-14");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_9_NUMERATOR",
@@ -148,7 +148,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_9_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=2-9");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_10_NUMERATOR",
@@ -159,7 +159,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_10_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=10-14");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_11_NUMERATOR",
@@ -170,7 +170,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_11_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=2-9");
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_12_NUMERATOR",
@@ -181,6 +181,6 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
                 "CAT15INDICATOR_12_NUMERATOR",
                 mappings),
             mappings),
-        "");
+        "ageOnEndInclusionDate=10-14");
   }
 }

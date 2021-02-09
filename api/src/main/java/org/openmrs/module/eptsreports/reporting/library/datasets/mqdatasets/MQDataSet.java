@@ -1,32 +1,18 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
-
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.MQAgeDimensions;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MQDataSet extends BaseDataSet {
-
-  @Autowired private EptsCommonDimension eptsCommonDimension;
-  @Autowired private MQAgeDimensions mQAgeDimensions;
-
-  @Autowired
-  @Qualifier("commonAgeDimensionCohort")
-  private AgeDimensionCohortInterface ageDimensionCohort;
 
   @Autowired private MQCategory14DataSet mqCategory14DataSet;
   @Autowired private MQCategory3DataSet mqCategory3DataSet;
@@ -45,51 +31,20 @@ public class MQDataSet extends BaseDataSet {
   @Autowired private MQCategory15DataSet mQCategory15DataSet;
   @Autowired private MQCategory13P4DataSet mQCategory13P4DataSet;
   @Autowired private MQCategory9DataSet mQCategory9DataSet;
+  @Autowired private MQAbstractDataSet mQAbstractDataSet;
 
   public DataSetDefinition constructTMqDatset() {
 
     final CohortIndicatorDataSetDefinition dataSetDefinition =
         new CohortIndicatorDataSetDefinition();
 
+    dataSetDefinition.setName("MQ Data Set");
     dataSetDefinition.setParameters(getParameters());
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    dataSetDefinition.setName("MQ Data Set");
-
-    dataSetDefinition.addDimension("gender", map(eptsCommonDimension.gender(), ""));
-
-    dataSetDefinition.addDimension(
-        "ageMqNewART",
-        EptsReportUtils.map(
-            this.mQAgeDimensions.getDimensionForPatientsWhoAreNewlyEnrolledOnART(), mappings));
-
-    dataSetDefinition.addDimension(
-        "age",
-        EptsReportUtils.map(
-            this.mQAgeDimensions.getDimensionForLastClinicalConsultation(), mappings));
-
-    dataSetDefinition.addDimension(
-        "ageOnCV",
-        EptsReportUtils.map(
-            this.mQAgeDimensions.getDimensionForPatientsPatientWithCVOver1000Copies(), mappings));
-
-    dataSetDefinition.addDimension(
-        "ageMqNewARTRevisionDate",
-        EptsReportUtils.map(
-            this.mQAgeDimensions.getDimensionForPatientsWhoAreNewlyEnrolledOnARTUntilRevisionDate(),
-            mappings));
-
-    dataSetDefinition.addDimension(
-        "ageOnEndInclusionDate",
-        EptsReportUtils.map(this.mQAgeDimensions.getDimensionAgeEndInclusionDate(), mappings));
-
-    dataSetDefinition.addDimension(
-        "ageMq",
-        EptsReportUtils.map(
-            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
-
+    this.mQAbstractDataSet.getMQCommonDementions(dataSetDefinition, mappings);
     this.mqCategory3DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory4Dataset.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory5DataSet.constructTMqDatset(dataSetDefinition, mappings);

@@ -492,11 +492,7 @@ public class MQCategory15CohortQueries {
     definition.addSearch(
         "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
-    definition.addSearch(
-        "ADULT-AGE",
-        EptsReportUtils.map(mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
-
-    definition.setCompositionString("(A AND ADULT-AGE) NOT (B1 OR C OR D OR E OR F)");
+    definition.setCompositionString("A NOT (B1 OR C OR D OR E OR F)");
 
     return definition;
   }
@@ -547,12 +543,7 @@ public class MQCategory15CohortQueries {
     definition.addSearch(
         "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
-    definition.addSearch(
-        "CHILDREN-2-9",
-        EptsReportUtils.map(
-            findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingAgeRange(2, 9), mappings));
-
-    definition.setCompositionString("((A2 OR A3) AND CHILDREN-2-9) NOT (B1 OR C OR D OR F)");
+    definition.setCompositionString("(A2 OR A3) NOT (B1 OR C OR D OR F)");
 
     return definition;
   }
@@ -603,12 +594,7 @@ public class MQCategory15CohortQueries {
     definition.addSearch(
         "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
-    definition.addSearch(
-        "CHILDREN-10-14",
-        EptsReportUtils.map(
-            findPatientsWhoAreNewlyEnrolledOnARTByAgeUsingAgeRange(10, 14), mappings));
-
-    definition.setCompositionString("((A2 OR A3) AND CHILDREN-10-14) NOT (B1 OR C OR D OR F)");
+    definition.setCompositionString("(A2 OR A3) NOT (B1 OR C OR D OR F)");
 
     return definition;
   }
