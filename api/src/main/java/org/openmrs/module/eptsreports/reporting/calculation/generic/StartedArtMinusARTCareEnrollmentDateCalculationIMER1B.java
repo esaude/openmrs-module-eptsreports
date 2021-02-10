@@ -24,7 +24,6 @@ import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;

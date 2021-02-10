@@ -2927,10 +2927,12 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition b1 = getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
     CohortDefinition b2 = getPatientsFromFichaClinicaDenominatorB("B2_11");
 
-    CohortDefinition c =
-        commonCohortQueries.getMOHPregnantORBreastfeeding(
-            commonMetadata.getPregnantConcept().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId());
+    CohortDefinition b4 =
+        QualityImprovement2020Queries.getMQ11DenB4(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            commonMetadata.getPregnantConcept().getConceptId());
 
     CohortDefinition d =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
@@ -2948,7 +2950,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING1));
     compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING1));
-    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
+    compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING));
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
@@ -3201,10 +3203,13 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition b1 = getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
     CohortDefinition b2 = getPatientsFromFichaClinicaDenominatorB("B2_11");
-    CohortDefinition c =
-        commonCohortQueries.getMOHPregnantORBreastfeeding(
-            commonMetadata.getPregnantConcept().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition b4 =
+        QualityImprovement2020Queries.getMQ11DenB4(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            commonMetadata.getPregnantConcept().getConceptId());
 
     CohortDefinition d =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
@@ -3224,7 +3229,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING1));
     compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING1));
-    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
+    compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING));
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
