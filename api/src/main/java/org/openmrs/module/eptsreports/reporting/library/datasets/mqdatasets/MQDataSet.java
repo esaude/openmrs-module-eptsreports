@@ -31,7 +31,7 @@ public class MQDataSet extends BaseDataSet {
   @Autowired private MQCategory15DataSet mQCategory15DataSet;
   @Autowired private MQCategory13P4DataSet mQCategory13P4DataSet;
   @Autowired private MQCategory9DataSet mQCategory9DataSet;
-  @Autowired private MQAbstractDataSet mQAbstractDataSet;
+  @Autowired private MQCommonsDementions mQCommonsDementions;
 
   public DataSetDefinition constructTMqDatset() {
 
@@ -44,7 +44,7 @@ public class MQDataSet extends BaseDataSet {
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    this.mQAbstractDataSet.getMQCommonDementions(dataSetDefinition, mappings);
+    this.mQCommonsDementions.getMQCommonDementions(dataSetDefinition, mappings);
     this.mqCategory3DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory4Dataset.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory5DataSet.constructTMqDatset(dataSetDefinition, mappings);
