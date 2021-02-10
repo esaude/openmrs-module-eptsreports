@@ -20,15 +20,19 @@ public class IMER1BNumeratorCohortQueries {
 
   private TxNewCohortQueries txNewCohortQueries;
 
+  private GenericCohortQueries genericCohortQueries;
+
   private IMER1DenominatorCohortQueries imer1DenominatorCohortQueries;
 
   @Autowired
   public IMER1BNumeratorCohortQueries(
       HivMetadata hivMetadata,
       TxNewCohortQueries txNewCohortQueries,
+      GenericCohortQueries genericCohortQueries,
       IMER1DenominatorCohortQueries imer1DenominatorCohortQueries) {
     this.hivMetadata = hivMetadata;
     this.txNewCohortQueries = txNewCohortQueries;
+    this.genericCohortQueries = genericCohortQueries;
     this.imer1DenominatorCohortQueries = imer1DenominatorCohortQueries;
   }
 
@@ -59,6 +63,7 @@ public class IMER1BNumeratorCohortQueries {
     cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
 
     return cd;
   }
@@ -84,7 +89,9 @@ public class IMER1BNumeratorCohortQueries {
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
-        "E", EptsReportUtils.map(getE(false), "onOrBefore=${endDate-1m},location=${location}"));
+        "E",
+        EptsReportUtils.map(
+            getE(true), "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("A AND E AND NOT D");
 
@@ -133,7 +140,9 @@ public class IMER1BNumeratorCohortQueries {
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
-        "E", EptsReportUtils.map(getE(false), "onOrBefore=${endDate-1m},location=${location}"));
+        "E",
+        EptsReportUtils.map(
+            getE(true), "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("A AND B AND E AND NOT (C OR D)");
 
@@ -182,7 +191,9 @@ public class IMER1BNumeratorCohortQueries {
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
-        "E", EptsReportUtils.map(getE(false), "onOrBefore=${endDate-1m},location=${location}"));
+        "E",
+        EptsReportUtils.map(
+            getE(true), "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString("A AND C AND E AND NOT (B OR D)");
 
@@ -201,7 +212,7 @@ public class IMER1BNumeratorCohortQueries {
   public CohortDefinition getChildren() {
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("IMER1B - BreastFeeding");
+    cd.setName("IMER1B - Children");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Date.class));
@@ -231,9 +242,17 @@ public class IMER1BNumeratorCohortQueries {
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
-        "E", EptsReportUtils.map(getE(false), "onOrBefore=${endDate-1m},location=${location}"));
+        "E",
+        EptsReportUtils.map(
+            getE(true), "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("A AND NOT B AND NOT C NOT D AND E");
+    cd.addSearch(
+        "CHILDREN",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnPreArtDate(0, 14),
+            "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate-1m},location=${location}"));
+
+    cd.setCompositionString("A AND NOT B AND NOT C NOT D AND E AND CHILDREN");
 
     return cd;
   }
@@ -280,9 +299,17 @@ public class IMER1BNumeratorCohortQueries {
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
-        "E", EptsReportUtils.map(getE(false), "onOrBefore=${endDate-1m},location=${location}"));
+        "E",
+        EptsReportUtils.map(
+            getE(true), "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("A and NOT B and NOT C NOT D and E");
+    cd.addSearch(
+        "ADULTS",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnPreArtDate(15, 200),
+            "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate-1m},location=${location}"));
+
+    cd.setCompositionString("A and NOT B and NOT C NOT D and E AND ADULTS");
 
     return cd;
   }
