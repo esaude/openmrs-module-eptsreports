@@ -686,4 +686,20 @@ public class GenericCohortQueries {
             minAge,
             maxAge));
   }
+
+  public CohortDefinition getAgeOnMohMqInitiatedArtDate(
+      Integer minAge, Integer maxAge, boolean considerPatientThatStartedBeforeWasBorn) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(AgeOnMohMqArtStartDateCalculation.class).get(0));
+    cd.setName("Age on ART start date");
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addCalculationParameter("minAge", minAge);
+    cd.addCalculationParameter("maxAge", maxAge);
+    cd.addCalculationParameter(
+        "considerPatientThatStartedBeforeWasBorn", considerPatientThatStartedBeforeWasBorn);
+    return cd;
+  }
 }

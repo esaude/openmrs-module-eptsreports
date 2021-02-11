@@ -5961,25 +5961,25 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch(
         "AGES29",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnMOHArtStartDate(2, 9, true),
+            genericCohortQueries.getAgeOnMohMqInitiatedArtDate(2, 9, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     comp.addSearch(
         "AGES1014",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnMOHArtStartDate(10, 14, true),
+            genericCohortQueries.getAgeOnMohMqInitiatedArtDate(10, 14, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     comp.addSearch(
         "CHILDREN",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnMOHArtStartDate(0, 14, true),
+            genericCohortQueries.getAgeOnMohMqInitiatedArtDate(0, 14, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     comp.addSearch(
         "ADULT",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnMOHArtStartDate(15, null, false),
+            genericCohortQueries.getAgeOnMohMqInitiatedArtDate(15, null, false),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     if (den == 1 || den == 2 || den == 3 || den == 4) {
@@ -6214,25 +6214,25 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch(
         "AGES29",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnMOHArtStartDate(2, 9, true),
+            genericCohortQueries.getAgeOnMohMqInitiatedArtDate(2, 9, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     comp.addSearch(
         "AGES1014",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnMOHArtStartDate(10, 14, true),
+            genericCohortQueries.getAgeOnMohMqInitiatedArtDate(10, 14, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     comp.addSearch(
         "CHILDREN",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnMOHArtStartDate(0, 14, true),
+            genericCohortQueries.getAgeOnMohMqInitiatedArtDate(0, 14, true),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     comp.addSearch(
         "ADULT",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeOnMOHArtStartDate(15, null, false),
+            genericCohortQueries.getAgeOnMohMqInitiatedArtDate(15, null, false),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     if (num == 1) {
