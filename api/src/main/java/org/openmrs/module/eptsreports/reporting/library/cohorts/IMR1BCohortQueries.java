@@ -13,17 +13,20 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.IMR1Queries;
+import org.openmrs.module.eptsreports.reporting.library.queries.IMR1BQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IMR1CohortQueries {
+public class IMR1BCohortQueries {
+
+  @Autowired private IMR1CohortQueries iMR1CohortQueries;
 
   @DocumentedDefinition(value = "PatientsNewlyEnrolledOnArtCare")
   public CohortDefinition getPatientsNewlyEnrolledOnArtCare() {
@@ -37,7 +40,9 @@ public class IMR1CohortQueries {
 
     compsitionDefinition.addSearch(
         "NEWLY-ENROLLED",
-        EptsReportUtils.map(this.getAllPatientsEnrolledInArtCareDuringReportingPeriod(), mappings));
+        EptsReportUtils.map(
+            this.iMR1CohortQueries.getAllPatientsEnrolledInArtCareDuringReportingPeriod(),
+            mappings));
 
     compsitionDefinition.addSearch(
         "TRANSFERRED-IN",
@@ -64,10 +69,12 @@ public class IMR1CohortQueries {
         "DENOMINATOR", EptsReportUtils.map(this.getPatientsNewlyEnrolledOnArtCare(), mappings));
 
     compsitionDefinition.addSearch(
-        "PREGNANT", EptsReportUtils.map(this.getAllPatientsWhoArePregnantInAPeriod(), mappings));
+        "PREGNANT",
+        EptsReportUtils.map(iMR1CohortQueries.getAllPatientsWhoArePregnantInAPeriod(), mappings));
 
     compsitionDefinition.addSearch(
-        "BREASTFEEDING", EptsReportUtils.map(this.getAllPatientsWhoAreBreastfeeding(), mappings));
+        "BREASTFEEDING",
+        EptsReportUtils.map(iMR1CohortQueries.getAllPatientsWhoAreBreastfeeding(), mappings));
 
     compsitionDefinition.setCompositionString("DENOMINATOR NOT (PREGNANT OR BREASTFEEDING)");
 
@@ -91,10 +98,12 @@ public class IMR1CohortQueries {
         EptsReportUtils.map(this.getPatientsNewlyEnrolledOnArtCareNumerator(), mappings));
 
     compsitionDefinition.addSearch(
-        "PREGNANT", EptsReportUtils.map(this.getAllPatientsWhoArePregnantInAPeriod(), mappings));
+        "PREGNANT",
+        EptsReportUtils.map(iMR1CohortQueries.getAllPatientsWhoArePregnantInAPeriod(), mappings));
 
     compsitionDefinition.addSearch(
-        "BREASTFEEDING", EptsReportUtils.map(this.getAllPatientsWhoAreBreastfeeding(), mappings));
+        "BREASTFEEDING",
+        EptsReportUtils.map(iMR1CohortQueries.getAllPatientsWhoAreBreastfeeding(), mappings));
 
     compsitionDefinition.setCompositionString("NUMERATOR NOT (PREGNANT OR BREASTFEEDING)");
 
@@ -113,60 +122,28 @@ public class IMR1CohortQueries {
 
     compsitionDefinition.addSearch(
         "NEWLY-ENROLLED",
-        EptsReportUtils.map(this.getAllPatientsEnrolledInArtCareDuringReportingPeriod(), mappings));
-
-    compsitionDefinition.addSearch(
-        "CONSULTATION-SAME-DIAGNOSIS-DAY",
         EptsReportUtils.map(
-            this
-                .getAllPatientsWithClinicianConsultationInTheSameDiagnosisDayByBeforeEndOfReportingPeriod(),
-            "endDate=${endDate-1m},location=${location}"));
+            this.getPatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod(), mappings));
 
     compsitionDefinition.addSearch(
         "TRANSFERRED-IN",
         EptsReportUtils.map(this.getAllPatientsTransferredInByEndReportingDate(), mappings));
 
-    compsitionDefinition.setCompositionString(
-        "(NEWLY-ENROLLED AND CONSULTATION-SAME-DIAGNOSIS-DAY) NOT TRANSFERRED-IN");
+    compsitionDefinition.setCompositionString("NEWLY-ENROLLED NOT TRANSFERRED-IN");
 
     return compsitionDefinition;
   }
 
-  @DocumentedDefinition(value = "PatientsEnrolledInArtCareDuringReportingPeriod")
-  public CohortDefinition getAllPatientsEnrolledInArtCareDuringReportingPeriod() {
+  @DocumentedDefinition(value = "PatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod")
+  private CohortDefinition getPatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("PatientsEnrolledInArtCareDuringReportingPeriod Cohort");
+    definition.setName("PatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod Cohort");
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    definition.setQuery(IMR1Queries.QUERY.findPatientsEnrolledInArtCareDuringReportingPeriod);
-
-    return definition;
-  }
-
-  @DocumentedDefinition(value = "PatientsWhoAreBreastfeeding")
-  public CohortDefinition getAllPatientsWhoAreBreastfeeding() {
-
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("PatientsWhoAreBreastfeeding Cohort");
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    definition.setQuery(IMR1Queries.QUERY.findPatientsWhoAreBreastfeeding);
-
-    return definition;
-  }
-
-  @DocumentedDefinition(value = "PatientsWhoArePregnantInAPeriod")
-  public CohortDefinition getAllPatientsWhoArePregnantInAPeriod() {
-
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("PatientsWhoArePregnantInAPeriod Cohort");
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    definition.setQuery(IMR1Queries.QUERY.findPatientsWhoArePregnantInAPeriod);
+    definition.setQuery(
+        IMR1BQueries.QUERY.findPatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod);
 
     return definition;
   }
@@ -179,22 +156,7 @@ public class IMR1CohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    definition.setQuery(IMR1Queries.QUERY.findPatiensTransferredInByEndDate);
-
-    return definition;
-  }
-
-  @DocumentedDefinition(value = "PatientsWithClinicianConsultationInTheSameDiagnosisDay")
-  private CohortDefinition
-      getAllPatientsWithClinicianConsultationInTheSameDiagnosisDayByBeforeEndOfReportingPeriod() {
-
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("PatientsWithClinicianConsultationInTheSameDiagnosisDay Cohort");
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    definition.setQuery(
-        IMR1Queries.QUERY.findPatientsWithClinicianConsultationInTheSameDiagnosisDay);
+    definition.setQuery(IMR1BQueries.QUERY.findPatiensTransferredInByEndDate);
 
     return definition;
   }
