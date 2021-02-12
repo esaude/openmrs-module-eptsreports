@@ -437,11 +437,115 @@ public class APSSResumoTrimestralCohortQueries {
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getE3() {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
 
-    sqlCohortDefinition.setName("E3");
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName(
+        "E3: Número de pacientes faltosos e abandonos que retornaram a unidade sanitária durante o trimestre, (dos contactados e/ou encontrados no mesmo período");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
 
-    return sqlCohortDefinition;
+    Map<String, Integer> map = new HashMap<>();
+    map.put(
+        "61",
+        hivMetadata
+            .getLivroRegistoChamadasVisistasDomiciliaresEncounterType()
+            .getEncounterTypeId());
+    map.put("23996", hivMetadata.getPatientElegibilityConcept().getConceptId());
+    map.put("23993", hivMetadata.getReintegrationConcept().getConceptId());
+    map.put("23997", hivMetadata.getElegibilityDateConcept().getConceptId());
+    map.put("24004", hivMetadata.getPatientContactedConcept().getConceptId());
+    map.put("24005", hivMetadata.getPatientReturnedConcept().getConceptId());
+    map.put("24006", hivMetadata.getPatientIsBedriddenAtHomeConcept().getConceptId());
+    map.put("24011", hivMetadata.getPatientReturnedAfterVisitConcept().getConceptId());
+    map.put("24012", hivMetadata.getDatePatientReturnedAfterVisitConcept().getConceptId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
+    map.put("2003", hivMetadata.getPatientFoundConcept().getConceptId());
+
+    String query =
+        " SELECT p.patient_id     "
+            + "      FROM patient p     "
+            + "      INNER JOIN      "
+            + "      (SELECT p.patient_id, e.encounter_id     "
+            + "                      FROM      "
+            + "                      patient p     "
+            + "                      INNER JOIN      "
+            + "                          encounter e ON e.patient_id = p.patient_id     "
+            + "                      INNER JOIN obs o ON e.encounter_id = o.encounter_id     "
+            + "                      INNER JOIN obs o2 ON e.encounter_id = o.encounter_id     "
+            + "                      WHERE     "
+            + "                          p.patient_id = e.patient_id     "
+            + "                          AND p.voided = 0     "
+            + "                              AND e.voided = 0     "
+            + "                              AND o.voided = 0     "
+            + "                              AND e.encounter_type = ${61}     "
+            + "                              AND e.location_id = :location     "
+            + "                              AND o.concept_id = ${23996}     "
+            + "                              AND o.value_coded = ${23993}     "
+            + "                              AND o2.concept_id = ${23997}     "
+            + "                              AND o2.obs_datetime BETWEEN :startDate AND :endDate) AS elg ON p.patient_id = elg.patient_id     "
+            + "      INNER JOIN      "
+            + "      (SELECT p.patient_id, e.encounter_id     "
+            + "                      FROM      "
+            + "                      patient p     "
+            + "                      INNER JOIN      "
+            + "                          encounter e ON e.patient_id = p.patient_id     "
+            + "                      INNER JOIN obs o ON e.encounter_id = o.encounter_id     "
+            + "                      WHERE     "
+            + "                          p.patient_id = e.patient_id     "
+            + "                          AND p.voided = 0     "
+            + "                              AND e.voided = 0     "
+            + "                              AND o.voided = 0     "
+            + "                              AND e.encounter_type = ${61}     "
+            + "                              AND e.location_id = :location     "
+            + "                              AND (o.concept_id = ${24004} OR o.concept_id = ${2003})     "
+            + "                              AND o.value_coded = ${1065}) AS cont ON p.patient_id = cont.patient_id     "
+            + "      INNER JOIN      "
+            + "      (SELECT p.patient_id, e.encounter_id     "
+            + "                      FROM      "
+            + "                      patient p     "
+            + "                      INNER JOIN      "
+            + "                          encounter e ON e.patient_id = p.patient_id     "
+            + "                      INNER JOIN obs o ON e.encounter_id = o.encounter_id     "
+            + "                      INNER JOIN obs o2 ON e.encounter_id = o2.encounter_id     "
+            + "                      WHERE     "
+            + "                          p.patient_id = e.patient_id     "
+            + "                          AND p.voided = 0     "
+            + "                              AND e.voided = 0     "
+            + "                              AND o.voided = 0     "
+            + "                              AND e.encounter_type = ${61}     "
+            + "                              AND e.location_id = :location     "
+            + "                              AND o.concept_id = ${24005}     "
+            + "                              AND o.value_coded = ${1065}     "
+            + "                              AND o2.concept_id = ${24006}     "
+            + "                              AND o2.obs_datetime between :startDate AND :endDate      "
+            + "                              UNION     "
+            + "                              SELECT p.patient_id, e.encounter_id     "
+            + "                      FROM      "
+            + "                      patient p     "
+            + "                      INNER JOIN      "
+            + "                          encounter e ON e.patient_id = p.patient_id     "
+            + "                      INNER JOIN obs o ON e.encounter_id = o.encounter_id     "
+            + "                      INNER JOIN obs o2 ON e.encounter_id = o2.encounter_id     "
+            + "                      WHERE     "
+            + "                          p.patient_id = e.patient_id     "
+            + "                          AND p.voided = 0     "
+            + "                              AND e.voided = 0     "
+            + "                              AND o.voided = 0     "
+            + "                              AND e.encounter_type = ${61}     "
+            + "                              AND e.location_id = :location     "
+            + "                              AND o.concept_id = ${24011}     "
+            + "                              AND o.value_coded = ${1065}     "
+            + "                              AND o2.concept_id = ${24012}     "
+            + "                              AND o2.obs_datetime between :startDate AND :endDate      "
+            + "                              ) AS returned ON p.patient_id = returned.patient_id     "
+            + "                              WHERE p.voided = 0     "
+            + "                              GROUP BY p.patient_id;";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(query));
+
+    return cd;
   }
 
   public SqlCohortDefinition getAllPatientsRegisteredInEncounterFichaAPSSANDPP(

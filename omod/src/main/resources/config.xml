@@ -2506,6 +2506,30 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.patientReturnedtoHealthUnitConceptUuid</property>
+		<defaultValue>27b59a3e-49c9-4f73-a462-0c5717ff4bae</defaultValue>
+		<description>
+			PATIENT RETURNED TO HEALTH UNIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.ReturnedtoHealthUnitAfterVisitConceptUuid</property>
+		<defaultValue>15e2ad22-88ec-4b8a-8f8c-c6377bbd2275</defaultValue>
+		<description>
+			PATIENT RETURNED TO HEALTH UNIT AFTER VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.DateReturnedtoHUAfterVisitConceptUuid</property>
+		<defaultValue>6f4f0e45-a7a7-410a-8127-4b3fecbde88e</defaultValue>
+		<description>
+			DATE PATIENT RETURNED TO HEALTH UNIT AFTER VISIT concept
+		</description>
+	</globalProperty>
+
 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">

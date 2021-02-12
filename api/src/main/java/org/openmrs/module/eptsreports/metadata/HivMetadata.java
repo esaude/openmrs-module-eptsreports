@@ -3635,4 +3635,52 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.patientContactedConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 24005</b>
+   *
+   * <p><b>Name:</b> PATIENT RETURNED TO HEALTH UNIT
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPatientReturnedConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientReturnedtoHealthUnitConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 24011</b>
+   *
+   * <p><b>Name:</b> PATIENT RETURNED TO HEALTH UNIT AFTER VISIT
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPatientReturnedAfterVisitConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.ReturnedtoHealthUnitAfterVisitConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 24012</b>
+   *
+   * <p><b>Name:</b> DATE PATIENT RETURNED TO HEALTH UNIT AFTER VISIT
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDatePatientReturnedAfterVisitConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.DateReturnedtoHUAfterVisitConceptUuid");
+    return getConcept(uuid);
+  }
 }
