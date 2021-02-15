@@ -22,9 +22,11 @@ import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiEncounterObsDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiObsDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiPatientStateDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.JembiProgramEnrollmentForPatientDefinition;
+import org.openmrs.module.eptsreports.reporting.utils.EPTSMetadataDatetimeQualifier;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
@@ -415,5 +417,38 @@ public class EPTSCalculationService {
     definition.setLocationList(Arrays.asList(location));
     definition.setWhich(TimeQualifier.ANY);
     return EptsCalculationUtils.evaluateWithReporting(definition, cohort, null, null, context);
+  }
+
+  public CalculationResultMap getObs(
+      Concept question,
+      EncounterType encounterType,
+      Collection<Integer> cohort,
+      Location location,
+      List<Concept> answers,
+      TimeQualifier timeQualifier,
+      Date startDate,
+      Date endDate,
+      EPTSMetadataDatetimeQualifier eptsMetadataDatetimeQualifier,
+      PatientCalculationContext context) {
+
+    JembiEncounterObsDefinition def = new JembiEncounterObsDefinition();
+    def.setName(timeQualifier.name() + "obs");
+    def.setQuestion(question);
+    def.setEncounterType(encounterType);
+    def.setLocation(location);
+    def.setTimeQualifier(timeQualifier);
+    def.setEptsMetadataDatetimeQualifier(eptsMetadataDatetimeQualifier);
+
+    if (endDate != null) {
+      def.setOnOrBefore(endDate);
+    }
+    if (startDate != null) {
+      def.setOnOrAfter(startDate);
+    }
+    if (answers != null && !answers.isEmpty()) {
+      def.setAnswers(answers);
+    }
+
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, null, null, context);
   }
 }

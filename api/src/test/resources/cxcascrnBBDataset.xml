@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dataset>
+
+    <location location_id="1" name="Alto Ligonha" description="NA"
+              address2="NA" state_province="NA" country="MA"
+              date_created="2008-10-13 11:32:52" county_district="NA" address6="NA"
+              retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
+
+    <!-- person -->
+    <person person_id="1001" gender="F"  creator="1"
+            birthdate="1973-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="421875e2-6f22-1000-9281-8f1ee524029e" />
+
+
+    <!-- patient -->
+    <patient patient_id="1001"   creator="1"
+             date_created="2005-09-22 00:00:00.0"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+    <global_property
+            property="eptsreports.masterCardEncounterType"
+            property_value="e422ecf9-75dd-4367-b21e-54bccabc4763"
+            description="UUID for the Master Card  Ficha Resumo encounter type"
+            uuid="c9000eb4-388a-11eb-aff6-0b3a6a19dee8"/>
+
+    <!-- global_property -->
+    <global_property
+            property="eptsreports.rastreioDoCancroDoColoUterinoEncounterTypeUuid"
+            property_value="e2791f26-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID fCCU: RASTREIO | Rastreio do cancro do colo uterino encounter type"
+            uuid="2769cf4a-6afd-11eb-b894-e30ed4881b5b"/>
+
+    <global_property
+            property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid"
+            property_value="e278f956-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID fseguimento visita do paciente adulto  encounter type"
+            uuid="6682b1b0-6afd-11eb-aa3e-f7ae36feac2b"/>
+
+    <global_property
+            property="eptsreports.resultadoViaConceptUuid"
+            property_value="e1e0dcde-1d5f-11e0-b929-000c29ad1d07"
+            description="RESULTADO DO VIA  concept"
+            uuid="f3d06b98-6afd-11eb-ad00-4baf5b671133"/>
+
+    <global_property
+            property="eptsreports.suspectedCancerConceptUuid"
+            property_value="e1e0dbbc-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID SUSPECTED CANCER concept"
+            uuid="428908e4-6afe-11eb-b9a2-07b3d99c8da0"/>
+
+    <global_property
+            property="eptsreports.negativeUuid"
+            property_value="e1d446cc-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID negative"
+            uuid="9b06105c-6afe-11eb-ac07-3bb17fd4b806"/>
+
+    <global_property
+            property="eptsreports.positiveUuid"
+            property_value="e1d47386-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID Positve  concept"
+            uuid="1d086b6e-6af9-11eb-8afc-63376da3f7df"/>
+
+    <global_property
+            property="eptsreports.cryotherapyPerformedOnTheSameDayASViaConceptUuid"
+            property_value="e1e0f872-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID  CRYOTHERAPY PERFORMED ON THE SAME DAY AS THE VIA concept"
+            uuid="5f55cfda-6d0f-11eb-8101-1f96516b47ea"/>
+
+
+<!--
+    <global_property
+            property="eptsreports.yesConceptUuid"
+            property_value="e1d81b62-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID for the SIM  concept"
+            uuid="82584a8a-6d0f-11eb-9f12-ffd51aae22b1"/>
+-->
+    <global_property
+            property="eptsreports.cryotherapyDateConceptUuid"
+            property_value="273095dc-c0c6-4771-8584-7eabe0a1cc06"
+            description="UUID Cryotherapy date concept concept"
+            uuid="144953be-6d40-11eb-93f3-032736d1b1a4"/>
+
+    <global_property
+            property="eptsreports.viaResultOnTheReferenceConceptUuid"
+            property_value="e1e202ee-1d5f-11e0-b929-000c29ad1d07"
+            description="UUID VIA RESULT ON THE REFERENCE concept"
+            uuid="8072991a-6d40-11eb-afd6-c35f63841ea5"/>
+
+    <global_property
+            property="eptsreports.pediatricNursingConceptUuid"
+            property_value="e8adc3d0-7300-4404-b3d4-daf10190f1fb"
+            description="UUID  Pediatric Nursing concept"
+            uuid="081b1f6a-6d67-11eb-88a5-8359b5ef9c0e"/>
+
+    <global_property
+            property="eptsreports.leepConceptUuid"
+            property_value="059ab9af-a654-4624-bac6-9bdc2cf97cf6"
+            description="UUID Loop Electrosurgical Excision Procedure - LEEP concept"
+            uuid="6844be5a-6d67-11eb-adfd-cf6f3c34dc03"/>
+
+    <global_property
+            property="eptsreports.thermocoagulationConceptUuid"
+            property_value="1a73d9c6-f8e4-4ca1-8565-f6b70221c102"
+            description="UUID Thermocoagulation concept"
+            uuid="e446ebf4-6d67-11eb-8c8b-fbaf858654f0"/>
+
+    <global_property
+            property="eptsreports.conizationConceptUuid"
+            property_value="0ff52333-c5bc-48f9-b600-291de742dd9c"
+            description="UUID Conization concept"
+            uuid="12ac4ae8-6d68-11eb-b9f7-6b0695cbe397"/>
+
+
+
+
+
+
+    <!-- encounter_type -->
+    <encounter_type encounter_type_id="53"
+                    name="Master Card Ficha Resumo"
+                    description="Ficha resumo no master card"
+                    creator="1" date_created="2008-10-13 04:32:34" retired="0"
+                    uuid="e422ecf9-75dd-4367-b21e-54bccabc4763" />
+
+    <encounter_type encounter_type_id="28"
+                    name="CCU: RASTREIO"
+                    description="Rastreio do cancro do colo uterino"
+                    creator="1" date_created="2008-10-13 04:32:34" retired="0"
+                    uuid="e2791f26-1d5f-11e0-b929-000c29ad1d07" />
+
+    <encounter_type encounter_type_id="6"
+                    name="S.TARV: ADULTO SEGUIMENTO"
+                    description="seguimento visita do paciente adulto"
+                    creator="1" date_created="2008-10-13 04:32:34" retired="0"
+                    uuid="e278f956-1d5f-11e0-b929-000c29ad1d07" />
+
+    <!-- concept  -->
+
+
+    <concept concept_id="2094" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="e1e0dcde-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="2093" retired="0" datatype_id="4" class_id="5" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="e1e0dbbc-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="664"  retired="0" datatype_id="4" class_id="5" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="e1d446cc-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="703"  retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="e1d47386-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="2117" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="e1e0f872-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="23967" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="273095dc-c0c6-4771-8584-7eabe0a1cc06"/>
+
+    <concept concept_id="2149" retired="0" datatype_id="2" class_id="4" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="e1e202ee-1d5f-11e0-b929-000c29ad1d07"/>
+
+    <concept concept_id="23874" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="e8adc3d0-7300-4404-b3d4-daf10190f1fb"/>
+
+    <concept concept_id="23970" retired="0" datatype_id="4" class_id="2" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="059ab9af-a654-4624-bac6-9bdc2cf97cf6"/>
+
+    <concept concept_id="23972" retired="0" datatype_id="4" class_id="2" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="1a73d9c6-f8e4-4ca1-8565-f6b70221c102"/>
+
+    <concept concept_id="23973" retired="0" datatype_id="4" class_id="2" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="0ff52333-c5bc-48f9-b600-291de742dd9c"/>
+<!--
+-->
+
+    <!-- Data -->
+    <!-- AA -->
+    <encounter encounter_id="311" encounter_type="28" patient_id="1001" encounter_datetime="2019-12-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="4c51ad06-3893-11eb-940c-33e77471aced" location_id="1" />
+
+    <!-- AA4 -->
+    <encounter encounter_id="312" encounter_type="53" patient_id="1001" encounter_datetime="2019-12-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="0ab05c24-6d10-11eb-a4cd-9374f6df3f5e" location_id="1" />
+
+    <!-- BB -->
+    <encounter encounter_id="313" encounter_type="28" patient_id="1001" encounter_datetime="2019-11-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="23fdfd66-6d2a-11eb-bb10-a7b6187a65eb" location_id="1" />
+
+    <!-- obs for AA -->
+    <obs obs_id="122" person_id="1001" concept_id="2094" encounter_id="311" obs_datetime="2019-12-26 00:00:00"  value_coded="2093"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c183947a-388b-11eb-b6a7-eb9d5a01c619" location_id="1" />
+
+    <!-- obs for AA4 -->
+    <obs obs_id="123" person_id="1001" concept_id="2094" encounter_id="312" obs_datetime="2019-09-26 00:00:00" value_datetime="2019-10-19 00:00:00" value_coded="2093"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="a4cbe362-6d3a-11eb-abc0-bbca549cdf68" location_id="1" />
+
+    <!-- obs for BB -->
+    <obs obs_id="124" person_id="1001" concept_id="23967" encounter_id="313" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-11-26 00:00:00"   creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="5d06d0d8-6d2a-11eb-aacb-f3833f57f000" location_id="1" />
+
+</dataset>

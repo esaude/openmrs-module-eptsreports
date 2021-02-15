@@ -2530,6 +2530,89 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.rastreioDoCancroDoColoUterinoEncounterTypeUuid</property>
+		<defaultValue>e2791f26-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			Rastreio do cancro do colo uterino encounter-type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.resultadoViaConceptUuid</property>
+		<defaultValue>e1e0dcde-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			RESULTADO DO VIA  concept
+		</description>
+	</globalProperty>
+
+
+	<globalProperty>
+		<property>eptsreports.suspectedCancerConceptUuid</property>
+		<defaultValue>e1e0dbbc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			SUSPECTED CANCER concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.cryotherapyPerformedOnTheSameDayASViaConceptUuid</property>
+		<defaultValue>e1e0f872-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			CRYOTHERAPY PERFORMED ON THE SAME DAY AS THE VIA concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.cryotherapyDateConceptUuid</property>
+		<defaultValue>273095dc-c0c6-4771-8584-7eabe0a1cc06</defaultValue>
+		<description>
+			Cryotherapy date concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.viaResultOnTheReferenceConceptUuid</property>
+		<defaultValue>e1e202ee-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			VIA RESULT ON THE REFERENCE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.pediatricNursingConceptUuid</property>
+		<defaultValue>e8adc3d0-7300-4404-b3d4-daf10190f1fb</defaultValue>
+		<description>
+			Pediatric Nursing concept
+		</description>
+	</globalProperty>
+
+
+	<globalProperty>
+		<property>eptsreports.thermocoagulationConceptUuid</property>
+		<defaultValue>1a73d9c6-f8e4-4ca1-8565-f6b70221c102</defaultValue>
+		<description>
+			Thermocoagulation
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.leepConceptUuid</property>
+		<defaultValue>059ab9af-a654-4624-bac6-9bdc2cf97cf6</defaultValue>
+		<description>
+			Loop Electrosurgical Excision Procedure - LEEP
+		</description>
+	</globalProperty>
+
+
+	<globalProperty>
+		<property>eptsreports.conizationConceptUuid</property>
+		<defaultValue>0ff52333-c5bc-48f9-b600-291de742dd9c</defaultValue>
+		<description>
+			Conization
+		</description>
+	</globalProperty>
+
 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">

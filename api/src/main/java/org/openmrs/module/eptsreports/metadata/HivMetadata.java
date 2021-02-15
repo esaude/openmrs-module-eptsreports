@@ -3683,4 +3683,161 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.DateReturnedtoHUAfterVisitConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>enconter_type_id = 28</b>
+   *
+   * <p><b>Name:</b> CCU: RASTREIO
+   *
+   * <p><b>Description: Rastreio do cancro do colo uterino</b>
+   *
+   * @return {@link Concept}
+   */
+  public EncounterType getRastreioDoCancroDoColoUterinoEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.rastreioDoCancroDoColoUterinoEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
+
+  /**
+   * <b>enconter_type_id = 2094</b>
+   *
+   * <p><b>Name:</b> VIA RESULT
+   *
+   * <p><b>Description: RESULTADO DO VIA</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getResultadoViaConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.resultadoViaConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>enconter_type_id = 2093</b>
+   *
+   * <p><b>Name:</b> SUSPECTED CANCER
+   *
+   * <p><b>Description: SUSPEITO DE CANCRO</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getSuspectedCancerConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.suspectedCancerConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>enconter_type_id = 2117</b>
+   *
+   * <p><b>Name:</b> CRYOTHERAPY PERFORMED ON THE SAME DAY AS THE VIA
+   *
+   * <p><b>Description: CRIOTERAPIA REALIZADA NO MESMO DIA QUE A VIA</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getCryotherapyPerformedOnTheSameDayASViaConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.cryotherapyPerformedOnTheSameDayASViaConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>enconter_type_id = 23967</b>
+   *
+   * <p><b>Name:</b> Cryotherapy date
+   *
+   * <p><b>Description: Data da realizacao da crioterapia</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getCryotherapyDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.cryotherapyDateConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>enconter_type_id = 2149</b>
+   *
+   * <p><b>Name:</b> VIA RESULT ON THE REFERENCE
+   *
+   * <p><b>Description:RESULTADO DE VIA NA REFERENCIA</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getViaResultOnTheReferenceConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.viaResultOnTheReferenceConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>enconter_type_id = 23874</b>
+   *
+   * <p><b>Name:</b> Pediatric Nursing concept
+   *
+   * <p><b>Description:Enfermaria de Pediatria</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPediatricNursingConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.pediatricNursingConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>enconter_type_id = 23972</b>
+   *
+   * <p><b>Name:</b> Thermocoagulation concept
+   *
+   * <p><b>Description:Termocoagulação</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getThermocoagulationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.thermocoagulationConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>enconter_type_id = 23970</b>
+   *
+   * <p><b>Name:</b> Loop Electrosurgical Excision Procedure - LEEP concept
+   *
+   * <p><b>Description:Cirurgia de Alta Frequência - CAF </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getLeepConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.leepConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>enconter_type_id = 23973</b>
+   *
+   * <p><b>Name:</b>Conization concept
+   *
+   * <p><b>Description:Conização do útero </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getconizationConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.conizationConceptUuid");
+    return getConcept(uuid);
+  }
 }
