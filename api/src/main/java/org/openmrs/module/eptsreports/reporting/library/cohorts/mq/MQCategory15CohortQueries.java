@@ -467,20 +467,10 @@ public class MQCategory15CohortQueries {
             mappingEndRevisionDate));
 
     definition.addSearch(
-        "B1",
-        EptsReportUtils.map(
-            findPatientsWithLastGaacOrDispensaTrimestralInClinicaForGivenConceptsDenominadorCategoria15B1(),
-            mappingEndRevisionDate));
+        "C", EptsReportUtils.map(findPatientsWhoArePregnantSpecificForCategory15(), mappings));
 
     definition.addSearch(
-        "C",
-        EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
-
-    definition.addSearch(
-        "D",
-        EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
+        "D", EptsReportUtils.map(findPatientsWhoAreBreastfeedingSpecificForCategory15(), mappings));
 
     definition.addSearch(
         "E",
@@ -492,7 +482,7 @@ public class MQCategory15CohortQueries {
     definition.addSearch(
         "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
-    definition.setCompositionString("A NOT (B1 OR C OR D OR E OR F)");
+    definition.setCompositionString("A NOT (C OR D OR E OR F)");
 
     return definition;
   }
@@ -525,25 +515,15 @@ public class MQCategory15CohortQueries {
             mappingEndRevisionDate));
 
     definition.addSearch(
-        "B1",
-        EptsReportUtils.map(
-            findPatientsWithLastGaacOrDispensaTrimestralInClinicaForGivenConceptsDenominadorCategoria15B1(),
-            mappingEndRevisionDate));
+        "C", EptsReportUtils.map(findPatientsWhoArePregnantSpecificForCategory15(), mappings));
 
     definition.addSearch(
-        "C",
-        EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
-
-    definition.addSearch(
-        "D",
-        EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
+        "D", EptsReportUtils.map(findPatientsWhoAreBreastfeedingSpecificForCategory15(), mappings));
 
     definition.addSearch(
         "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
-    definition.setCompositionString("(A2 OR A3) NOT (B1 OR C OR D OR F)");
+    definition.setCompositionString("(A2 OR A3) NOT (C OR D OR F)");
 
     return definition;
   }
@@ -576,25 +556,15 @@ public class MQCategory15CohortQueries {
             mappingEndRevisionDate));
 
     definition.addSearch(
-        "B1",
-        EptsReportUtils.map(
-            findPatientsWithLastGaacOrDispensaTrimestralInClinicaForGivenConceptsDenominadorCategoria15B1(),
-            mappingEndRevisionDate));
+        "C", EptsReportUtils.map(findPatientsWhoArePregnantSpecificForCategory15(), mappings));
 
     definition.addSearch(
-        "C",
-        EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
-
-    definition.addSearch(
-        "D",
-        EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
+        "D", EptsReportUtils.map(findPatientsWhoAreBreastfeedingSpecificForCategory15(), mappings));
 
     definition.addSearch(
         "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
-    definition.setCompositionString("(A2 OR A3) NOT (B1 OR C OR D OR F)");
+    definition.setCompositionString("(A2 OR A3) NOT (C OR D OR F)");
 
     return definition;
   }
@@ -629,6 +599,40 @@ public class MQCategory15CohortQueries {
     String query =
         MQCategory15QueriesInterface.QUERY
             .findPatientsWithLastGaacOrLastDispensaTrimestralRegisteredInFichaClinicaWithinRevisionPeriodB1;
+    definition.setQuery(query);
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoArePregnantSpecificForCategory15")
+  private CohortDefinition findPatientsWhoArePregnantSpecificForCategory15() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findPatientsWhoArePregnantSpecificForCategory15");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory15QueriesInterface.QUERY.findPatientsWhoArePregnantSpecificForCategory15;
+    definition.setQuery(query);
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoAreBreastfeedingSpecificForCategory15")
+  private CohortDefinition findPatientsWhoAreBreastfeedingSpecificForCategory15() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findPatientsWhoAreBreastfeedingSpecificForCategory15");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory15QueriesInterface.QUERY.findPatientsWhoAreBreastfeedingSpecificForCategory15;
     definition.setQuery(query);
     return definition;
   }

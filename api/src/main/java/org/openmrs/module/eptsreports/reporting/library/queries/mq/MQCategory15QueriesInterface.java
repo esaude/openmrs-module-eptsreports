@@ -200,5 +200,23 @@ public interface MQCategory15QueriesInterface {
             + "obsPedido.voided=0 and obsPedido.location_id=:location and "
             + "((obsResult.concept_id=1305) or (obsResult.concept_id=856 and obsResult.value_numeric<1000))  and obsResult.obs_datetime between obsPedido.obs_datetime and :endRevisionDate and "
             + "obsResult.voided=0 and obsResult.location_id=:location ";
+
+    public static final String findPatientsWhoArePregnantSpecificForCategory15 =
+        " SELECT p.patient_id FROM person pe "
+            + " INNER JOIN patient p ON pe.person_id = p.patient_id "
+            + " INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + " INNER JOIN obs obsGravida ON e.encounter_id = obsGravida.encounter_id "
+            + " WHERE pe.voided = 0 AND p.voided = 0 AND e.voided = 0 AND obsGravida.voided = 0 AND e.encounter_type = 6 AND e.location_id = :location "
+            + " AND e.encounter_datetime >= DATE_SUB(:endInclusionDate, INTERVAL 14 MONTH) AND e.encounter_datetime <= :endInclusionDate "
+            + " AND obsGravida.concept_id = 1982 AND obsGravida.value_coded = 1065 AND pe.gender = 'F' ";
+
+    public static final String findPatientsWhoAreBreastfeedingSpecificForCategory15 =
+        " SELECT p.patient_id FROM person pe "
+            + " INNER JOIN patient p ON pe.person_id = p.patient_id "
+            + " INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + " INNER JOIN obs obsLactante ON e.encounter_id = obsLactante.encounter_id "
+            + " WHERE pe.voided = 0 AND p.voided = 0 AND e.voided = 0 AND obsLactante.voided = 0 AND e.encounter_type = 6 AND e.location_id = :location "
+            + " AND e.encounter_datetime >= DATE_SUB(:endInclusionDate, INTERVAL 14 MONTH) AND e.encounter_datetime <= :endInclusionDate "
+            + " AND obsLactante.concept_id = 6332 AND obsLactante.value_coded = 1065 AND pe.gender = 'F' ";
   }
 }
