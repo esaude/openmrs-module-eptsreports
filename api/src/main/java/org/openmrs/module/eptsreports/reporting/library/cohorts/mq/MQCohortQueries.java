@@ -997,4 +997,60 @@ public class MQCohortQueries {
 
     return definition;
   }
+
+  @DocumentedDefinition(value = "findPatientHaveTBACTIVEAndTPIDuringPeriodCategory7AsH")
+  public CohortDefinition findPatientHaveTBACTIVEAndTPIDuringPeriodCategory7AsH() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findPatientHaveTBACTIVEAndTPIDuringPeriodCategory7AsH");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query = MQQueriesInterface.QUERY.findPatientHaveTBACTIVEAndTPIDuringPeriodCategory7AsH;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientHaveTBSCREENINGAndTPIDuringPeriodCategory7AsI")
+  public CohortDefinition findPatientHaveTBSCREENINGAndTPIDuringPeriodCategory7AsI() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findPatientHaveTBSCREENINGAndTPIDuringPeriodCategory7AsI");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQQueriesInterface.QUERY.findPatientHaveTBSCREENINGAndTPIDuringPeriodCategory7AsI;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientHaveTBTREATMENTAndTPIDuringPeriodCategory7AsJ")
+  public CohortDefinition findPatientHaveTBTREATMENTAndTPIDuringPeriodCategory7AsJ() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findPatientHaveTBTREATMENTAndTPIDuringPeriodCategory7AsJ");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQQueriesInterface.QUERY.findPatientHaveTBTREATMENTAndTPIDuringPeriodCategory7AsJ;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
 }
