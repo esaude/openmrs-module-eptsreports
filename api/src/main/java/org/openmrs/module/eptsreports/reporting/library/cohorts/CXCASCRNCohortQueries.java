@@ -340,7 +340,7 @@ public class CXCASCRNCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getTotal() {
+  public CohortDefinition getTotal(CXCASCRNResult cxcascrnResult) {
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Total of CXCA SCRN");
@@ -348,11 +348,11 @@ public class CXCASCRNCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition aa = getAA(getAnswers(CXCASCRNResult.ALL));
+    CohortDefinition aa = getAA(getAnswers(cxcascrnResult));
 
     CohortDefinition a = this.getA();
 
-    cd.addSearch("A", EptsReportUtils.map(a, "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch("A", EptsReportUtils.map(a, "endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "AA",
