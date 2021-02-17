@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.CXCASCRNDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TbPrevDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
@@ -28,6 +29,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
   @Autowired private TxTBDataset txTBDataset;
 
   @Autowired private TbPrevDataset tbPrevDataset;
+
+  @Autowired private CXCASCRNDataSet cXCASCRNDataSet;
 
   @Override
   public String getExcelDesignUuid() {
@@ -63,6 +66,7 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     rd.setParameters(txMlDataset.getParameters());
     rd.addDataSetDefinition("T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
     rd.addDataSetDefinition("TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
+    rd.addDataSetDefinition("CX", Mapped.mapStraightThrough(cXCASCRNDataSet.constructTMqDatset()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(

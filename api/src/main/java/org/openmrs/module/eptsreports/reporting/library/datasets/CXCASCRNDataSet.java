@@ -58,8 +58,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "patients with viral load",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries.getTotalNumeratorFirstScreeningNegative(),
-                    mappings)),
+                    this.cXCASCRNCohortQueries.getTotalNumeratorFirstScreening(), mappings)),
             mappings),
         "gender=F");
 
@@ -110,7 +109,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
                 "Total patients with CX RN - Numerator",
                 EptsReportUtils.map(
                     this.cXCASCRNCohortQueries
-                        .getTotalNumeratorRescreenedAfterPreviousNegativeNegative(),
+                        .getTotalNumeratorRescreenedAfterPreviousNegativeTotal(),
                     mappings)),
             mappings),
         "gender=F");
@@ -165,7 +164,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
                 "Total patients with CX PT - Numerator",
                 EptsReportUtils.map(
                     this.cXCASCRNCohortQueries
-                        .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpNegative(),
+                        .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpTotal(),
                     mappings)),
             mappings),
         "gender=F");
@@ -180,6 +179,34 @@ public class CXCASCRNDataSet extends BaseDataSet {
                 EptsReportUtils.map(
                     this.cXCASCRNCohortQueries
                         .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpNegative(),
+                    mappings)),
+            mappings),
+        getCXColumns());
+
+    addRow(
+        dataSetDefinition,
+        "PTP",
+        " Positive Numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Positive Numerator",
+                EptsReportUtils.map(
+                    this.cXCASCRNCohortQueries
+                        .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpPositive(),
+                    mappings)),
+            mappings),
+        getCXColumns());
+
+    addRow(
+        dataSetDefinition,
+        "PTS",
+        " Suspect Cancer Numerator",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Suspect Cancer Numerator",
+                EptsReportUtils.map(
+                    this.cXCASCRNCohortQueries
+                        .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpSuspectCancer(),
                     mappings)),
             mappings),
         getCXColumns());

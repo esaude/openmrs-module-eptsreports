@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@Deprecated
 public class SetupCXCASCRN extends EptsDataExportManager {
 
   @Autowired private CXCASCRNDataSet cXCASCRNDataSet;
