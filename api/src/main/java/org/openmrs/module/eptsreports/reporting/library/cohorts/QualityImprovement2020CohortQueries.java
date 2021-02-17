@@ -1532,12 +1532,12 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.setName("A AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
     } else if (den == 2 || den == 4) {
       compositionCohortDefinition.setName(
-          "(A AND B4) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
+          "(A AND B4) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F OR H OR I OR J)");
     } else if (den == 5) {
       compositionCohortDefinition.setName("(A AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
     } else if (den == 6) {
       compositionCohortDefinition.setName(
-          "(A AND B4 AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
+          "(A AND B4 AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F OR H OR I OR J)");
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -1613,6 +1613,12 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
+    
+    CohortDefinition tbDiagOnPeriod = getPatientsWithTBDiagActive();
+
+    CohortDefinition tbSymptomsOnPeriod = getPatientsWithTBSymtoms();
+
+    CohortDefinition tbTreatmentOnPeriod = getPatientsWithTBTreatment();
 
     compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
 
@@ -1631,18 +1637,25 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
 
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
+
+    compositionCohortDefinition.addSearch("H", EptsReportUtils.map(tbDiagOnPeriod, MAPPING));
+
+    compositionCohortDefinition.addSearch("I", EptsReportUtils.map(tbSymptomsOnPeriod, MAPPING));
+
+    compositionCohortDefinition.addSearch("J", EptsReportUtils.map(tbTreatmentOnPeriod, MAPPING));
+
     if (den == 1 || den == 3) {
       compositionCohortDefinition.setCompositionString(
           "A AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
     } else if (den == 2 || den == 4) {
       compositionCohortDefinition.setCompositionString(
-          "(A AND B4) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
+          "(A AND B4) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F OR H OR I OR J)");
     } else if (den == 5) {
       compositionCohortDefinition.setCompositionString(
           "(A AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
     } else if (den == 6) {
       compositionCohortDefinition.setCompositionString(
-          "(A AND B4 AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
+          "(A AND B4 AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F OR H OR I OR J)");
     }
 
     return compositionCohortDefinition;
@@ -1696,7 +1709,7 @@ public class QualityImprovement2020CohortQueries {
           "(A AND B4) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
     } else if (num == 2 || num == 4) {
       compositionCohortDefinition.setName(
-          "(A AND B4 AND G) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F OR H OR I OR J)");
+          "(A AND B4 AND G) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
     } else if (num == 5) {
       compositionCohortDefinition.setName(
           "(A AND C AND B4) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
