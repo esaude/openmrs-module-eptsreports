@@ -10,14 +10,14 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.eptsreports.reporting.calculation.cxcascrn.CXCASCRNCalculationBB;
+import org.openmrs.module.eptsreports.reporting.calculation.cxcascrn.CXCASCRNBBCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
 public class CXCASCRNCalculationBBTest extends BasePatientCalculationTest {
 
   @Override
   public PatientCalculation getCalculation() {
-    return Context.getRegisteredComponents(CXCASCRNCalculationBB.class).get(0);
+    return Context.getRegisteredComponents(CXCASCRNBBCalculation.class).get(0);
   }
 
   @Override

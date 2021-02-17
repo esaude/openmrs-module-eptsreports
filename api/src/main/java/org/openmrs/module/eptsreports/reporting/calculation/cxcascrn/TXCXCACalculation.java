@@ -13,17 +13,13 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.CXCASCRNQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EPTSMetadataDatetimeQualifier;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
-import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CXCASCRNCalculationBB extends AbstractPatientCalculation {
+public class TXCXCACalculation extends AbstractPatientCalculation {
 
   private final String ON_OR_AFTER = "onOrAfter";
   private final String ON_OR_BEFORE = "onOrBefore";
@@ -59,12 +55,10 @@ public class CXCASCRNCalculationBB extends AbstractPatientCalculation {
 
     CalculationResultMap aaResultMap =
         calculate(
-            Context.getRegisteredComponents(CXCASCRNCalculationAA.class).get(0),
+            Context.getRegisteredComponents(CXCASCRNAACalculation.class).get(0),
             cohort,
             parameterValues,
             context);
-
-    CalculationResultMap aa4ResultMap = getAA4Map(hivMetadata, cohort, context);
 
     CalculationResultMap criotherapyResulMap =
         eptsCalculationService.getObs(
@@ -109,9 +103,8 @@ public class CXCASCRNCalculationBB extends AbstractPatientCalculation {
     for (Integer pId : cohort) {
 
       Obs obs = EptsCalculationUtils.resultForPatient(aaResultMap, pId);
-      Date aa4LastDate = EptsCalculationUtils.resultForPatient(aa4ResultMap, pId);
 
-      if (obs != null && aa4LastDate != null) {
+      if (endDate != null && obs != null) {
         List<Obs> criotherapies =
             EptsCalculationUtils.extractResultValues((ListResult) criotherapyResulMap.get(pId));
         List<Obs> criotherapyDates =
@@ -122,23 +115,23 @@ public class CXCASCRNCalculationBB extends AbstractPatientCalculation {
 
         for (Obs criotherapy : criotherapies) {
 
-          if (criotherapy.getEncounter().getEncounterDatetime().compareTo(aa4LastDate) >= 0
-              && criotherapy
+          if (criotherapy
                       .getEncounter()
                       .getEncounterDatetime()
                       .compareTo(obs.getEncounter().getEncounterDatetime())
-                  <= 0) {
+                  >= 0
+              && criotherapy.getEncounter().getEncounterDatetime().compareTo(endDate) <= 0) {
             map.put(pId, new SimpleResult(criotherapy, this));
             break;
           }
         }
 
         for (Obs criotherapyDate : criotherapyDates) {
-          if (criotherapyDate.getValueDatetime().compareTo(aa4LastDate) >= 0
-              && criotherapyDate
+          if (criotherapyDate
                       .getValueDatetime()
                       .compareTo(obs.getEncounter().getEncounterDatetime())
-                  <= 0) {
+                  >= 0
+              && criotherapyDate.getValueDatetime().compareTo(endDate) <= 0) {
             map.put(pId, new SimpleResult(criotherapyDate, this));
             break;
           }
@@ -146,11 +139,11 @@ public class CXCASCRNCalculationBB extends AbstractPatientCalculation {
 
         for (Obs viaResultRefence : viaResultRefences) {
 
-          if (viaResultRefence.getValueDatetime().compareTo(aa4LastDate) >= 0
-              && viaResultRefence
+          if (viaResultRefence
                       .getValueDatetime()
                       .compareTo(obs.getEncounter().getEncounterDatetime())
-                  <= 0) {
+                  >= 0
+              && viaResultRefence.getValueDatetime().compareTo(endDate) <= 0) {
             map.put(pId, new SimpleResult(viaResultRefence, this));
             break;
           }
@@ -159,47 +152,5 @@ public class CXCASCRNCalculationBB extends AbstractPatientCalculation {
     }
 
     return map;
-  }
-
-  private CalculationResultMap getAA4Map(
-      HivMetadata hivMetadata, Collection<Integer> cohort, PatientCalculationContext context) {
-    SqlPatientDataDefinition def = new SqlPatientDataDefinition();
-    def.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    def.addParameter(new Parameter("location", "location", Location.class));
-
-    String part1 =
-        CXCASCRNQueries.getAA1OrAA2Query(
-            CXCASCRNCohortQueries.CXCASCRNResult.ANY,
-            true,
-            true,
-            hivMetadata.getRastreioDoCancroDoColoUterinoEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getResultadoViaConcept().getConceptId(),
-            hivMetadata.getNegative().getConceptId(),
-            hivMetadata.getPositive().getConceptId(),
-            hivMetadata.getSuspectedCancerConcept().getConceptId());
-
-    String part2 =
-        CXCASCRNQueries.getAA1OrAA2Query(
-            CXCASCRNCohortQueries.CXCASCRNResult.ANY,
-            false,
-            true,
-            hivMetadata.getRastreioDoCancroDoColoUterinoEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getResultadoViaConcept().getConceptId(),
-            hivMetadata.getNegative().getConceptId(),
-            hivMetadata.getPositive().getConceptId(),
-            hivMetadata.getSuspectedCancerConcept().getConceptId());
-
-    String sql = part1 + " UNION " + part2;
-
-    def.setQuery(sql);
-
-    Map<String, Object> params = new HashMap<>();
-    params.put("location", context.getFromCache("location"));
-    params.put("onOrAfter", context.getFromCache("onOrAfter"));
-    return EptsCalculationUtils.evaluateWithReporting(def, cohort, params, null, context);
   }
 }

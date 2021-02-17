@@ -8,8 +8,8 @@ import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.cxcascrn.CXCASCRNCalculationAA;
-import org.openmrs.module.eptsreports.reporting.calculation.cxcascrn.CXCASCRNCalculationBB;
+import org.openmrs.module.eptsreports.reporting.calculation.cxcascrn.CXCASCRNAACalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.cxcascrn.CXCASCRNBBCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.CXCASCRNQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -119,8 +119,8 @@ public class CXCASCRNCohortQueries {
    * </ul>
    */
   private CohortDefinition getAA(List<Concept> answers) {
-    CXCASCRNCalculationAA cxcascrnCalculation =
-        Context.getRegisteredComponents(CXCASCRNCalculationAA.class).get(0);
+    CXCASCRNAACalculation cxcascrnCalculation =
+        Context.getRegisteredComponents(CXCASCRNAACalculation.class).get(0);
 
     CalculationCohortDefinition cd = new CalculationCohortDefinition();
     cd.setName("AA from CXCA SCRN");
@@ -133,7 +133,7 @@ public class CXCASCRNCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getAA1OrAA2(CXCASCRNResult cxcascrnResult, boolean isAA1, boolean max) {
+  public CohortDefinition getAA1OrAA2(CXCASCRNResult cxcascrnResult, boolean isAA1, boolean max) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     if (isAA1) {
       cd.setName("AA1 from CXCA SCRN");
@@ -183,8 +183,8 @@ public class CXCASCRNCohortQueries {
   }
 
   private CohortDefinition getBB(List<Concept> answers) {
-    CXCASCRNCalculationBB cxcascrnCalculation =
-        Context.getRegisteredComponents(CXCASCRNCalculationBB.class).get(0);
+    CXCASCRNBBCalculation cxcascrnCalculation =
+        Context.getRegisteredComponents(CXCASCRNBBCalculation.class).get(0);
 
     CalculationCohortDefinition cd = new CalculationCohortDefinition();
     cd.setName("BB from CXCA SCRN");
@@ -364,7 +364,7 @@ public class CXCASCRNCohortQueries {
     return cd;
   }
 
-  private List<Concept> getAnswers(CXCASCRNResult cxcascrnResult) {
+  public List<Concept> getAnswers(CXCASCRNResult cxcascrnResult) {
     Concept suspectedCancerConcept = hivMetadata.getSuspectedCancerConcept();
     Concept negative = hivMetadata.getNegative();
     Concept positive = hivMetadata.getPositive();

@@ -14,13 +14,13 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.cxcascrn.CXCASCRNCalculationAA;
+import org.openmrs.module.eptsreports.reporting.calculation.cxcascrn.CXCASCRNAACalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
 public class CXCASCRNCalculationAATest extends BasePatientCalculationTest {
   @Override
   public PatientCalculation getCalculation() {
-    return Context.getRegisteredComponents(CXCASCRNCalculationAA.class).get(0);
+    return Context.getRegisteredComponents(CXCASCRNAACalculation.class).get(0);
   }
 
   @Override

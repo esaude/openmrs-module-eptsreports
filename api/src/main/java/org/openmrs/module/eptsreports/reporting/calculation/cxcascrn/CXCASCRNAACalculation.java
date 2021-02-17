@@ -55,7 +55,7 @@ import org.springframework.stereotype.Component;
  * </ul>
  */
 @Component
-public class CXCASCRNCalculationAA extends AbstractPatientCalculation {
+public class CXCASCRNAACalculation extends AbstractPatientCalculation {
 
   private final String ON_OR_AFTER = "onOrAfter";
 

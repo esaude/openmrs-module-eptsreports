@@ -39,7 +39,7 @@ public class CXCASCRNDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
-    // Total
+    /** Total */
     CohortIndicator total =
         eptsGeneralIndicator.getIndicator(
             "TOTAL",
@@ -49,7 +49,7 @@ public class CXCASCRNDataset extends BaseDataSet {
 
     dsd.addColumn("TOTAL", "Total", EptsReportUtils.map(total, mappings), "");
 
-    // 1st Time Screened - FTS
+    /** 1st Time Screened - FTS */
     CohortIndicator f1rstTimeScreened =
         eptsGeneralIndicator.getIndicator(
             "FTS",
@@ -103,7 +103,7 @@ public class CXCASCRNDataset extends BaseDataSet {
         EptsReportUtils.map(f1rstTimeScreenedSuspected, mappings),
         getColumnsForAge());
 
-    // Rescreened after previous negative - RAPN
+    /** Rescreened after previous negative - RAPN */
     CohortIndicator rescreenedAfterPreviousNegative =
         eptsGeneralIndicator.getIndicator(
             "RAPN",
@@ -162,7 +162,7 @@ public class CXCASCRNDataset extends BaseDataSet {
         EptsReportUtils.map(rescreenedAfterPreviousNegativeSuspected, mappings),
         getColumnsForAge());
 
-    // Post-Treatment follow-up - PTFU
+    /** Post-Treatment follow-up - PTFU */
     CohortIndicator postTreatmentFollowUp =
         eptsGeneralIndicator.getIndicator(
             "PTFU",
@@ -221,7 +221,7 @@ public class CXCASCRNDataset extends BaseDataSet {
         EptsReportUtils.map(postTreatmentFollowUpSuspected, mappings),
         getColumnsForAge());
 
-    // Rescreened after previous positive - RAPP
+    /** Rescreened after previous positive - RAPP */
     CohortIndicator rescreenedAfterPreviousPositive =
         eptsGeneralIndicator.getIndicator(
             "RAPP",
