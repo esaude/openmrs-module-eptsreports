@@ -77,7 +77,7 @@
 
 	<globalProperty>
 		<property>@MODULE_ID@.yesConceptUuid</property>
-		<defaultValue>e1d81b62-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<defaultValue>1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</defaultValue>
 		<description>
 			UUID for the SIM concept
 		</description>
@@ -646,7 +646,7 @@
 	</globalProperty>
 	<globalProperty>
 		<property>eptsreports.noConceptUuid</property>
-		<defaultValue>e1d81c70-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<defaultValue>1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</defaultValue>
 		<description>Concept uuid for NO</description>
 	</globalProperty>
 	<globalProperty>
@@ -705,7 +705,7 @@
 
 	<globalProperty>
 		<property>@MODULE_ID@.noConceptUuid</property>
-		<defaultValue>e1d81c70-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<defaultValue>1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</defaultValue>
 		<description>
 			UUID for the NO concept
 		</description>
