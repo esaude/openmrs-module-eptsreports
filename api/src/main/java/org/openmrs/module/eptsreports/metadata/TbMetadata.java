@@ -412,4 +412,19 @@ public class TbMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.hasTbSymptomsConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 12</b>
+   *
+   * <p><b>Name:</b> X-RAY, CHEST
+   *
+   * <p><b>Description: An examination using irradiation for imaging the chest.</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getXRayChest() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.xrayChestConceptUuid");
+    return getConcept(uuid);
+  }
 }

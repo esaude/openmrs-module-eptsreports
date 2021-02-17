@@ -294,7 +294,9 @@ public class TXTBCohortQueries {
                 hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
                 tbMetadata.getTBGenexpertTestConcept().getConceptId(),
                 tbMetadata.getCultureTest().getConceptId(),
-                tbMetadata.getTestTBLAM().getConceptId()));
+                tbMetadata.getTestTBLAM().getConceptId(),
+                hivMetadata.getResultForBasiloscopia().getConceptId(),
+                tbMetadata.getXRayChest().getConceptId()));
     addGeneralParameters(cd);
     return cd;
   }
@@ -309,16 +311,25 @@ public class TXTBCohortQueries {
    *
    * <p>Registered in the Adult follow-up <b>(encounterType_id = 6)</b> during the reporting period
    *
+   * <p>Method refined to accept different encounterTypes
+   *
    * </blockquote>
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getTBGenexpertTestCohort() {
+  public CohortDefinition getTBGenexpertTestCohort(Integer encounterType) {
+    if (encounterType == 6) {
+      encounterType = hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId();
+    }
+    if (encounterType == 13) {
+      encounterType = hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId();
+    }
+
     CohortDefinition cd =
         genericCohortQueries.generalSql(
             "TBGenexpertTest",
             TXTBQueries.tbGenexpertTest(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                encounterType,
                 tbMetadata.getTBGenexpertTestConcept().getConceptId(),
                 commonMetadata.getPositive().getConceptId(),
                 commonMetadata.getNegative().getConceptId()));
@@ -336,16 +347,25 @@ public class TXTBCohortQueries {
    *
    * <p>Registered in the Adult follow-up <b>(encounterType_id = 6)</b> during the reporting period
    *
+   * <p>Method refined to accept different encounterTypes
+   *
    * </blockquote>
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getCultureTest() {
+  public CohortDefinition getCultureTest(Integer encounterType) {
+    if (encounterType == 6) {
+      encounterType = hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId();
+    }
+    if (encounterType == 13) {
+      encounterType = hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId();
+    }
+
     CohortDefinition cd =
         genericCohortQueries.generalSql(
             "CultureTest",
             TXTBQueries.cultureTest(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                encounterType,
                 tbMetadata.getCultureTest().getConceptId(),
                 commonMetadata.getPositive().getConceptId(),
                 commonMetadata.getNegative().getConceptId()));
@@ -363,19 +383,94 @@ public class TXTBCohortQueries {
    *
    * <p>Registered in the Adult follow-up <b>(encounterType_id = 6)</b> during the reporting period
    *
+   * <p>Method refined to accept different encounterTypes
+   *
    * </blockquote>
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getTestTBLAM() {
+  public CohortDefinition getTestTBLAM(Integer encounterType) {
+    if (encounterType == 6) {
+      encounterType = hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId();
+    }
+    if (encounterType == 13) {
+      encounterType = hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId();
+    }
     CohortDefinition cd =
         genericCohortQueries.generalSql(
             "TestTBLAM",
             TXTBQueries.testTBLAM(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                encounterType,
                 tbMetadata.getTestTBLAM().getConceptId(),
                 commonMetadata.getPositive().getConceptId(),
                 commonMetadata.getNegative().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Raio X Torax <b>(id = 12)</b> Answer Positive <b>(id = 703)</> or Negative <b>(id = 664)</b> or
+   * Indeterminado (id = 1138)
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getTestXRayChest(Integer encounterType) {
+    if (encounterType == 6) {
+      encounterType = hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId();
+    }
+    if (encounterType == 13) {
+      encounterType = hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId();
+    }
+
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "TestXRayChest",
+            TXTBQueries.getTest(
+                encounterType,
+                tbMetadata.getXRayChest().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId(),
+                commonMetadata.getIndeterminate().getConceptId()));
+
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * BK Test <b>(id = 307)</b> Answer Positive <b>(id = 703)</> or Negative <b>(id = 664)</b>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getTestBK(Integer encounterType) {
+    if (encounterType == 6) {
+      encounterType = hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId();
+    }
+    if (encounterType == 13) {
+      encounterType = hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId();
+    }
+
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "BK Test",
+            TXTBQueries.getTest(
+                encounterType,
+                hivMetadata.getResultForBasiloscopia().getConceptId(),
+                commonMetadata.getPositive().getConceptId(),
+                commonMetadata.getNegative().getConceptId(),
+                null));
+
     addGeneralParameters(cd);
     return cd;
   }
@@ -997,13 +1092,28 @@ public class TXTBCohortQueries {
 
     definition.addSearch(
         "tb-genexpert-test",
-        EptsReportUtils.map(getTBGenexpertTestCohort(), generalParameterMapping));
+        EptsReportUtils.map(getTBGenexpertTestCohort(6), generalParameterMapping));
 
     definition.addSearch(
-        "culture-test", EptsReportUtils.map(getCultureTest(), generalParameterMapping));
+        "tb-genexpert-lab-test",
+        EptsReportUtils.map(getTBGenexpertTestCohort(13), generalParameterMapping));
 
     definition.addSearch(
-        "test-tb-lam", EptsReportUtils.map(getTestTBLAM(), generalParameterMapping));
+        "culture-test", EptsReportUtils.map(getCultureTest(6), generalParameterMapping));
+
+    definition.addSearch(
+        "culture-test-lab", EptsReportUtils.map(getCultureTest(13), generalParameterMapping));
+
+    definition.addSearch(
+        "test-tb-lam", EptsReportUtils.map(getTestTBLAM(6), generalParameterMapping));
+
+    definition.addSearch(
+        "test-tb-lam-lab", EptsReportUtils.map(getTestTBLAM(13), generalParameterMapping));
+
+    definition.addSearch("test-bk", EptsReportUtils.map(getTestBK(6), generalParameterMapping));
+
+    definition.addSearch(
+        "x-ray-chest", EptsReportUtils.map(getTestXRayChest(6), generalParameterMapping));
 
     definition.addSearch(
         "result-for-basiloscopia",
@@ -1027,8 +1137,8 @@ public class TXTBCohortQueries {
 
     definition.setCompositionString(
         "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tb-treatment-start "
-            + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR culture-test "
-            + "OR test-tb-lam) OR result-for-basiloscopia)) "
+            + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR tb-genexpert-lab-test OR culture-test OR culture-test-lab "
+            + "OR test-tb-lam OR test-tb-lam-lab OR test-bk OR x-ray-chest) OR result-for-basiloscopia)) "
             + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
 
     return definition;
@@ -1282,9 +1392,9 @@ public class TXTBCohortQueries {
     cd.addSearch(
         "application-for-laboratory-research",
         mapStraightThrough(getApplicationForLaboratoryResearch()));
-    cd.addSearch("tb-genexpert-test", mapStraightThrough(getTBGenexpertTestCohort()));
-    cd.addSearch("culture-test", mapStraightThrough(getCultureTest()));
-    cd.addSearch("test-tb-lam", mapStraightThrough(getTestTBLAM()));
+    cd.addSearch("tb-genexpert-test", mapStraightThrough(getTBGenexpertTestCohort(6)));
+    cd.addSearch("culture-test", mapStraightThrough(getCultureTest(6)));
+    cd.addSearch("test-tb-lam", mapStraightThrough(getTestTBLAM(6)));
     cd.setCompositionString(
         "tuberculosis-symptomys OR active-tuberculosis OR tb-observations "
             + "OR application-for-laboratory-research OR tb-genexpert-test OR culture-test OR test-tb-lam");
@@ -1335,7 +1445,8 @@ public class TXTBCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType(),
             tbMetadata.getTBGenexpertTestConcept(),
             commonMetadata.getPositive(),
-            commonMetadata.getNegative());
+            commonMetadata.getNegative(),
+            hivMetadata.getMisauLaboratorioEncounterType());
     return cd;
   }
 
@@ -1350,6 +1461,8 @@ public class TXTBCohortQueries {
     CohortDefinition cd =
         getSmearMicroscopyOnly(
             hivMetadata.getMisauLaboratorioEncounterType(),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getApplicationForLaboratoryResearch(),
             hivMetadata.getResultForBasiloscopia(),
             commonMetadata.getPositive(),
             commonMetadata.getNegative());
@@ -1368,9 +1481,11 @@ public class TXTBCohortQueries {
     CohortDefinition cd =
         getAdditionalTest(
             hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getMisauLaboratorioEncounterType(),
             tbMetadata.getTestTBLAM(),
             tbMetadata.getCultureTest(),
             hivMetadata.getApplicationForLaboratoryResearch(),
+            hivMetadata.getResultForBasiloscopia(),
             commonMetadata.getPositive(),
             commonMetadata.getNegative());
     return cd;
@@ -1426,7 +1541,8 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
-    definition.setCompositionString("denominator AND specimen-sent AND positive-screening");
+    definition.setCompositionString(
+        "denominator AND specimen-sent AND positive-screening"); // ! confirmar positive-screening
     return definition;
   }
 
@@ -1529,8 +1645,15 @@ public class TXTBCohortQueries {
         genericCohortQueries.generalSql(
             "basiloscopiaExamCohort",
             genericCohortQueries.getPatientsWithObsBetweenDates(
-                laboratory, basiloscopiaExam, Arrays.asList(negative, positive)));
+                fichaClinica, basiloscopiaExam, Arrays.asList(negative, positive)));
     addGeneralParameters(basiloscopiaExamCohort);
+
+    CohortDefinition basiloscopiaLabExamCohort =
+        genericCohortQueries.generalSql(
+            "basiloscopiaLabExamCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, basiloscopiaExam, Arrays.asList(negative, positive)));
+    addGeneralParameters(basiloscopiaLabExamCohort);
 
     CohortDefinition genexpertTestCohort =
         genericCohortQueries.generalSql(
@@ -1539,12 +1662,26 @@ public class TXTBCohortQueries {
                 fichaClinica, genexpertTest, Arrays.asList(negative, positive)));
     addGeneralParameters(genexpertTestCohort);
 
+    CohortDefinition genexpertLabTestCohort =
+        genericCohortQueries.generalSql(
+            "genexpertLabTestCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, genexpertTest, Arrays.asList(negative, positive)));
+    addGeneralParameters(genexpertLabTestCohort);
+
     CohortDefinition tbLamTestCohort =
         genericCohortQueries.generalSql(
             "tbLamTestCohort",
             genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, tbLamTest, Arrays.asList(negative, positive)));
     addGeneralParameters(tbLamTestCohort);
+
+    CohortDefinition tbLamLabTestCohort =
+        genericCohortQueries.generalSql(
+            "tbLamLabTestCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, tbLamTest, Arrays.asList(negative, positive)));
+    addGeneralParameters(tbLamLabTestCohort);
 
     CohortDefinition cultureTestCohort =
         genericCohortQueries.generalSql(
@@ -1553,13 +1690,20 @@ public class TXTBCohortQueries {
                 fichaClinica, cultureTest, Arrays.asList(negative, positive)));
     addGeneralParameters(cultureTestCohort);
 
+    CohortDefinition cultureLabTestCohort =
+        genericCohortQueries.generalSql(
+            "cultureLabTestCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, cultureTest, Arrays.asList(negative, positive)));
+    addGeneralParameters(cultureLabTestCohort);
+
     CohortDefinition applicationForLaboratoryResearchCohort =
         genericCohortQueries.generalSql(
             "applicationForLaboratoryResearchCohort",
             genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica,
                 applicationForLaboratoryResearch,
-                Arrays.asList(genexpertTest, cultureTest, tbLamTest)));
+                Arrays.asList(genexpertTest, cultureTest, tbLamTest, basiloscopiaExam)));
     addGeneralParameters(applicationForLaboratoryResearchCohort);
 
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
@@ -1570,17 +1714,27 @@ public class TXTBCohortQueries {
         "basiloscopiaExamCohort",
         EptsReportUtils.map(basiloscopiaExamCohort, generalParameterMapping));
     definition.addSearch(
+        "basiloscopiaLabExamCohort",
+        EptsReportUtils.map(basiloscopiaLabExamCohort, generalParameterMapping));
+    definition.addSearch(
         "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "genexpertLabTestCohort",
+        EptsReportUtils.map(genexpertLabTestCohort, generalParameterMapping));
     definition.addSearch(
         "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, generalParameterMapping));
     definition.addSearch(
+        "tbLamLabTestCohort", EptsReportUtils.map(tbLamLabTestCohort, generalParameterMapping));
+    definition.addSearch(
         "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "cultureLabTestCohort", EptsReportUtils.map(cultureLabTestCohort, generalParameterMapping));
     definition.addSearch(
         "applicationForLaboratoryResearchCohort",
         EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
 
     definition.setCompositionString(
-        "basiloscopiaExamCohort OR genexpertTestCohort OR tbLamTestCohort OR cultureTestCohort OR applicationForLaboratoryResearchCohort");
+        "basiloscopiaExamCohort OR basiloscopiaLabExamCohort OR genexpertTestCohort OR genexpertLabTestCohort OR tbLamTestCohort OR tbLamLabTestCohort OR cultureTestCohort OR cultureLabTestCohort OR applicationForLaboratoryResearchCohort");
     return definition;
   }
 
@@ -1596,7 +1750,8 @@ public class TXTBCohortQueries {
       EncounterType fichaClinica,
       Concept genexpertTest,
       Concept positive,
-      Concept negative) {
+      Concept negative,
+      EncounterType laboratory) {
 
     CohortDefinition genexpertTestCohort =
         genericCohortQueries.generalSql(
@@ -1604,6 +1759,13 @@ public class TXTBCohortQueries {
             genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, genexpertTest, Arrays.asList(negative, positive)));
     addGeneralParameters(genexpertTestCohort);
+
+    CohortDefinition genexpertLabTestCohort =
+        genericCohortQueries.generalSql(
+            "genexpertLabTestCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, genexpertTest, Arrays.asList(negative, positive)));
+    addGeneralParameters(genexpertLabTestCohort);
 
     CohortDefinition applicationForLaboratoryResearchCohort =
         genericCohortQueries.generalSql(
@@ -1619,11 +1781,14 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, generalParameterMapping));
     definition.addSearch(
+        "genexpertLabTestCohort",
+        EptsReportUtils.map(genexpertLabTestCohort, generalParameterMapping));
+    definition.addSearch(
         "applicationForLaboratoryResearchCohort",
         EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
 
     definition.setCompositionString(
-        "genexpertTestCohort OR applicationForLaboratoryResearchCohort");
+        "genexpertTestCohort OR genexpertLabTestCohort OR applicationForLaboratoryResearchCohort");
     return definition;
   }
 
@@ -1634,25 +1799,48 @@ public class TXTBCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getSmearMicroscopyOnly(
-      EncounterType laboratory, Concept basiloscopiaExam, Concept positive, Concept negative) {
+      EncounterType laboratory,
+      EncounterType fichaClinica,
+      Concept applicationForLaboratoryResearch,
+      Concept basiloscopiaExam,
+      Concept positive,
+      Concept negative) {
 
     CohortDefinition basiloscopiaCohort =
         genericCohortQueries.generalSql(
             "basiloscopiaCohort",
             genericCohortQueries.getPatientsWithObsBetweenDates(
-                laboratory, basiloscopiaExam, Arrays.asList(negative, positive)));
+                fichaClinica, basiloscopiaExam, Arrays.asList(negative, positive)));
     addGeneralParameters(basiloscopiaCohort);
+
+    CohortDefinition basiloscopiaLabCohort =
+        genericCohortQueries.generalSql(
+            "basiloscopiaLabCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, basiloscopiaExam, Arrays.asList(negative, positive)));
+    addGeneralParameters(basiloscopiaLabCohort);
 
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("haveBasiloscopia()");
     addGeneralParameters(definition);
 
+    CohortDefinition applicationForLaboratoryResearchCohort =
+        genericCohortQueries.generalSql(
+            "applicationForLaboratoryResearchCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                fichaClinica, applicationForLaboratoryResearch, Arrays.asList(basiloscopiaExam)));
+    addGeneralParameters(applicationForLaboratoryResearchCohort);
+
     definition.addSearch(
         "basiloscopiaCohort", EptsReportUtils.map(basiloscopiaCohort, generalParameterMapping));
     definition.addSearch(
+        "basiloscopiaLabCohort",
+        EptsReportUtils.map(basiloscopiaLabCohort, generalParameterMapping));
+    definition.addSearch(
         "genExpertCohort", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
 
-    definition.setCompositionString("basiloscopiaCohort NOT genExpertCohort");
+    definition.setCompositionString(
+        "(basiloscopiaCohort OR basiloscopiaLabCohort) NOT genExpertCohort");
     return definition;
   }
 
@@ -1664,9 +1852,11 @@ public class TXTBCohortQueries {
    */
   public CohortDefinition getAdditionalTest(
       EncounterType fichaClinica,
+      EncounterType laboratory,
       Concept tbLamTest,
       Concept cultureTest,
       Concept applicationForLaboratoryResearch,
+      Concept basiloscopiaExam,
       Concept positive,
       Concept negative) {
 
@@ -1677,12 +1867,33 @@ public class TXTBCohortQueries {
                 fichaClinica, tbLamTest, Arrays.asList(negative, positive)));
     addGeneralParameters(tbLamTestCohort);
 
+    CohortDefinition tbLamLabTestCohort =
+        genericCohortQueries.generalSql(
+            "tbLamLabTestCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, tbLamTest, Arrays.asList(negative, positive)));
+    addGeneralParameters(tbLamLabTestCohort);
+
     CohortDefinition cultureTestCohort =
         genericCohortQueries.generalSql(
             "cultureTestCohort",
             genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, cultureTest, Arrays.asList(negative, positive)));
     addGeneralParameters(cultureTestCohort);
+
+    CohortDefinition cultureLabTestCohort =
+        genericCohortQueries.generalSql(
+            "cultureLabTestCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, cultureTest, Arrays.asList(negative, positive)));
+    addGeneralParameters(cultureLabTestCohort);
+
+    CohortDefinition basiloscopiaExamCohort =
+        genericCohortQueries.generalSql(
+            "basiloscopiaExamCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                fichaClinica, basiloscopiaExam, Arrays.asList(positive)));
+    addGeneralParameters(basiloscopiaExamCohort);
 
     CohortDefinition applicationForLaboratoryResearchCohort =
         genericCohortQueries.generalSql(
@@ -1691,7 +1902,7 @@ public class TXTBCohortQueries {
                 fichaClinica,
                 applicationForLaboratoryResearch,
                 Arrays.asList(cultureTest, tbLamTest)));
-    addGeneralParameters(cultureTestCohort);
+    addGeneralParameters(applicationForLaboratoryResearchCohort);
 
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("additionalTest()");
@@ -1700,7 +1911,11 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, generalParameterMapping));
     definition.addSearch(
+        "tbLamLabTestCohort", EptsReportUtils.map(tbLamLabTestCohort, generalParameterMapping));
+    definition.addSearch(
         "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "cultureLabTestCohort", EptsReportUtils.map(cultureLabTestCohort, generalParameterMapping));
     definition.addSearch(
         "applicationForLaboratoryResearchCohort",
         EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
@@ -1709,9 +1924,12 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "smearMicroscopyOnlyCohort",
         EptsReportUtils.map(getSmearMicroscopyOnly(), generalParameterMapping));
+    definition.addSearch(
+        "basiloscopiaExamCohort",
+        EptsReportUtils.map(basiloscopiaExamCohort, generalParameterMapping));
 
     definition.setCompositionString(
-        "(tbLamTestCohort OR cultureTestCohort OR applicationForLaboratoryResearchCohort) NOT genExpertCohort NOT smearMicroscopyOnlyCohort");
+        "(tbLamTestCohort OR tbLamLabTestCohort OR cultureTestCohort OR cultureLabTestCohort OR applicationForLaboratoryResearchCohort OR basiloscopiaExamCohort) NOT genExpertCohort NOT smearMicroscopyOnlyCohort");
     return definition;
   }
 
@@ -1736,6 +1954,13 @@ public class TXTBCohortQueries {
                 fichaClinica, genexpertTest, Arrays.asList(positive)));
     addGeneralParameters(genexpertTestCohort);
 
+    CohortDefinition genexpertLabTestCohort =
+        genericCohortQueries.generalSql(
+            "genexpertLabTestCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, genexpertTest, Arrays.asList(positive)));
+    addGeneralParameters(genexpertLabTestCohort);
+
     CohortDefinition basiloscopiaExamCohort =
         genericCohortQueries.generalSql(
             "basiloscopiaExamCohort",
@@ -1750,12 +1975,26 @@ public class TXTBCohortQueries {
                 fichaClinica, tbLamTest, Arrays.asList(positive)));
     addGeneralParameters(tbLamTestCohort);
 
+    CohortDefinition tbLamLabTestCohort =
+        genericCohortQueries.generalSql(
+            "tbLamLabTestCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                laboratory, tbLamTest, Arrays.asList(positive)));
+    addGeneralParameters(tbLamLabTestCohort);
+
     CohortDefinition cultureTestCohort =
         genericCohortQueries.generalSql(
             "cultureTestCohort",
             genericCohortQueries.getPatientsWithObsBetweenDates(
                 fichaClinica, cultureTest, Arrays.asList(positive)));
     addGeneralParameters(cultureTestCohort);
+
+    CohortDefinition cultureLabTestCohort =
+        genericCohortQueries.generalSql(
+            "cultureLabTestCohort",
+            genericCohortQueries.getPatientsWithObsBetweenDates(
+                fichaClinica, cultureTest, Arrays.asList(positive)));
+    addGeneralParameters(cultureLabTestCohort);
 
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
     definition.setName("positiveResultsReturned()");
@@ -1764,15 +2003,22 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "genexpertTestCohort", EptsReportUtils.map(genexpertTestCohort, generalParameterMapping));
     definition.addSearch(
+        "genexpertLabTestCohort",
+        EptsReportUtils.map(genexpertLabTestCohort, generalParameterMapping));
+    definition.addSearch(
         "basiloscopiaExamCohort",
         EptsReportUtils.map(basiloscopiaExamCohort, generalParameterMapping));
     definition.addSearch(
         "tbLamTestCohort", EptsReportUtils.map(tbLamTestCohort, generalParameterMapping));
     definition.addSearch(
+        "tbLamLabTestCohort", EptsReportUtils.map(tbLamLabTestCohort, generalParameterMapping));
+    definition.addSearch(
         "cultureTestCohort", EptsReportUtils.map(cultureTestCohort, generalParameterMapping));
+    definition.addSearch(
+        "cultureLabTestCohort", EptsReportUtils.map(cultureLabTestCohort, generalParameterMapping));
 
     definition.setCompositionString(
-        "genexpertTestCohort OR basiloscopiaExamCohort OR tbLamTestCohort OR cultureTestCohort");
+        "genexpertTestCohort OR genexpertLabTestCohort OR basiloscopiaExamCohort OR tbLamTestCohort OR tbLamLabTestCohort OR cultureTestCohort OR cultureLabTestCohort");
     return definition;
   }
 }

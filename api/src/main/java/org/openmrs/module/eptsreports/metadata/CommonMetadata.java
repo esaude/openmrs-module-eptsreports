@@ -551,4 +551,20 @@ public class CommonMetadata extends Metadata {
             .getGlobalProperty("eptsreports.regimenAlternativeToFirstLineConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 1138</b>
+   *
+   * <p><b>Name:</b> INDETERMINATE
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getIndeterminate() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.indeterminateConceptUuid");
+    return getConcept(uuid);
+  }
 }

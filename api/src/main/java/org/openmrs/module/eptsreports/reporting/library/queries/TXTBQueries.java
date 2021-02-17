@@ -246,6 +246,8 @@ public class TXTBQueries {
    * @param tbGenexpertTest
    * @param cultureTest
    * @param testTBLAM
+   * @param testBK
+   * @param xRayChest
    * @return String
    */
   public static String applicationForLaboratoryResearch(
@@ -253,17 +255,25 @@ public class TXTBQueries {
       Integer applicationForLaboratory,
       Integer tbGenexpertTest,
       Integer cultureTest,
-      Integer testTBLAM) {
+      Integer testTBLAM,
+      Integer testBK,
+      Integer xRayChest) {
     return String.format(
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
             + "ON p.patient_id = e.patient_id "
             + "INNER JOIN obs o "
             + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s)) "
             + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
-        encounterTypeId, applicationForLaboratory, tbGenexpertTest, cultureTest, testTBLAM);
+        encounterTypeId,
+        applicationForLaboratory,
+        tbGenexpertTest,
+        cultureTest,
+        testTBLAM,
+        testBK,
+        xRayChest);
   }
 
   /**
@@ -374,6 +384,61 @@ public class TXTBQueries {
             + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
         encounterTypeId, basiloscopia, positive, negative);
+  }
+
+  /**
+   * <b>Description:</b> Test Results for any given concept
+   *
+   * <p>And all combinations of answers: positive, negative, undetermined
+   *
+   * @return {@link String}
+   */
+  public static String getTest(
+      Integer encounterTypeId,
+      Integer test,
+      Integer positive,
+      Integer negative,
+      Integer undetermined) {
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", encounterTypeId);
+    map.put("test", test);
+    map.put("703", positive);
+    map.put("664", negative);
+    map.put("1138", undetermined);
+
+    String query =
+        "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + "ON p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON e.encounter_id = o.encounter_id "
+            + "WHERE e.location_id = :location AND e.encounter_type = ${6} "
+            + "AND (o.concept_id = ${test}   ";
+
+    if (negative == null && undetermined == null) {
+      query += "AND o.value_coded = ${703}) ";
+    } else if (positive == null && undetermined == null) {
+      query += "AND o.value_coded = ${664}) ";
+    } else if (positive == null && negative == null) {
+      query += "AND o.value_coded = ${1138}) ";
+    } else if (undetermined == null) {
+      query += "AND (o.value_coded = ${703} OR o.value_coded = ${664})) ";
+    } else if (negative == null) {
+      query += "AND (o.value_coded = ${703} OR o.value_coded = ${1138})) ";
+    } else if (positive == null) {
+      query += "AND (o.value_coded = ${664} OR o.value_coded = ${1138})) ";
+    } else {
+      query +=
+          "AND (o.value_coded = ${703} OR o.value_coded = ${664} OR o.value_coded = ${1138})) ";
+    }
+
+    query +=
+        "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    return stringSubstitutor.replace(query);
   }
 
   /**
