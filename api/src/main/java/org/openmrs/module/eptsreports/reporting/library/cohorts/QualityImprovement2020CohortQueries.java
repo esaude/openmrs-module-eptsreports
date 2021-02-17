@@ -348,7 +348,7 @@ public class QualityImprovement2020CohortQueries {
         hivMetadata.getPresumptiveDiagnosisInChildrenConcep().getConceptId());
 
     String query =
-       "      SELECT    "
+        "      SELECT    "
             + "        final_diag_pres.patient_id   "
             + "    FROM   "
             + "        (SELECT    "
