@@ -1538,11 +1538,9 @@ public class TXTBCohortQueries {
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch(
         "specimen-sent", EptsReportUtils.map(getSpecimenSent(), generalParameterMapping));
-    definition.addSearch(
-        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
     definition.setCompositionString(
-        "denominator AND specimen-sent AND positive-screening"); // ! confirmar positive-screening
+        "denominator AND specimen-sent"); // ! confirmar positive-screening
     return definition;
   }
 
@@ -1558,10 +1556,8 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch("genExpert", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
-    definition.addSearch(
-        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
-    definition.setCompositionString("denominator AND genExpert AND positive-screening");
+    definition.setCompositionString("denominator AND genExpert");
     return definition;
   }
 
@@ -1579,10 +1575,8 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "smearMicroscopyOnly",
         EptsReportUtils.map(getSmearMicroscopyOnly(), generalParameterMapping));
-    definition.addSearch(
-        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
-    definition.setCompositionString("denominator AND smearMicroscopyOnly AND positive-screening");
+    definition.setCompositionString("denominator AND smearMicroscopyOnly  ");
     return definition;
   }
 
@@ -1599,10 +1593,8 @@ public class TXTBCohortQueries {
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
     definition.addSearch(
         "otherAdditionalTest", EptsReportUtils.map(getAdditionalTest(), generalParameterMapping));
-    definition.addSearch(
-        "positive-screening", EptsReportUtils.map(positiveScreening(), generalParameterMapping));
     addGeneralParameters(definition);
-    definition.setCompositionString("denominator AND otherAdditionalTest AND positive-screening");
+    definition.setCompositionString("denominator AND otherAdditionalTest");
     return definition;
   }
 
