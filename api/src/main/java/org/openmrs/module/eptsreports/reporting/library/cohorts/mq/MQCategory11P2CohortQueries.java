@@ -148,10 +148,6 @@ public class MQCategory11P2CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "B3",
-        EptsReportUtils.map(this.findPatientsWhoArePregnantDuringInclusionPeriodByB3(), mappings));
-
-    definition.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
@@ -173,7 +169,7 @@ public class MQCategory11P2CohortQueries {
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(B3 AND PREGNANT) NOT(BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+        "(PREGNANT) NOT(BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -203,11 +199,6 @@ public class MQCategory11P2CohortQueries {
             this.mQCohortQueries.findPatientsWhoHaveLastFirstLineTerapeutic(), mappings));
 
     definition.addSearch(
-        "B2",
-        EptsReportUtils.map(
-            this.mQCohortQueries.findPatientWithCVOver1000CopiesCategory11B2(), mappings));
-
-    definition.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
             this
@@ -233,7 +224,7 @@ public class MQCategory11P2CohortQueries {
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(B1 AND B2 AND PREGNANT) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+        "(B1 AND PREGNANT) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -304,17 +295,13 @@ public class MQCategory11P2CohortQueries {
             mappings));
 
     definition.addSearch(
-        "B3",
-        EptsReportUtils.map(this.findPatientsWhoArePregnantDuringInclusionPeriodByB3(), mappings));
-
-    definition.addSearch(
         "H",
         EptsReportUtils.map(
             this
                 .findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH(),
             mappings));
 
-    definition.setCompositionString("(DENOMINADOR AND B3 AND H)");
+    definition.setCompositionString("(DENOMINADOR AND H)");
 
     return definition;
   }
