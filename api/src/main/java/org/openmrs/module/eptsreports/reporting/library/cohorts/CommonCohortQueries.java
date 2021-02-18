@@ -198,7 +198,7 @@ public class CommonCohortQueries {
       List<Concept> answers2) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Patients with Nutritional Calssification");
+    sqlCohortDefinition.setName("Patients with Nutritional Classification");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
