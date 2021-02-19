@@ -52,12 +52,6 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
 
   private TxRTTPLHIVDataset txRTTPLHIVDateset;
 
-  private CXCASCRNDataset cxcascrnDataset;
-
-  private CXCASCRNPositiveDataset cxcascrnPositiveDataset;
-
-  private TXCXCADataset txcxcaDataset;
-
   @Autowired
   public SetupMERQuarterly25(
       TxPvlsDataset txPvlsDataset,
@@ -79,9 +73,6 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
     this.genericCohortQueries = genericCohortQueries;
     this.transferredInDataset = transferredInDataset;
     this.txRTTPLHIVDateset = txRTTPLHIVDateset;
-    this.cxcascrnDataset = cxcascrnDataset;
-    this.cxcascrnPositiveDataset = cxcascrnPositiveDataset;
-    this.txcxcaDataset = txcxcaDataset;
   }
 
   @Override
@@ -127,13 +118,6 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
         "T", Mapped.mapStraightThrough(transferredInDataset.constructTransferInDataset()));
     rd.addDataSetDefinition(
         "PL", Mapped.mapStraightThrough(txRTTPLHIVDateset.constructTxRTTPLHIVDateset()));
-    rd.addDataSetDefinition(
-        "CXCA", Mapped.mapStraightThrough(cxcascrnDataset.constructCXCASCRNDataset()));
-    rd.addDataSetDefinition(
-        "CXCAP",
-        Mapped.mapStraightThrough(cxcascrnPositiveDataset.constructCXCASCRNPositiveDataset()));
-    rd.addDataSetDefinition(
-        "TXCXCA", Mapped.mapStraightThrough(txcxcaDataset.constructTXCXCASCRNDataset()));
 
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
