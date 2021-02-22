@@ -1283,7 +1283,7 @@ public class QualityImprovement2020Queries {
             + "             FROM patient p   "
             + "             INNER JOIN encounter e ON e.patient_id = p.patient_id   "
             + "             INNER JOIN obs o ON e.encounter_id = o.encounter_id   "
-            + "             INNER JOIN person per on per.person_id= p.patient_id  "
+            + "             INNER JOIN person per ON per.person_id= p.patient_id  "
             + "             WHERE   p.voided = 0   "
             + "                     AND e.voided = 0   "
             + "                     AND o.voided = 0   "
