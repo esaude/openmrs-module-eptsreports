@@ -473,16 +473,9 @@ public class MQCategory15CohortQueries {
         "D", EptsReportUtils.map(findPatientsWhoAreBreastfeedingSpecificForCategory15(), mappings));
 
     definition.addSearch(
-        "E",
-        EptsReportUtils.map(
-            mQCohortQueries
-                .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
-            mappings));
-
-    definition.addSearch(
         "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
-    definition.setCompositionString("A NOT (C OR D OR E OR F)");
+    definition.setCompositionString("A NOT (C OR D OR F)");
 
     return definition;
   }

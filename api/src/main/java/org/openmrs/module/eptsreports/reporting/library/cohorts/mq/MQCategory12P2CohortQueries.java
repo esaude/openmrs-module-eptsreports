@@ -51,6 +51,13 @@ public class MQCategory12P2CohortQueries {
             mappings));
 
     definition.addSearch(
+        "B1E-NOTFIRSTLINE",
+        EptsReportUtils.map(
+            this.mqCohortQueries
+                .findPatientsWhoAreNotInTheFirstLine14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12B1E(),
+            mappings));
+
+    definition.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
             this.mqCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
@@ -61,14 +68,11 @@ public class MQCategory12P2CohortQueries {
             this.mqCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.addSearch(
-        "TRANSFERED-IN",
-        EptsReportUtils.map(
-            this.mqCohortQueries
-                .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
-            mappings));
+        "TRANSFERED-OUT",
+        EptsReportUtils.map(this.mqCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(START-ART AND B1-FIRSTLINE) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN)");
+        "(START-ART AND B1-FIRSTLINE) NOT (B1E-NOTFIRSTLINE OR PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -101,19 +105,12 @@ public class MQCategory12P2CohortQueries {
             mappings));
 
     definition.addSearch(
-        "B1E-NOTFIRSTLINE",
-        EptsReportUtils.map(
-            this.mqCohortQueries
-                .findPatientsWhoAreNotInTheFirstLine14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12B1E(),
-            mappings));
-
-    definition.addSearch(
         "B13-RESUMO-MENSAL",
         EptsReportUtils.map(
             resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
             "endDate=${endRevisionDate},location=${location}"));
 
-    definition.setCompositionString("(FIRST-LINE AND B13-RESUMO-MENSAL) NOT (B1E-NOTFIRSTLINE)");
+    definition.setCompositionString("(FIRST-LINE AND B13-RESUMO-MENSAL)");
 
     return definition;
   }
@@ -151,6 +148,13 @@ public class MQCategory12P2CohortQueries {
             mappings));
 
     definition.addSearch(
+        "B2E-NOTSECONDLINE",
+        EptsReportUtils.map(
+            this.mqCohortQueries
+                .findPatientsWhoAreNotInTheSecondLine14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateB2E(),
+            mappings));
+
+    definition.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
             this.mqCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
@@ -161,14 +165,11 @@ public class MQCategory12P2CohortQueries {
             this.mqCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.addSearch(
-        "TRANSFERED-IN",
-        EptsReportUtils.map(
-            this.mqCohortQueries
-                .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
-            mappings));
+        "TRANSFERED-OUT",
+        EptsReportUtils.map(this.mqCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(START-ART AND B2-SECONDLINE) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN)");
+        "(START-ART AND B2-SECONDLINE) NOT (B2E-NOTSECONDLINE OR PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -200,19 +201,12 @@ public class MQCategory12P2CohortQueries {
             mappings));
 
     definition.addSearch(
-        "B2E-NOTSECONDLINE",
-        EptsReportUtils.map(
-            this.mqCohortQueries
-                .findPatientsWhoAreNotInTheSecondLine14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateB2E(),
-            mappings));
-
-    definition.addSearch(
         "B13-RESUMO-MENSAL",
         EptsReportUtils.map(
             resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
             "endDate=${endRevisionDate},location=${location}"));
 
-    definition.setCompositionString("(SECOND-LINE AND B13-RESUMO-MENSAL) NOT (B2E-NOTSECONDLINE)");
+    definition.setCompositionString("(SECOND-LINE AND B13-RESUMO-MENSAL)");
 
     return definition;
   }
@@ -261,10 +255,10 @@ public class MQCategory12P2CohortQueries {
             this.mqCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.addSearch(
-        "TRANSFERED-IN",
+        "B1E-NOTFIRSTLINE",
         EptsReportUtils.map(
             this.mqCohortQueries
-                .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
+                .findPatientsWhoAreNotInTheFirstLine14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12B1E(),
             mappings));
 
     definition.addSearch(
@@ -272,7 +266,7 @@ public class MQCategory12P2CohortQueries {
         EptsReportUtils.map(this.mqCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(START-ART AND  PREGNANT AND B1-FIRSTLINE) NOT (BREASTFEEDING OR TRANSFERED-IN)");
+        "(START-ART AND  PREGNANT AND B1-FIRSTLINE) NOT (B1E-NOTFIRSTLINE OR BREASTFEEDING OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -304,20 +298,12 @@ public class MQCategory12P2CohortQueries {
             mappings));
 
     definition.addSearch(
-        "B1E-NOTFIRSTLINE",
-        EptsReportUtils.map(
-            this.mqCohortQueries
-                .findPatientsWhoAreNotInTheFirstLine14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12B1E(),
-            mappings));
-
-    definition.addSearch(
         "B13-RESUMO-MENSAL",
         EptsReportUtils.map(
             resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
             "endDate=${endRevisionDate},location=${location}"));
 
-    definition.setCompositionString(
-        "(PREGNANT-FIRST-LINE AND B13-RESUMO-MENSAL) NOT (B1E-NOTFIRSTLINE)");
+    definition.setCompositionString("(PREGNANT-FIRST-LINE AND B13-RESUMO-MENSAL)");
 
     return definition;
   }

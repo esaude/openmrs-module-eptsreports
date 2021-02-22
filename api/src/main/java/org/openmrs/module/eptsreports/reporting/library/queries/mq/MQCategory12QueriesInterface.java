@@ -37,13 +37,20 @@ public interface MQCategory12QueriesInterface {
 
     public static final String
         findPatientsWhoAreNotInTheFirstLine14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12B1E =
-            "select p.patient_id from patient p "
-                + "join encounter e on p.patient_id=e.patient_id "
-                + "join obs o on o.encounter_id=e.encounter_id "
-                + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 "
-                + "and o.concept_id=21151 and e.location_id=:location and o.value_coded<>21150 "
-                + "and o.obs_datetime between date_add(:endRevisionDate, interval -14 MONTH) AND  :endRevisionDate "
-                + "group by p.patient_id ";
+            " select Diff_firstLine.patient_id from ( "
+                + " SELECT maxLinha.patient_id, maxLinha.maxDataLinha FROM ( "
+                + " select p.patient_id, max(o.obs_datetime) maxDataLinha "
+                + " FROM patient p "
+                + " join encounter e on p.patient_id = e.patient_id "
+                + " join obs o on o.encounter_id = e.encounter_id "
+                + " where e.encounter_type = 6 and e.voided = 0 and o.voided = 0 and p.voided = 0 "
+                + " and o.concept_id = 21151 and e.location_id = :location "
+                + " and o.obs_datetime BETWEEN :startInclusionDate AND :endRevisionDate "
+                + " group by p.patient_id "
+                + " ) maxLinha "
+                + " inner join obs on obs.person_id = maxLinha.patient_id and maxLinha.maxDataLinha = obs.obs_datetime "
+                + " where obs.concept_id = 21151 and obs.value_coded <> 21150 and obs.voided = 0 and obs.location_id = :location "
+                + " ) Diff_firstLine ";
 
     public static final String
         findPatientsWhoAreInTheSecondLine14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12B2 =
@@ -63,13 +70,20 @@ public interface MQCategory12QueriesInterface {
 
     public static final String
         findPatientsWhoAreNotInTheSecondLine14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateB2E =
-            "select p.patient_id from patient p "
-                + "join encounter e on p.patient_id=e.patient_id "
-                + "join obs o on o.encounter_id=e.encounter_id "
-                + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 "
-                + "and o.concept_id=21151 and e.location_id=:location and o.value_coded<>21148 "
-                + "and o.obs_datetime between date_add(:endRevisionDate, interval -14 MONTH) AND  :endRevisionDate "
-                + "group by p.patient_id ";
+            " select secondLine.patient_id from ( "
+                + " SELECT maxLinha.patient_id, maxLinha.maxDataLinha FROM ( "
+                + " select p.patient_id, max(o.obs_datetime) maxDataLinha "
+                + " FROM patient p "
+                + " join encounter e on p.patient_id = e.patient_id "
+                + " join obs o on o.encounter_id = e.encounter_id "
+                + " where e.encounter_type = 6 and e.voided = 0 and o.voided = 0 and p.voided = 0 "
+                + " and o.concept_id = 21151 and e.location_id = :location "
+                + " and o.obs_datetime BETWEEN :startInclusionDate AND :endRevisionDate "
+                + " group by p.patient_id "
+                + " ) maxLinha "
+                + " inner join obs on obs.person_id = maxLinha.patient_id and maxLinha.maxDataLinha = obs.obs_datetime "
+                + " where obs.concept_id = 21151 and obs.value_coded <> 21148 and obs.voided = 0 and obs.location_id = :location "
+                + " ) secondLine ";
 
     public static final String
         findPatientsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12 =
@@ -98,7 +112,7 @@ public interface MQCategory12QueriesInterface {
                 + "and o.value_datetime is not null and e.location_id=:location and  o.value_datetime BETWEEN :startInclusionDate and :endRevisionDate "
                 + "and oLevantou.concept_id=23865 and oLevantou.value_coded=1065  "
                 + ") ret on ret.patient_id=tx_new.patient_id "
-                + "where tx_new.art_start_date BETWEEN :startInclusionDate AND :endInclusionDate and (TIMESTAMPDIFF(DAY, tx_new.art_start_date,ret.dataret33)) between 25 and 33  "
+                + "where tx_new.art_start_date BETWEEN :startInclusionDate AND :endInclusionDate and (TIMESTAMPDIFF(DAY, tx_new.art_start_date,ret.dataret33)) between 20 and 33  "
                 + "group by tx_new.patient_id  "
                 + ")ret33 ";
 
