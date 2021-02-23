@@ -46,12 +46,12 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.4 Semi-Annual";
+    return "PEPFAR MER 2.5 Semi-Annual";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR MER 2.4 Semi-Annual Report";
+    return "PEPFAR MER 2.5 Semi-Annual Report";
   }
 
   @Override
@@ -79,8 +79,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.4_Semiannual.xls",
-              "PEPFAR MER 2.4 Semi-Annual Report",
+              "PEPFAR_MER_2.5_Semiannual.xls",
+              "PEPFAR MER 2.5 Semi-Annual Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();

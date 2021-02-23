@@ -206,4 +206,32 @@ public class TbMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.sputumForAcidFastBacilli");
     return getConcept(uuid);
   }
+
+  // Concept 12 Raio X TORAX
+  public Concept getRaioXTorax() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.raioxtorax");
+    return getConcept(uuid);
+  }
+
+  // Concept 1138 Indeterminate
+  public Concept getIndeterminateConcept() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.indeterminate");
+    return getConcept(uuid);
+  }
+
+  // Concept 165184 Not Found
+  public Concept getNotFoundConcept() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.notfound");
+    return getConcept(uuid);
+  }
+
+  // Concept 165189 XPert MTB/RIF
+  public Concept getXpertMtb() {
+    final String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.xpertmtb");
+    return getConcept(uuid);
+  }
 }
