@@ -81,7 +81,7 @@ public class MQCategory11DataSet extends MQAbstractDataSet {
                 "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
                 mappings),
             mappings),
-        "ageMqNewART=2-14");
+        "ageMqNewART=3-14");
 
     dataSetDefinition.addColumn(
         "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
@@ -94,7 +94,7 @@ public class MQCategory11DataSet extends MQAbstractDataSet {
                 "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
                 mappings),
             mappings),
-        "ageMqNewART=2-14");
+        "ageMqNewART=3-14");
 
     dataSetDefinition.addColumn(
         "CAT11Least9APSSConsultationDENOMINATOR",

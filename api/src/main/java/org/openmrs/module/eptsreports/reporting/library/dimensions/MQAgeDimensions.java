@@ -218,7 +218,7 @@ public class MQAgeDimensions {
 
     dimension.addCohortDefinition(
         "3-14",
-        EptsReportUtils.map(this.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(5, 9), mappings));
+        EptsReportUtils.map(this.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(3, 14), mappings));
 
     dimension.addCohortDefinition(
         "<9MONTHS",

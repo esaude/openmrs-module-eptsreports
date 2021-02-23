@@ -60,7 +60,7 @@ public class MQCategory12P1CohortQueries {
         EptsReportUtils.map(this.mqCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(RF5 AND PREGNANT)  NOT(BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+        "(RF5 AND PREGNANT)  NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }

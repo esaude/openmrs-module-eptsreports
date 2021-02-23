@@ -148,6 +148,11 @@ public class MQCategory11P2CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
+        "START-ART",
+        EptsReportUtils.map(
+            this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
+
+    definition.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
@@ -169,7 +174,7 @@ public class MQCategory11P2CohortQueries {
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(PREGNANT) NOT(BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+        "(START-ART AND PREGNANT) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
