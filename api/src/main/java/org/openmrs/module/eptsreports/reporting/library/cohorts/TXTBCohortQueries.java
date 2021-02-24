@@ -740,23 +740,32 @@ public class TXTBCohortQueries {
     this.addGeneralParameters(definition);
     definition.setName("TxTB -specimen-sent");
 
+    CohortDefinition applicationForLaboratoryResearchDataset =
+        this.genericCohortQueries.generalSql(
+            "applicationForLaboratoryResearch",
+            TXTBQueries.dateObsForEncounterAndQuestionAndAnswers(
+                this.hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                Arrays.asList(
+                    this.hivMetadata.getApplicationForLaboratoryResearch().getConceptId()),
+                Arrays.asList(
+                    this.tbMetadata.getTbGenexpertTest().getConceptId(),
+                    this.tbMetadata.getCultureTest().getConceptId(),
+                    this.tbMetadata.getTbLam().getConceptId(),
+                    this.tbMetadata.getSputumForAcidFastBacilli().getConceptId())));
+
+    this.addGeneralParameters(applicationForLaboratoryResearchDataset);
+
     definition.addSearch(
         "application-for-laboratory-research",
-        this.map(this.getApplicationForLaboratoryResearch(), this.generalParameterMapping));
+        this.map(applicationForLaboratoryResearchDataset, this.generalParameterMapping));
     definition.addSearch(
         "tb-genexpert-or-culture-test-or-lam-or-bk-test",
         this.map(this.getTbGenExpertORCultureTestOrTbLamOrBk(), this.generalParameterMapping));
     definition.addSearch(
-        "tb-raioxtorax", this.map(this.getTbRaioXTorax(), this.generalParameterMapping));
-    definition.addSearch(
-        "sputum-for-acid-fast-bacilli",
-        EptsReportUtils.map(
-            this.getSputumForAcidFastBacilliWithinReportingDate(), this.generalParameterMapping));
-    definition.addSearch(
         "lab-results", this.map(this.getResultsOnFichaLaboratorio(), this.generalParameterMapping));
 
     definition.setCompositionString(
-        "application-for-laboratory-research OR tb-genexpert-or-culture-test-or-lam-or-bk-test OR tb-raioxtorax OR sputum-for-acid-fast-bacilli OR lab-results");
+        "application-for-laboratory-research OR tb-genexpert-or-culture-test-or-lam-or-bk-test OR tb-raioxtorax OR lab-results");
 
     return definition;
   }
