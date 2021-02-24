@@ -759,13 +759,13 @@ public class TXTBCohortQueries {
         "application-for-laboratory-research",
         this.map(applicationForLaboratoryResearchDataset, this.generalParameterMapping));
     definition.addSearch(
-        "tb-genexpert-or-culture-test-or-lam-or-bk-test",
+        "tb-genexpert-culture-lam-bk-test",
         this.map(this.getTbGenExpertORCultureTestOrTbLamOrBk(), this.generalParameterMapping));
     definition.addSearch(
         "lab-results", this.map(this.getResultsOnFichaLaboratorio(), this.generalParameterMapping));
 
     definition.setCompositionString(
-        "application-for-laboratory-research OR tb-genexpert-or-culture-test-or-lam-or-bk-test OR tb-raioxtorax OR lab-results");
+        "application-for-laboratory-research OR tb-genexpert-culture-lam-bk-test OR lab-results");
 
     return definition;
   }
