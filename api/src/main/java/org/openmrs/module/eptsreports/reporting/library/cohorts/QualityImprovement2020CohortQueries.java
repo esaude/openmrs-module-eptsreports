@@ -775,7 +775,7 @@ public class QualityImprovement2020CohortQueries {
             + " FROM  patient p   "
             + "    INNER JOIN   "
             + "            ( "
-            + "                SELECT p.patient_id, MAX(e.encounter_datetime) AS e_datetime   "
+            + "               SELECT p.patient_id, MAX(e.encounter_datetime) AS e_datetime   "
             + "                FROM patient p   "
             + "                    INNER JOIN encounter e ON p.patient_id = e.patient_id   "
             + "                    INNER JOIN obs o ON e.encounter_id = o.encounter_id   "
@@ -809,8 +809,8 @@ public class QualityImprovement2020CohortQueries {
             + "                GROUP BY p.patient_id "
             + "            ) AS g ON p.patient_id = g.patient_id "
             + " WHERE p.voided =0 "
-            + "    AND TIMESTAMPDIFF(MONTH,b4.e_datetime,g.e_datetime) >= 6 "
-            + "    AND TIMESTAMPDIFF(MONTH,b4.e_datetime,g.e_datetime) <= 9 ";
+            + "     AND TIMESTAMPDIFF(DAY,b4.e_datetime,g.e_datetime) >= 180"
+            + "    AND TIMESTAMPDIFF(DAY,b4.e_datetime,g.e_datetime) <= 270; ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
