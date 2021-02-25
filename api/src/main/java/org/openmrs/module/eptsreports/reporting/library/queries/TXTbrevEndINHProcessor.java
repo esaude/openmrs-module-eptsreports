@@ -221,4 +221,32 @@ public class TXTbrevEndINHProcessor {
 
     return mapxDate;
   }
+
+  public Map<Integer, Date>
+      findMaxEncounterDateByPatientOnFlitWithINHMonthlyDespensationAndOneINHQuartelyDespensation(
+          EvaluationContext context, Map<Integer, Date> cohortToEvaluete) {
+
+    final List<Integer> subList = new ArrayList<>();
+
+    subList.addAll(cohortToEvaluete.keySet());
+
+    Map<Integer, Date> mapxDate = new HashMap<>();
+
+    final SqlQueryBuilder queryBuilder =
+        new SqlQueryBuilder(
+            TXTbrevEndINHQueriesProcessor.QUERY
+                .findMaxEncounterDateByPatientOnFlitWithINHMonthlyDespensationAndOneINHQuartelyDespensation,
+            context.getParameterValues());
+
+    queryBuilder.addParameter("patientIds", subList);
+
+    Map<Integer, Date> mapIter =
+        Context.getRegisteredComponents(EvaluationService.class)
+            .get(0)
+            .evaluateToMap(queryBuilder, Integer.class, Date.class, context);
+
+    mapxDate.putAll(mapIter);
+
+    return mapxDate;
+  }
 }

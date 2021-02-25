@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
@@ -89,12 +90,18 @@ public class TxTbEndINHCalculation extends BaseFghCalculation {
             .findMaxEncounterDateByPatientMin2EncountersFichaClinicaWithINHandOneFichaClinicaWithDTINH(
                 context, tXTbrevEndINHProcessor.getResutls(context));
 
+    Map<Integer, Date> resultForFlitsTwoWithMonthlyDespensationOtherWithQuartelyDespensation =
+        tXTbrevEndINHProcessor
+            .findMaxEncounterDateByPatientOnFlitWithINHMonthlyDespensationAndOneINHQuartelyDespensation(
+                context, tXTbrevEndINHProcessor.getResutls(context));
+
     return CalculationProcessorUtils.getMaxMapDateByPatient(
         firstResults,
         resultsixFichaClinicaEncouters,
         resultTwoFlits,
         resultForMin6Flits,
         resultForMin2EncountersFichaClinica,
-        resultForMin2EncountersFichaClinicaOneWithINHandOtherWithDTINH);
+        resultForMin2EncountersFichaClinicaOneWithINHandOtherWithDTINH,
+        resultForFlitsTwoWithMonthlyDespensationOtherWithQuartelyDespensation);
   }
 }
