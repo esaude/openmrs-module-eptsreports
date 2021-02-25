@@ -287,6 +287,7 @@ public class IMER1DenominatorCohortQueries {
     transferredInPreviousMonth.addParameter(new Parameter("location", "Location", Location.class));
     transferredInPreviousMonth.addArtProgram(
         EptsTransferredInCohortDefinition2.ARTProgram.PRE_TARV);
+    transferredInPreviousMonth.addArtProgram(EptsTransferredInCohortDefinition2.ARTProgram.TARV);
 
     return transferredInPreviousMonth;
   }
