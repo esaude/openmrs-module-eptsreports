@@ -262,7 +262,7 @@ public class CommonCohortQueries {
       query += "AND p.gender = 'F' ";
     }
     query +=
-        "AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
+        "AND o.obs_datetime >= :startDate AND o.obs_datetime <= :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0 ";
 
     if (occurType == "last" || occurType == "first") {
