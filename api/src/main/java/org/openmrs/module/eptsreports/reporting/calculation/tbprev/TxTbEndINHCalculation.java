@@ -67,26 +67,34 @@ public class TxTbEndINHCalculation extends BaseFghCalculation {
             context, tXTbrevEndINHProcessor.getResutls(context));
 
     Map<Integer, Date> resultsixFichaClinicaEncouters =
-        tXTbrevEndINHProcessor.processPatientsByMaxReportingPeriodSixEncounters(
+        tXTbrevEndINHProcessor.findMaxEncounterDateByPatientMin6EncountersOnFichaClinicaWithINH(
             context, tXTbrevEndINHProcessor.getResutls(context));
 
     Map<Integer, Date> resultTwoFlits =
-        tXTbrevEndINHProcessor.findMaxEncounterDateByPatientMin2FlitsEncounters(
-            context, tXTbrevEndINHProcessor.getResutls(context));
+        tXTbrevEndINHProcessor
+            .findMaxEncounterDateByPatientMin2FlitsEncountersWithQuartelyDespensation(
+                context, tXTbrevEndINHProcessor.getResutls(context));
 
     Map<Integer, Date> resultForMin6Flits =
-        tXTbrevEndINHProcessor.findMaxEncounterDateByPatientMin6FlitsEncounters(
-            context, tXTbrevEndINHProcessor.getResutls(context));
+        tXTbrevEndINHProcessor
+            .findMaxEncounterDateByPatientMin6FlitsEncountersWithMontlyDespensation(
+                context, tXTbrevEndINHProcessor.getResutls(context));
 
     Map<Integer, Date> resultForMin2EncountersFichaClinica =
-        tXTbrevEndINHProcessor.findMaxEncounterDateByPatientMin2Encounters(
+        tXTbrevEndINHProcessor.findMaxEncounterDateByPatientMin2EncountersWithINHandDTINH(
             context, tXTbrevEndINHProcessor.getResutls(context));
+
+    Map<Integer, Date> resultForMin2EncountersFichaClinicaOneWithINHandOtherWithDTINH =
+        tXTbrevEndINHProcessor
+            .findMaxEncounterDateByPatientMin2EncountersFichaClinicaWithINHandOneFichaClinicaWithDTINH(
+                context, tXTbrevEndINHProcessor.getResutls(context));
 
     return CalculationProcessorUtils.getMaxMapDateByPatient(
         firstResults,
         resultsixFichaClinicaEncouters,
         resultTwoFlits,
         resultForMin6Flits,
-        resultForMin2EncountersFichaClinica);
+        resultForMin2EncountersFichaClinica,
+        resultForMin2EncountersFichaClinicaOneWithINHandOtherWithDTINH);
   }
 }

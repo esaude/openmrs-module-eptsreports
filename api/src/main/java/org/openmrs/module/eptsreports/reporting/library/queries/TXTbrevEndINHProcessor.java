@@ -59,7 +59,7 @@ public class TXTbrevEndINHProcessor {
     return mapxDate;
   }
 
-  public Map<Integer, Date> processPatientsByMaxReportingPeriodSixEncounters(
+  public Map<Integer, Date> findMaxEncounterDateByPatientMin6EncountersOnFichaClinicaWithINH(
       EvaluationContext context, Map<Integer, Date> cohortToEvaluete) {
 
     final List<Integer> subList = new ArrayList<>();
@@ -70,7 +70,8 @@ public class TXTbrevEndINHProcessor {
 
     final SqlQueryBuilder queryBuilder =
         new SqlQueryBuilder(
-            TXTbrevEndINHQueriesProcessor.QUERY.findMaxEncounterDateByPatientMin6Encounters,
+            TXTbrevEndINHQueriesProcessor.QUERY
+                .findMaxEncounterDateByPatientMin6EncountersOnFichaClinicaWithINH,
             context.getParameterValues());
 
     queryBuilder.addParameter("patientIds", subList);
@@ -85,8 +86,9 @@ public class TXTbrevEndINHProcessor {
     return mapxDate;
   }
 
-  public Map<Integer, Date> findMaxEncounterDateByPatientMin2FlitsEncounters(
-      EvaluationContext context, Map<Integer, Date> cohortToEvaluete) {
+  public Map<Integer, Date>
+      findMaxEncounterDateByPatientMin2FlitsEncountersWithQuartelyDespensation(
+          EvaluationContext context, Map<Integer, Date> cohortToEvaluete) {
 
     final List<Integer> subList = new ArrayList<>();
 
@@ -96,7 +98,8 @@ public class TXTbrevEndINHProcessor {
 
     final SqlQueryBuilder queryBuilder =
         new SqlQueryBuilder(
-            TXTbrevEndINHQueriesProcessor.QUERY.findMaxEncounterDateByPatientMin2FlitsEncounters,
+            TXTbrevEndINHQueriesProcessor.QUERY
+                .findMaxEncounterDateByPatientMin2FlitsEncountersWithQuartelyDespensation,
             context.getParameterValues());
 
     queryBuilder.addParameter("patientIds", subList);
@@ -111,7 +114,7 @@ public class TXTbrevEndINHProcessor {
     return mapxDate;
   }
 
-  public Map<Integer, Date> findMaxEncounterDateByPatientMin6FlitsEncounters(
+  public Map<Integer, Date> findMaxEncounterDateByPatientMin6FlitsEncountersWithMontlyDespensation(
       EvaluationContext context, Map<Integer, Date> cohortToEvaluete) {
 
     final List<Integer> subList = new ArrayList<>();
@@ -122,7 +125,8 @@ public class TXTbrevEndINHProcessor {
 
     final SqlQueryBuilder queryBuilder =
         new SqlQueryBuilder(
-            TXTbrevEndINHQueriesProcessor.QUERY.findMaxEncounterDateByPatientMin6FlitsEncounters,
+            TXTbrevEndINHQueriesProcessor.QUERY
+                .findMaxEncounterDateByPatientMin6FlitsEncountersWithMontlyDespensation,
             context.getParameterValues());
 
     queryBuilder.addParameter("patientIds", subList);
@@ -137,7 +141,7 @@ public class TXTbrevEndINHProcessor {
     return mapxDate;
   }
 
-  public Map<Integer, Date> findMaxEncounterDateByPatientMin2Encounters(
+  public Map<Integer, Date> findMaxEncounterDateByPatientMin2EncountersWithINHandDTINH(
       EvaluationContext context, Map<Integer, Date> cohortToEvaluete) {
 
     final List<Integer> subList = new ArrayList<>();
@@ -148,7 +152,36 @@ public class TXTbrevEndINHProcessor {
 
     final SqlQueryBuilder queryBuilder =
         new SqlQueryBuilder(
-            TXTbrevEndINHQueriesProcessor.QUERY.findMaxEncounterDateByPatientMin2Encounters,
+            TXTbrevEndINHQueriesProcessor.QUERY
+                .findMaxEncounterDateByPatientMin2EncountersWithINHandDTINH,
+            context.getParameterValues());
+
+    queryBuilder.addParameter("patientIds", subList);
+
+    Map<Integer, Date> mapIter =
+        Context.getRegisteredComponents(EvaluationService.class)
+            .get(0)
+            .evaluateToMap(queryBuilder, Integer.class, Date.class, context);
+
+    mapxDate.putAll(mapIter);
+
+    return mapxDate;
+  }
+
+  public Map<Integer, Date>
+      findMaxEncounterDateByPatientMin2EncountersFichaClinicaWithINHandOneFichaClinicaWithDTINH(
+          EvaluationContext context, Map<Integer, Date> cohortToEvaluete) {
+
+    final List<Integer> subList = new ArrayList<>();
+
+    subList.addAll(cohortToEvaluete.keySet());
+
+    Map<Integer, Date> mapxDate = new HashMap<>();
+
+    final SqlQueryBuilder queryBuilder =
+        new SqlQueryBuilder(
+            TXTbrevEndINHQueriesProcessor.QUERY
+                .findMaxEncounterDateByPatientMin2EncountersFichaClinicaWithINHandOneFichaClinicaWithDTINH,
             context.getParameterValues());
 
     queryBuilder.addParameter("patientIds", subList);
