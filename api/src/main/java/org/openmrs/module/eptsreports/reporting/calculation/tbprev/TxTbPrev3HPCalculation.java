@@ -49,15 +49,15 @@ public class TxTbPrev3HPCalculation extends BaseFghCalculation {
 
       map.putAll(mapItem);
     }
-
-    for (Entry<Integer, Date> entry : map.entrySet()) {
-      Integer patientId = entry.getKey();
-      Date date = entry.getValue();
-      if (date != null) {
-        resultMap.remove(patientId);
+    if (!map.isEmpty()) {
+      for (Entry<Integer, Date> entry : map.entrySet()) {
+        Integer patientId = entry.getKey();
+        Date date = entry.getValue();
+        if (date != null) {
+          resultMap.remove(patientId);
+        }
       }
     }
-
     return resultMap;
   }
 

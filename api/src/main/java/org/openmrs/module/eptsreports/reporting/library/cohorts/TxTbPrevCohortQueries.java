@@ -174,12 +174,11 @@ public class TxTbPrevCohortQueries {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     dsd.addSearch(
-        "END-3HP",
-        EptsReportUtils.map(this.findPatientsWhoCompleted3HPPreventiveTreatment(), mappings));
+        "HP", EptsReportUtils.map(this.findPatientsWhoCompleted3HPPreventiveTreatment(), mappings));
 
-    dsd.addSearch("END-INH", EptsReportUtils.map(this.getPatientsWhoEndINHCalculation(), mappings));
+    dsd.addSearch("INH", EptsReportUtils.map(this.getPatientsWhoEndINHCalculation(), mappings));
 
-    dsd.setCompositionString("(END-3HP OR END-INH)");
+    dsd.setCompositionString("HP OR INH");
 
     return dsd;
   }
