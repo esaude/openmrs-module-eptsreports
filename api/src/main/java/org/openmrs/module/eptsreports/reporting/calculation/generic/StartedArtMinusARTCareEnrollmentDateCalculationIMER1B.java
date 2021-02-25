@@ -66,19 +66,26 @@ public class StartedArtMinusARTCareEnrollmentDateCalculationIMER1B
         if (preARTCareEnrollmentResult != null) {
           Date preARTCareEnrollmentDate = (Date) preARTCareEnrollmentResult.getValue();
 
-          if (artStartDate != null
-              && preARTCareEnrollmentDate != null
-              && preARTCareEnrollmentDate.compareTo(artStartDate) <= 0) {
-            int days =
-                Days.daysIn(
-                        new Interval(preARTCareEnrollmentDate.getTime(), artStartDate.getTime()))
-                    .getDays();
-            if (days <= INTERVAL_BETWEEN_ART_START_DATE_MINUS_PATIENT_ART_ENROLLMENT_DATE) {
+          if (artStartDate != null) {
+
+            if (preARTCareEnrollmentDate.compareTo(artStartDate) <= 0) {
+              int days =
+                  Days.daysIn(
+                          new Interval(preARTCareEnrollmentDate.getTime(), artStartDate.getTime()))
+                      .getDays();
+
+              if (days <= INTERVAL_BETWEEN_ART_START_DATE_MINUS_PATIENT_ART_ENROLLMENT_DATE) {
+                match = true;
+              }
+            } else {
               match = true;
             }
           }
         }
-        map.put(patientId, new BooleanResult(match, this));
+
+        if (match) {
+          map.put(patientId, new BooleanResult(match, this));
+        }
       }
       return map;
     } else {
