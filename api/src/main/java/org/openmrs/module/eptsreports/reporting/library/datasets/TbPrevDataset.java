@@ -60,7 +60,7 @@ public class TbPrevDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Denominator Total",
-                EptsReportUtils.map(txTbPrevCohortQueries.findTbPrevTotalDenominator(), mappings)),
+                EptsReportUtils.map(txTbPrevCohortQueries.getTbPrevTotalDenominator(), mappings)),
             mappings),
         "");
 
@@ -71,7 +71,7 @@ public class TbPrevDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Denominator Disaggregations",
-                EptsReportUtils.map(txTbPrevCohortQueries.findTbPrevTotalDenominator(), mappings)),
+                EptsReportUtils.map(txTbPrevCohortQueries.getTbPrevTotalDenominator(), mappings)),
             mappings),
         getColumns());
 
@@ -81,7 +81,7 @@ public class TbPrevDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Denominator Total",
-                EptsReportUtils.map(txTbPrevCohortQueries.findTbPrevTotalNumerator(), mappings)),
+                EptsReportUtils.map(txTbPrevCohortQueries.getTbPrevTotalNumerator(), mappings)),
             mappings),
         "");
 
@@ -92,7 +92,7 @@ public class TbPrevDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Numerator Disaggregations",
-                EptsReportUtils.map(txTbPrevCohortQueries.findTbPrevTotalNumerator(), mappings)),
+                EptsReportUtils.map(txTbPrevCohortQueries.getTbPrevTotalNumerator(), mappings)),
             mappings),
         getColumns());
 

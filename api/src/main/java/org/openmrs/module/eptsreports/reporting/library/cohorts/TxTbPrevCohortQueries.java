@@ -2,6 +2,11 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.calculation.tbprev.TxTbEndINHCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.tbprev.TxTbPrev3HPCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.tbprev.TxTbPrevINHCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxTbPrevQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -17,35 +22,6 @@ public class TxTbPrevCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohorts;
 
-  @DocumentedDefinition(value = "findPatientWhoStartedTpi")
-  public CohortDefinition findPatientWhoStartedTpi() {
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-
-    definition.setName("findPatientWhoStartedTpi");
-    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-
-    definition.setQuery(TxTbPrevQueriesInterface.QUERY.findPatientWhoStartedTpi);
-
-    return definition;
-  }
-
-  @DocumentedDefinition(value = "findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi")
-  public CohortDefinition findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi() {
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-
-    definition.setName("findPatientWhoStartedTpi");
-    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-
-    definition.setQuery(
-        TxTbPrevQueriesInterface.QUERY.findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi);
-
-    return definition;
-  }
-
   @DocumentedDefinition(value = "findPatientsTransferredOut")
   public CohortDefinition findPatientsTransferredOut() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
@@ -60,31 +36,22 @@ public class TxTbPrevCohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "PatientsWhoStartedTpi6MonthsAgoExcludingTransferredOutNotEndedTpi")
-  public CohortDefinition findPatientsWhoStartedTpi6MonthsAgoExcludingTransferredOutNotEndedTpi() {
-    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
+  @DocumentedDefinition(value = "findPatientsWhoCompleted3HPPreventiveTreatment")
+  public CohortDefinition findPatientsWhoCompleted3HPPreventiveTreatment() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    dsd.setName("PatientsWhoStartedTpi6MonthsAgoExcludingTransferredOutNotEndedTpi");
-    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dsd.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("findPatientWhoStartedTpi");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
 
-    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    definition.setQuery(
+        TxTbPrevQueriesInterface.QUERY.findPatientsWhoCompleted3HPPreventiveTreatment);
 
-    dsd.addSearch("STARTTPI", EptsReportUtils.map(this.findPatientWhoStartedTpi(), mappings));
-
-    dsd.addSearch(
-        "ENDTPI",
-        EptsReportUtils.map(this.findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi(), mappings));
-
-    dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
-
-    dsd.setCompositionString("STARTTPI NOT(TROUT NOT ENDTPI)");
-
-    return dsd;
+    return definition;
   }
 
-  @DocumentedDefinition(value = "PatientsWhoStartedArtAndTpi6Months")
+  @DocumentedDefinition(value = "findPatientsWhoStartedArtAndTpiNewDessagragation")
   public CohortDefinition findPatientsWhoStartedArtAndTpiNewDessagragation() {
     final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
 
@@ -103,13 +70,9 @@ public class TxTbPrevCohortQueries {
                 TxTbPrevQueriesInterface.QUERY.findPatientsWhoStartedArtAndTpiNewDessagragation),
             mappings));
 
-    dsd.addSearch(
-        "ENDTPI",
-        EptsReportUtils.map(this.findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi(), mappings));
-
     dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
 
-    dsd.setCompositionString("STARTTPIART NOT(TROUT NOT ENDTPI)");
+    dsd.setCompositionString("STARTTPIART NOT TROUT ");
 
     return dsd;
   }
@@ -134,43 +97,73 @@ public class TxTbPrevCohortQueries {
                     .findPatientsWhoStartedArtAndTpiPreviouslyDessagragation),
             mappings));
 
-    dsd.addSearch(
-        "ENDTPI",
-        EptsReportUtils.map(this.findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi(), mappings));
-
     dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
 
-    dsd.setCompositionString("STARTTPIART NOT(TROUT NOT ENDTPI)");
+    dsd.setCompositionString("STARTTPIART NOT TROUT");
 
     return dsd;
   }
 
-  @DocumentedDefinition(value = "findTbTotalDenominator")
-  public CohortDefinition findTbPrevTotalDenominator() {
+  @DocumentedDefinition(value = "getPatientsWhoAre3HPCalculation")
+  public CohortDefinition getPatientsWhoAre3HPCalculation() {
+    BaseFghCalculationCohortDefinition cd =
+        new BaseFghCalculationCohortDefinition(
+            "getPatientsWhoAre3HPCalculation",
+            Context.getRegisteredComponents(TxTbPrev3HPCalculation.class).get(0));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "end Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    return cd;
+  }
+
+  @DocumentedDefinition(value = "getPatientsWhoAreINHCalculation")
+  public CohortDefinition getPatientsWhoAreINHCalculation() {
+    BaseFghCalculationCohortDefinition cd =
+        new BaseFghCalculationCohortDefinition(
+            "getPatientsWhoAre3HPCalculation",
+            Context.getRegisteredComponents(TxTbPrevINHCalculation.class).get(0));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "end Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    return cd;
+  }
+
+  @DocumentedDefinition(value = "getPatientsWhoEndINHCalculation")
+  public CohortDefinition getPatientsWhoEndINHCalculation() {
+    BaseFghCalculationCohortDefinition cd =
+        new BaseFghCalculationCohortDefinition(
+            "getPatientsWhoAre3HPCalculation",
+            Context.getRegisteredComponents(TxTbEndINHCalculation.class).get(0));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "end Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    return cd;
+  }
+
+  @DocumentedDefinition(value = "getTbPrevTotalDenominator")
+  public CohortDefinition getTbPrevTotalDenominator() {
     final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
 
-    dsd.setName("findTbTotalDenominator");
+    dsd.setName("findTbPrevTotalNumerator");
     dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
     dsd.addParameter(new Parameter("location", "location", Location.class));
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-    dsd.addSearch(
-        "NEW", EptsReportUtils.map(findPatientsWhoStartedArtAndTpiNewDessagragation(), mappings));
+    dsd.addSearch("HP", EptsReportUtils.map(getPatientsWhoAre3HPCalculation(), mappings));
 
-    dsd.addSearch(
-        "PRIVIUS",
-        EptsReportUtils.map(
-            this.findPatientsWhoStartedArtAndTpiPreviouslyDessagragation(), mappings));
+    dsd.addSearch("TPI", EptsReportUtils.map(this.getPatientsWhoAreINHCalculation(), mappings));
 
-    dsd.setCompositionString("NEW OR PRIVIUS");
+    dsd.addSearch("TRF-OUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
+
+    dsd.setCompositionString("(HP OR TPI) NOT (TRF-OUT )");
 
     return dsd;
   }
 
-  @DocumentedDefinition(value = "findTbPrevTotalNumerator")
-  public CohortDefinition findTbPrevTotalNumerator() {
+  @DocumentedDefinition(value = "getTbPrevTotalNumerator")
+  public CohortDefinition getTbPrevTotalNumerator() {
     final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
 
     dsd.setName("findTbPrevTotalNumerator");
@@ -181,12 +174,12 @@ public class TxTbPrevCohortQueries {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     dsd.addSearch(
-        "ENDTPI",
-        EptsReportUtils.map(findPatientsWhoStartedTpi6MonthsAgoAndWhoEndedTpi(), mappings));
+        "END-3HP",
+        EptsReportUtils.map(this.findPatientsWhoCompleted3HPPreventiveTreatment(), mappings));
 
-    dsd.addSearch("STARTTPI", EptsReportUtils.map(this.findTbPrevTotalDenominator(), mappings));
+    dsd.addSearch("END-INH", EptsReportUtils.map(this.getPatientsWhoEndINHCalculation(), mappings));
 
-    dsd.setCompositionString("ENDTPI AND STARTTPI");
+    dsd.setCompositionString("(END-3HP OR END-INH)");
 
     return dsd;
   }

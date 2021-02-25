@@ -91,6 +91,12 @@
 			UUID for the S.TARV: ADULTO SEGUIMENTO encounter type
 		</description>
 	</globalProperty>
+	
+		<globalProperty>
+		<property>@MODULE_ID@.tpt60</property>
+		<defaultValue>24bd60e2-a1c9-4159-a24f-12af15b77510</defaultValue>
+		<description>encouter type for TPT</description>
+	</globalProperty>
 
 	<globalProperty>
 		<property>@MODULE_ID@.sTarvPediatriaSeguimentoEncounterTypeUuid
@@ -166,7 +172,7 @@
 			UUID for the TUBERCULOSE: LIVRO encounter type
 		</description>
 	</globalProperty>
-
+	
 	<globalProperty>
 		<property>eptsreports.tbProcessoEncounterTypeUuid</property>
 		<defaultValue>e2791cc4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
