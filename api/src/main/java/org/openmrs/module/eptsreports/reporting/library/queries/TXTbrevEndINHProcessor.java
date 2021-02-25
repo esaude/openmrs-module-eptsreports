@@ -67,6 +67,7 @@ public class TXTbrevEndINHProcessor {
     subList.addAll(cohortToEvaluete.keySet());
 
     Map<Integer, Date> mapxDate = new HashMap<>();
+    Map<Integer, Date> mapPosibleToExclude = new HashMap<>();
 
     final SqlQueryBuilder queryBuilder =
         new SqlQueryBuilder(
@@ -82,6 +83,31 @@ public class TXTbrevEndINHProcessor {
             .evaluateToMap(queryBuilder, Integer.class, Date.class, context);
 
     mapxDate.putAll(mapIter);
+
+    for (Integer patientId : mapxDate.keySet()) {
+
+      Date initDate = getResutls(context).get(patientId);
+
+      final SqlQueryBuilder qb =
+          new SqlQueryBuilder(
+              TxTbPrevExclusions.QUERY.excludeDTINH3HP7MonthUntilINHStartDate,
+              context.getParameterValues());
+      qb.addParameter("encounterDate", initDate);
+      qb.addParameter("patientId", patientId);
+
+      Map<Integer, Date> newMap =
+          Context.getRegisteredComponents(EvaluationService.class)
+              .get(0)
+              .evaluateToMap(qb, Integer.class, Date.class, context);
+
+      mapPosibleToExclude.putAll(newMap);
+    }
+
+    if (!mapPosibleToExclude.isEmpty()) {
+      for (Integer patientId : mapPosibleToExclude.keySet()) {
+        mapxDate.remove(patientId);
+      }
+    }
 
     return mapxDate;
   }
