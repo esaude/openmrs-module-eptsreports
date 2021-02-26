@@ -108,7 +108,7 @@ public class APSSResumoTrimestralDataSetDefinition extends BaseDataSet {
         getAPSSPPDisagg());
 
     dsd.addColumn("D1TG", "Total patients - Total Geral", getD1(), "");
-
+    // E1
     addRow(
         dsd,
         "E1",

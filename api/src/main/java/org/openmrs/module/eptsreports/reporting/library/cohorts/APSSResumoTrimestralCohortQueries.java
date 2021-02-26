@@ -315,14 +315,14 @@ public class APSSResumoTrimestralCohortQueries {
   }
 
   /**
-   * <b>Name: E1</b>
+   * <b>Name: E1-C</b>
    *
-   * <p><b>Description:</b> Nº pacientes faltosos e abandonos referidos para chamadas e/ou visitas
-   * de reintegração durante o trimestre
+   * <p>Select all patients registered in encounter “LIVRO DE REGISTO DIÁRIO DE CHAMADAS E VISITAS
+   * DOMICILIARES” (encounter_type = 61) with following conditions:
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getE1() {
+  public CohortDefinition getC() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName(
         "E1: Número de pacientes faltosos e abandonos referidos para chamadas e/ou visitas de reintegração durante o trimestre");
@@ -364,6 +364,181 @@ public class APSSResumoTrimestralCohortQueries {
     cd.setQuery(sb.replace(query));
 
     return cd;
+  }
+
+  /**
+   * <b>Name: A1</b>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getA() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("A: ");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    Map<String, Integer> map = new HashMap<>();
+    map.put("5096", hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
+    map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
+    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
+
+    String query =
+        "SELECT "
+            + "    final.patient_id "
+            + " FROM "
+            + "    (SELECT  "
+            + "        most_recent.patient_id, "
+            + "            DATE_ADD(MAX(most_recent.value_datetime1), INTERVAL 5 DAY) final_encounter_date "
+            + "    FROM "
+            + "        (SELECT  "
+            + "        fila.patient_id, fila.value_datetime1 "
+            + "    FROM "
+            + "        (SELECT  "
+            + "        pa.patient_id, MAX(obs.value_datetime) value_datetime1 "
+            + "    FROM "
+            + "        patient pa "
+            + "    INNER JOIN encounter enc ON enc.patient_id = pa.patient_id "
+            + "    INNER JOIN obs obs ON obs.encounter_id = enc.encounter_id "
+            + "    WHERE "
+            + "        pa.voided = 0 AND enc.voided = 0 "
+            + "            AND obs.voided = 0 "
+            + "            AND enc.encounter_type = ${18} "
+            + "            AND obs.value_datetime IS NOT NULL "
+            + "            AND obs.concept_id = ${5096} "
+            + "            AND enc.location_id = :location "
+            + "            AND obs.value_datetime <= :endDate "
+            + "    GROUP BY pa.patient_id) AS fila UNION SELECT "
+            + "        pa.patient_id, "
+            + "            DATE_ADD(MAX(obs.value_datetime), INTERVAL 30 DAY) value_datetime2 "
+            + "    FROM "
+            + "        patient pa "
+            + "    INNER JOIN encounter enc ON enc.patient_id = pa.patient_id "
+            + "    INNER JOIN obs obs ON obs.encounter_id = enc.encounter_id "
+            + "    INNER JOIN obs obs2 ON obs2.encounter_id = enc.encounter_id "
+            + "    WHERE "
+            + "        pa.voided = 0 AND enc.voided = 0 "
+            + "            AND obs.voided = 0 "
+            + "            AND obs2.voided = 0 "
+            + "            AND obs.concept_id = ${23866} "
+            + "            AND obs.value_datetime IS NOT NULL "
+            + "            AND obs2.concept_id = ${23865} "
+            + "            AND obs2.value_coded = ${1065} "
+            + "            AND enc.encounter_type = ${52} "
+            + "            AND enc.location_id = :location "
+            + "            AND obs.value_datetime <= :endDate "
+            + "    GROUP BY pa.patient_id) most_recent "
+            + "    GROUP BY most_recent.patient_id "
+            + "    HAVING final_encounter_date <= :endDate "
+            + "        AND final_encounter_date >= :startDate) final "
+            + "GROUP BY final.patient_id";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(query));
+
+    return cd;
+  }
+
+  /**
+   * <b>Name: E1-B</b>
+   *
+   * <p><b>Description:</b> Number of patients who abandoned ART during previous month
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getB() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("B: ");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    Map<String, Integer> map = new HashMap<>();
+    map.put("5096", hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
+    map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
+    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
+
+    String query =
+        "SELECT "
+            + "    final.patient_id "
+            + " FROM "
+            + "    (SELECT  "
+            + "        most_recent.patient_id, "
+            + "            DATE_ADD(MAX(most_recent.value_datetime1), INTERVAL 60 DAY) final_encounter_date "
+            + "    FROM "
+            + "        (SELECT  "
+            + "        fila.patient_id, fila.value_datetime1 "
+            + "    FROM "
+            + "        (SELECT  "
+            + "        pa.patient_id, MAX(obs.value_datetime) value_datetime1 "
+            + "    FROM "
+            + "        patient pa "
+            + "    INNER JOIN encounter enc ON enc.patient_id = pa.patient_id "
+            + "    INNER JOIN obs obs ON obs.encounter_id = enc.encounter_id "
+            + "    WHERE "
+            + "        pa.voided = 0 AND enc.voided = 0 "
+            + "            AND obs.voided = 0 "
+            + "            AND enc.encounter_type = ${18} "
+            + "            AND obs.value_datetime IS NOT NULL "
+            + "            AND obs.concept_id = ${5096} "
+            + "            AND enc.location_id = :location "
+            + "            AND obs.value_datetime <= :endDate "
+            + "    GROUP BY pa.patient_id) AS fila UNION SELECT "
+            + "        pa.patient_id, "
+            + "            DATE_ADD(MAX(obs.value_datetime), INTERVAL 30 DAY) value_datetime2 "
+            + "    FROM "
+            + "        patient pa "
+            + "    INNER JOIN encounter enc ON enc.patient_id = pa.patient_id "
+            + "    INNER JOIN obs obs ON obs.encounter_id = enc.encounter_id "
+            + "    INNER JOIN obs obs2 ON obs2.encounter_id = enc.encounter_id "
+            + "    WHERE "
+            + "        pa.voided = 0 AND enc.voided = 0 "
+            + "            AND obs.voided = 0 "
+            + "            AND obs2.voided = 0 "
+            + "            AND obs.concept_id = ${23866} "
+            + "            AND obs.value_datetime IS NOT NULL "
+            + "            AND obs2.concept_id = ${23865} "
+            + "            AND obs2.value_coded = ${1065} "
+            + "            AND enc.encounter_type = ${52} "
+            + "            AND enc.location_id = :location "
+            + "            AND obs.value_datetime <= :endDate "
+            + "    GROUP BY pa.patient_id) most_recent "
+            + "    GROUP BY most_recent.patient_id "
+            + "    HAVING final_encounter_date <= :endDate "
+            + "        AND final_encounter_date >= :startDate) final "
+            + "GROUP BY final.patient_id";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(query));
+
+    return cd;
+  }
+
+  public CohortDefinition getE1() {
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+    compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    CohortDefinition A = getA();
+    CohortDefinition B = getB();
+    CohortDefinition C = getC();
+
+    compositionCohortDefinition.addSearch("A", EptsReportUtils.map(A, mapping));
+
+    compositionCohortDefinition.addSearch("B", EptsReportUtils.map(B, mapping));
+
+    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(C, mapping));
+
+    compositionCohortDefinition.setCompositionString("(A OR B) AND C");
+
+    return compositionCohortDefinition;
   }
 
   /**

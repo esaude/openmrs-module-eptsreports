@@ -100,8 +100,6 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
     assertNotNull(evaluatedCohort.getMemberIds());
   }
 
-
-
   public void getMQ7patientsShouldPass3() throws EvaluationException {
 
     CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getMQ7A(5);
