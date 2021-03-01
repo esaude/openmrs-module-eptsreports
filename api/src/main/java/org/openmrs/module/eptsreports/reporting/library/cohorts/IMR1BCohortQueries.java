@@ -46,7 +46,8 @@ public class IMR1BCohortQueries {
 
     compsitionDefinition.addSearch(
         "TRANSFERRED-IN",
-        EptsReportUtils.map(this.getAllPatientsTransferredInByEndReportingDate(), mappings));
+        EptsReportUtils.map(
+            iMR1CohortQueries.getAllPatientsTransferredInByEndReportingDate(), mappings));
 
     compsitionDefinition.setCompositionString("NEWLY-ENROLLED NOT TRANSFERRED-IN");
 
@@ -127,7 +128,8 @@ public class IMR1BCohortQueries {
 
     compsitionDefinition.addSearch(
         "TRANSFERRED-IN",
-        EptsReportUtils.map(this.getAllPatientsTransferredInByEndReportingDate(), mappings));
+        EptsReportUtils.map(
+            this.iMR1CohortQueries.getAllPatientsTransferredInByEndReportingDate(), mappings));
 
     compsitionDefinition.setCompositionString("NEWLY-ENROLLED NOT TRANSFERRED-IN");
 
@@ -144,19 +146,6 @@ public class IMR1BCohortQueries {
 
     definition.setQuery(
         IMR1BQueries.QUERY.findPatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod);
-
-    return definition;
-  }
-
-  @DocumentedDefinition(value = "PatientsTransferredInByEndReportingDate")
-  private CohortDefinition getAllPatientsTransferredInByEndReportingDate() {
-
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("PatientsTransferredInByEndReportingDate Cohort");
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    definition.setQuery(IMR1BQueries.QUERY.findPatiensTransferredInByEndDate);
 
     return definition;
   }

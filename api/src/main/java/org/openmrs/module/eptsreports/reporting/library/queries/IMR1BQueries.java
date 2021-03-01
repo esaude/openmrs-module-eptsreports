@@ -5,35 +5,6 @@ public interface IMR1BQueries {
 
   public class QUERY {
 
-    public static final String findPatiensTransferredInByEndDate =
-        "Select 	p.patient_id                                      "
-            + "from 	patient p                                                                                             "
-            + "		inner join encounter e on p.patient_id=e.patient_id                                                   "
-            + "		inner join obs obsTrans on e.encounter_id=obsTrans.encounter_id and obsTrans.voided=0 and             "
-            + "		obsTrans.concept_id=1369 and obsTrans.value_coded=1065                                                "
-            + "		inner join obs obsTarv on e.encounter_id=obsTarv.encounter_id and obsTarv.voided=0 and                "
-            + "		obsTarv.concept_id=6300 and obsTarv.value_coded in (6276,6275)                                        "
-            + "		inner join obs obsInscricao on e.encounter_id=obsInscricao.encounter_id and obsInscricao.voided=0 and "
-            + "		obsInscricao.concept_id=23891                                                                "
-            + "where p.voided=0 and e.voided=0 and e.encounter_type=53 and                                       "
-            + "		obsInscricao.value_datetime<=:endDate and e.location_id=:location                            "
-            + "union		                                                                                     "
-            + "select 	minEstado.patient_id                                                                     "
-            + "from 	(                                                                                        "
-            + "			select pg.patient_id,min(ps.start_date) data_transferidode                               "
-            + "			from 	patient p                                                                        "
-            + "					inner join patient_program pg on p.patient_id=pg.patient_id                      "
-            + "					inner join patient_state ps on pg.patient_program_id=ps.patient_program_id       "
-            + "			where 	pg.voided=0 and ps.voided=0 and p.voided=0                                       "
-            + "					and ((pg.program_id=1 and ps.state=28) or (pg.program_id=2 and ps.state=29))     "
-            + "                 and ps.start_date<=:endDate and pg.location_id=:location                         "
-            + "			group by p.patient_id                                                                    "
-            + "		) minEstado                                                                                  "
-            + "		inner join patient_program pg2 on pg2.patient_id=minEstado.patient_id                        "
-            + "		inner join patient_state ps2 on pg2.patient_program_id=ps2.patient_program_id                "
-            + "  where pg2.voided=0 and ps2.voided=0 and ps2.start_date=minEstado.data_transferidode and pg2.location_id=:location "
-            + "   and ((pg2.program_id=1 and ps2.state=28) or (pg2.program_id=2 and ps2.state=29)) ";
-
     public static final String
         findPatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod =
             "select patient_id from (	"

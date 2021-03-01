@@ -172,7 +172,7 @@ public class IMR1CohortQueries {
   }
 
   @DocumentedDefinition(value = "PatientsTransferredInByEndReportingDate")
-  private CohortDefinition getAllPatientsTransferredInByEndReportingDate() {
+  public CohortDefinition getAllPatientsTransferredInByEndReportingDate() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("PatientsTransferredInByEndReportingDate Cohort");
