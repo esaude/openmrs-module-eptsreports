@@ -38,7 +38,7 @@ public interface IMR1BQueries {
                 + "				where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 			"
                 + "					and o.concept_id=23866 and o.value_datetime is not null and o.value_datetime<=(:endDate - INTERVAL 1 MONTH ) and e.location_id=:location group by p.patient_id	"
                 + "		  ) art_start group by patient_id 														"
-                + "		) tx_new where art_start_date between (:endDate - INTERVAL 2 MONTH  + INTERVAL 1 DAY) and (:endDate - INTERVAL 1 MONTH )	"
+                + "		) tx_new where art_start_date <= (:endDate - INTERVAL 1 MONTH )	                        "
                 + "	) inicio_tarv																				"
                 + "	inner join																					"
                 + "	(select art_init_real.patient_id, art_init_real.art_enrolled_date from(                     "
@@ -62,6 +62,6 @@ public interface IMR1BQueries {
                 + "	) art_init_real                                                                          	"
                 + "	where art_enrolled_date between (:endDate - INTERVAL 2 MONTH  + INTERVAL 1 DAY) and (:endDate - INTERVAL 1 MONTH )	"
                 + "	) inscricao_tarv on inicio_tarv.patient_id = inscricao_tarv.patient_id	"
-                + "	where (TIMESTAMPDIFF(DAY, inicio_tarv.art_start_date, inscricao_tarv.art_enrolled_date)) <= 15 ) result_";
+                + "	where (TIMESTAMPDIFF(DAY,inscricao_tarv.art_enrolled_date , inicio_tarv.art_start_date)) <= 15 ) result_";
   }
 }
