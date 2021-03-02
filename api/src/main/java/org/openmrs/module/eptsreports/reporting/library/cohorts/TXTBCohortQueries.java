@@ -1933,10 +1933,13 @@ public class TXTBCohortQueries {
         "basiloscopiaLabCohort",
         EptsReportUtils.map(basiloscopiaLabCohort, generalParameterMapping));
     definition.addSearch(
+        "applicationForLaboratoryResearchCohort",
+        EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
+    definition.addSearch(
         "genExpertCohort", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
 
     definition.setCompositionString(
-        "(basiloscopiaCohort OR basiloscopiaLabCohort) NOT genExpertCohort");
+        "(basiloscopiaCohort OR basiloscopiaLabCohort OR applicationForLaboratoryResearchCohort) NOT genExpertCohort");
     return definition;
   }
 
