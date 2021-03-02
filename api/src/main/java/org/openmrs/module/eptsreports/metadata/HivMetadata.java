@@ -3573,6 +3573,53 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
+   * <b>concept_id = 23933</b>
+   *
+   * <p><b>Name:</b> DATA DE RETORNO NA PRIMEIRA TENTATIVA (VISITA)
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getReturnDateOnFirstAttemptConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.returnDateOnFirstAttemptConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23934</b>
+   *
+   * <p><b>Name:</b> DATA DE RETORNO NA SEGUNDA TENTATIVA (VISITA)
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getReturnDateOnSecondAttemptConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.returnDateOnSecondAttemptConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23935</b>
+   *
+   * <p><b>Name:</b> DATA DE RETORNO NA TERCEIRA TENTATIVA (VISITA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getReturnDateOnThirdAttemptConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.returnDateOnThirdAttemptConceptUuid");
+    return getConcept(uuid);
+  }
+  /**
    * <b>concept_id = 23996</b>
    *
    * <p><b>Name:</b> PACIENTE ELEGIVEL
@@ -3621,6 +3668,102 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
+   * <b>concept_id = 23998</b>
+   *
+   * <p><b>Name:</b> PACIENTE CONTACTADO NA PRIMEIRA TENTATIVA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPatientContactedOnFirstAttemptConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.contactedOnFirstAttemptConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23999</b>
+   *
+   * <p><b>Name:</b> PACIENTE CONTACTADO NA SEGUNDA TENTATIVA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPatientContactedOnSecondAttemptConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.contactedOnSecondAttemptConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 24000</b>
+   *
+   * <p><b>Name:</b> PACIENTE CONTACTADO NA TERCEIRA TENTATIVA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPatientContactedOnThirdAttemptConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.contactedOnThirdAttemptConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 24001</b>
+   *
+   * <p><b>Name:</b> DATA COMBINADA PARA RETORNO NA PRIMEIRA CHAMADA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDateAgreedForReturnOnFirstCallConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateAgreedForReturnOnFirstCallConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 24002</b>
+   *
+   * <p><b>Name:</b> DATA COMBINADA PARA RETORNO NA SEGUNDA CHAMADA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDateAgreedForReturnOnSecondCallConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateAgreedForReturnOnSecondCallConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 24003</b>
+   *
+   * <p><b>Name:</b> DATA COMBINADA PARA RETORNO NA TERCEIRA CHAMADA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDateAgreedForReturnOnThirdCallConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateAgreedForReturnOnThirdCallConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
    * <b>concept_id = 24004</b>
    *
    * <p><b>Name:</b> PATIENT CONTACTED
@@ -3649,6 +3792,54 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.patientReturnedtoHealthUnitConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 24008</b>
+   *
+   * <p><b>Name:</b> PACIENTE ENCONTRADO NA PRIMEIRA TENTATIVA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPatientFoundOnFirstAttemptConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientFoundOnFirstAttemptConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 24009</b>
+   *
+   * <p><b>Name:</b> PACIENTE ENCONTRADO NA SEGUNDA TENTATIVA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPatientFoundOnSecondAttemptConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientFoundOnSecondAttemptConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 24010</b>
+   *
+   * <p><b>Name:</b> PACIENTE ENCONTRADO NA TERCEIRA TENTATIVA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPatientFoundOnThirdAttemptConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientFoundOnThirdAttemptConceptUuid");
     return getConcept(uuid);
   }
 

@@ -2630,6 +2630,103 @@
 	</globalProperty>
 
 
+	<globalProperty>
+		<property>eptsreports.returnDateOnFirstAttemptConceptUuid</property>
+		<defaultValue>cc6c8a29-56f1-4a73-8957-b94b0b51238d</defaultValue>
+		<description>
+			RETURN DATE ON FIRST VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.returnDateOnSecondAttemptConceptUuid</property>
+		<defaultValue>7a4a2da1-8441-4359-9c7a-348b85269d44</defaultValue>
+		<description>
+			RETURN DATE ON SECOND VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.returnDateOnThirdAttemptConceptUuid</property>
+		<defaultValue>672599fc-76d0-43e5-8005-a5704602b6c3</defaultValue>
+		<description>
+			RETURN DATE ON THIRD VISIT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.contactedOnFirstAttemptConceptUuid</property>
+		<defaultValue>32cfef09-20bd-4e77-ab54-7bf34aecf714</defaultValue>
+		<description>
+			PATIENT CONTACTED ON FIRST ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.contactedOnSecondAttemptConceptUuid</property>
+		<defaultValue>bec31f88-93ec-487f-bf28-33462d2252e1</defaultValue>
+		<description>
+			PATIENT CONTACTED ON SECOND ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.contactedOnThirdAttemptConceptUuid</property>
+		<defaultValue>b3c1fd19-fd44-414f-8315-b612ab8c9034</defaultValue>
+		<description>
+			PATIENT CONTACTED ON THIRD ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.dateAgreedForReturnOnFirstCallConceptUuid</property>
+		<defaultValue>f57a7b5a-3a94-4d1f-8a9c-78fd42206281</defaultValue>
+		<description>
+			DATE AGREED ON FIRST CALL FOR RETURNING TO HF concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.dateAgreedForReturnOnSecondCallConceptUuid</property>
+		<defaultValue>1a1d684a-eda0-486a-b0b3-f47a7edb7486</defaultValue>
+		<description>
+			DATE AGREED ON SECOND CALL FOR RETURNING TO HF concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.dateAgreedForReturnOnThirdCallConceptUuid</property>
+		<defaultValue>bbb81443-eef9-4146-ade8-a1117f92e234</defaultValue>
+		<description>
+			DATE AGREED ON THIRD CALL FOR RETURNING TO HF concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientFoundOnFirstAttemptConceptUuid</property>
+		<defaultValue>05ffc95d-24da-46b6-8ef4-c5cdbf0c6254</defaultValue>
+		<description>
+			PATIENT FOUND IN THE FIRST ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientFoundOnSecondAttemptConceptUuid</property>
+		<defaultValue>5caac278-58e5-4038-ad69-7f6f62fb43ad</defaultValue>
+		<description>
+			PATIENT FOUND IN THE SECOND ATTEMPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.patientFoundOnThirdAttemptConceptUuid</property>
+		<defaultValue>ea96f844-7b6d-474e-a71e-03ca94549199</defaultValue>
+		<description>
+			PATIENT FOUND IN THE THIRD ATTEMPT concept
+		</description>
+	</globalProperty>
+
+
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
