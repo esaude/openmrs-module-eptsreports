@@ -128,6 +128,22 @@ public class CXCASCRNCohortQueries {
     return definition;
   }
 
+  @DocumentedDefinition(
+      value = "findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousPositive")
+  public CohortDefinition findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousPositive() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousNegative");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    definition.setQuery(
+        CXCASCRNQueries.QUERY.findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousPositive);
+
+    return definition;
+  }
+
   @DocumentedDefinition(value = "findpatientwithScreeningTypeVisitAsPostTreatmentFollowUp")
   public CohortDefinition findpatientwithScreeningTypeVisitAsPostTreatmentFollowUp() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
@@ -174,7 +190,7 @@ public class CXCASCRNCohortQueries {
   public CohortDefinition getTotalNumeratorFirstScreening() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName("getTotalNumeratorFirstScreening");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -198,7 +214,7 @@ public class CXCASCRNCohortQueries {
   public CohortDefinition getTotalNumeratorFirstScreeningNegative() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName("getTotalNumeratorFirstScreeningNegative");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -223,7 +239,7 @@ public class CXCASCRNCohortQueries {
   public CohortDefinition getTotalNumeratorFirstScreeningPositive() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName("getTotalNumeratorFirstScreeningPositive");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -248,7 +264,7 @@ public class CXCASCRNCohortQueries {
   public CohortDefinition getTotalNumeratorFirstScreeningSuspectCancer() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName("getTotalNumeratorFirstScreeningSuspectCancer");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -273,7 +289,7 @@ public class CXCASCRNCohortQueries {
   public CohortDefinition getTotalNumeratorRescreenedAfterPreviousNegativeTotal() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName("getTotalNumeratorRescreenedAfterPreviousNegativeTotal");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -296,7 +312,7 @@ public class CXCASCRNCohortQueries {
   public CohortDefinition getTotalNumeratorRescreenedAfterPreviousNegativeNegative() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName("getTotalNumeratorRescreenedAfterPreviousNegativeNegative");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -323,7 +339,7 @@ public class CXCASCRNCohortQueries {
   public CohortDefinition getTotalNumeratorRescreenedAfterPreviousNegativePositive() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName("getTotalNumeratorRescreenedAfterPreviousNegativePositive");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -350,7 +366,7 @@ public class CXCASCRNCohortQueries {
   public CohortDefinition getTotalNumeratorRescreenedAfterPreviousNegativeSuspectCancer() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName("getTotalNumeratorRescreenedAfterPreviousNegativeSuspectCancer");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -379,7 +395,8 @@ public class CXCASCRNCohortQueries {
       getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpTotal() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName(
+        "getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpTotal");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -408,7 +425,8 @@ public class CXCASCRNCohortQueries {
       getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpNegative() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName(
+        "getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpNegative");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -437,7 +455,8 @@ public class CXCASCRNCohortQueries {
       getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpPositive() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName(
+        "getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpPositive");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -466,7 +485,8 @@ public class CXCASCRNCohortQueries {
       getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpSuspectCancer() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName(
+        "getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpSuspectCancer");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -483,6 +503,107 @@ public class CXCASCRNCohortQueries {
         EptsReportUtils.map(
             this.getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpTotal(),
             mappings));
+
+    definition.setCompositionString("SUSPECT-CANCER AND P2");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "getTotalNumeratorRescreenedAfterPreviousPositiveTotal")
+  public CohortDefinition getTotalNumeratorRescreenedAfterPreviousPositiveTotal() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("getTotalNumeratorRescreenedAfterPreviousPositiveTotal");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    definition.addSearch("SCREENING", EptsReportUtils.map(this.getTotalNumerator(), mappings));
+
+    definition.addSearch(
+        "N2",
+        EptsReportUtils.map(
+            this.findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousPositive(), mappings));
+
+    definition.setCompositionString("SCREENING AND N2");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "getTotalNumeratorRescreenedAfterPreviousPositiveNegative")
+  public CohortDefinition getTotalNumeratorRescreenedAfterPreviousPositiveNegative() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("getTotalNumeratorRescreenedAfterPreviousPositiveNegative");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    definition.addSearch(
+        "NEGATIVE",
+        EptsReportUtils.map(
+            this.findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriodNegative(),
+            mappings));
+    definition.addSearch(
+        "P2",
+        EptsReportUtils.map(
+            this.getTotalNumeratorRescreenedAfterPreviousPositiveTotal(), mappings));
+
+    definition.setCompositionString("NEGATIVE AND P2");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "getTotalNumeratorRescreenedAfterPreviousPositivePositive")
+  public CohortDefinition getTotalNumeratorRescreenedAfterPreviousPositivePositive() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("getTotalNumeratorRescreenedAfterPreviousPositivePositive");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    definition.addSearch(
+        "POSITIVE",
+        EptsReportUtils.map(
+            this.findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriodPositive(),
+            mappings));
+    definition.addSearch(
+        "P2",
+        EptsReportUtils.map(
+            this.getTotalNumeratorRescreenedAfterPreviousPositiveTotal(), mappings));
+
+    definition.setCompositionString("POSITIVE AND P2");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "getTotalNumeratorRescreenedAfterPreviousPositiveSuspectCancer")
+  public CohortDefinition getTotalNumeratorRescreenedAfterPreviousPositiveSuspectCancer() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("getTotalNumeratorRescreenedAfterPreviousPositiveSuspectCancer");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    definition.addSearch(
+        "SUSPECT-CANCER",
+        EptsReportUtils.map(
+            this.findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriodSuspectCancer(),
+            mappings));
+    definition.addSearch(
+        "P2",
+        EptsReportUtils.map(
+            this.getTotalNumeratorRescreenedAfterPreviousPositiveTotal(), mappings));
 
     definition.setCompositionString("SUSPECT-CANCER AND P2");
 

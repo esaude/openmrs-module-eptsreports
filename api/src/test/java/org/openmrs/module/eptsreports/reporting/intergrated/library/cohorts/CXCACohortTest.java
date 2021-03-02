@@ -10,6 +10,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNPositiveCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -20,15 +21,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class CXCACohortTest extends DefinitionsFGHLiveTest {
 
   @Autowired private CXCASCRNCohortQueries cXCASCRNCohortQueries;
+  @Autowired private CXCASCRNPositiveCohortQueries cXCASCRNPositiveCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
-    final Location location = Context.getLocationService().getLocation(400);
+    final Location location = Context.getLocationService().getLocation(398);
 
     System.out.println(location.getName());
-    final Date startDate = DateUtil.getDateTime(2019, 12, 21);
-    final Date endDate = DateUtil.getDateTime(2020, 6, 20);
+    final Date startDate = DateUtil.getDateTime(2020, 06, 21);
+    final Date endDate = DateUtil.getDateTime(2020, 12, 20);
 
     System.out.println(startDate);
     System.out.println(endDate);
@@ -42,7 +44,7 @@ public class CXCACohortTest extends DefinitionsFGHLiveTest {
     // txRTTCohortQueries.getPatientsOnRTT();
 
     CohortDefinition cohortDefinition =
-        this.cXCASCRNCohortQueries.getTotalNumeratorRescreenedAfterPreviousNegativeTotal();
+        this.cXCASCRNPositiveCohortQueries.findpatientwithCxCaPositive();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(cohortDefinition, parameters);

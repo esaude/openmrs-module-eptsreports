@@ -55,7 +55,7 @@ public class SetupCXCASCRN extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.setParameters(cXCASCRNDataSet.getParameters());
-    rd.addDataSetDefinition("CX", Mapped.mapStraightThrough(cXCASCRNDataSet.constructTMqDatset()));
+    rd.addDataSetDefinition("CX", Mapped.mapStraightThrough(cXCASCRNDataSet.constructDatset()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
