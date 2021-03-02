@@ -40,8 +40,7 @@ public class MQCategory15CohortQueries {
             resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
             "endDate=${endRevisionDate},location=${location}"));
     definition.addSearch(
-        "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_1_And_2_and_3_And_4(), mappings));
+        "DENOMINATOR", EptsReportUtils.map(getDenominatorCategory15_Indicator_1(), mappings));
 
     definition.setCompositionString("G2 AND DENOMINATOR");
 
@@ -126,7 +125,7 @@ public class MQCategory15CohortQueries {
 
     definition.addSearch(
         "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_1_And_2_and_3_And_4(), mappings));
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_2_and_3_And_4(), mappings));
 
     definition.setCompositionString("H1 AND DENOMINATOR");
 
@@ -148,21 +147,15 @@ public class MQCategory15CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "G2",
-        EptsReportUtils.map(
-            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
-            "endDate=${endRevisionDate},location=${location}"));
-
-    definition.addSearch(
         "H2",
         EptsReportUtils.map(
             this.findPatientsWithDTandGaacWithRequestForVLCategory15H2(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_1_And_2_and_3_And_4(), mappings));
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_2_and_3_And_4(), mappings));
 
-    definition.setCompositionString("G2 AND H2 AND DENOMINATOR");
+    definition.setCompositionString("H2 AND DENOMINATOR");
 
     return definition;
   }
@@ -182,19 +175,13 @@ public class MQCategory15CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "G2",
-        EptsReportUtils.map(
-            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
-            "endDate=${endRevisionDate},location=${location}"));
-
-    definition.addSearch(
         "I", EptsReportUtils.map(this.findPatientsWithDTandGaacWithCV1000Category15I(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_1_And_2_and_3_And_4(), mappings));
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_2_and_3_And_4(), mappings));
 
-    definition.setCompositionString("G2 AND I AND DENOMINATOR");
+    definition.setCompositionString("I AND DENOMINATOR");
 
     return definition;
   }
@@ -220,8 +207,7 @@ public class MQCategory15CohortQueries {
             "endDate=${endRevisionDate},location=${location}"));
 
     definition.addSearch(
-        "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_5_And_7_And_9_And_11(), mappings));
+        "DENOMINATOR", EptsReportUtils.map(getDenominatorCategory15_Indicator_5(), mappings));
 
     definition.setCompositionString("G2 AND DENOMINATOR");
 
@@ -249,8 +235,7 @@ public class MQCategory15CohortQueries {
             "endDate=${endRevisionDate},location=${location}"));
 
     definition.addSearch(
-        "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_6_And_8_And_10_And_12(), mappings));
+        "DENOMINATOR", EptsReportUtils.map(getDenominatorCategory15_Indicator_6(), mappings));
 
     definition.setCompositionString("G2 AND DENOMINATOR");
 
@@ -278,7 +263,7 @@ public class MQCategory15CohortQueries {
 
     definition.addSearch(
         "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_5_And_7_And_9_And_11(), mappings));
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_7_And_9_And_11(), mappings));
 
     definition.setCompositionString("H1 AND DENOMINATOR");
 
@@ -306,7 +291,7 @@ public class MQCategory15CohortQueries {
 
     definition.addSearch(
         "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_6_And_8_And_10_And_12(), mappings));
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_8_And_10_And_12(), mappings));
 
     definition.setCompositionString("H1 AND DENOMINATOR");
 
@@ -328,21 +313,15 @@ public class MQCategory15CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "G2",
-        EptsReportUtils.map(
-            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
-            "endDate=${endRevisionDate},location=${location}"));
-
-    definition.addSearch(
         "H2",
         EptsReportUtils.map(
             this.findPatientsWithDTandGaacWithRequestForVLCategory15H2(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_5_And_7_And_9_And_11(), mappings));
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_7_And_9_And_11(), mappings));
 
-    definition.setCompositionString("G2 AND H2 AND DENOMINATOR");
+    definition.setCompositionString("H2 AND DENOMINATOR");
 
     return definition;
   }
@@ -362,21 +341,15 @@ public class MQCategory15CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "G2",
-        EptsReportUtils.map(
-            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
-            "endDate=${endRevisionDate},location=${location}"));
-
-    definition.addSearch(
         "H2",
         EptsReportUtils.map(
             this.findPatientsWithDTandGaacWithRequestForVLCategory15H2(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_6_And_8_And_10_And_12(), mappings));
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_8_And_10_And_12(), mappings));
 
-    definition.setCompositionString("G2 AND H2 AND DENOMINATOR");
+    definition.setCompositionString("H2 AND DENOMINATOR");
 
     return definition;
   }
@@ -396,19 +369,13 @@ public class MQCategory15CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "G2",
-        EptsReportUtils.map(
-            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
-            "endDate=${endRevisionDate},location=${location}"));
-
-    definition.addSearch(
         "I", EptsReportUtils.map(this.findPatientsWithDTandGaacWithCV1000Category15I(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_5_And_7_And_9_And_11(), mappings));
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_7_And_9_And_11(), mappings));
 
-    definition.setCompositionString("G2 AND I AND DENOMINATOR");
+    definition.setCompositionString("I AND DENOMINATOR");
 
     return definition;
   }
@@ -428,29 +395,23 @@ public class MQCategory15CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "G2",
-        EptsReportUtils.map(
-            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
-            "endDate=${endRevisionDate},location=${location}"));
-
-    definition.addSearch(
         "I", EptsReportUtils.map(this.findPatientsWithDTandGaacWithCV1000Category15I(), mappings));
 
     definition.addSearch(
         "DENOMINATOR",
-        EptsReportUtils.map(getDenominatorCategory15_Indicator_6_And_8_And_10_And_12(), mappings));
+        EptsReportUtils.map(getDenominatorCategory15_Indicator_8_And_10_And_12(), mappings));
 
-    definition.setCompositionString("G2 AND I AND DENOMINATOR");
+    definition.setCompositionString("I AND DENOMINATOR");
 
     return definition;
   }
 
-  @DocumentedDefinition(value = "DenominatorCategory15_Indicator_1_And_2_and_3_And_4")
-  public CohortDefinition getDenominatorCategory15_Indicator_1_And_2_and_3_And_4() {
+  @DocumentedDefinition(value = "DenominatorCategory15_Indicator_1")
+  public CohortDefinition getDenominatorCategory15_Indicator_1() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("MQ - DenominatorCategory15_Indicator_1_And_2_and_3_And_4");
+    definition.setName("MQ - DenominatorCategory15_Indicator_1");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -480,12 +441,53 @@ public class MQCategory15CohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "DenominatorCategory15_Indicator_5_And_7_And_9_And_11")
-  public CohortDefinition getDenominatorCategory15_Indicator_5_And_7_And_9_And_11() {
+  @DocumentedDefinition(value = "DenominatorCategory15_Indicator_2_and_3_And_4")
+  public CohortDefinition getDenominatorCategory15_Indicator_2_and_3_And_4() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("MQ - DenominatorCategory15_Indicator_5_And_7_And_9_And_11");
+    definition.setName("MQ - DenominatorCategory15_Indicator_2_and_3_And_4");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+    final String mappingEndRevisionDate = "endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "A",
+        EptsReportUtils.map(
+            findPatientsFromFichaClinicaForGivenConceptsDenominadorCategoria15A(),
+            mappingEndRevisionDate));
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "C", EptsReportUtils.map(findPatientsWhoArePregnantSpecificForCategory15(), mappings));
+
+    definition.addSearch(
+        "D", EptsReportUtils.map(findPatientsWhoAreBreastfeedingSpecificForCategory15(), mappings));
+
+    definition.addSearch(
+        "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
+
+    definition.setCompositionString("(A AND G2) NOT (C OR D OR F)");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "DenominatorCategory15_Indicator_5")
+  public CohortDefinition getDenominatorCategory15_Indicator_5() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - DenominatorCategory15_Indicator_5");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -521,12 +523,59 @@ public class MQCategory15CohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "DenominatorCategory15_Indicator_6_And_8_And_10_And_12")
-  public CohortDefinition getDenominatorCategory15_Indicator_6_And_8_And_10_And_12() {
+  @DocumentedDefinition(value = "DenominatorCategory15_Indicator_7_And_9_And_11")
+  public CohortDefinition getDenominatorCategory15_Indicator_7_And_9_And_11() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("MQ - DenominatorCategory15_Indicator_6_And_8_And_10_And_12");
+    definition.setName("MQ - DenominatorCategory15_Indicator_7_And_9_And_11");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+    final String mappingEndRevisionDate = "endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "A2",
+        EptsReportUtils.map(
+            findPatientsWithDispensaTrimestralInicarInFichaClinicaDuringTheRevisionPeriodA2(),
+            mappingEndRevisionDate));
+
+    definition.addSearch(
+        "A3",
+        EptsReportUtils.map(
+            findPatientsWithLastTipoDeDispensaTrimestralInFichaClinicaWithinRevisionPeriodA3(),
+            mappingEndRevisionDate));
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "C", EptsReportUtils.map(findPatientsWhoArePregnantSpecificForCategory15(), mappings));
+
+    definition.addSearch(
+        "D", EptsReportUtils.map(findPatientsWhoAreBreastfeedingSpecificForCategory15(), mappings));
+
+    definition.addSearch(
+        "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
+
+    definition.setCompositionString("((A2 OR A3) AND G2) NOT (C OR D OR F)");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "DenominatorCategory15_Indicator_6")
+  public CohortDefinition getDenominatorCategory15_Indicator_6() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - DenominatorCategory15_Indicator_6");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
@@ -558,6 +607,53 @@ public class MQCategory15CohortQueries {
         "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString("(A2 OR A3) NOT (C OR D OR F)");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "DenominatorCategory15_Indicator_8_And_10_And_12")
+  public CohortDefinition getDenominatorCategory15_Indicator_8_And_10_And_12() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("MQ - DenominatorCategory15_Indicator_8_And_10_And_12");
+    definition.addParameter(
+        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
+    definition.addParameter(new Parameter("location", "location", Date.class));
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+    final String mappingEndRevisionDate = "endRevisionDate=${endRevisionDate},location=${location}";
+
+    definition.addSearch(
+        "A2",
+        EptsReportUtils.map(
+            findPatientsWithDispensaTrimestralInicarInFichaClinicaDuringTheRevisionPeriodA2(),
+            mappingEndRevisionDate));
+
+    definition.addSearch(
+        "A3",
+        EptsReportUtils.map(
+            findPatientsWithLastTipoDeDispensaTrimestralInFichaClinicaWithinRevisionPeriodA3(),
+            mappingEndRevisionDate));
+
+    definition.addSearch(
+        "G2",
+        EptsReportUtils.map(
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            "endDate=${endRevisionDate},location=${location}"));
+
+    definition.addSearch(
+        "C", EptsReportUtils.map(findPatientsWhoArePregnantSpecificForCategory15(), mappings));
+
+    definition.addSearch(
+        "D", EptsReportUtils.map(findPatientsWhoAreBreastfeedingSpecificForCategory15(), mappings));
+
+    definition.addSearch(
+        "F", EptsReportUtils.map(mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
+
+    definition.setCompositionString("((A2 OR A3) AND G2) NOT (C OR D OR F)");
 
     return definition;
   }

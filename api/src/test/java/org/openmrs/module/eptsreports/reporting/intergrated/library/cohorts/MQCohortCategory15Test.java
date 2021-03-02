@@ -42,7 +42,7 @@ public class MQCohortCategory15Test extends DefinitionsFGHLiveTest {
         new Parameter(EptsReportConstants.END_REVISION_DATE, "End Date", Date.class), revisionDate);
 
     CohortDefinition cohortDefinition =
-        mQCohortQueriesCategory15.getDenominatorCategory15_Indicator_1_And_2_and_3_And_4();
+        mQCohortQueriesCategory15.getDenominatorCategory15_Indicator_2_and_3_And_4();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(cohortDefinition, parameters);
