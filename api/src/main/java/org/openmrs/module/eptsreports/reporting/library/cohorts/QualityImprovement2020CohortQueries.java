@@ -811,8 +811,8 @@ public class QualityImprovement2020CohortQueries {
             + "                GROUP BY p.patient_id "
             + "            ) AS g ON p.patient_id = g.patient_id "
             + " WHERE p.voided =0 "
-            + "     AND TIMESTAMPDIFF(DAY,b4.e_datetime,g.e_datetime) >= 180"
-            + "    AND TIMESTAMPDIFF(DAY,b4.e_datetime,g.e_datetime) <= 270; ";
+            + "     AND TIMESTAMPDIFF(DAY,b4.e_datetime,g.e_datetime) >= 170"
+            + "    AND TIMESTAMPDIFF(DAY,b4.e_datetime,g.e_datetime) <= 297; ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
