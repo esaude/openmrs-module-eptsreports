@@ -12,6 +12,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EPTSMetadataDatetimeQualifier;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -63,7 +64,7 @@ public class CXCASCRNAACalculation extends AbstractPatientCalculation {
 
   private final String LOCATION = "location";
 
-  private final String ANSWERS = "answers";
+  private final String RESULT = "result";
 
   @Override
   public CalculationResultMap evaluate(
@@ -82,6 +83,7 @@ public class CXCASCRNAACalculation extends AbstractPatientCalculation {
 
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
 
+    // loading metadata
     EncounterType rastreioDoCancroDoColoUterinoEncounterType =
         hivMetadata.getRastreioDoCancroDoColoUterinoEncounterType();
     EncounterType adultoSeguimentoEncounterType = hivMetadata.getAdultoSeguimentoEncounterType();
@@ -89,8 +91,17 @@ public class CXCASCRNAACalculation extends AbstractPatientCalculation {
 
     Concept resultadoViaConcept = hivMetadata.getResultadoViaConcept();
 
-    List<Concept> conceptsAnswers = (List<Concept>) parameterValues.get(ANSWERS);
+    Concept suspectedCancerConcept = hivMetadata.getSuspectedCancerConcept();
+    Concept negative = hivMetadata.getNegative();
+    Concept positive = hivMetadata.getPositive();
+    List<Concept> conceptsAnswers = Arrays.asList(suspectedCancerConcept, negative, positive);
 
+    CXCASCRNCohortQueries.CXCASCRNResult result =
+        (CXCASCRNCohortQueries.CXCASCRNResult) parameterValues.get(RESULT);
+
+    List<Integer> intResults = this.getResultValue(result, hivMetadata);
+
+    // getting the obs maps
     CalculationResultMap finchaCCUResulMap =
         eptsCalculationService.getObs(
             resultadoViaConcept,
@@ -131,29 +142,74 @@ public class CXCASCRNAACalculation extends AbstractPatientCalculation {
             context);
 
     for (Integer pId : cohort) {
-
       Obs finchaCCU = EptsCalculationUtils.resultForPatient(finchaCCUResulMap, pId);
       Obs fichaClinica = EptsCalculationUtils.resultForPatient(fichaClinicaResulMap, pId);
       Obs fichaResumo = EptsCalculationUtils.resultForPatient(fichaResumoResulMap, pId);
 
       if (finchaCCU != null) {
-        map.put(pId, new SimpleResult(finchaCCU, this));
+        if (intResults.contains(finchaCCU.getValueCoded().getConceptId())) {
+          map.put(pId, new SimpleResult(finchaCCU, this));
+        }
         continue;
-
+        // TODO:  if there occur on the same date?
       } else if (fichaClinica != null && fichaResumo != null) {
         if (fichaClinica
                 .getEncounter()
                 .getEncounterDatetime()
                 .compareTo(fichaResumo.getValueDatetime())
             > 0) {
-          map.put(pId, new SimpleResult(fichaResumo, this));
-          continue;
+          if (intResults.contains(fichaResumo.getValueCoded().getConceptId())) {
+            map.put(pId, new SimpleResult(fichaResumo, this));
+          }
         } else {
+          if (intResults.contains(fichaClinica.getValueCoded().getConceptId())) {
+            map.put(pId, new SimpleResult(fichaClinica, this));
+          }
+        }
+      } else if (fichaClinica == null && fichaResumo != null) {
+        if (intResults.contains(fichaResumo.getValueCoded().getConceptId())) {
+          map.put(pId, new SimpleResult(fichaResumo, this));
+        }
+      } else if (fichaClinica != null && fichaResumo == null) {
+
+        if (intResults.contains(fichaClinica.getValueCoded().getConceptId())) {
           map.put(pId, new SimpleResult(fichaClinica, this));
         }
       }
     }
 
     return map;
+  }
+
+  private List<Integer> getResultValue(
+      CXCASCRNCohortQueries.CXCASCRNResult result, HivMetadata hivMetadata) {
+
+    List<Integer> num = new ArrayList<>();
+
+    Concept suspectedCancerConcept = hivMetadata.getSuspectedCancerConcept();
+    Concept negative = hivMetadata.getNegative();
+    Concept positive = hivMetadata.getPositive();
+
+    if (result == CXCASCRNCohortQueries.CXCASCRNResult.NEGATIVE) {
+      num.add(negative.getConceptId());
+      return num;
+    }
+    if (result == CXCASCRNCohortQueries.CXCASCRNResult.POSITIVE) {
+      num.add(positive.getConceptId());
+      return num;
+    }
+    if (result == CXCASCRNCohortQueries.CXCASCRNResult.SUSPECTED) {
+      num.add(suspectedCancerConcept.getConceptId());
+      return num;
+    }
+
+    if (result == CXCASCRNCohortQueries.CXCASCRNResult.ALL) {
+      num.add(suspectedCancerConcept.getConceptId());
+      num.add(suspectedCancerConcept.getConceptId());
+      num.add(negative.getConceptId());
+      return num;
+    }
+
+    return num;
   }
 }

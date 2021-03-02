@@ -1,9 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
@@ -118,7 +115,7 @@ public class CXCASCRNCohortQueries {
    *       </ul>
    * </ul>
    */
-  private CohortDefinition getAA(List<Concept> answers) {
+  private CohortDefinition getAA(CXCASCRNResult result) {
     CXCASCRNAACalculation cxcascrnCalculation =
         Context.getRegisteredComponents(CXCASCRNAACalculation.class).get(0);
 
@@ -128,7 +125,7 @@ public class CXCASCRNCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
-    cd.addCalculationParameter("answers", answers);
+    cd.addCalculationParameter("result", result);
 
     return cd;
   }
@@ -160,28 +157,6 @@ public class CXCASCRNCohortQueries {
     return cd;
   }
 
-  public CohortDefinition getAA3OrAA4(CXCASCRNResult cxcascrnResult) {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    if (cxcascrnResult == CXCASCRNResult.NEGATIVE) {
-      cd.setName("AA3 from CXCA SCRN");
-    }
-    if (cxcascrnResult == CXCASCRNResult.POSITIVE) {
-      cd.setName("AA4 from CXCA SCRN");
-    }
-    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    CohortDefinition aa1 = getAA1OrAA2(cxcascrnResult, true, false);
-    CohortDefinition aa2 = getAA1OrAA2(cxcascrnResult, false, false);
-
-    cd.addSearch("AA1", EptsReportUtils.map(aa1, "onOrAfter=${startDate},location=${location}"));
-    cd.addSearch("AA2", EptsReportUtils.map(aa2, "onOrAfter=${startDate},location=${location}"));
-
-    cd.setCompositionString("AA1 OR AA2");
-
-    return cd;
-  }
-
   private CohortDefinition getBB(List<Concept> answers) {
     CXCASCRNBBCalculation cxcascrnCalculation =
         Context.getRegisteredComponents(CXCASCRNBBCalculation.class).get(0);
@@ -205,7 +180,7 @@ public class CXCASCRNCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition a = getA();
-    CohortDefinition aa = getAA(getAnswers(cxcascrnResult));
+    CohortDefinition aa = getAA(cxcascrnResult);
     CohortDefinition aa1 = getAA1OrAA2(CXCASCRNResult.ANY, true, false);
     CohortDefinition aa2 = getAA1OrAA2(CXCASCRNResult.ANY, false, false);
 
@@ -231,7 +206,7 @@ public class CXCASCRNCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition a = getA();
-    CohortDefinition aa = getAA(getAnswers(cxcascrnResult));
+    CohortDefinition aa = getAA(cxcascrnResult);
     CohortDefinition aa3 = getAA3OrAA4(CXCASCRNResult.NEGATIVE);
 
     cd.addSearch(
@@ -241,7 +216,7 @@ public class CXCASCRNCohortQueries {
         "AA",
         EptsReportUtils.map(
             aa, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch("AA3", EptsReportUtils.map(aa3, "startDate=${startDate},location=${location}"));
+    cd.addSearch("AA3", EptsReportUtils.map(aa3, "onOrAfter=${startDate},location=${location}"));
 
     cd.setCompositionString("A AND AA AND AA3");
     return cd;
@@ -255,7 +230,7 @@ public class CXCASCRNCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition a = getA();
-    CohortDefinition aa = getAA(getAnswers(cxcascrnResult));
+    CohortDefinition aa = getAA(cxcascrnResult);
     CohortDefinition aa4 = getAA3OrAA4(CXCASCRNResult.POSITIVE);
     CohortDefinition bb = getBB(getAnswers(CXCASCRNResult.ALL));
 
@@ -266,7 +241,7 @@ public class CXCASCRNCohortQueries {
         "AA",
         EptsReportUtils.map(
             aa, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch("AA4", EptsReportUtils.map(aa4, "startDate=${startDate},location=${location}"));
+    cd.addSearch("AA4", EptsReportUtils.map(aa4, "onOrAfter=${startDate},location=${location}"));
     cd.addSearch(
         "BB",
         EptsReportUtils.map(
@@ -285,7 +260,7 @@ public class CXCASCRNCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition a = getA();
-    CohortDefinition aa = getAA(getAnswers(cxcascrnResult));
+    CohortDefinition aa = getAA(cxcascrnResult);
     CohortDefinition fitstTimeScreened = get1stTimeScreened(cxcascrnResult);
     CohortDefinition rescreenedAfterPreviousNegative =
         getRescreenedAfterPreviousNegative(cxcascrnResult);
@@ -325,7 +300,7 @@ public class CXCASCRNCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition a = getA();
-    CohortDefinition aa = getAA(getAnswers(cxcascrnResult));
+    CohortDefinition aa = getAA(cxcascrnResult);
 
     cd.addSearch(
         "A",
@@ -348,7 +323,7 @@ public class CXCASCRNCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition aa = getAA(getAnswers(cxcascrnResult));
+    CohortDefinition aa = getAA(cxcascrnResult);
 
     CohortDefinition a = this.getA();
 
@@ -384,5 +359,21 @@ public class CXCASCRNCohortQueries {
       answers = Arrays.asList(negative);
     }
     return answers;
+  }
+
+  public CohortDefinition getAA3OrAA4(CXCASCRNResult cxcascrnResult) {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    if (cxcascrnResult == CXCASCRNResult.NEGATIVE) {
+      cd.setName("AA3 from CXCA SCRN");
+    }
+    if (cxcascrnResult == CXCASCRNResult.POSITIVE) {
+      cd.setName("AA4 from CXCA SCRN");
+    }
+
+    cd.setQuery(CXCASCRNQueries.getAA3OrAA4Query(cxcascrnResult, hivMetadata, false));
+
+    return cd;
   }
 }

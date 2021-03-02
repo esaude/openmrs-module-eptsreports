@@ -85,6 +85,18 @@ public class CXCATreatmentHierarchyCalculation extends AbstractPatientCalculatio
       Obs b6Obs = EptsCalculationUtils.resultForPatient(b6Map, pId);
       Obs b7Obs = EptsCalculationUtils.resultForPatient(b7Map, pId);
 
+      //  fisrt select the oldest  and  compare  with the treatment type
+
+      //  NOTE1: For patients who have more than one treatment registered during the reporting
+      // period, the system will consider the oldest one among them.
+
+      /** handling the oldest */
+      Date returnedOldestDate = pickTheOladestDateDuringThePeriod(b5Date, b6Obs, b7Obs);
+      if (returnedOldestDate != null) {
+        map.put(pId, new SimpleResult(returnedOldestDate, this));
+      }
+
+      /** handling treatments in the same date */
       // handling b7
       if (treatmentType == TreatmentType.B7 && b7Obs != null) {
         map.put(pId, new SimpleResult(b7Obs.getValueDatetime(), this));
@@ -94,11 +106,11 @@ public class CXCATreatmentHierarchyCalculation extends AbstractPatientCalculatio
         if (b6Obs.getValueDatetime().compareTo(b7Obs.getValueDatetime()) == 0) {
           continue;
         } else {
-          map.put(pId, new SimpleResult(b7Obs.getValueDatetime(), this));
+          map.put(pId, new SimpleResult(b6Obs.getValueDatetime(), this));
         }
       }
       if (treatmentType == TreatmentType.B6 && b6Obs != null && b7Obs == null) {
-        map.put(pId, new SimpleResult(b7Obs.getValueDatetime(), this));
+        map.put(pId, new SimpleResult(b6Obs.getValueDatetime(), this));
       }
       // handling b5
       if (treatmentType == TreatmentType.B5 && b5Date != null && b6Obs != null && b7Obs != null) {
@@ -134,7 +146,6 @@ public class CXCATreatmentHierarchyCalculation extends AbstractPatientCalculatio
         map.put(pId, new SimpleResult(b5Date, this));
       }
     }
-
     return map;
   }
 
@@ -198,5 +209,31 @@ public class CXCATreatmentHierarchyCalculation extends AbstractPatientCalculatio
     params.put("onOrBefore", context.getFromCache("onOrBefore"));
 
     return EptsCalculationUtils.evaluateWithReporting(def, cohort, params, null, context);
+  }
+
+  private Date pickTheOladestDateDuringThePeriod(Date b5Date, Obs b6Obs, Obs b7Obs) {
+
+    Date oldestDate = null;
+    List<Date> dates = new ArrayList<>();
+
+    if (b5Date != null) {
+      dates.add(b5Date);
+    }
+    if (b6Obs != null) {
+      dates.add(b6Obs.getValueDate());
+    }
+    if (b6Obs != null) {
+      dates.add(b7Obs.getValueDate());
+    }
+    for (Date d : dates) {
+      if (oldestDate == null) {
+        oldestDate = d;
+        continue;
+      }
+      if (oldestDate.compareTo(d) > 0) {
+        oldestDate = d;
+      }
+    }
+    return oldestDate;
   }
 }

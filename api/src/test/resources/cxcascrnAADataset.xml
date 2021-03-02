@@ -122,9 +122,9 @@
     <obs obs_id="124" person_id="1002" concept_id="2094" encounter_id="313"  value_datetime ="2019-11-26 00:00:00"  obs_datetime="2019-09-26 00:00:00"  value_coded="664"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="50b5e528-6b07-11eb-b17c-cb404b221d8e" location_id="1" />
 
 
-    <obs obs_id="125" person_id="1003" concept_id="2094" encounter_id="314"    obs_datetime="2019-09-26 00:00:00"  value_coded="2093"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c7794986-6b0a-11eb-b8b2-c7c88a5c0e93" location_id="1" />
+    <obs obs_id="125" person_id="1003" concept_id="2094" encounter_id="314"    obs_datetime="2019-09-26 00:00:00"  value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c7794986-6b0a-11eb-b8b2-c7c88a5c0e93" location_id="1" />
 
-    <obs obs_id="126" person_id="1003" concept_id="2094" encounter_id="315"    obs_datetime="2019-09-26 00:00:00"  value_coded="664"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="ce285fb0-6b0a-11eb-9faf-8bb21348b05f" location_id="1" />
+    <obs obs_id="126" person_id="1003" concept_id="2094" encounter_id="315"    obs_datetime="2019-09-26 00:00:00"  value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="ce285fb0-6b0a-11eb-9faf-8bb21348b05f" location_id="1" />
 
     <obs obs_id="127" person_id="1003" concept_id="2094" encounter_id="316"    obs_datetime="2019-09-26 00:00:00"  value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="d4139a98-6b0a-11eb-b0af-f7ba941c14e8" location_id="1" />
 

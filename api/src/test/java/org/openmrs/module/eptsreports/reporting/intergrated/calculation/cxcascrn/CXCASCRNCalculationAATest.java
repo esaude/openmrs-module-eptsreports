@@ -16,6 +16,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.cxcascrn.CXCASCRNAACalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNCohortQueries;
 
 public class CXCASCRNCalculationAATest extends BasePatientCalculationTest {
   @Override
@@ -53,6 +54,7 @@ public class CXCASCRNCalculationAATest extends BasePatientCalculationTest {
     context.addToCache("onOrAfter", startDate.getTime());
 
     Map<String, Object> parameterValues = new HashMap<>();
+    parameterValues.put("result", CXCASCRNCohortQueries.CXCASCRNResult.SUSPECTED);
 
     final int patientId = 1001;
 
@@ -88,6 +90,7 @@ public class CXCASCRNCalculationAATest extends BasePatientCalculationTest {
     context.addToCache("onOrAfter", startDate.getTime());
 
     Map<String, Object> parameterValues = new HashMap<>();
+    parameterValues.put("result", CXCASCRNCohortQueries.CXCASCRNResult.NEGATIVE);
 
     final int patientId = 1002;
 
@@ -107,7 +110,7 @@ public class CXCASCRNCalculationAATest extends BasePatientCalculationTest {
   }
 
   @Test
-  public void evaluate_shouldGetEarlistFichaCCU() {
+  public void evaluate_shouldGetEarliestFichaCCU() {
 
     PatientCalculationContext context = getEvaluationContext();
 
@@ -121,6 +124,7 @@ public class CXCASCRNCalculationAATest extends BasePatientCalculationTest {
     context.addToCache("onOrAfter", startDate.getTime());
 
     Map<String, Object> parameterValues = new HashMap<>();
+    parameterValues.put("result", CXCASCRNCohortQueries.CXCASCRNResult.POSITIVE);
 
     final int patientId = 1003;
 

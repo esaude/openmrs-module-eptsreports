@@ -173,10 +173,10 @@
     <encounter encounter_id="313" encounter_type="28" patient_id="1001" encounter_datetime="2019-11-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="23fdfd66-6d2a-11eb-bb10-a7b6187a65eb" location_id="1" />
 
     <!-- obs for AA -->
-    <obs obs_id="122" person_id="1001" concept_id="2094" encounter_id="311" obs_datetime="2019-12-26 00:00:00"  value_coded="2093"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c183947a-388b-11eb-b6a7-eb9d5a01c619" location_id="1" />
+    <obs obs_id="122" person_id="1001" concept_id="2094" encounter_id="311" obs_datetime="2019-12-26 00:00:00"  value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c183947a-388b-11eb-b6a7-eb9d5a01c619" location_id="1" />
 
     <!-- obs for AA4 -->
-    <obs obs_id="123" person_id="1001" concept_id="2094" encounter_id="312" obs_datetime="2019-09-26 00:00:00" value_datetime="2019-10-19 00:00:00" value_coded="2093"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="a4cbe362-6d3a-11eb-abc0-bbca549cdf68" location_id="1" />
+    <obs obs_id="123" person_id="1001" concept_id="2094" encounter_id="312" obs_datetime="2019-09-26 00:00:00" value_datetime="2019-10-19 00:00:00" value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="a4cbe362-6d3a-11eb-abc0-bbca549cdf68" location_id="1" />
 
     <!-- obs for BB -->
     <obs obs_id="124" person_id="1001" concept_id="23967" encounter_id="313" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-11-26 00:00:00"   creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="5d06d0d8-6d2a-11eb-aacb-f3833f57f000" location_id="1" />

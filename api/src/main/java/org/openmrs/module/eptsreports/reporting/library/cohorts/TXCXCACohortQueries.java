@@ -83,7 +83,7 @@ public class TXCXCACohortQueries {
         "BB",
         EptsReportUtils.map(
             bb, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch("B3", EptsReportUtils.map(b3, "startDate=${startDate},location=${location}"));
+    cd.addSearch("B3", EptsReportUtils.map(b3, "onOrAfter=${startDate},location=${location}"));
 
     cd.setCompositionString("B AND BB AND B3");
 
@@ -109,7 +109,7 @@ public class TXCXCACohortQueries {
         "BB",
         EptsReportUtils.map(
             bb, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch("B4", EptsReportUtils.map(b4, "startDate=${startDate},location=${location}"));
+    cd.addSearch("B4", EptsReportUtils.map(b4, "onOrAfter=${startDate},location=${location}"));
     cd.addSearch(
         "BB1",
         EptsReportUtils.map(
@@ -163,8 +163,7 @@ public class TXCXCACohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addCalculationParameter(
-        "answers",
-        this.cxcascrnCohortQueries.getAnswers(CXCASCRNCohortQueries.CXCASCRNResult.POSITIVE));
+        "answers", this.cxcascrnCohortQueries.getAnswers(CXCASCRNCohortQueries.CXCASCRNResult.ANY));
 
     return cd;
   }

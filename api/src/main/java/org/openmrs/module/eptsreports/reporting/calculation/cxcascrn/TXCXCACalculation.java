@@ -69,7 +69,7 @@ public class TXCXCACalculation extends AbstractPatientCalculation {
             Arrays.asList(yesConcept),
             TimeQualifier.ANY,
             null,
-            null,
+            endDate,
             EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
             context);
 
@@ -82,7 +82,7 @@ public class TXCXCACalculation extends AbstractPatientCalculation {
             null,
             TimeQualifier.ANY,
             null,
-            null,
+            endDate,
             EPTSMetadataDatetimeQualifier.VALUE_DATETIME,
             context);
 
@@ -96,7 +96,7 @@ public class TXCXCACalculation extends AbstractPatientCalculation {
                 pediatricNursingConcept, thermocoagulationConcept, leepConcept, conizationConcept),
             TimeQualifier.ANY,
             null,
-            null,
+            endDate,
             EPTSMetadataDatetimeQualifier.VALUE_DATETIME,
             context);
 
