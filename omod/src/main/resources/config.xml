@@ -2629,6 +2629,69 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.regimeTPTEncounterTypeUuid</property>
+		<defaultValue>24bd60e2-a1c9-4159-a24f-12af15b77510</defaultValue>
+		<description>
+			UUID for Tratamento Profilático da Tuberculose (TPT) encounter type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.isoniazidConceptUuid</property>
+		<defaultValue>e1d43e52-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for ISONIAZID concept
+		</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsreports.isoniazidePiridoxinaConceptUuid</property>
+		<defaultValue>6214dbcc-23a3-4708-85d8-a5b1af61c55d</defaultValue>
+		<description>
+			UUID for Isoniazide + Piridoxina concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.3HPPiridoxinaConceptUuid</property>
+		<defaultValue>1b1ffdd8-8410-44ca-b485-613badb2b942</defaultValue>
+		<description>
+			UUID for 3HP + Piridoxina concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.regimeTPTConceptUuid</property>
+		<defaultValue>9db4ce3b-4c1c-45dd-905f-c984a052f26e</defaultValue>
+		<description>
+			UUID for Regime TPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.treatmentPrescribedConceptUuid</property>
+		<defaultValue>e1de3092-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for TREATMENT PRESCRIBED concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.dtINHConceptUuid</property>
+		<defaultValue>16e2f8f5-b89f-4972-82e9-2de534cae949</defaultValue>
+		<description>
+			UUID for DT-INH concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.3HPConceptUuid</property>
+		<defaultValue>bce7d965-3396-4667-8294-aa5260c26334</defaultValue>
+		<description>
+			UUID for 3HP concept
+		</description>
+	</globalProperty>
 
 	<globalProperty>
 		<property>eptsreports.returnDateOnFirstAttemptConceptUuid</property>

@@ -45,6 +45,29 @@
 
     <global_property property="eptsreports.dateOfMasterCardFileOpeningConceptUuid" property_value="68d65d0c-8fee-456b-8e95-caed990351e1" uuid="2df82dce-6e83-11ea-9fa8-cbe37fae20e3"/>
 
+    <encounter_type encounter_type_id="60" name="Tratamento Profilático da Tuberculose (TPT)" creator="1" date_created="2020-09-09 10:36:36" retired="false" uuid="24bd60e2-a1c9-4159-a24f-12af15b77510"/>
+    <global_property property="eptsreports.regimeTPTEncounterTypeUuid" property_value="24bd60e2-a1c9-4159-a24f-12af15b77510" uuid="61d5f19b-0f5c-4a59-935a-df46d4f93153"/>
+
+    <concept concept_id="23985" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2020-09-09 09:54:21" changed_by="1" date_changed="2020-09-09 09:54:21" uuid="9db4ce3b-4c1c-45dd-905f-c984a052f26e"/>
+    <global_property property="eptsreports.regimeTPTConceptUuid" property_value="9db4ce3b-4c1c-45dd-905f-c984a052f26e" uuid="8407f232-2759-4e32-9198-364dfc5f5015"/>
+
+    <concept concept_id="656"   retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2004-01-01 02:00:00" changed_by="1" date_changed="2018-10-08 12:27:51" uuid="e1d43e52-1d5f-11e0-b929-000c29ad1d07"/>
+    <global_property property="eptsreports.isoniazidConceptUuid" property_value="e1d43e52-1d5f-11e0-b929-000c29ad1d07" uuid="c098109a-f090-4324-be6d-77b1d55c2c51"/>
+
+    <concept concept_id="23982" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2020-09-09 09:49:23" changed_by="1" date_changed="2020-09-09 09:49:23" uuid="6214dbcc-23a3-4708-85d8-a5b1af61c55d"/>
+    <global_property property="eptsreports.isoniazidePiridoxinaConceptUuid" property_value="6214dbcc-23a3-4708-85d8-a5b1af61c55d" uuid="f215aba1-00e1-404c-a184-e261760e138d"/>
+        
+    <concept concept_id="1719" retired="false" datatype_id="2" class_id="7" is_set="false" creator="1" date_created="2008-10-27 16:58:14" changed_by="1"   date_changed="2020-07-17 14:43:46" uuid="e1de3092-1d5f-11e0-b929-000c29ad1d07"/>
+    <global_property property="eptsreports.treatmentPrescribedConceptUuid" property_value="e1de3092-1d5f-11e0-b929-000c29ad1d07" uuid="1cc1d935-cb8a-4a1d-9e7c-82859fcaa1f7"/>
+    
+    <concept concept_id="23955" retired="false" datatype_id="4" class_id="2" is_set="false" creator="1" date_created="2020-07-16 10:48:58" changed_by="1"   date_changed="2020-07-16 10:48:58" uuid="16e2f8f5-b89f-4972-82e9-2de534cae949"/>
+    <global_property property="eptsreports.dtINHConceptUuid" property_value="16e2f8f5-b89f-4972-82e9-2de534cae949" uuid="d18f31fe-a581-4a8b-bdf6-753084d78d22"/>
+
+    <concept concept_id="23954" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2020-07-16 10:34:02" changed_by="1"   date_changed="2020-07-16 10:34:02" uuid="bce7d965-3396-4667-8294-aa5260c26334"/>
+    <global_property property="eptsreports.3HPConceptUuid" property_value="bce7d965-3396-4667-8294-aa5260c26334" uuid="b4e8c288-8b52-4135-a16c-bd1f347dc243"/>
+    
+    <concept concept_id="23984" retired="false" datatype_id="4" class_id="3" is_set="false" creator="1" date_created="2020-09-09 09:51:19" changed_by="1"   date_changed="2020-09-09 09:51:19" uuid="1b1ffdd8-8410-44ca-b485-613badb2b942"/>
+    <global_property property="eptsreports.3HPPiridoxinaConceptUuid" property_value="1b1ffdd8-8410-44ca-b485-613badb2b942" uuid="7e95a32e-2f66-4a09-99c2-044a728317f5"/>
 
 
     <encounter encounter_id="10" encounter_type="6777004" patient_id="2" location_id="1" form_id="1" encounter_datetime="2019-02-01 00:00:00.0" creator="1" date_created="2019-02-01 00:00:00.0" voided="false" uuid="0519d653-393b-4118-9c83-a3715b82d4ap"/>

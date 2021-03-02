@@ -427,4 +427,128 @@ public class TbMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.xrayChestConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>encounterType_id = 60</b>
+   *
+   * <p><b>Name:</b> Tratamento Profilático da Tuberculose (TPT)
+   *
+   * <p><b>Description: Tratamento Profilático da Tuberculose (TPT)</b>
+   *
+   * @return {@link EncounterType}
+   */
+  public EncounterType getRegimeTPTEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.regimeTPTEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
+
+  /**
+   * <b>concept_id = 656</b>
+   *
+   * <p><b>Name:</b> Isoniazid
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getIsoniazidConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.isoniazidConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 1719</b>
+   *
+   * <p><b>Name:</b> TREATMENT PRESCRIBED
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getTreatmentPrescribedConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.treatmentPrescribedConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23982</b>
+   *
+   * <p><b>Name:</b> Isoniazide + Piridoxina
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getIsoniazidePiridoxinaConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.isoniazidePiridoxinaConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23984</b>
+   *
+   * <p><b>Name:</b> Regime TPT
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept get3HPPiridoxinaConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.3HPPiridoxinaConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23985</b>
+   *
+   * <p><b>Name:</b> Regime TPT
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getRegimeTPTConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.regimeTPTConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23954</b>
+   *
+   * <p><b>Name:</b> 3HP
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept get3HPConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.3HPConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23955</b>
+   *
+   * <p><b>Name:</b> DT-INH
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDtINHConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.dtINHConceptUuid");
+    return getConcept(uuid);
+  }
 }

@@ -11,27 +11,35 @@
  */
 package org.openmrs.module.eptsreports.reporting.calculation.generic;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.Months;
+import org.openmrs.Concept;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
+import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -61,6 +69,8 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
 
   @Autowired private HivMetadata hivMetadata;
 
+  @Autowired private TbMetadata tbMetadata;
+
   @Autowired private EPTSCalculationService ePTSCalculationService;
 
   @SuppressWarnings("unused")
@@ -69,6 +79,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
       Collection<Integer> cohort,
       Map<String, Object> parameterValues,
       PatientCalculationContext context) {
+
     CalculationResultMap map = new CalculationResultMap();
     boolean isNewlyEnrolledOnArtSearch =
         getBooleanParameter(parameterValues, "isNewlyEnrolledOnArtSearch");
@@ -114,6 +125,73 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             startDate,
             endDate,
             context);
+    CalculationResultMap firstINHDateMap =
+        getFirstINHDateOrFirst3HPDate(
+            tbMetadata.getRegimeTPTEncounterType(),
+            tbMetadata.getRegimeTPTConcept(),
+            Arrays.asList(
+                tbMetadata.getIsoniazidConcept(), tbMetadata.getIsoniazidePiridoxinaConcept()),
+            false,
+            cohort,
+            context);
+    CalculationResultMap notInFirstINHDateMap =
+        getFirstINHDateOrFirst3HPDate(
+            tbMetadata.getRegimeTPTEncounterType(),
+            tbMetadata.getRegimeTPTConcept(),
+            Arrays.asList(
+                tbMetadata.getIsoniazidConcept(), tbMetadata.getIsoniazidePiridoxinaConcept()),
+            true,
+            cohort,
+            context);
+    CalculationResultMap firstDtINHDateMap =
+        getFirstINHDateOrFirst3HPDate(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTreatmentPrescribedConcept(),
+            Arrays.asList(tbMetadata.getDtINHConcept()),
+            false,
+            cohort,
+            context);
+    CalculationResultMap notInDtINHDateMap =
+        getFirstINHDateOrFirst3HPDate(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTreatmentPrescribedConcept(),
+            Arrays.asList(tbMetadata.getDtINHConcept()),
+            true,
+            cohort,
+            context);
+    CalculationResultMap first3HPDateMap =
+        getFirstINHDateOrFirst3HPDate(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTreatmentPrescribedConcept(),
+            Arrays.asList(tbMetadata.get3HPConcept()),
+            false,
+            cohort,
+            context);
+    CalculationResultMap notIn3HPDateMap =
+        getFirstINHDateOrFirst3HPDate(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTreatmentPrescribedConcept(),
+            Arrays.asList(tbMetadata.get3HPConcept()),
+            true,
+            cohort,
+            context);
+    CalculationResultMap first3HPOr3HPPlusPiridoxinaDateMap =
+        getFirstINHDateOrFirst3HPDate(
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTreatmentPrescribedConcept(),
+            Arrays.asList(tbMetadata.get3HPConcept()),
+            false,
+            cohort,
+            context);
+    CalculationResultMap notIn3HPOr3HPPlusPiridoxinaDateMap =
+        getFirstINHDateOrFirst3HPDate(
+            tbMetadata.getRegimeTPTEncounterType(),
+            tbMetadata.getRegimeTPTConcept(),
+            Arrays.asList(tbMetadata.get3HPConcept(), tbMetadata.get3HPPiridoxinaConcept()),
+            true,
+            cohort,
+            context);
+
     if (endDate != null) {
       for (Integer patientId : cohort) {
         Date artStartDate =
@@ -122,7 +200,30 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             EptsCalculationUtils.resultForPatient(startProfilaxiaObservations, patientId);
         Obs fichaClinicaMasterCardStartDrugsObs =
             EptsCalculationUtils.resultForPatient(startDrugsObservations, patientId);
-        if ((seguimentoOrFichaResumo == null && fichaClinicaMasterCardStartDrugsObs == null)
+        SimpleResult firstINHDateResult = (SimpleResult) firstINHDateMap.get(patientId);
+        SimpleResult notInINHDateResult = (SimpleResult) notInFirstINHDateMap.get(patientId);
+        SimpleResult firstDtINHDateResult = (SimpleResult) firstDtINHDateMap.get(patientId);
+        SimpleResult notInDtINHDateResult = (SimpleResult) notInDtINHDateMap.get(patientId);
+        SimpleResult first3HPDateResult = (SimpleResult) first3HPDateMap.get(patientId);
+        SimpleResult notIn3HPDateResult = (SimpleResult) notIn3HPDateMap.get(patientId);
+        SimpleResult first3HPOr3HPPlusPiridoxinaDateResult =
+            (SimpleResult) first3HPOr3HPPlusPiridoxinaDateMap.get(patientId);
+        SimpleResult notIn3HPOr3HPPlusPiridoxinaDateResult =
+            (SimpleResult) notIn3HPOr3HPPlusPiridoxinaDateMap.get(patientId);
+
+        Date firstINHDate = addOrSubtractMonths(firstINHDateResult, notInINHDateResult, -7);
+        Date firstDtINHDate = addOrSubtractMonths(firstDtINHDateResult, notInDtINHDateResult, -7);
+        Date first3HPDate = addOrSubtractMonths(first3HPDateResult, notIn3HPDateResult, -4);
+        Date first3HPOr3HPPlusPiridoxinaDate =
+            addOrSubtractMonths(
+                first3HPOr3HPPlusPiridoxinaDateResult, notIn3HPOr3HPPlusPiridoxinaDateResult, -4);
+
+        if ((seguimentoOrFichaResumo == null
+                && fichaClinicaMasterCardStartDrugsObs == null
+                && firstINHDate == null
+                && firstDtINHDate == null
+                && first3HPDate == null
+                && first3HPOr3HPPlusPiridoxinaDate == null)
             || artStartDate == null) {
           continue;
         }
@@ -131,7 +232,12 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
         DateTime iptStartDateTime =
             new DateTime(
                 getEarliestIptStartDate(
-                        seguimentoOrFichaResumo, fichaClinicaMasterCardStartDrugsObs)
+                        seguimentoOrFichaResumo,
+                        fichaClinicaMasterCardStartDrugsObs,
+                        firstINHDate,
+                        firstDtINHDate,
+                        first3HPDate,
+                        first3HPOr3HPPlusPiridoxinaDate)
                     .getTime());
         boolean isDiffMoreThanSix =
             isDateDiffGreaterThanSixMonths(artStartDateTime, iptStartDateTime);
@@ -171,17 +277,41 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
    * @return
    */
   private Date getEarliestIptStartDate(
-      Obs seguimentoOrFichaResumoDate, Obs fichaClinicaMasterCardDate) {
-    if (seguimentoOrFichaResumoDate != null && fichaClinicaMasterCardDate != null) {
+      Obs seguimentoOrFichaResumoDate,
+      Obs fichaClinicaMasterCardDate,
+      Date firstINHDate,
+      Date firstDtINHDate,
+      Date first3HPDate,
+      Date first3HPOr3HPPlusPiridoxinaDate) {
+    if (seguimentoOrFichaResumoDate != null
+        && fichaClinicaMasterCardDate != null
+        && firstINHDate != null
+        && firstDtINHDate != null
+        && first3HPDate != null
+        && first3HPOr3HPPlusPiridoxinaDate != null) {
       List<Date> dates =
           Arrays.asList(
               getDateFromObs(seguimentoOrFichaResumoDate),
-              fichaClinicaMasterCardDate.getObsDatetime());
+              fichaClinicaMasterCardDate.getObsDatetime(),
+              firstINHDate,
+              firstDtINHDate,
+              first3HPDate,
+              first3HPOr3HPPlusPiridoxinaDate);
       return Collections.min(dates);
     } else {
-      return (getDateFromObs(seguimentoOrFichaResumoDate) != null)
-          ? getDateFromObs(seguimentoOrFichaResumoDate)
-          : fichaClinicaMasterCardDate.getObsDatetime();
+      if (getDateFromObs(seguimentoOrFichaResumoDate) != null) {
+        return getDateFromObs(seguimentoOrFichaResumoDate);
+      } else if (firstINHDate != null) {
+        return firstINHDate;
+      } else if (firstDtINHDate != null) {
+        return firstDtINHDate;
+      } else if (first3HPDate != null) {
+        return first3HPDate;
+      } else if (first3HPOr3HPPlusPiridoxinaDate != null) {
+        return first3HPOr3HPPlusPiridoxinaDate;
+      } else {
+        return fichaClinicaMasterCardDate.getObsDatetime();
+      }
     }
   }
   /**
@@ -234,5 +364,86 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
       parameterValue = true;
     }
     return parameterValue;
+  }
+
+  private Date addOrSubtractMonths(
+      SimpleResult firstDateResult, SimpleResult notInDateResult, int months) {
+    if (firstDateResult != null && notInDateResult != null) {
+      Date firstDate = (Date) firstDateResult.getValue();
+      Date notInDate = (Date) notInDateResult.getValue();
+      Calendar calendar = Calendar.getInstance();
+      calendar.setTime(firstDate);
+      calendar.add(Calendar.MONTH, months);
+      Date addedOrSubtractedMonths = calendar.getTime();
+
+      if (notInDate.getTime() >= addedOrSubtractedMonths.getTime()
+          && notInDate.getTime() < firstDate.getTime()) {
+        return firstDate;
+      }
+    }
+    return null;
+  }
+
+  private CalculationResultMap getFirstINHDateOrFirst3HPDate(
+      EncounterType encounterType,
+      Concept question,
+      List<Concept> answers,
+      Boolean notInQuery,
+      Collection<Integer> cohort,
+      PatientCalculationContext context) {
+
+    SqlPatientDataDefinition def = new SqlPatientDataDefinition();
+    def.addParameter(new Parameter("startDate", "onOrAfter", Date.class));
+    def.addParameter(new Parameter("endDate", "onOrBefore", Date.class));
+    def.addParameter(new Parameter("location", "location", Location.class));
+
+    List<Integer> answerIds = new ArrayList<>();
+
+    for (Concept concept : answers) {
+      answerIds.add(concept.getConceptId());
+    }
+
+    String sql =
+        "   SELECT  p.patient_id, MIN(e.encounter_datetime) AS value_datetime "
+            + " FROM    patient p  "
+            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + " INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + " WHERE   p.voided = 0  "
+            + "     AND e.voided = 0  "
+            + "     AND o.voided = 0  "
+            + "     AND e.location_id = :location "
+            + "     AND e.encounter_type = %d "
+            + "     AND o.concept_id = %d ";
+    if (answerIds.size() == 1) {
+      sql += "      AND o.value_coded IN (%d) ";
+    } else if (answerIds.size() == 2) {
+      sql += "      AND o.value_coded IN (%d, %d) ";
+    }
+    if (!notInQuery) {
+      sql +=
+          "           AND e.encounter_datetime >= :startDate "
+              + "     AND e.encounter_datetime <= :endDate ";
+    }
+    sql += "    GROUP BY p.patient_id";
+
+    if (answerIds.size() == 1) {
+      def.setSql(
+          String.format(
+              sql, encounterType.getEncounterTypeId(), question.getConceptId(), answerIds.get(0)));
+    } else if (answerIds.size() == 2) {
+      def.setSql(
+          String.format(
+              sql,
+              encounterType.getEncounterTypeId(),
+              question.getConceptId(),
+              answerIds.get(0),
+              answerIds.get(1)));
+    }
+
+    Map<String, Object> params = new HashMap<>();
+    params.put("location", context.getFromCache("location"));
+    params.put("onOrBefore", context.getFromCache("onOrBefore"));
+    params.put("onOrAfter", context.getFromCache("onOrAfter"));
+    return EptsCalculationUtils.evaluateWithReporting(def, cohort, params, null, context);
   }
 }
