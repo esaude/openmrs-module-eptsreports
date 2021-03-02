@@ -20,9 +20,11 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCoh
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovement2020Queries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -5989,8 +5991,8 @@ public class QualityImprovement2020CohortQueries {
     comp.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     comp.addParameter(new Parameter("location", "location", Date.class));
 
-    CohortDefinition queryA =
-        QualityImprovement2020Queries.getMQ15DenA(
+    CohortDefinition queryA1 =
+        QualityImprovement2020Queries.getMQ15DenA1(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getStartDrugs().getConceptId(),
             hivMetadata.getQuarterlyConcept().getConceptId(),
@@ -6007,41 +6009,65 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getQuarterlyDispensation().getConceptId());
 
     CohortDefinition queryA3 =
-        QualityImprovement2020Queries.getMQ15DenA3(
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getQuarterlyConcept().getConceptId(),
-            hivMetadata.getTypeOfDispensationConcept().getConceptId());
+        genericCohortQueries.hasCodedObs(
+            hivMetadata.getTypeOfDispensationConcept(),
+            BaseObsCohortDefinition.TimeModifier.LAST,
+            SetComparator.IN,
+            Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+            Arrays.asList(hivMetadata.getQuarterlyConcept()));
 
     CohortDefinition pregnant =
-        commonCohortQueries.getMOHPregnantORBreastfeeding(
-            commonMetadata.getPregnantConcept().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId());
+        genericCohortQueries.hasCodedObs(
+            commonMetadata.getPregnantConcept(),
+            BaseObsCohortDefinition.TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+            Arrays.asList(hivMetadata.getYesConcept()));
 
     CohortDefinition breastfeeding =
-        commonCohortQueries.getMOHPregnantORBreastfeeding(
-            commonMetadata.getBreastfeeding().getConceptId(),
-            hivMetadata.getYesConcept().getConceptId());
+        genericCohortQueries.hasCodedObs(
+            commonMetadata.getBreastfeeding(),
+            BaseObsCohortDefinition.TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(hivMetadata.getAdultoSeguimentoEncounterType()),
+            Arrays.asList(hivMetadata.getYesConcept()));
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
-    comp.addSearch("A", EptsReportUtils.map(queryA, MAPPING1));
+    comp.addSearch(
+        "A1",
+        EptsReportUtils.map(
+            queryA1,
+            "startDate=${revisionEndDate-14m},endDate=${revisionEndDate-11m},location=${location}"));
 
     comp.addSearch("A2", EptsReportUtils.map(queryA2, MAPPING1));
 
-    comp.addSearch("A3", EptsReportUtils.map(queryA3, MAPPING1));
+    comp.addSearch(
+        "A3",
+        EptsReportUtils.map(
+            queryA3,
+            "onOrAfter=${revisionEndDate-14m},onOrBefore=${revisionEndDate-11m},locationList=${location}"));
 
-    comp.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+    comp.addSearch(
+        "C",
+        EptsReportUtils.map(
+            pregnant,
+            "onOrAfter=${revisionEndDate-14m},onOrBefore=${revisionEndDate},locationList=${location}"));
 
-    comp.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+    comp.addSearch(
+        "D",
+        EptsReportUtils.map(
+            breastfeeding,
+            "onOrAfter=${revisionEndDate-14m},onOrBefore=${revisionEndDate},locationList=${location}"));
 
     comp.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
 
     if (den == 1 || den == 2 || den == 3 || den == 4) {
-      comp.setCompositionString("A AND NOT C AND NOT D AND NOT F");
+      comp.setCompositionString("(A1 OR A3) AND NOT (C OR D OR F)");
     } else if (den == 5 || den == 7 || den == 9 || den == 11) {
-      comp.setCompositionString("(A2 OR A3) AND  NOT C AND NOT D AND NOT F");
+      comp.setCompositionString("(A2 OR A3) AND  NOT (C OR D OR F)");
     } else if (den == 6 || den == 8 || den == 10 || den == 12) {
-      comp.setCompositionString("(A2 OR A3) AND NOT C AND NOT D AND NOT F");
+      comp.setCompositionString("(A2 OR A3) AND NOT (C OR D OR F)");
     }
     return comp;
   }
@@ -6142,8 +6168,8 @@ public class QualityImprovement2020CohortQueries {
     comp.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     comp.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition queryA =
-        QualityImprovement2020Queries.getMQ15DenA(
+    CohortDefinition queryA1 =
+        QualityImprovement2020Queries.getMQ15DenA1(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getStartDrugs().getConceptId(),
             hivMetadata.getQuarterlyConcept().getConceptId(),
@@ -6222,15 +6248,31 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
-    comp.addSearch("A", EptsReportUtils.map(queryA, MAPPING1));
+    comp.addSearch(
+        "A1",
+        EptsReportUtils.map(
+            queryA1,
+            "startDate=${revisionEndDate-14m},endDate=${revisionEndDate-11m},location=${location}")); // A1 OR A3
 
     comp.addSearch("A2", EptsReportUtils.map(queryA2, MAPPING1));
 
-    comp.addSearch("A3", EptsReportUtils.map(queryA3, MAPPING1));
+    comp.addSearch(
+        "A3",
+        EptsReportUtils.map(
+            queryA3,
+            "startDate=${revisionEndDate-14m},endDate=${revisionEndDate-11m},location=${location}"));
 
-    comp.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+    comp.addSearch(
+        "C",
+        EptsReportUtils.map(
+            pregnant,
+            "startDate=${revisionEndDate-14m},endDate=${revisionEndDate-11m},location=${location}"));
 
-    comp.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+    comp.addSearch(
+        "D",
+        EptsReportUtils.map(
+            breastfeeding,
+            "startDate=${revisionEndDate-14m},endDate=${revisionEndDate-11m},location=${location}"));
 
     comp.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
 
@@ -6247,13 +6289,13 @@ public class QualityImprovement2020CohortQueries {
     comp.addSearch("I", EptsReportUtils.map(i, MAPPING1));
 
     if (num == 1) {
-      comp.setCompositionString("A AND NOT (C OR D OR F) AND G2");
+      comp.setCompositionString("(A1 OR A3) AND NOT (C OR D OR F) AND G2");
     } else if (num == 2) {
-      comp.setCompositionString("A AND NOT (C OR D OR F) AND H1");
+      comp.setCompositionString("(A1 OR A3) AND NOT (C OR D OR F) AND H1");
     } else if (num == 3) {
-      comp.setCompositionString("A AND NOT (C OR D OR F) AND H2 AND G2");
+      comp.setCompositionString("(A1 OR A3) AND NOT (C OR D OR F) AND H2 AND G2");
     } else if (num == 4) {
-      comp.setCompositionString("A AND NOT (C OR D OR F) AND G2 AND I");
+      comp.setCompositionString("(A1 OR A3) AND NOT (C OR D OR F) AND G2 AND I");
     } else if (num == 5 || num == 6) {
       comp.setCompositionString("(A2 OR A3) AND NOT (C OR D OR F) AND G2");
     } else if (num == 7 || num == 8) {
