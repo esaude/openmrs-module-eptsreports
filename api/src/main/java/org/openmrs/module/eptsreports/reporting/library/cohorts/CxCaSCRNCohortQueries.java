@@ -2,7 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.CXCASCRNQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.CxCaSCRNQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -13,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CXCASCRNCohortQueries {
+public class CxCaSCRNCohortQueries {
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
@@ -33,7 +33,7 @@ public class CXCASCRNCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(
-        CXCASCRNQueries.QUERY.findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriod);
+        CxCaSCRNQueries.QUERY.findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriod);
 
     return definition;
   }
@@ -49,7 +49,7 @@ public class CXCASCRNCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(
-        CXCASCRNQueries.QUERY
+        CxCaSCRNQueries.QUERY
             .findPatientsWithScreeningTestForCervicalCancerPreviousReportingPeriod);
 
     return definition;
@@ -67,7 +67,7 @@ public class CXCASCRNCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(
-        CXCASCRNQueries.QUERY
+        CxCaSCRNQueries.QUERY
             .findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriodByReusult(
                 CONCEPT_2094, ANSWER_664));
 
@@ -86,7 +86,7 @@ public class CXCASCRNCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(
-        CXCASCRNQueries.QUERY
+        CxCaSCRNQueries.QUERY
             .findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriodByReusult(
                 CONCEPT_2094, ANSWER_703));
 
@@ -105,7 +105,7 @@ public class CXCASCRNCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(
-        CXCASCRNQueries.QUERY
+        CxCaSCRNQueries.QUERY
             .findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriodByReusult(
                 CONCEPT_2094, ANSWER_2093));
 
@@ -123,7 +123,7 @@ public class CXCASCRNCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(
-        CXCASCRNQueries.QUERY.findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousNegative);
+        CxCaSCRNQueries.QUERY.findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousNegative);
 
     return definition;
   }
@@ -139,7 +139,7 @@ public class CXCASCRNCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(
-        CXCASCRNQueries.QUERY.findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousPositive);
+        CxCaSCRNQueries.QUERY.findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousPositive);
 
     return definition;
   }
@@ -154,7 +154,7 @@ public class CXCASCRNCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(
-        CXCASCRNQueries.QUERY.findpatientwithScreeningTypeVisitAsPostTreatmentFollowUp);
+        CxCaSCRNQueries.QUERY.findpatientwithScreeningTypeVisitAsPostTreatmentFollowUp);
 
     return definition;
   }

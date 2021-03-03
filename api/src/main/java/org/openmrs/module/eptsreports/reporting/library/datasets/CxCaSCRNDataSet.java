@@ -3,8 +3,8 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNPositiveCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.CxCaSCRNCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.CxCxSRNPositiveCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
@@ -18,12 +18,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CXCASCRNDataSet extends BaseDataSet {
+public class CxCaSCRNDataSet extends BaseDataSet {
 
   @Autowired private EptsCommonDimension eptsCommonDimension;
-  @Autowired private CXCASCRNCohortQueries cXCASCRNCohortQueries;
+  @Autowired private CxCaSCRNCohortQueries cxCaSCRNCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
-  @Autowired private CXCASCRNPositiveCohortQueries CXCASCRNPositiveCohortQueries;
+  @Autowired private CxCxSRNPositiveCohortQueries CxCxSRNPositiveCohortQueries;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -57,7 +57,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "CXCA_SCRN: Number of individual HIV-positive women on ART who received a screening test for cervical cancer",
-                EptsReportUtils.map(this.cXCASCRNCohortQueries.getTotalNumerator(), mappings)),
+                EptsReportUtils.map(this.cxCaSCRNCohortQueries.getTotalNumerator(), mappings)),
             mappings),
         "gender=F");
 
@@ -68,7 +68,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "1st time screened  total",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries.getTotalNumeratorFirstScreening(), mappings)),
+                    this.cxCaSCRNCohortQueries.getTotalNumeratorFirstScreening(), mappings)),
             mappings),
         "gender=F");
 
@@ -80,7 +80,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "1st time screened (Negative)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries.getTotalNumeratorFirstScreeningNegative(),
+                    this.cxCaSCRNCohortQueries.getTotalNumeratorFirstScreeningNegative(),
                     mappings)),
             mappings),
         getCXColumns());
@@ -93,7 +93,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "1st time screened (Positive)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries.getTotalNumeratorFirstScreeningPositive(),
+                    this.cxCaSCRNCohortQueries.getTotalNumeratorFirstScreeningPositive(),
                     mappings)),
             mappings),
         getCXColumns());
@@ -106,7 +106,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "1st time screened (Suspect Cancer)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries.getTotalNumeratorFirstScreeningSuspectCancer(),
+                    this.cxCaSCRNCohortQueries.getTotalNumeratorFirstScreeningSuspectCancer(),
                     mappings)),
             mappings),
         getCXColumns());
@@ -118,7 +118,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Rescreened after previous negative (Total)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorRescreenedAfterPreviousNegativeTotal(),
                     mappings)),
             mappings),
@@ -132,7 +132,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Rescreened after previous negative (Negative)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorRescreenedAfterPreviousNegativeNegative(),
                     mappings)),
             mappings),
@@ -146,7 +146,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Rescreened after previous negative (Positive)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorRescreenedAfterPreviousNegativePositive(),
                     mappings)),
             mappings),
@@ -160,7 +160,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Suspect Cancer Numerator",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorRescreenedAfterPreviousNegativeSuspectCancer(),
                     mappings)),
             mappings),
@@ -173,7 +173,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Post-treatment follow-up (Total)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpTotal(),
                     mappings)),
             mappings),
@@ -187,7 +187,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Post-treatment follow-up (Negative)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpNegative(),
                     mappings)),
             mappings),
@@ -201,7 +201,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Post-treatment follow-up (Positive)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpPositive(),
                     mappings)),
             mappings),
@@ -215,7 +215,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Post-treatment follow-up (Suspect Cancer)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpSuspectCancer(),
                     mappings)),
             mappings),
@@ -230,7 +230,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Post-treatment follow-up (Total)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorRescreenedAfterPreviousPositiveTotal(),
                     mappings)),
             mappings),
@@ -244,7 +244,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Rescreened after previous positive (Negative)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorRescreenedAfterPreviousPositiveNegative(),
                     mappings)),
             mappings),
@@ -258,7 +258,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Post-treatment follow-up (Positive)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorRescreenedAfterPreviousPositivePositive(),
                     mappings)),
             mappings),
@@ -272,7 +272,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Post-treatment follow-up (Suspect Cancer)",
                 EptsReportUtils.map(
-                    this.cXCASCRNCohortQueries
+                    this.cxCaSCRNCohortQueries
                         .getTotalNumeratorRescreenedAfterPreviousPositiveSuspectCancer(),
                     mappings)),
             mappings),
@@ -288,7 +288,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "CXCA_SCRN_POS: Number of HIV-positive women on ART screened for cervical cancer with a positive result",
                 EptsReportUtils.map(
-                    this.CXCASCRNPositiveCohortQueries.findpatientwithCxCaPositiveTotal(),
+                    this.CxCxSRNPositiveCohortQueries.findpatientwithCxCaPositiveTotal(),
                     mappings)),
             mappings),
         "gender=F");
@@ -301,7 +301,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "1st time screened positive",
                 EptsReportUtils.map(
-                    this.CXCASCRNPositiveCohortQueries.findpatientwithCxCaPositiveFirstScreen(),
+                    this.CxCxSRNPositiveCohortQueries.findpatientwithCxCaPositiveFirstScreen(),
                     mappings)),
             mappings),
         getCXColumns());
@@ -314,7 +314,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Rescreened after previous negative",
                 EptsReportUtils.map(
-                    this.CXCASCRNPositiveCohortQueries
+                    this.CxCxSRNPositiveCohortQueries
                         .findpatientwithCxCaRescreenedAfterPreviousNegative(),
                     mappings)),
             mappings),
@@ -328,7 +328,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Post-treatment follow-up",
                 EptsReportUtils.map(
-                    this.CXCASCRNPositiveCohortQueries
+                    this.CxCxSRNPositiveCohortQueries
                         .findpatientwithCxPositivePostTreatmentFollowUp(),
                     mappings)),
             mappings),
@@ -342,7 +342,7 @@ public class CXCASCRNDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Post-treatment follow-up",
                 EptsReportUtils.map(
-                    this.CXCASCRNPositiveCohortQueries
+                    this.CxCxSRNPositiveCohortQueries
                         .findpatientwithCxPositiveRescreenedAfterPreviousPositive(),
                     mappings)),
             mappings),

@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.CXCASCRNDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaSCRNDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -20,7 +20,7 @@ import org.springframework.stereotype.Component;
 @Deprecated
 public class SetupCXCASCRN extends EptsDataExportManager {
 
-  @Autowired private CXCASCRNDataSet cXCASCRNDataSet;
+  @Autowired private CxCaSCRNDataSet cxCaSCRNDataSet;
   @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Override
@@ -54,8 +54,8 @@ public class SetupCXCASCRN extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.setParameters(cXCASCRNDataSet.getParameters());
-    rd.addDataSetDefinition("CX", Mapped.mapStraightThrough(cXCASCRNDataSet.constructDatset()));
+    rd.setParameters(cxCaSCRNDataSet.getParameters());
+    rd.addDataSetDefinition("CX", Mapped.mapStraightThrough(cxCaSCRNDataSet.constructDatset()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(

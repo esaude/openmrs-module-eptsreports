@@ -1,6 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-public interface CXCASCRNQueries {
+public interface CxCaSCRNQueries {
 
   class QUERY {
     public static final String findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriod =
@@ -115,7 +115,7 @@ public interface CXCASCRNQueries {
             + ") rastreioPositivoAtivoanterior on rastreioperiodo.patient_id=rastreioPositivoAtivoanterior.patient_id "
             + "inner join encounter e on e.patient_id=rastreioperiodo.patient_id "
             + "inner join obs o on e.encounter_id=o.encounter_id "
-            + "where 	e.voided=0 and e.voided=0 and e.encounter_type=28 and ( "
+            + "where e.voided=0 and e.voided=0 and e.encounter_type=28 and ( "
             + "(o.concept_id in (2117,2149) and o.value_coded in (1065,23974,23972,23970,23973) and e.encounter_datetime>=rastreioPositivoAtivoanterior.dataRastreioPositivo and e.encounter_datetime<rastreioperiodo.dataRastreioPeriodo ) or "
             + "(o.concept_id=23967 and o.value_datetime>=rastreioPositivoAtivoanterior.dataRastreioPositivo and o.value_datetime<rastreioperiodo.dataRastreioPeriodo)) and  "
             + "e.location_id=:location ";

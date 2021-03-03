@@ -2,7 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.CXCASCRNQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.CxCaSCRNQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class CXCASCRNPositiveCohortQueries {
+public class CxCxSRNPositiveCohortQueries {
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
-  @Autowired private CXCASCRNCohortQueries cXCASCRNCohortQueries;
+  @Autowired private CxCaSCRNCohortQueries cxCaSCRNCohortQueries;
 
   @DocumentedDefinition(value = "findpatientwithCxCaPositive")
   public CohortDefinition findpatientwithCxCaPositive() {
@@ -27,7 +27,7 @@ public class CXCASCRNPositiveCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
 
-    definition.setQuery(CXCASCRNQueries.QUERY.findpatientwithCxCaPositive);
+    definition.setQuery(CxCaSCRNQueries.QUERY.findpatientwithCxCaPositive);
 
     return definition;
   }
@@ -54,7 +54,7 @@ public class CXCASCRNPositiveCohortQueries {
     definition.addSearch(
         "PREVIOS-SCREEN",
         EptsReportUtils.map(
-            cXCASCRNCohortQueries
+            cxCaSCRNCohortQueries
                 .findPatientsWithScreeningTestForCervicalCancerPreviousReportingPeriod(),
             mappings));
 
@@ -80,7 +80,7 @@ public class CXCASCRNPositiveCohortQueries {
     definition.addSearch(
         "SCREENING",
         EptsReportUtils.map(
-            cXCASCRNCohortQueries
+            cxCaSCRNCohortQueries
                 .findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriod(),
             mappings));
 
@@ -106,7 +106,7 @@ public class CXCASCRNPositiveCohortQueries {
     definition.addSearch(
         "SCREENING-NEGATIVE",
         EptsReportUtils.map(
-            cXCASCRNCohortQueries
+            cxCaSCRNCohortQueries
                 .findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousNegative(),
             mappings));
 
@@ -132,7 +132,7 @@ public class CXCASCRNPositiveCohortQueries {
     definition.addSearch(
         "PT",
         EptsReportUtils.map(
-            cXCASCRNCohortQueries.findpatientwithScreeningTypeVisitAsPostTreatmentFollowUp(),
+            cxCaSCRNCohortQueries.findpatientwithScreeningTypeVisitAsPostTreatmentFollowUp(),
             mappings));
 
     definition.setCompositionString("NUMERATOR AND PT");
@@ -157,7 +157,7 @@ public class CXCASCRNPositiveCohortQueries {
     definition.addSearch(
         "PT",
         EptsReportUtils.map(
-            cXCASCRNCohortQueries
+            cxCaSCRNCohortQueries
                 .findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousPositive(),
             mappings));
 

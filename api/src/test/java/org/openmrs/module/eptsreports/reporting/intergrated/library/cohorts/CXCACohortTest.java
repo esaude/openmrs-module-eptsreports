@@ -9,8 +9,8 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNPositiveCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.CxCaSCRNCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.CxCxSRNPositiveCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -20,8 +20,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class CXCACohortTest extends DefinitionsFGHLiveTest {
 
-  @Autowired private CXCASCRNCohortQueries cXCASCRNCohortQueries;
-  @Autowired private CXCASCRNPositiveCohortQueries cXCASCRNPositiveCohortQueries;
+  @Autowired private CxCaSCRNCohortQueries cxCaSCRNCohortQueries;
+  @Autowired private CxCxSRNPositiveCohortQueries cxCxSRNPositiveCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
@@ -44,7 +44,7 @@ public class CXCACohortTest extends DefinitionsFGHLiveTest {
     // txRTTCohortQueries.getPatientsOnRTT();
 
     CohortDefinition cohortDefinition =
-        this.cXCASCRNPositiveCohortQueries.findpatientwithCxCaPositive();
+        this.cxCxSRNPositiveCohortQueries.findpatientwithCxCaPositive();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(cohortDefinition, parameters);
