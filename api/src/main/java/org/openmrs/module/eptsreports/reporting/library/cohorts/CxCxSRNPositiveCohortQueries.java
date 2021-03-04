@@ -15,7 +15,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class CxCxSRNPositiveCohortQueries {
 
-  @Autowired private TxCurrCohortQueries txCurrCohortQueries;
   @Autowired private CxCaSCRNCohortQueries cxCaSCRNCohortQueries;
 
   @DocumentedDefinition(value = "findpatientwithCxCaPositive")
@@ -44,12 +43,28 @@ public class CxCxSRNPositiveCohortQueries {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     definition.addSearch(
-        "TXCURR",
+        "FR-P",
         EptsReportUtils.map(
-            txCurrCohortQueries.findPatientsWhoAreActiveOnART(),
-            "endDate=${endDate},location=${location}"));
+            cxCaSCRNCohortQueries.getTotalNumeratorFirstScreeningPositive(), mappings));
+
     definition.addSearch(
-        "POSITIVE", EptsReportUtils.map(this.findpatientwithCxCaPositive(), mappings));
+        "RN-P",
+        EptsReportUtils.map(
+            cxCaSCRNCohortQueries.getTotalNumeratorRescreenedAfterPreviousNegativePositive(),
+            mappings));
+
+    definition.addSearch(
+        "PT-P",
+        EptsReportUtils.map(
+            cxCaSCRNCohortQueries
+                .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpPositive(),
+            mappings));
+
+    definition.addSearch(
+        "RP-P",
+        EptsReportUtils.map(
+            cxCaSCRNCohortQueries.getTotalNumeratorRescreenedAfterPreviousPositivePositive(),
+            mappings));
 
     definition.addSearch(
         "PREVIOS-SCREEN",
@@ -58,7 +73,7 @@ public class CxCxSRNPositiveCohortQueries {
                 .findPatientsWithScreeningTestForCervicalCancerPreviousReportingPeriod(),
             mappings));
 
-    definition.setCompositionString("(TXCURR AND POSITIVE) NOT(PREVIOS-SCREEN)");
+    definition.setCompositionString("FR-P OR RN-P OR PT-P OR RP-P");
 
     return definition;
   }
@@ -84,7 +99,14 @@ public class CxCxSRNPositiveCohortQueries {
                 .findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriod(),
             mappings));
 
-    definition.setCompositionString("NUMERATOR AND SCREENING");
+    definition.addSearch(
+        "PREVIOUS",
+        EptsReportUtils.map(
+            cxCaSCRNCohortQueries
+                .findPatientsWithScreeningTestForCervicalCancerPreviousReportingPeriod(),
+            mappings));
+
+    definition.setCompositionString("(NUMERATOR AND SCREENING) NOT PREVIOUS");
 
     return definition;
   }
@@ -155,13 +177,23 @@ public class CxCxSRNPositiveCohortQueries {
         "NUMERATOR", EptsReportUtils.map(this.findpatientwithCxCaPositiveTotal(), mappings));
 
     definition.addSearch(
-        "PT",
+        "PT", EptsReportUtils.map(this.findpatientwithCxPositivePostTreatmentFollowUp(), mappings));
+
+    definition.addSearch(
+        "FR", EptsReportUtils.map(this.findpatientwithCxCaPositiveFirstScreen(), mappings));
+
+    definition.addSearch(
+        "RN",
+        EptsReportUtils.map(this.findpatientwithCxCaRescreenedAfterPreviousNegative(), mappings));
+
+    definition.addSearch(
+        "PP",
         EptsReportUtils.map(
             cxCaSCRNCohortQueries
                 .findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousPositive(),
             mappings));
 
-    definition.setCompositionString("NUMERATOR AND PT");
+    definition.setCompositionString("(NUMERATOR AND PP) NOT(PT OR FR OR RN)");
 
     return definition;
   }

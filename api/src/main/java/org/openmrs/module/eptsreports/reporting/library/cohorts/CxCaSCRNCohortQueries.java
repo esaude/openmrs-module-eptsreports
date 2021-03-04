@@ -523,11 +523,25 @@ public class CxCaSCRNCohortQueries {
     definition.addSearch("SCREENING", EptsReportUtils.map(this.getTotalNumerator(), mappings));
 
     definition.addSearch(
-        "N2",
+        "POSITIVE",
         EptsReportUtils.map(
             this.findPatientWithScreeningTypeVisitAsRescreenedAfterPreviousPositive(), mappings));
 
-    definition.setCompositionString("SCREENING AND N2");
+    definition.addSearch(
+        "PT",
+        EptsReportUtils.map(
+            this.getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpTotal(),
+            mappings));
+
+    definition.addSearch(
+        "FR", EptsReportUtils.map(this.getTotalNumeratorFirstScreening(), mappings));
+
+    definition.addSearch(
+        "RN",
+        EptsReportUtils.map(
+            this.getTotalNumeratorRescreenedAfterPreviousNegativeTotal(), mappings));
+
+    definition.setCompositionString("(SCREENING AND POSITIVE) NOT (PT OR FR OR RN) ");
 
     return definition;
   }
