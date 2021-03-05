@@ -42,15 +42,22 @@ public interface MQCategory13P2QueriesInterface {
             + " ) tx_new "
             + " inner join "
             + " ( "
-            + " select p.patient_id, min(cc.encounter_datetime) as encounter_datetime "
+            + " select minConsulta.patient_id, minConsulta.minData from "
+            + " ( "
+            + " select p.patient_id, min(cc.encounter_datetime) as minData "
             + " from patient p "
             + " inner join encounter cc ON p.patient_id = cc.patient_id "
-            + " inner join obs o ON cc.encounter_id = o.encounter_id "
             + " WHERE cc.voided = 0 AND cc.encounter_type = 6 AND cc.location_id = :location "
-            + " AND cc.encounter_datetime >= :startInclusionDate AND cc.encounter_datetime <= :endInclusionDate AND o.concept_id = 1982 AND o.value_coded = 1065 AND o.voided = 0 "
+            + " AND cc.encounter_datetime >= :startInclusionDate AND cc.encounter_datetime <= :endInclusionDate "
             + " group by p.patient_id "
+            + " ) minConsulta "
+            + " inner join encounter e_ ON e_.patient_id = minConsulta.patient_id "
+            + " inner join obs o ON o.encounter_id = e_.encounter_id "
+            + " inner join person pe ON pe.person_id = e_.patient_id "
+            + " WHERE o.concept_id = 1982 AND o.value_coded = 1065 AND o.voided = 0 and e_.location_id = :location and minConsulta.minData = e_.encounter_datetime "
+            + " and o.location_id = :location and e_.voided = 0 and e_.encounter_type = 6 and pe.gender = 'F' "
             + " ) consulta ON consulta.patient_id = tx_new.patient_id "
-            + " where consulta.encounter_datetime > tx_new.art_start_date AND (TIMESTAMPDIFF(Month, art_start_date,consulta.encounter_datetime)) >= 3 ";
+            + " where consulta.minData > tx_new.art_start_date ";
 
     public static final String
         findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodByB3 =

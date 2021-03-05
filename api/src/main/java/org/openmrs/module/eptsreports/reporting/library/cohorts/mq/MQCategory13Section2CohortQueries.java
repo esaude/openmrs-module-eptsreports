@@ -84,9 +84,17 @@ public class MQCategory13Section2CohortQueries {
             mappings));
 
     definition.addSearch(
-        "B2E",
+        "B2ENEW",
         EptsReportUtils.map(
-            this.findPatientsWithLastClinicalConsultationwhoAreNotInSecondLineDenominatorB2E(),
+            mQCategory13Section1CohortQueries
+                .findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2ENEW(),
+            mappings));
+
+    definition.addSearch(
+        "B2NEWII",
+        EptsReportUtils.map(
+            mQCategory13Section1CohortQueries
+                .findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2NEWPartII(),
             mappings));
 
     definition.addSearch(
@@ -99,7 +107,18 @@ public class MQCategory13Section2CohortQueries {
         EptsReportUtils.map(
             mQCategory13Section1CohortQueries.findPatientsWithRequestCVDenominatorB5E(), mappings));
 
-    definition.setCompositionString("(B1 AND B2E)  NOT (B4E OR B5E)");
+    definition.addSearch(
+        "C",
+        EptsReportUtils.map(
+            mQCategory13Section1CohortQueries.findPatientsWhoArePregnantCAT13Part1(), mappings));
+
+    definition.addSearch(
+        "D",
+        EptsReportUtils.map(
+            mQCategory13Section1CohortQueries.findPatientsWhoAreBreastfeedingCAT13Part1(),
+            mappings));
+
+    definition.setCompositionString("(B1 AND (B2NEWII NOT B2ENEW))  NOT (B4E OR B5E OR C OR D)");
 
     return definition;
   }

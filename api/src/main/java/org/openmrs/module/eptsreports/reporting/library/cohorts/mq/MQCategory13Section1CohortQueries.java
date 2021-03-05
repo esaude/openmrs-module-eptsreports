@@ -14,6 +14,43 @@ import org.springframework.stereotype.Component;
 @Component
 public class MQCategory13Section1CohortQueries {
 
+  @DocumentedDefinition(value = "findPatientsWhoArePregnantCAT13Part1")
+  public CohortDefinition findPatientsWhoArePregnantCAT13Part1() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findPatientsWhoArePregnantCAT13Part1");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query = MQCategory13Section1QueriesInterface.QUERY.findPatientsWhoArePregnantCAT13Part1;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoAreBreastfeedingCAT13Part1")
+  public CohortDefinition findPatientsWhoAreBreastfeedingCAT13Part1() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findPatientsWhoAreBreastfeedingCAT13Part1");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13Section1QueriesInterface.QUERY.findPatientsWhoAreBreastfeedingCAT13Part1;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
   @DocumentedDefinition(value = "findPatientsWithLastClinicalConsultationDenominatorB1")
   public CohortDefinition findPatientsWithLastClinicalConsultationDenominatorB1() {
 
@@ -49,6 +86,75 @@ public class MQCategory13Section1CohortQueries {
     String query =
         MQCategory13Section1QueriesInterface.QUERY
             .findPatientsWithLastClinicalConsultationwhoAreInFistLineDenominatorB2;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2NEW")
+  public CohortDefinition
+      findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2NEW() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName(
+        "findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2NEW");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13Section1QueriesInterface.QUERY
+            .findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2NEW;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2ENEW")
+  public CohortDefinition
+      findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2ENEW() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName(
+        "findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2ENEW");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13Section1QueriesInterface.QUERY
+            .findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2ENEW;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2NEWPartII")
+  public CohortDefinition
+      findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2NEWPartII() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName(
+        "findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2NEWPartII");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13Section1QueriesInterface.QUERY
+            .findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2NEWPartII;
 
     definition.setQuery(query);
 
@@ -198,9 +304,15 @@ public class MQCategory13Section1CohortQueries {
             this.findPatientsWithLastClinicalConsultationDenominatorB1(), mappings));
 
     definition.addSearch(
-        "B2E",
+        "B2NEW",
         EptsReportUtils.map(
-            this.findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2E(),
+            this.findPatientsWithLastClinicalConsultationwhoAreNotInFistLineDenominatorB2NEW(),
+            mappings));
+
+    definition.addSearch(
+        "B3",
+        EptsReportUtils.map(
+            this.findPatientsWithLastClinicalConsultationwhoAreInLinhaAlternativaDenominatorB3(),
             mappings));
 
     definition.addSearch(
@@ -216,7 +328,13 @@ public class MQCategory13Section1CohortQueries {
     definition.addSearch(
         "B5E", EptsReportUtils.map(this.findPatientsWithRequestCVDenominatorB5E(), mappings));
 
-    definition.setCompositionString("(B1 and (B2E or B3E)) not (B4E or B5E)");
+    definition.addSearch(
+        "C", EptsReportUtils.map(this.findPatientsWhoArePregnantCAT13Part1(), mappings));
+
+    definition.addSearch(
+        "D", EptsReportUtils.map(this.findPatientsWhoAreBreastfeedingCAT13Part1(), mappings));
+
+    definition.setCompositionString("(B1 AND (B2NEW OR (B3 NOT B3E))) NOT B4E NOT B5E NOT C NOT D");
 
     return definition;
   }
@@ -237,12 +355,12 @@ public class MQCategory13Section1CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "B", EptsReportUtils.map(this.findDenominatorCategory13SectionIB(), mappings));
+        "Denominator", EptsReportUtils.map(this.findDenominatorCategory13SectionIB(), mappings));
 
     definition.addSearch(
-        "C", EptsReportUtils.map(this.findNumeratorCategory13Section1C(), mappings));
+        "G", EptsReportUtils.map(this.findNumeratorCategory13Section1C(), mappings));
 
-    definition.setCompositionString("B AND C");
+    definition.setCompositionString("Denominator AND G");
 
     return definition;
   }

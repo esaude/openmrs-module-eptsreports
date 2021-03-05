@@ -35,10 +35,9 @@ public class MQCategory13P2CohortQueries {
             this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.addSearch(
-        "B1",
+        "PREGNANT",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientsWhoArePregnantInclusionPeriodCAT13DenumeratorP2ByB1(),
-            mappings));
+            this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "BREASTFEEDING",
@@ -46,10 +45,18 @@ public class MQCategory13P2CohortQueries {
             this.mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.addSearch(
+        "TRANSFERED-IN",
+        EptsReportUtils.map(
+            this.mQCohortQueries
+                .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
+            mappings));
+
+    definition.addSearch(
         "TRANSFERED-OUT",
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
-    definition.setCompositionString("(START-ART AND B1) NOT (BREASTFEEDING OR TRANSFERED-OUT)");
+    definition.setCompositionString(
+        "(START-ART AND PREGNANT) NOT (BREASTFEEDING OR TRANSFERED-OUT OR TRANSFERED-IN)");
     return definition;
   }
 
@@ -77,7 +84,7 @@ public class MQCategory13P2CohortQueries {
             this.mQCohortQueries.findPatientsWhoArePregnantInFirstConsultationInclusionPeriodByB2(),
             mappings));
 
-    definition.addSearch(
+    /*definition.addSearch(
         "BREASTFEEDING",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
@@ -91,9 +98,9 @@ public class MQCategory13P2CohortQueries {
 
     definition.addSearch(
         "TRANSFERED-OUT",
-        EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
+        EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));*/
 
-    definition.setCompositionString("B2 NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+    definition.setCompositionString("B2");
 
     return definition;
   }
@@ -123,10 +130,9 @@ public class MQCategory13P2CohortQueries {
             this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.addSearch(
-        "B1",
+        "PREGNANT",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientsWhoArePregnantInclusionPeriodCAT13DenumeratorP2ByB1(),
-            mappings));
+            this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "B2",
@@ -165,7 +171,7 @@ public class MQCategory13P2CohortQueries {
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "((START-ART AND B1 AND B3) OR (B2 AND B4)) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+        "((START-ART AND PREGNANT AND B3) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)) OR (B2 AND B4) ");
 
     return definition;
   }
@@ -192,10 +198,9 @@ public class MQCategory13P2CohortQueries {
             this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.addSearch(
-        "B1",
+        "PREGNANT",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientsWhoArePregnantInclusionPeriodCAT13DenumeratorP2ByB1(),
-            mappings));
+            this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "H",
@@ -210,11 +215,18 @@ public class MQCategory13P2CohortQueries {
             this.mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.addSearch(
+        "TRANSFERED-IN",
+        EptsReportUtils.map(
+            this.mQCohortQueries
+                .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
+            mappings));
+
+    definition.addSearch(
         "TRANSFERED-OUT",
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(START-ART AND B1 AND H) NOT (BREASTFEEDING OR TRANSFERED-OUT)");
+        "(START-ART AND PREGNANT AND H) NOT (BREASTFEEDING OR TRANSFERED-OUT OR TRANSFERED-IN)");
     return definition;
   }
 
@@ -250,7 +262,7 @@ public class MQCategory13P2CohortQueries {
                 .findPatientsWhoAreRequestForLaboratoryInvestigationAndPregnantInclusionPeriodCAT13DenumeratorP2ByB4(),
             mappings));
 
-    definition.addSearch(
+    /*definition.addSearch(
         "BREASTFEEDING",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
@@ -264,10 +276,9 @@ public class MQCategory13P2CohortQueries {
 
     definition.addSearch(
         "TRANSFERED-OUT",
-        EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
+        EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));*/
 
-    definition.setCompositionString(
-        "(B2 AND J) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+    definition.setCompositionString("(B2 AND J)");
     return definition;
   }
 
@@ -295,10 +306,9 @@ public class MQCategory13P2CohortQueries {
             this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.addSearch(
-        "B1",
+        "PREGNANT",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientsWhoArePregnantInclusionPeriodCAT13DenumeratorP2ByB1(),
-            mappings));
+            this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
         "B2",
@@ -349,7 +359,7 @@ public class MQCategory13P2CohortQueries {
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "((START-ART AND B1 AND B3 AND K) OR (B2 AND B4 AND L)) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+        "((START-ART AND PREGNANT AND B3 AND K) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)) OR (B2 AND B4 AND L) ");
 
     return definition;
   }

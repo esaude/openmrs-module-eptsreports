@@ -67,6 +67,30 @@ public class MQCategory13P3CohortQueries {
 
   @DocumentedDefinition(
       value =
+          "findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominator")
+  public CohortDefinition
+      findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominator() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName(
+        "findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominator");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13P3QueriesInterface.QUERY
+            .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominator;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value =
           "findPatientsGreaterThan15ExcludeAllHaveLaboratoryInvestigationRequestsAndViralChargeCategory13_3_B2")
   public CohortDefinition
       findPatientsExcludeAllHaveLaboratoryInvestigationRequestsAndViralChargeCategory13_3_B2() {
@@ -231,7 +255,7 @@ public class MQCategory13P3CohortQueries {
             mappings));
 
     definition.setCompositionString(
-        "((START-ART NOT TRANSFERED-IN) OR B1) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
+        "((START-ART NOT PREGNANT NOT BREASTFEEDING) OR B1) NOT (TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -259,14 +283,11 @@ public class MQCategory13P3CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "BREASTFEEDING",
+        "TRANSFERED-IN",
         EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
-
-    definition.addSearch(
-        "PREGNANT",
-        EptsReportUtils.map(
-            mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
+            mQCohortQueries
+                .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardRF06(),
+            mappings));
 
     definition.addSearch(
         "TRANSFERED-OUT",
@@ -276,10 +297,10 @@ public class MQCategory13P3CohortQueries {
         "B2",
         EptsReportUtils.map(
             this
-                .findPatientsExcludeAllHaveLaboratoryInvestigationRequestsAndViralChargeCategory13_3_B2(),
+                .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominator(),
             mappings));
 
-    definition.setCompositionString("B2 NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
+    definition.setCompositionString("B2 NOT (TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -351,7 +372,7 @@ public class MQCategory13P3CohortQueries {
             mappings));
 
     definition.setCompositionString(
-        "(((START-ART NOT TRANSFERED-IN) AND G) OR (B1 AND H)) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-OUT)");
+        "(((START-ART AND G) NOT PREGNANT NOT BREASTFEEDING) OR (B1 AND H)) NOT (TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
