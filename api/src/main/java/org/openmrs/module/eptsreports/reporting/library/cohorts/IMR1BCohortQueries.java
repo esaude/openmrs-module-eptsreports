@@ -49,7 +49,15 @@ public class IMR1BCohortQueries {
         EptsReportUtils.map(
             iMR1CohortQueries.getAllPatientsTransferredInByEndReportingDate(), mappings));
 
-    compsitionDefinition.setCompositionString("NEWLY-ENROLLED NOT TRANSFERRED-IN");
+    compsitionDefinition.addSearch(
+        "ENROLLMENT-GREATER-THAN-START-DATE",
+        EptsReportUtils.map(
+            this
+                .getPatientsNewlyEnrolledOnArtTreatmentAndInitiatedTreatmentWithEnrollmentDateGreaterThanArtStartDateAMonthPriorToTheReporingPeriod(),
+            mappings));
+
+    compsitionDefinition.setCompositionString(
+        "NEWLY-ENROLLED NOT (TRANSFERRED-IN OR ENROLLMENT-GREATER-THAN-START-DATE)");
 
     return compsitionDefinition;
   }
@@ -96,7 +104,8 @@ public class IMR1BCohortQueries {
 
     compsitionDefinition.addSearch(
         "NUMERATOR",
-        EptsReportUtils.map(this.getPatientsNewlyEnrolledOnArtCareNumerator(), mappings));
+        EptsReportUtils.map(
+            this.getPatientsNewlyEnrolledOnArtWhoInitiatedArtTreatment(), mappings));
 
     compsitionDefinition.addSearch(
         "PREGNANT",
@@ -112,7 +121,7 @@ public class IMR1BCohortQueries {
   }
 
   @DocumentedDefinition(value = "PatientsNewlyEnrolledOnArtCareNumerator")
-  public CohortDefinition getPatientsNewlyEnrolledOnArtCareNumerator() {
+  public CohortDefinition getPatientsNewlyEnrolledOnArtWhoInitiatedArtTreatment() {
 
     final CompositionCohortDefinition compsitionDefinition = new CompositionCohortDefinition();
     compsitionDefinition.setName("Patients newly enrolled on ART Care");
@@ -124,7 +133,9 @@ public class IMR1BCohortQueries {
     compsitionDefinition.addSearch(
         "NEWLY-ENROLLED",
         EptsReportUtils.map(
-            this.getPatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod(), mappings));
+            this
+                .getPatientsNewlyEnrolledOnArtTreatmentAndInitiatedTreatmentAMonthPriorToTheReporingPeriod(),
+            mappings));
 
     compsitionDefinition.addSearch(
         "TRANSFERRED-IN",
@@ -137,7 +148,8 @@ public class IMR1BCohortQueries {
   }
 
   @DocumentedDefinition(value = "PatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod")
-  private CohortDefinition getPatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod() {
+  private CohortDefinition
+      getPatientsNewlyEnrolledOnArtTreatmentAndInitiatedTreatmentAMonthPriorToTheReporingPeriod() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("PatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod Cohort");
@@ -145,7 +157,27 @@ public class IMR1BCohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     definition.setQuery(
-        IMR1BQueries.QUERY.findPatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod);
+        IMR1BQueries.QUERY
+            .findPatientsNewlyEnrolledOnArtTreatmentAndInitiatedArtTreatmentAMonthPriorToTheReporingPeriod);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value =
+          "PatientsNewlyEnrolledOnArtTreatmentAndInitiatedTreatmentWithEnrollmentDateGreaterThanArtStartDateAMonthPriorToTheReporingPeriod")
+  private CohortDefinition
+      getPatientsNewlyEnrolledOnArtTreatmentAndInitiatedTreatmentWithEnrollmentDateGreaterThanArtStartDateAMonthPriorToTheReporingPeriod() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName(
+        "PatientsNewlyEnrolledOnArtTreatmentAMonthPriorToTheReporingPeriod with enrollment date greater than start date Cohort");
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    definition.setQuery(
+        IMR1BQueries.QUERY
+            .findPatientsNewlyEnrolledOnArtTreatmentAndInitiatedArtTreatmentWithEnrollmentDateGreatherThanArtStartDateAMonthPriorToTheReporingPeriod);
 
     return definition;
   }

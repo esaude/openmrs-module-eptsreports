@@ -57,7 +57,7 @@ public class IMR1Dataset extends BaseDataSet {
     CohortDefinition numerator1_Definition =
         this.iMR1CohortQueries.getPatientsNewlyEnrolledOnArtCareNumerator();
     CohortDefinition numerator1B_Definition =
-        this.iMR1BCohortQueries.getPatientsNewlyEnrolledOnArtCareNumerator();
+        this.iMR1BCohortQueries.getPatientsNewlyEnrolledOnArtWhoInitiatedArtTreatment();
 
     CohortDefinition denominatorExcludingPregnantAndBreastfeedingDefinition =
         this.iMR1CohortQueries
