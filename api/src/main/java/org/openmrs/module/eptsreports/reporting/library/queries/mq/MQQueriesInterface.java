@@ -322,18 +322,20 @@ public interface MQQueriesInterface {
             + ") carga_viral ";
 
     public static final String findPatientsWhoHaveLastFirstLineTerapeutic =
-        "select firstLine.patient_id from ( "
-            + "select maxLinha.patient_id, maxLinha.maxDataLinha from ( "
-            + "select p.patient_id,max(o.obs_datetime) maxDataLinha from patient p "
-            + "join encounter e on p.patient_id=e.patient_id "
-            + "join obs o on o.encounter_id=e.encounter_id "
-            + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 "
-            + "and o.concept_id=21151 and e.location_id=:location "
-            + "and o.obs_datetime between :startInclusionDate and :endInclusionDate "
-            + "group by p.patient_id "
+        " select firstLine.patient_id from ( "
+            + " select maxLinha.patient_id, maxLinha.maxDataLinha from ( "
+            + " select p.patient_id,max(o.obs_datetime) maxDataLinha from patient p "
+            + " join encounter e on p.patient_id=e.patient_id "
+            + " join obs o on o.encounter_id=e.encounter_id "
+            + " where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 "
+            + " and o.concept_id=21151 and e.location_id=:location "
+            + " and o.obs_datetime between :startInclusionDate and :endInclusionDate "
+            + " group by p.patient_id "
             + " ) maxLinha "
-            + "inner join obs on obs.person_id=maxLinha.patient_id and maxLinha.maxDataLinha=obs.obs_datetime "
-            + "where obs.concept_id=21151 and obs.value_coded=21150 and obs.voided=0 and obs.location_id=:location "
+            + " inner join encounter e on e.patient_id = maxLinha.patient_id "
+            + " inner join obs on obs.person_id=maxLinha.patient_id and maxLinha.maxDataLinha=obs.obs_datetime "
+            + " where obs.concept_id=21151 and obs.value_coded=21150 and obs.voided=0 and obs.location_id=:location "
+            + " and e.voided = 0 and e.encounter_type = 6 and e.location_id = :location "
             + ") firstLine ";
 
     public static final String

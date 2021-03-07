@@ -6,30 +6,42 @@ public interface MQCategory13P3QueriesInterface {
 
     public static final String
         findPatientsWhoAreInAlternativeLineFirstLineCategory13_3_BI1_Denominator =
-            "Select p.patient_id from patient p "
-                + "inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs obsLinha on obsLinha.encounter_id=e.encounter_id "
-                + "where p.voided=0 and e.voided=0 and e.encounter_type=53 and obsLinha.voided=0 and "
-                + "obsLinha.obs_datetime BETWEEN :startInclusionDate and :endInclusionDate  and e.location_id=:location and "
-                + "obsLinha.concept_id=21190 "
-                + "group by p.patient_id ";
+            " select alternativa.patient_id "
+                + " from "
+                + " ( "
+                + " Select	p.patient_id, max(obsLinha.obs_datetime) data_linha23898 "
+                + " from  patient p "
+                + " inner join encounter e on p.patient_id=e.patient_id "
+                + " inner join obs obsLinha on obsLinha.encounter_id = e.encounter_id "
+                + " left join obs obsJustificacao on obsJustificacao.encounter_id = e.encounter_id and obsJustificacao.voided = 0 and "
+                + " obsJustificacao.concept_id = 1792 "
+                + " where p.voided = 0 and e.voided = 0 and e.encounter_type = 53 and obsLinha.concept_id = 21190 and obsLinha.voided = 0 and "
+                + " obsLinha.obs_datetime BETWEEN :startInclusionDate and :endInclusionDate  and e.location_id = :location and "
+                + " (obsJustificacao.value_coded is null or (obsJustificacao.value_coded is not null and obsJustificacao.value_coded <> 1982)) "
+                + " group by p.patient_id "
+                + " ) alternativa ";
 
     public static final String
         findPatientsWhoHasTherapeuthicLineDiferentThanFirstLineFromConsultationClinicalCategory13_3_B1E_Denominator =
-            "select maxAlternativa.patient_id from ( "
-                + "Select p.patient_id,max(obsLinha.obs_datetime) ultimaAlternativa from patient p "
-                + "inner join encounter e on p.patient_id=e.patient_id "
-                + "inner join obs obsLinha on obsLinha.encounter_id=e.encounter_id "
-                + "where p.voided=0 and e.voided=0 and e.encounter_type=53 and obsLinha.voided=0 and "
-                + "obsLinha.obs_datetime BETWEEN :startInclusionDate and :endInclusionDate  and e.location_id=:location and "
-                + "obsLinha.concept_id=21190 "
-                + "group by p.patient_id "
-                + ") maxAlternativa "
-                + "inner join encounter e on e.patient_id=maxAlternativa.patient_id "
-                + "inner join obs o on o.encounter_id=e.encounter_id "
-                + "where e.encounter_type=6 and e.voided=0 and o.voided=0 and "
-                + "e.encounter_datetime> maxAlternativa.ultimaAlternativa and e.encounter_datetime<=:endRevisionDate and "
-                + "o.concept_id=21151 and o.value_coded <> 21150 and e.location_id=:location ";
+            " select alternativa.patient_id "
+                + " from "
+                + " ( "
+                + " Select	p.patient_id, max(obsLinha.obs_datetime) data_linha23898 "
+                + " from patient p "
+                + " inner join encounter e on p.patient_id = e.patient_id "
+                + " inner join obs obsLinha on obsLinha.encounter_id = e.encounter_id "
+                + " left join obs obsJustificacao on obsJustificacao.encounter_id = e.encounter_id and obsJustificacao.voided = 0 and "
+                + " obsJustificacao.concept_id = 1792 "
+                + " where  	p.voided = 0 and e.voided = 0 and e.encounter_type = 53 and obsLinha.concept_id = 21190 and obsLinha.voided = 0 and "
+                + " obsLinha.obs_datetime BETWEEN :startInclusionDate and :endInclusionDate and e.location_id = :location and "
+                + " (obsJustificacao.value_coded is null or (obsJustificacao.value_coded is not null and obsJustificacao.value_coded <> 1982)) "
+                + " group by p.patient_id "
+                + " ) alternativa "
+                + " inner join encounter e on e.patient_id = alternativa.patient_id "
+                + " inner join obs o on o.encounter_id = e.encounter_id "
+                + " where e.voided = 0 and e.encounter_type = 6 and e.location_id = :location "
+                + " and o.voided = 0 and o.concept_id = 21151 and o.value_coded <> 21150 "
+                + " and e.encounter_datetime > alternativa.data_linha23898 and e.encounter_datetime <= :endInclusionDate ";
 
     public static final String
         findPatientsWhoAlternativeLineFirstLineExcludePatintsFromClinicalConsultationWithTherapheuticLineDiferentFirstLineCategory13_3_Denominador_B1 =
@@ -54,15 +66,20 @@ public interface MQCategory13P3QueriesInterface {
 
     public static final String
         findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominator =
-            " select p.patient_id "
+            " select alternativa.patient_id "
+                + " from "
+                + " ( "
+                + " Select p.patient_id, max(obsLinha.obs_datetime) data_linha23898 "
                 + " from patient p "
                 + " inner join encounter e on p.patient_id = e.patient_id "
                 + " inner join obs obsLinha on obsLinha.encounter_id = e.encounter_id "
-                + " inner join obs naogravida on naogravida.encounter_id = e.encounter_id "
-                + " where p.voided = 0 and e.voided = 0 and obsLinha.voided = 0 and naogravida.voided = 0 and e.encounter_type = 53 and obsLinha.concept_id = 21187 "
-                + " and naogravida.concept_id = 1792 and naogravida.value_coded <> 1982 "
-                + " and obsLinha.value_coded is not null and obsLinha.obs_datetime >= :startInclusionDate and obsLinha.obs_datetime <= :endInclusionDate "
-                + " and e.location_id = :location  ";
+                + " left join obs obsJustificacao on obsJustificacao.encounter_id = e.encounter_id and obsJustificacao.voided = 0 and "
+                + " obsJustificacao.concept_id = 1792 "
+                + " where p.voided = 0 and e.voided = 0 and e.encounter_type = 53 and obsLinha.concept_id = 21187 and obsLinha.voided = 0 and "
+                + " obsLinha.obs_datetime BETWEEN :startInclusionDate and :endInclusionDate and e.location_id = :location and "
+                + " (obsJustificacao.value_coded is null or (obsJustificacao.value_coded is not null and obsJustificacao.value_coded <> 1982)) "
+                + " group by p.patient_id "
+                + " ) alternativa ";
 
     public static final String
         findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2Denominator =
@@ -132,49 +149,48 @@ public interface MQCategory13P3QueriesInterface {
 
     public static final String
         findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenAlternativeFirstLineDateCategory13_3_H_Numerator =
-            " select B1.patient_id from ( "
-                + " select patient_id,ultimaAlternativa from( "
-                + " select alternativa.patient_id, alternativa.data_linha23898 as ultimaAlternativa "
+            " select patient_id from( "
+                + " select B1.patient_id, B1.data_linha23898 "
+                + " from "
+                + " ( "
+                + " Select	p.patient_id, max(obsLinha.obs_datetime) data_linha23898 "
+                + " from  patient p "
+                + " inner join encounter e on p.patient_id=e.patient_id "
+                + " inner join obs obsLinha on obsLinha.encounter_id = e.encounter_id "
+                + " left join obs obsJustificacao on obsJustificacao.encounter_id = e.encounter_id and obsJustificacao.voided = 0 and "
+                + " obsJustificacao.concept_id = 1792 "
+                + " where p.voided = 0 and e.voided = 0 and e.encounter_type = 53 and obsLinha.concept_id = 21190 and obsLinha.voided = 0 and "
+                + " obsLinha.obs_datetime BETWEEN :startInclusionDate and :endInclusionDate  and e.location_id = :location and "
+                + " (obsJustificacao.value_coded is null or (obsJustificacao.value_coded is not null and obsJustificacao.value_coded <> 1982)) "
+                + " group by p.patient_id "
+                + " ) B1 "
+                + " inner join encounter e on e.patient_id = B1.patient_id "
+                + " inner join obs o on o.encounter_id = e.encounter_id and o.voided = 0 and o.concept_id IN (856,1305) "
+                + " where e.encounter_type = 6 and e.voided = 0 and e.location_id = :location "
+                + " and e.encounter_datetime between date_add(B1.data_linha23898, interval + 6 MONTH) AND  date_add(B1.data_linha23898, interval + 9 MONTH) "
+                + " ) final ";
+
+    public static final String
+        findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenSecondTherapheuticLineDateCategory13_3_I_Numerator =
+            " select B2NEW.patient_id from ( "
+                + " select alternativa.patient_id, data_linha23898 "
                 + " from "
                 + " ( "
                 + " Select p.patient_id, max(obsLinha.obs_datetime) data_linha23898 "
                 + " from patient p "
                 + " inner join encounter e on p.patient_id = e.patient_id "
                 + " inner join obs obsLinha on obsLinha.encounter_id = e.encounter_id "
-                + " where 	p.voided = 0 and e.voided = 0 and e.encounter_type = 53 and obsLinha.concept_id = 21190 and obsLinha.voided = 0 and "
-                + " obsLinha.obs_datetime BETWEEN :startInclusionDate and :endInclusionDate  and e.location_id = :location "
+                + " left join obs obsJustificacao on obsJustificacao.encounter_id = e.encounter_id and obsJustificacao.voided = 0 and "
+                + " obsJustificacao.concept_id = 1792 "
+                + " where p.voided = 0 and e.voided = 0 and e.encounter_type = 53 and obsLinha.concept_id = 21187 and obsLinha.voided = 0 and "
+                + " obsLinha.obs_datetime BETWEEN :startInclusionDate and :endInclusionDate and e.location_id = :location and "
+                + " (obsJustificacao.value_coded is null or (obsJustificacao.value_coded is not null and obsJustificacao.value_coded <> 1982)) "
                 + " group by p.patient_id "
                 + " ) alternativa "
-                + " inner join obs naogravida on naogravida.person_id = alternativa.patient_id "
-                + " left join encounter enc on enc.patient_id = alternativa.patient_id and enc.voided = 0 and enc.encounter_type = 6 "
-                + " left join obs obsOutraLinha on obsOutraLinha.encounter_id = enc.encounter_id and obsOutraLinha.voided = 0 and obsOutraLinha.concept_id = 21151 and obsOutraLinha.value_coded <> 21150 and "
-                + " obsOutraLinha.obs_datetime > data_linha23898 and obsOutraLinha.obs_datetime <= :endRevisionDate and obsOutraLinha.location_id = :location "
-                + " where obsOutraLinha.person_id is null and naogravida.voided = 0 and naogravida.concept_id = 1792 and naogravida.value_coded <> 1982 "
-                + " ) final group by final.patient_id "
-                + " ) B1 "
-                + " inner join encounter e on e.patient_id = B1.patient_id "
-                + " left join obs o on o.encounter_id = e.encounter_id and o.voided = 0 and o.concept_id = 856 and o.value_numeric is not null "
-                + " left join obs o_ on o_.encounter_id = e.encounter_id and o_.voided = 0 and o.concept_id = 1305 and o.value_numeric is not null "
-                + " where e.encounter_type = 6 and e.voided = 0 and e.location_id = :location "
-                + " and e.encounter_datetime between date_add(B1.ultimaAlternativa, interval + 6 MONTH) AND  date_add(B1.ultimaAlternativa, interval + 9 MONTH) ";
-
-    public static final String
-        findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenSecondTherapheuticLineDateCategory13_3_I_Numerator =
-            " select B2NEW.patient_id from ( "
-                + " select p.patient_id, e.encounter_datetime "
-                + " from patient p "
-                + " inner join encounter e on p.patient_id = e.patient_id "
-                + " inner join obs obsLinha on obsLinha.encounter_id = e.encounter_id "
-                + " inner join obs naogravida on naogravida.encounter_id = e.encounter_id "
-                + " where p.voided = 0 and e.voided = 0 and obsLinha.voided = 0 and naogravida.voided = 0 and e.encounter_type = 53 and obsLinha.concept_id = 21187 "
-                + " and naogravida.concept_id = 1792 and naogravida.value_coded <> 1982 "
-                + " and obsLinha.value_coded is not null and obsLinha.obs_datetime >= :startInclusionDate and obsLinha.obs_datetime <= :endInclusionDate "
-                + " and e.location_id = :location "
                 + " ) B2NEW "
                 + " inner join encounter e on e.patient_id = B2NEW.patient_id "
-                + " left join obs o on o.encounter_id = e.encounter_id and o.voided = 0 and o.concept_id = 856 and o.value_numeric is not null "
-                + " left join obs o_ ON o_.encounter_id = e.encounter_id and o_.voided = 0 and o_.concept_id = 1305 and o_.value_numeric is not null "
+                + " inner join obs o on o.encounter_id = e.encounter_id and o.voided = 0 and o.concept_id IN (856, 1305) "
                 + " where e.encounter_type = 6 and e.voided = 0 and e.location_id = :location "
-                + " and e.encounter_datetime between date_add(B2NEW.encounter_datetime, interval + 6 MONTH) AND  date_add(B2NEW.encounter_datetime, interval + 9 MONTH) ";
+                + " and e.encounter_datetime between date_add(B2NEW.data_linha23898, interval + 6 MONTH) AND  date_add(B2NEW.data_linha23898, interval + 9 MONTH) ";
   }
 }

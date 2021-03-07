@@ -36,28 +36,17 @@ public interface MQCategory13P2QueriesInterface {
             + " INNER JOIN obs o ON e.encounter_id = o.encounter_id "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.encounter_type = 53 "
             + " AND o.concept_id = 1190 AND o.value_datetime is NOT NULL AND o.value_datetime <= :endInclusionDate AND e.location_id = :location "
-            + " GROUP BY  p.patient_id, e.encounter_datetime "
+            + " GROUP BY  p.patient_id "
             + " ) art_start "
             + " GROUP BY patient_id "
             + " ) tx_new "
-            + " inner join "
-            + " ( "
-            + " select minConsulta.patient_id, minConsulta.minData from "
-            + " ( "
-            + " select p.patient_id, min(cc.encounter_datetime) as minData "
-            + " from patient p "
-            + " inner join encounter cc ON p.patient_id = cc.patient_id "
-            + " WHERE cc.voided = 0 AND cc.encounter_type = 6 AND cc.location_id = :location "
-            + " AND cc.encounter_datetime >= :startInclusionDate AND cc.encounter_datetime <= :endInclusionDate "
-            + " group by p.patient_id "
-            + " ) minConsulta "
-            + " inner join encounter e_ ON e_.patient_id = minConsulta.patient_id "
+            + " inner join encounter e_ ON e_.patient_id = tx_new.patient_id "
             + " inner join obs o ON o.encounter_id = e_.encounter_id "
             + " inner join person pe ON pe.person_id = e_.patient_id "
-            + " WHERE o.concept_id = 1982 AND o.value_coded = 1065 AND o.voided = 0 and e_.location_id = :location and minConsulta.minData = e_.encounter_datetime "
+            + " WHERE o.concept_id = 1982 AND o.value_coded = 1065 AND o.voided = 0 and e_.location_id = :location "
             + " and o.location_id = :location and e_.voided = 0 and e_.encounter_type = 6 and pe.gender = 'F' "
-            + " ) consulta ON consulta.patient_id = tx_new.patient_id "
-            + " where consulta.minData > tx_new.art_start_date ";
+            + " AND e_.encounter_datetime >= :startInclusionDate AND e_.encounter_datetime <= :endInclusionDate "
+            + " AND e_.encounter_datetime > tx_new.art_start_date ";
 
     public static final String
         findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodByB3 =
@@ -95,12 +84,14 @@ public interface MQCategory13P2QueriesInterface {
                 + " INNER JOIN encounter cc ON p.patient_id = cc.patient_id "
                 + " INNER JOIN obs o ON cc.encounter_id = o.encounter_id "
                 + " WHERE cc.voided = 0 AND cc.encounter_type = 6  AND cc.location_id = :location "
-                + " AND cc.encounter_datetime BETWEEN :startInclusionDate AND :endInclusionDate "
+                + " AND cc.encounter_datetime BETWEEN :startInclusionDate and :endInclusionDate "
                 + " AND o.concept_id = 1982 AND o.value_coded = 1065 AND o.voided = 0 "
                 + " GROUP BY p.patient_id "
                 + " ) fisrtConsultation "
-                + " INNER JOIN obs cv ON cv.person_id = fisrtConsultation.patient_id "
-                + " WHERE cv.concept_id = 23722 AND cv.value_coded = 856 AND cv.voided = 0  "
+                + " INNER JOIN encounter e ON e.patient_id = fisrtConsultation.patient_id "
+                + " INNER JOIN obs cv ON cv.encounter_id = e.encounter_id "
+                + " WHERE cv.concept_id = 23722 AND cv.value_coded = 856 AND cv.voided = 0 "
+                + " and e.voided = 0 and e.encounter_type = 6 and e.location_id = :location "
                 + " AND fisrtConsultation.encounter_datetime=cv.obs_datetime ";
 
     public static final String findPatientsWhoHaveCVResultAfter33DaysOfRequestByK =

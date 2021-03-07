@@ -43,14 +43,14 @@ public class MQCategory13P3CohortQueries {
 
   @DocumentedDefinition(
       value =
-          "findPatientsFromClinicalConsultationWhoHaveLaboratoriesInvestigationRequestsCategory13_3_B2E")
+          "findPatientsWhoHasTherapeuthicLineDiferentThanFirstLineFromConsultationClinicalCategory13_3_B1E_Denominator")
   public CohortDefinition
-      findPatientsFromClinicalConsultationWhoHaveLaboratoriesInvestigationRequestsCategory13_3_B2E() {
+      findPatientsWhoHasTherapeuthicLineDiferentThanFirstLineFromConsultationClinicalCategory13_3_B1E_Denominator() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
     definition.setName(
-        "findPatientsFromClinicalConsultationWhoHaveLaboratoriesInvestigationRequestsCategory13_3_B2E");
+        "findPatientsWhoHasTherapeuthicLineDiferentThanFirstLineFromConsultationClinicalCategory13_3_B1E_Denominator");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
@@ -59,6 +59,28 @@ public class MQCategory13P3CohortQueries {
     String query =
         MQCategory13P3QueriesInterface.QUERY
             .findPatientsWhoHasTherapeuthicLineDiferentThanFirstLineFromConsultationClinicalCategory13_3_B1E_Denominator;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value = "findPatientsWhoAreInAlternativeLineFirstLineCategory13_3_BI1_Denominator")
+  public CohortDefinition
+      findPatientsWhoAreInAlternativeLineFirstLineCategory13_3_BI1_Denominator() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findPatientsWhoAreInAlternativeLineFirstLineCategory13_3_BI1_Denominator");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13P3QueriesInterface.QUERY
+            .findPatientsWhoAreInAlternativeLineFirstLineCategory13_3_BI1_Denominator;
 
     definition.setQuery(query);
 
@@ -248,14 +270,20 @@ public class MQCategory13P3CohortQueries {
         EptsReportUtils.map(mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.addSearch(
-        "B1",
+        "BI1",
+        EptsReportUtils.map(
+            this.findPatientsWhoAreInAlternativeLineFirstLineCategory13_3_BI1_Denominator(),
+            mappings));
+
+    definition.addSearch(
+        "B1E",
         EptsReportUtils.map(
             this
-                .findPatientsWhoAlternativeLineFirstLineExcludePatintsFromClinicalConsultationWithTherapheuticLineDiferentFirstLineCategory13_3_B1(),
+                .findPatientsWhoHasTherapeuthicLineDiferentThanFirstLineFromConsultationClinicalCategory13_3_B1E_Denominator(),
             mappings));
 
     definition.setCompositionString(
-        "((START-ART NOT PREGNANT NOT BREASTFEEDING) OR B1) NOT (TRANSFERED-IN OR TRANSFERED-OUT)");
+        "((START-ART NOT PREGNANT NOT BREASTFEEDING) OR (BI1 NOT B1E)) NOT (TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -365,14 +393,20 @@ public class MQCategory13P3CohortQueries {
             this.findPatientsFromClinicalConsultationWhoHaveViralChargeCategory13_3_H(), mappings));
 
     definition.addSearch(
-        "B1",
+        "BI1",
+        EptsReportUtils.map(
+            this.findPatientsWhoAreInAlternativeLineFirstLineCategory13_3_BI1_Denominator(),
+            mappings));
+
+    definition.addSearch(
+        "B1E",
         EptsReportUtils.map(
             this
-                .findPatientsWhoAlternativeLineFirstLineExcludePatintsFromClinicalConsultationWithTherapheuticLineDiferentFirstLineCategory13_3_B1(),
+                .findPatientsWhoHasTherapeuthicLineDiferentThanFirstLineFromConsultationClinicalCategory13_3_B1E_Denominator(),
             mappings));
 
     definition.setCompositionString(
-        "(((START-ART AND G) NOT PREGNANT NOT BREASTFEEDING) OR (B1 AND H)) NOT (TRANSFERED-IN OR TRANSFERED-OUT)");
+        "(((START-ART AND G) NOT PREGNANT NOT BREASTFEEDING) OR ((BI1 NOT B1E) AND H)) NOT (TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
