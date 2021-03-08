@@ -2789,6 +2789,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.typeDispensationTPTConceptUuid</property>
+		<defaultValue>d5c15047-58f3-4eb2-9f98-af82e3531cb5</defaultValue>
+		<description>
+			Tipo de dispensa TPT  concept
+		</description>
+	</globalProperty>
+
 
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">

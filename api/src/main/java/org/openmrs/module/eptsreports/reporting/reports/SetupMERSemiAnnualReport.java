@@ -98,7 +98,6 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     } catch (IOException e) {
       throw new ReportingException(e.toString());
     }
-
     return Arrays.asList(reportDesign);
   }
 }
