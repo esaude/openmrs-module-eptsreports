@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TptListDataSet;
@@ -41,7 +40,7 @@ public class SetupTptReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "LISTA DE PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA (TPI)";
+    return "PEPFAR LISTA DE PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA (TPI)";
   }
 
   @Override
@@ -83,12 +82,7 @@ public class SetupTptReport extends EptsDataExportManager {
     ReportDesign reportDesign = null;
     try {
       reportDesign =
-          createXlsReportDesign(
-              reportDefinition,
-              "TPT.xls",
-              "TPT",
-              getExcelDesignUuid(),
-              null);
+          createXlsReportDesign(reportDefinition, "TPT.xls", "TPT", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("repeatingSections", "sheet:1,row:4,dataset:INICIOTPI");
 
