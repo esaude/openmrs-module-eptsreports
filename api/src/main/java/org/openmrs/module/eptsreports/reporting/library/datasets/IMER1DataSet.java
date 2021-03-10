@@ -47,7 +47,7 @@ public class IMER1DataSet extends BaseDataSet {
     dsd.setName("IMER 1 Data Set");
     dsd.addParameters(getParameters());
 
-    /* denominator */
+    /* IMER1 denominator */
     CohortIndicator dall =
         eptsGeneralIndicator.getIndicator(
             "DALL", EptsReportUtils.map(imer1DenominatorCohortQueries.getAllPatients(), MAPPINGS));
@@ -78,7 +78,7 @@ public class IMER1DataSet extends BaseDataSet {
     dsd.addColumn("DADULTS", "ADULTS", EptsReportUtils.map(dadults, MAPPINGS), "");
     dsd.addColumn("DCHILDREN", "CHILDREN", EptsReportUtils.map(dchildren, MAPPINGS), "");
 
-    /* denominator 1B */
+    /* IMER1B denominator */
     CohortIndicator d1ball =
         eptsGeneralIndicator.getIndicator(
             "D1BALL",
@@ -110,7 +110,7 @@ public class IMER1DataSet extends BaseDataSet {
     dsd.addColumn("D1BADULTS", "ADULTS", EptsReportUtils.map(d1badults, MAPPINGS), "");
     dsd.addColumn("D1BCHILDREN", "CHILDREN", EptsReportUtils.map(d1bchildren, MAPPINGS), "");
 
-    /* numerator */
+    /* IMER1 numerator */
     CohortIndicator nall =
         eptsGeneralIndicator.getIndicator(
             "NALL", EptsReportUtils.map(imer1NumeratorCohortQueries.getAllPatients(), MAPPINGS));

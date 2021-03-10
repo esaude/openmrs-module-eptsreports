@@ -3,7 +3,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtMinusARTCareEnrollmentDateCalculationIMER1B;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -16,24 +15,20 @@ import org.springframework.stereotype.Component;
 @Component
 public class IMER1BNumeratorCohortQueries {
 
-  private HivMetadata hivMetadata;
-
   private TxNewCohortQueries txNewCohortQueries;
 
   private GenericCohortQueries genericCohortQueries;
 
-  private IMER1DenominatorCohortQueries imer1DenominatorCohortQueries;
+  private IMER1BDenominatorCohortQueries imer1BDenominatorCohortQueries;
 
   @Autowired
   public IMER1BNumeratorCohortQueries(
-      HivMetadata hivMetadata,
       TxNewCohortQueries txNewCohortQueries,
       GenericCohortQueries genericCohortQueries,
-      IMER1DenominatorCohortQueries imer1DenominatorCohortQueries) {
-    this.hivMetadata = hivMetadata;
+      IMER1BDenominatorCohortQueries imer1BDenominatorCohortQueries) {
     this.txNewCohortQueries = txNewCohortQueries;
     this.genericCohortQueries = genericCohortQueries;
-    this.imer1DenominatorCohortQueries = imer1DenominatorCohortQueries;
+    this.imer1BDenominatorCohortQueries = imer1BDenominatorCohortQueries;
   }
 
   /**
@@ -79,13 +74,13 @@ public class IMER1BNumeratorCohortQueries {
     cd.addSearch(
         "A",
         EptsReportUtils.map(
-            imer1DenominatorCohortQueries.getEarliestPreART(),
+            imer1BDenominatorCohortQueries.getEarliestPreART(),
             "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}"));
 
     cd.addSearch(
         "D",
         EptsReportUtils.map(
-            imer1DenominatorCohortQueries.getTransferredInPatients(),
+            imer1BDenominatorCohortQueries.getTransferredInPatients(),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -118,7 +113,7 @@ public class IMER1BNumeratorCohortQueries {
     cd.addSearch(
         "A",
         EptsReportUtils.map(
-            imer1DenominatorCohortQueries.getEarliestPreART(),
+            imer1BDenominatorCohortQueries.getEarliestPreART(),
             "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}"));
 
     cd.addSearch(
@@ -136,7 +131,7 @@ public class IMER1BNumeratorCohortQueries {
     cd.addSearch(
         "D",
         EptsReportUtils.map(
-            imer1DenominatorCohortQueries.getTransferredInPatients(),
+            imer1BDenominatorCohortQueries.getTransferredInPatients(),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -169,7 +164,7 @@ public class IMER1BNumeratorCohortQueries {
     cd.addSearch(
         "A",
         EptsReportUtils.map(
-            imer1DenominatorCohortQueries.getEarliestPreART(),
+            imer1BDenominatorCohortQueries.getEarliestPreART(),
             "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}"));
 
     cd.addSearch(
@@ -187,7 +182,7 @@ public class IMER1BNumeratorCohortQueries {
     cd.addSearch(
         "D",
         EptsReportUtils.map(
-            imer1DenominatorCohortQueries.getTransferredInPatients(),
+            imer1BDenominatorCohortQueries.getTransferredInPatients(),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -220,7 +215,7 @@ public class IMER1BNumeratorCohortQueries {
     cd.addSearch(
         "A",
         EptsReportUtils.map(
-            imer1DenominatorCohortQueries.getEarliestPreART(),
+            imer1BDenominatorCohortQueries.getEarliestPreART(),
             "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}"));
 
     cd.addSearch(
@@ -238,7 +233,7 @@ public class IMER1BNumeratorCohortQueries {
     cd.addSearch(
         "D",
         EptsReportUtils.map(
-            imer1DenominatorCohortQueries.getTransferredInPatients(),
+            imer1BDenominatorCohortQueries.getTransferredInPatients(),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -277,7 +272,7 @@ public class IMER1BNumeratorCohortQueries {
     cd.addSearch(
         "A",
         EptsReportUtils.map(
-            imer1DenominatorCohortQueries.getEarliestPreART(),
+            imer1BDenominatorCohortQueries.getEarliestPreART(),
             "startDate=${endDate-2m+1d},endDate=${endDate-1m},location=${location}"));
 
     cd.addSearch(
@@ -295,7 +290,7 @@ public class IMER1BNumeratorCohortQueries {
     cd.addSearch(
         "D",
         EptsReportUtils.map(
-            imer1DenominatorCohortQueries.getTransferredInPatients(),
+            imer1BDenominatorCohortQueries.getTransferredInPatients(),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
