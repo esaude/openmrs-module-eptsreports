@@ -6028,9 +6028,9 @@ public class QualityImprovement2020CohortQueries {
 
     comp.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
 
-    if (den == 1 || den == 2) {
+    if (den == 1) {
       comp.setCompositionString("(A1 OR A3) AND NOT (CD OR F)");
-    } else if (den == 3 || den == 4) {
+    } else if (den == 2 || den == 3 || den == 4) {
       comp.setCompositionString("((A1 OR A3) AND NOT (CD OR F)) AND G2");
     } else if (den == 5 || den == 6) {
       comp.setCompositionString("(A2 OR A3) AND  NOT (CD OR F)");
@@ -6270,7 +6270,7 @@ public class QualityImprovement2020CohortQueries {
     if (num == 1) {
       comp.setCompositionString("Den1 AND G2");
     } else if (num == 2) {
-      comp.setCompositionString("Den1 AND H1");
+      comp.setCompositionString("Den1 AND H1 AND G2");
     } else if (num == 3) {
       comp.setCompositionString("Den1 AND H2 AND G2");
     } else if (num == 4) {
