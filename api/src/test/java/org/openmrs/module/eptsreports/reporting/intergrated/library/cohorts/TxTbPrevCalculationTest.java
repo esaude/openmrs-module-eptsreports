@@ -24,15 +24,16 @@ public class TxTbPrevCalculationTest extends DefinitionsFGHLiveTest {
   public void shouldFindPatientsWhoAre3HP() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(398);
-    final Date startDate = DateUtil.getDateTime(2020, 9, 21);
-    final Date endDate = DateUtil.getDateTime(2021, 3, 20);
+    final Date startDate = DateUtil.getDateTime(2020, 6, 21);
+
+    final Date endDate = DateUtil.getDateTime(2020, 12, 20);
 
     final Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
     parameters.put(new Parameter("endDate", "End Date", Date.class), endDate);
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
-    CohortDefinition p = txTbPrevCohortQueries.getPatientsWhoEndINHCalculation();
+    CohortDefinition p = txTbPrevCohortQueries.findPatientsWhoStartedArtAndTpiNewDessagragation();
 
     final EvaluatedCohort evaluateCohortDefinition = this.evaluateCohortDefinition(p, parameters);
 
@@ -55,4 +56,14 @@ public class TxTbPrevCalculationTest extends DefinitionsFGHLiveTest {
   protected String password() {
     return "dBernardo1";
   }
+
+  // @Override
+  // protected String username() {
+  // return "admin";
+  // }
+  //
+  // @Override
+  // protected String password() {
+  // return "eSaude123";
+  // }
 }
