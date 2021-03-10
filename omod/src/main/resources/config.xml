@@ -2796,9 +2796,22 @@
 			Tipo de dispensa TPT  concept
 		</description>
 	</globalProperty>
+<globalProperty>
+		<property>eptsreports.regArvSecondLineUuid</property>
+		<defaultValue>79c143ea-eeeb-4cdb-bfd7-fed8f029c15b</defaultValue>
+		<description>
+			 	ARV REGIMEN 2nd LINE concept
+		</description>
+	</globalProperty>
 
 
-
+	<globalProperty>
+		<property>eptsreports.justificativeToChangeArvTreatmentUuid</property>
+		<defaultValue>e1de8862-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			 	JUSTIFICATION TO CHANGE ARV TREATMENT
+		</description>
+	</globalProperty>
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

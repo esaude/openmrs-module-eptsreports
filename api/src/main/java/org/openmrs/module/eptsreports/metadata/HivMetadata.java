@@ -43,6 +43,38 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.basiloscopiaUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 21187</b>
+   *
+   * <p><b>Name:</b>ARV REGIMEN 2nd LINE
+   *
+   * <p><b>Description:</b> from the respiratory tract.
+   *
+   * @return {@link Concept}
+   */
+  public Concept getRegArvSecondLine() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.regArvSecondLineUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 1792</b>
+   *
+   * <p><b>Name:</b>JUSTIFICATION TO CHANGE ARV TREATMENT
+   *
+   * <p><b>Description:</b> from the respiratory tract.
+   *
+   * @return {@link Concept}
+   */
+  public Concept getJustificativeToChangeArvTreatment() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.justificativeToChangeArvTreatmentUuid");
+    return getConcept(uuid);
+  }
+
   /**
    * <b>concept_id = 856</b>
    *
