@@ -219,4 +219,105 @@ public class ResumoTrimestralAPSSCohortQueries {
 
     return txNewCompositionCohort;
   }
+
+  @DocumentedDefinition(value = "E1")
+  public CohortDefinition findFaultsOrAbandonedPatientsReferredToCallOrVisitReintegrationE1() {
+
+    final CompositionCohortDefinition compsitionDefinition = new CompositionCohortDefinition();
+    compsitionDefinition.setName(
+        "NumberOfPatientsMissingAbandonedReferredToCallVisitReintegrationE1");
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    compsitionDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    compsitionDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compsitionDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    compsitionDefinition.addSearch(
+        "FALTOSOS",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "patientsWithFaultsInARTTreatment",
+                ResumoTrimestralAPSSQueries.QUERY.findPatientsWhoFaultTreatmentRF15E1),
+            mappings));
+
+    compsitionDefinition.addSearch(
+        "ABANDONOS",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "patientsAbandonedTheARTTreatment",
+                ResumoTrimestralAPSSQueries.QUERY.findPatientsWhoAbandonedTreatmentRF15E1),
+            mappings));
+
+    compsitionDefinition.addSearch(
+        "REINTEGRACAO",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "patientSRegistredToReintegracao",
+                ResumoTrimestralAPSSQueries.QUERY
+                    .findPatientsRegistredInLivroDeChamadasVisitasDomiciliariasWithElegivelParaReintegracaoRF15E1),
+            mappings));
+
+    compsitionDefinition.setCompositionString("FALTOSOS OR ABANDONOS AND REINTEGRACAO");
+
+    return compsitionDefinition;
+  }
+
+  @DocumentedDefinition(value = "E2")
+  public CohortDefinition findPatientsReferredToReintegrationContactedAndFoundedE2() {
+
+    final CompositionCohortDefinition compsitionDefinition = new CompositionCohortDefinition();
+    compsitionDefinition.setName("NumberOfPatientsReferredToReintegrationContactedVisitedAndFound");
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    compsitionDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    compsitionDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compsitionDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    compsitionDefinition.addSearch(
+        "E1",
+        EptsReportUtils.map(
+            findFaultsOrAbandonedPatientsReferredToCallOrVisitReintegrationE1(), mappings));
+
+    compsitionDefinition.addSearch(
+        "ENCONTRADOS",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "patientsThatWasCalledAndVisitedAndFounded",
+                ResumoTrimestralAPSSQueries.QUERY
+                    .findPatientsRegistredInLivroDeChamadasVisitasDomiciliariasForChamadaOrEncontradoRF16E2),
+            mappings));
+
+    compsitionDefinition.setCompositionString("E1 AND ENCONTRADOS");
+
+    return compsitionDefinition;
+  }
+
+  @DocumentedDefinition(value = "E3")
+  public CohortDefinition findFaultsAbandonedPatientsReturnedToHospitalInReportPeriodE3() {
+
+    final CompositionCohortDefinition compsitionDefinition = new CompositionCohortDefinition();
+    compsitionDefinition.setName("NumberOfMissingAbandonedPatientsReturnedHealthFacility");
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    compsitionDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    compsitionDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compsitionDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    compsitionDefinition.addSearch(
+        "E2",
+        EptsReportUtils.map(findPatientsReferredToReintegrationContactedAndFoundedE2(), mappings));
+
+    compsitionDefinition.addSearch(
+        "RETORNADOS",
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "patientsReturnedToHealthFacility",
+                ResumoTrimestralAPSSQueries.QUERY
+                    .findPatientsReturnedToHospitalAfterChamadaOrVisitaDomiciliarRF17E3),
+            mappings));
+
+    compsitionDefinition.setCompositionString("E2 AND RETORNADOS");
+
+    return compsitionDefinition;
+  }
 }

@@ -127,6 +127,66 @@ public class ResumoTrimestralApssDataSetDefinition extends BaseDataSet {
         getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthD1(),
         "age=15+");
 
+    addRow(
+        dsd,
+        "E1Under15",
+        "E1 - Patients under 15 years",
+        getPatientsMissingAndDropoutsReferredToCallVisitReintegrationE1(),
+        resumoTrimestralAgeAndGenderDisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "E1Over15",
+        "E1 - Patients over 15 years - adults",
+        getPatientsMissingAndDropoutsReferredToCallVisitReintegrationE1(),
+        resumoTrimestralAgeAndGenderDisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "E1Total",
+        "E1 - Total patients - Total Geral",
+        getPatientsMissingAndDropoutsReferredToCallVisitReintegrationE1(),
+        "");
+
+    addRow(
+        dsd,
+        "E2Under15",
+        "E2 - Patients under 15 years",
+        getPatientsMissingAndDropoutsContactedOrVisitedAndFoundedE2(),
+        resumoTrimestralAgeAndGenderDisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "E2Over15",
+        "E2 - Patients over 15 years - adults",
+        getPatientsMissingAndDropoutsContactedOrVisitedAndFoundedE2(),
+        resumoTrimestralAgeAndGenderDisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "E2Total",
+        "E2 - Total patients - Total Geral",
+        getPatientsMissingAndDropoutsContactedOrVisitedAndFoundedE2(),
+        "");
+
+    addRow(
+        dsd,
+        "E3Under15",
+        "E3 - Patients under 15 years",
+        getPatientsMissingAndDropoutsThatReturnedToHealthFacilityE3(),
+        resumoTrimestralAgeAndGenderDisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "E3Over15",
+        "E3 - Patients over 15 years - adults",
+        getPatientsMissingAndDropoutsThatReturnedToHealthFacilityE3(),
+        resumoTrimestralAgeAndGenderDisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "E3Total",
+        "E3 - Total patients - Total Geral",
+        getPatientsMissingAndDropoutsThatReturnedToHealthFacilityE3(),
+        "");
+
     return dsd;
   }
 
@@ -163,5 +223,33 @@ public class ResumoTrimestralApssDataSetDefinition extends BaseDataSet {
             "C1",
             mapStraightThrough(
                 resumoMensalAPSSCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHC1())));
+  }
+
+  private Mapped<CohortIndicator>
+      getPatientsMissingAndDropoutsReferredToCallVisitReintegrationE1() {
+    return mapStraightThrough(
+        eptsGeneralIndicator.getIndicator(
+            "E1",
+            mapStraightThrough(
+                resumoMensalAPSSCohortQueries
+                    .findFaultsOrAbandonedPatientsReferredToCallOrVisitReintegrationE1())));
+  }
+
+  private Mapped<CohortIndicator> getPatientsMissingAndDropoutsContactedOrVisitedAndFoundedE2() {
+    return mapStraightThrough(
+        eptsGeneralIndicator.getIndicator(
+            "E2",
+            mapStraightThrough(
+                resumoMensalAPSSCohortQueries
+                    .findPatientsReferredToReintegrationContactedAndFoundedE2())));
+  }
+
+  private Mapped<CohortIndicator> getPatientsMissingAndDropoutsThatReturnedToHealthFacilityE3() {
+    return mapStraightThrough(
+        eptsGeneralIndicator.getIndicator(
+            "E3",
+            mapStraightThrough(
+                resumoMensalAPSSCohortQueries
+                    .findFaultsAbandonedPatientsReturnedToHospitalInReportPeriodE3())));
   }
 }
