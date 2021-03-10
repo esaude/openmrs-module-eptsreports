@@ -1,7 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
-
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,7 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class IMER1DenominatorCohortQueries {
+public class IMER1BDenominatorCohortQueries {
 
   private HivMetadata hivMetadata;
 
@@ -30,7 +28,7 @@ public class IMER1DenominatorCohortQueries {
   private GenericCohortQueries genericCohortQueries;
 
   @Autowired
-  public IMER1DenominatorCohortQueries(
+  public IMER1BDenominatorCohortQueries(
       HivMetadata hivMetadata,
       TxNewCohortQueries txNewCohortQueries,
       GenericCohortQueries genericCohortQueries) {
@@ -63,7 +61,7 @@ public class IMER1DenominatorCohortQueries {
             CompareInitArtStartDateAndStartDate(),
             "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate-1m},location=${location}"));
 
-    compositionCohortDefinition.setCompositionString("A AND NOT D");
+    compositionCohortDefinition.setCompositionString("A AND NOT D AND NOT E");
 
     return compositionCohortDefinition;
   }
@@ -104,7 +102,7 @@ public class IMER1DenominatorCohortQueries {
             CompareInitArtStartDateAndStartDate(),
             "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate-1m},location=${location}"));
 
-    compositionCohortDefinition.setCompositionString("A AND B  AND NOT (C OR D)");
+    compositionCohortDefinition.setCompositionString("A AND B  AND NOT (C OR D OR E)");
     return compositionCohortDefinition;
   }
 
@@ -144,7 +142,7 @@ public class IMER1DenominatorCohortQueries {
             CompareInitArtStartDateAndStartDate(),
             "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate-1m},location=${location}"));
 
-    compositionCohortDefinition.setCompositionString("A AND C AND NOT (B OR D)");
+    compositionCohortDefinition.setCompositionString("A AND C AND NOT (B OR D OR E)");
 
     return compositionCohortDefinition;
   }
@@ -191,7 +189,7 @@ public class IMER1DenominatorCohortQueries {
             CompareInitArtStartDateAndStartDate(),
             "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate-1m},location=${location}"));
 
-    compositionCohortDefinition.setCompositionString("(A AND CHILDREN) AND NOT (B OR C OR D)");
+    compositionCohortDefinition.setCompositionString("(A AND CHILDREN) AND NOT (B OR C OR D OR E)");
 
     return compositionCohortDefinition;
   }
@@ -238,7 +236,7 @@ public class IMER1DenominatorCohortQueries {
             genericCohortQueries.getAgeOnPreArtDate(15, 200),
             "onOrAfter=${endDate-2m+1d},onOrBefore=${endDate-1m},location=${location}"));
 
-    compositionCohortDefinition.setCompositionString("(A AND ADULTS) AND NOT (B OR C OR D)");
+    compositionCohortDefinition.setCompositionString("(A AND ADULTS) AND NOT (B OR C OR D OR E)");
 
     return compositionCohortDefinition;
   }

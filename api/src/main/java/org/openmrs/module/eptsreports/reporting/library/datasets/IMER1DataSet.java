@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import org.openmrs.module.eptsreports.reporting.library.cohorts.IMER1BDenominatorCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.IMER1BNumeratorCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.IMER1DenominatorCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.IMER1NumeratorCohortQueries;
@@ -20,6 +21,8 @@ public class IMER1DataSet extends BaseDataSet {
 
   private IMER1DenominatorCohortQueries imer1DenominatorCohortQueries;
 
+  private IMER1BDenominatorCohortQueries imer1BDenominatorCohortQueries;
+
   private IMER1NumeratorCohortQueries imer1NumeratorCohortQueries;
 
   private IMER1BNumeratorCohortQueries imer1BNumeratorCohortQueries;
@@ -29,11 +32,13 @@ public class IMER1DataSet extends BaseDataSet {
       IMER1DenominatorCohortQueries imer1DenominatorCohortQueries,
       EptsGeneralIndicator eptsGeneralIndicator,
       IMER1NumeratorCohortQueries imer1NumeratorCohortQueries,
-      IMER1BNumeratorCohortQueries imer1BNumeratorCohortQueries) {
+      IMER1BNumeratorCohortQueries imer1BNumeratorCohortQueries,
+      IMER1BDenominatorCohortQueries imer1BDenominatorCohortQueries) {
     this.imer1DenominatorCohortQueries = imer1DenominatorCohortQueries;
     this.eptsGeneralIndicator = eptsGeneralIndicator;
     this.imer1NumeratorCohortQueries = imer1NumeratorCohortQueries;
     this.imer1BNumeratorCohortQueries = imer1BNumeratorCohortQueries;
+    this.imer1BDenominatorCohortQueries = imer1BDenominatorCohortQueries;
   }
 
   public DataSetDefinition constructIMER1DataSet() {
@@ -72,6 +77,38 @@ public class IMER1DataSet extends BaseDataSet {
     dsd.addColumn("DPREGNANT", "PREGNANT", EptsReportUtils.map(dpregnant, MAPPINGS), "");
     dsd.addColumn("DADULTS", "ADULTS", EptsReportUtils.map(dadults, MAPPINGS), "");
     dsd.addColumn("DCHILDREN", "CHILDREN", EptsReportUtils.map(dchildren, MAPPINGS), "");
+
+    /* denominator 1B */
+    CohortIndicator d1ball =
+        eptsGeneralIndicator.getIndicator(
+            "D1BALL",
+            EptsReportUtils.map(imer1BDenominatorCohortQueries.getAllPatients(), MAPPINGS));
+
+    CohortIndicator d1bbreastfeeding =
+        eptsGeneralIndicator.getIndicator(
+            "D1BBREASTFEEDING",
+            EptsReportUtils.map(imer1BDenominatorCohortQueries.getBreastfeedingWoman(), MAPPINGS));
+
+    CohortIndicator d1bpregnant =
+        eptsGeneralIndicator.getIndicator(
+            "D1BPREGNANT",
+            EptsReportUtils.map(imer1BDenominatorCohortQueries.getPregnantWomen(), MAPPINGS));
+
+    CohortIndicator d1badults =
+        eptsGeneralIndicator.getIndicator(
+            "D1BADULTS", EptsReportUtils.map(imer1BDenominatorCohortQueries.getAdults(), MAPPINGS));
+
+    CohortIndicator d1bchildren =
+        eptsGeneralIndicator.getIndicator(
+            "D1BCHILDREN",
+            EptsReportUtils.map(imer1BDenominatorCohortQueries.getChildreen(), MAPPINGS));
+
+    dsd.addColumn("D1BALL", "ALL Patients", EptsReportUtils.map(d1ball, MAPPINGS), "");
+    dsd.addColumn(
+        "D1BBREASTFEEDING", "BREASTFEEDING", EptsReportUtils.map(d1bbreastfeeding, MAPPINGS), "");
+    dsd.addColumn("D1BPREGNANT", "PREGNANT", EptsReportUtils.map(d1bpregnant, MAPPINGS), "");
+    dsd.addColumn("D1BADULTS", "ADULTS", EptsReportUtils.map(d1badults, MAPPINGS), "");
+    dsd.addColumn("D1BCHILDREN", "CHILDREN", EptsReportUtils.map(d1bchildren, MAPPINGS), "");
 
     /* numerator */
     CohortIndicator nall =
