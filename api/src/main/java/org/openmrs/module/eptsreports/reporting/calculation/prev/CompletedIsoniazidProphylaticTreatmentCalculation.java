@@ -778,10 +778,11 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
                         outrasPrescricoesPreviousPeriod,
                         exclusionOutrasPrescricoesPreviousPeriod,
                         -7)),
-                Priority.MIN);
+                Priority.MIN,
+                true);
 
         Date iptEndDate =
-            getMinOrMaxObsDate(Arrays.asList(endProfilaxiaObs, endDrugsObs), Priority.MAX);
+            getMinOrMaxObsDate(Arrays.asList(endProfilaxiaObs, endDrugsObs), Priority.MAX, false);
 
         // viii
         int viii =
@@ -905,7 +906,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
           if (getProfilaxiaDuration(iptStartDate, iptEndDate) >= MINIMUM_DURATION_IN_DAYS
               || viii >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED
               || (ixa + ixb) >= 6
-              || (xa + ixb) >= 2
+              || (xa + xb) >= 2
               || (xia + xib) >= 2
               || ((xiia1 + xiia2) >= 3 && (xiib1 + xiib2) >= 1)
               || (xiiia1 + xiiia2 >= 1 && xiiib1 + xiiib2 >= 3)) {
@@ -932,7 +933,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
                         exclucsionAartListTbPrevList3HPPreviousPeriod,
                         4),
                     this.exclude(regimeTPT3HP, exclusionregimeTPT3HP, 4)),
-                Priority.MIN);
+                Priority.MIN,
+                false);
 
         int atleast1FILT3HPTrimestralsOccurencies1 =
             evaluateOccurrence(
@@ -1020,13 +1022,23 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
    * @param priority MIN to retrieve the start drugs date, MAX to retrieve the end drugs date
    * @return The earliest or most recent date according to the priority parameter
    */
-  private Date getMinOrMaxObsDate(List<Obs> obss, Priority priority) {
+  private Date getMinOrMaxObsDate(
+      List<Obs> obss, Priority priority, boolean useValueDatetimefor1stObs) {
 
     Date returedDate = null;
 
     List<Date> dates = new ArrayList<>();
     for (Obs o : obss) {
-      if (o != null) dates.add(o.getEncounter().getEncounterDatetime());
+
+      if (o != null) {
+        if (useValueDatetimefor1stObs
+            && o.equals(obss.get(0))
+            && o.getConcept().equals(hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept())) {
+          dates.add(o.getValueDatetime());
+        } else {
+          dates.add(o.getEncounter().getEncounterDatetime());
+        }
+      }
     }
     if (!dates.isEmpty()) {
       if (priority == Priority.MAX) {
