@@ -12,6 +12,7 @@ import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnObsDatetimeCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.melhoriaQualidade.ConsultationUntilEndDateAfterStartingART;
 import org.openmrs.module.eptsreports.reporting.calculation.melhoriaQualidade.EncounterAfterOldestARTStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.melhoriaQualidade.SecondFollowingEncounterAfterOldestARTStartDateCalculation;
@@ -2157,7 +2158,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
 
-    if (indicator == 2 || indicator == 5) {
+    if (indicator == 2) {
       compositionCohortDefinition.addSearch(
           "age",
           EptsReportUtils.map(
@@ -2166,6 +2167,13 @@ public class QualityImprovement2020CohortQueries {
                   15,
                   null),
               "effectiveDate=${endDate}"));
+    } else if (indicator == 5) {
+
+      compositionCohortDefinition.addSearch(
+          "age",
+          EptsReportUtils.map(
+              getAgeOnObsDatetime(15, null),
+              "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     } else if (indicator == 9) {
       compositionCohortDefinition.addSearch(
           "age",
@@ -2197,11 +2205,8 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.addSearch(
           "age",
           EptsReportUtils.map(
-              ageCohortQueries.createXtoYAgeCohort(
-                  "Crianças (2-15 anos de idade) na 2a linha de TARV que receberam o resultado da Carga Viral entre o sexto e o nono mês após o início da 2a linha de TARV",
-                  3,
-                  14),
-              "effectiveDate=${endDate}"));
+              getAgeOnObsDatetime(3, 14),
+              "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     }
 
     compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
@@ -3508,6 +3513,8 @@ public class QualityImprovement2020CohortQueries {
     map.put("21190", commonMetadata.getRegimenAlternativeToFirstLineConcept().getConceptId());
     map.put("21151", hivMetadata.getTherapeuticLineConcept().getConceptId());
     map.put("21150", hivMetadata.getFirstLineConcept().getConceptId());
+    map.put("1792", hivMetadata.getJustificativeToChangeArvTreatment().getConceptId());
+    map.put("1982", commonMetadata.getPregnantConcept().getConceptId());
 
     String query =
         "SELECT patient_id "
@@ -3652,9 +3659,9 @@ public class QualityImprovement2020CohortQueries {
 
     String query =
         "SELECT p.patient_id"
-            + "FROM"
-            + "  patient p"
-            + "   INNER JOIN"
+            + "   FROM"
+            + "   patient p"
+            + "       INNER JOIN"
             + "   encounter e ON e.patient_id = p.patient_id"
             + "       INNER JOIN"
             + "   obs o ON o.encounter_id = e.encounter_id"
@@ -3664,13 +3671,13 @@ public class QualityImprovement2020CohortQueries {
             + "   AND o.voided = 0"
             + "   AND o2.voided = 0"
             + "   AND e.encounter_type = ${53}"
-            + "   AND e.location_id = :location  "
+            + "   AND e.location_id = :location"
             + "   AND o.concept_id = ${21187}"
             + "   AND o.value_coded IS NOT NULL"
             + "   AND o.obs_datetime >= :startDate"
             + "   AND o.obs_datetime <= :endDate"
             + "   AND o2.concept_id = ${1792}"
-            + "   AND o2.value_coded <> ${1982};";
+            + "   AND o2.value_coded <> ${1982}";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -4379,11 +4386,8 @@ public class QualityImprovement2020CohortQueries {
       cd.addSearch(
           "age",
           EptsReportUtils.map(
-              ageCohortQueries.createXtoYAgeCohort(
-                  "Crianças (2-15 anos de idade) na 2a linha de TARV que receberam o resultado da Carga Viral entre o sexto e o nono mês após o início da 2a linha de TARV",
-                  3,
-                  14),
-              "effectiveDate=${endDate}"));
+              getAgeOnObsDatetime(3, 14),
+              "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     }
 
     // Start adding the definitions based on the requirements
@@ -6890,6 +6894,19 @@ public class QualityImprovement2020CohortQueries {
             "onOrBefore=${revisionEndDate},location=${location}"));
     cd.setCompositionString("Active AND NOT (suspended OR abandoned OR dead OR TO)");
 
+    return cd;
+  }
+
+  private CohortDefinition getAgeOnObsDatetime(Integer minAge, Integer maxAge) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(AgeOnObsDatetimeCalculation.class).get(0));
+    cd.setName("Calculate Age based on ObsDatetime");
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addCalculationParameter("minAgeOnObsDatetime", minAge);
+    cd.addCalculationParameter("maxAgeOnObsDatetime", maxAge);
     return cd;
   }
 }
