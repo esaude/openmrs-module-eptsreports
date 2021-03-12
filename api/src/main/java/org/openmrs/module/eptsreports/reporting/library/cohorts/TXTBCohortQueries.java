@@ -68,7 +68,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getPulmonaryTBWithinReportingDate() {
+  public CohortDefinition getPulmonaryTBWithinReportingDate() {
     final CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "pulmonaryTBeWithinReportingDate",
@@ -80,7 +80,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getSputumForAcidFastBacilliWithinReportingDate() {
+  public CohortDefinition getSputumForAcidFastBacilliWithinReportingDate() {
     final CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "SputumForAcidFastBacilli",
@@ -94,7 +94,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getTuberculosisSymptoms(Integer... answerIds) {
+  public CohortDefinition getTuberculosisSymptoms(Integer... answerIds) {
 
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
@@ -107,7 +107,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getActiveTuberculosis() {
+  public CohortDefinition getActiveTuberculosis() {
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "activeTuberculosis",
@@ -119,7 +119,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getTbObservations() {
+  public CohortDefinition getTbObservations() {
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "tbObservations",
@@ -139,7 +139,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getApplicationForLaboratoryResearch() {
+  public CohortDefinition getApplicationForLaboratoryResearch() {
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "applicationForLaboratoryResearch",
@@ -155,7 +155,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getTbGenExpertORCultureTestOrTbLam() {
+  public CohortDefinition getTbGenExpertORCultureTestOrTbLam() {
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "tbGenExpertORCultureTestOrTbLam",
@@ -172,7 +172,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getTuberculosisTreatmentPlanWithinReportingDate() {
+  public CohortDefinition getTuberculosisTreatmentPlanWithinReportingDate() {
     final CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "tuberculosisTreatmentPlanWithinReportingDate",
@@ -596,7 +596,7 @@ public class TXTBCohortQueries {
   }
 
   @DocumentedDefinition(value = "get All TB Symptoms")
-  private CohortDefinition getAllTBSymptomsForDisaggregationComposition() {
+  public CohortDefinition getAllTBSymptomsForDisaggregationComposition() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
     this.addGeneralParameters(definition);
