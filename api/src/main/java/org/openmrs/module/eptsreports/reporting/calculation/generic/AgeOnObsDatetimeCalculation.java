@@ -71,7 +71,7 @@ public class AgeOnObsDatetimeCalculation extends AbstractPatientCalculation {
         final boolean datesConsistent = patientAndObsDatetime.compareTo(birthDate) >= 0;
         if (datesConsistent) {
           int years =
-              Years.yearsIn(new Interval(patientAndObsDatetime.getTime(), birthDate.getTime()))
+              Years.yearsIn(new Interval(birthDate.getTime(), patientAndObsDatetime.getTime()))
                   .getYears();
           boolean b = isMinAgeOk(minAge, years) && isMaxAgeOk(maxAge, years);
           map.put(patientId, new BooleanResult(b, this));
