@@ -128,7 +128,7 @@ public interface List1Queries {
             + "inicioinh.data_inicio_inh, "
             + "finalinh.data_final_inh, "
             + "gravidaLactante.decisao as estadoMulher from  ( "
-            + "select patient_id from 																															"
+            + "select inicio_tpi.patient_id from 																															"
             + "(																																				"
             + "	select inicio_3HP.patient_id,	min(inicio_3HP.data_inicio_tpi) data_inicio_tpi from (															"
             + "		select inicio.patient_id,inicio.data_inicio_tpi from 																						"
