@@ -16,128 +16,150 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxTbPrevCohortQueries {
 
-	@Autowired
-	private GenericCohortQueries genericCohorts;
+  @Autowired private GenericCohortQueries genericCohorts;
 
-	@DocumentedDefinition(value = "getTbPrevTotalDenominator")
-	public CohortDefinition getTbPrevTotalDenominator() {
-		final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
+  @DocumentedDefinition(value = "getTbPrevTotalDenominator")
+  public CohortDefinition getTbPrevTotalDenominator() {
+    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
 
-		dsd.setName("Patients Who Started TPT");
-		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addParameter(new Parameter("location", "location", Location.class));
-		final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    dsd.setName("Patients Who Started TPT");
+    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dsd.addParameter(new Parameter("location", "location", Location.class));
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-		dsd.addSearch("STARTED-TPT", EptsReportUtils.map(this.genericCohorts.generalSql(
-				"Finding Patients Who have Started TPT During Previous Reporting Period",
-				TxTbPrevQueriesInterface.QUERY.findPatientsWhoStartedTbPrevPreventiveTreatmentDuringPreviousReportingPeriod),
-				mappings));
-		dsd.addSearch("TRF-OUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
+    dsd.addSearch(
+        "STARTED-TPT",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients Who have Started TPT During Previous Reporting Period",
+                TxTbPrevQueriesInterface.QUERY
+                    .findPatientsWhoStartedTbPrevPreventiveTreatmentDuringPreviousReportingPeriod),
+            mappings));
+    dsd.addSearch("TRF-OUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
 
-		dsd.addSearch("ENDED-TPT", EptsReportUtils.map(this.genericCohorts.generalSql(
-				"Finding Patients Who have Completed TPT",
-				TxTbPrevQueriesInterface.QUERY.findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
-				mappings));
+    dsd.addSearch(
+        "ENDED-TPT",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients Who have Completed TPT",
+                TxTbPrevQueriesInterface.QUERY
+                    .findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
+            mappings));
 
-		dsd.addSearch("NEWLY-ART",
-				EptsReportUtils.map(this.genericCohorts.generalSql("Finding Patients New on ART Who Have Started TPT",
-						TxTbPrevQueriesInterface.QUERY
-								.findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
-										DisaggregationTypes.NEWLY_ENROLLED)),
-						mappings));
+    dsd.addSearch(
+        "NEWLY-ART",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients New on ART Who Have Started TPT",
+                TxTbPrevQueriesInterface.QUERY
+                    .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
+                        DisaggregationTypes.NEWLY_ENROLLED)),
+            mappings));
 
-		dsd.addSearch("PREVIOUS-ART",
-				EptsReportUtils
-						.map(this.genericCohorts.generalSql("Finding Patients Previously on ART Who Have Started TPT",
-								TxTbPrevQueriesInterface.QUERY
-										.findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
-												DisaggregationTypes.PREVIOUSLY_ENROLLED)),
-								mappings));
+    dsd.addSearch(
+        "PREVIOUS-ART",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients Previously on ART Who Have Started TPT",
+                TxTbPrevQueriesInterface.QUERY
+                    .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
+                        DisaggregationTypes.PREVIOUSLY_ENROLLED)),
+            mappings));
 
-		dsd.setCompositionString("(STARTED-TPT AND (NEWLY-ART OR PREVIOUS-ART)) NOT (TRF-OUT NOT ENDED-TPT) ");
+    dsd.setCompositionString(
+        "(STARTED-TPT AND (NEWLY-ART OR PREVIOUS-ART)) NOT (TRF-OUT NOT ENDED-TPT) ");
 
-		return dsd;
-	}
+    return dsd;
+  }
 
-	@DocumentedDefinition(value = "getTbPrevTotalNumerator")
-	public CohortDefinition getTbPrevTotalNumerator() {
-		final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
+  @DocumentedDefinition(value = "getTbPrevTotalNumerator")
+  public CohortDefinition getTbPrevTotalNumerator() {
+    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
 
-		dsd.setName("get Patients Who Completed TPT");
-		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addParameter(new Parameter("location", "location", Location.class));
-		final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    dsd.setName("get Patients Who Completed TPT");
+    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dsd.addParameter(new Parameter("location", "location", Location.class));
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-		dsd.addSearch("ENDED-TPT", EptsReportUtils.map(this.genericCohorts.generalSql(
-				"Finding Patients Who have Completed TPT",
-				TxTbPrevQueriesInterface.QUERY.findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
-				mappings));
-		dsd.addSearch("DENOMINATOR", EptsReportUtils.map(this.getTbPrevTotalDenominator(), mappings));
+    dsd.addSearch(
+        "ENDED-TPT",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients Who have Completed TPT",
+                TxTbPrevQueriesInterface.QUERY
+                    .findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
+            mappings));
+    dsd.addSearch("DENOMINATOR", EptsReportUtils.map(this.getTbPrevTotalDenominator(), mappings));
 
-		dsd.setCompositionString("ENDED-TPT AND DENOMINATOR");
+    dsd.setCompositionString("ENDED-TPT AND DENOMINATOR");
 
-		return dsd;
-	}
+    return dsd;
+  }
 
-	@DocumentedDefinition(value = "findPatientsWhoStartedArtAndTpiNewDessagragation")
-	public CohortDefinition findPatientsWhoStartedArtAndTpiNewDessagragation() {
-		final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
+  @DocumentedDefinition(value = "findPatientsWhoStartedArtAndTpiNewDessagragation")
+  public CohortDefinition findPatientsWhoStartedArtAndTpiNewDessagragation() {
+    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
 
-		dsd.setName("get Patients Who Started Art And TPT New - Dessagragation");
-		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addParameter(new Parameter("location", "location", Location.class));
-		final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    dsd.setName("get Patients Who Started Art And TPT New - Dessagragation");
+    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dsd.addParameter(new Parameter("location", "location", Location.class));
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-		dsd.addSearch("STARTED-TPT-AND-ART",
-				EptsReportUtils.map(this.genericCohorts.generalSql("Finding Patients New on ART Who Have Started TPT",
-						TxTbPrevQueriesInterface.QUERY
-								.findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
-										DisaggregationTypes.NEWLY_ENROLLED)),
-						mappings));
+    dsd.addSearch(
+        "STARTED-TPT-AND-ART",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients New on ART Who Have Started TPT",
+                TxTbPrevQueriesInterface.QUERY
+                    .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
+                        DisaggregationTypes.NEWLY_ENROLLED)),
+            mappings));
 
-		dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
-		dsd.setCompositionString("STARTED-TPT-AND-ART NOT TROUT ");
+    dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
+    dsd.setCompositionString("STARTED-TPT-AND-ART NOT TROUT ");
 
-		return dsd;
-	}
+    return dsd;
+  }
 
-	@DocumentedDefinition(value = "findPatientsWhoStartedArtAndTpiPreviouslyDessagragation")
-	public CohortDefinition findPatientsWhoStartedArtAndTpiPreviouslyDessagragation() {
-		final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
+  @DocumentedDefinition(value = "findPatientsWhoStartedArtAndTpiPreviouslyDessagragation")
+  public CohortDefinition findPatientsWhoStartedArtAndTpiPreviouslyDessagragation() {
+    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
 
-		dsd.setName("get Patients Who Started Art And TPT Previows - Dessagragation");
-		dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-		dsd.addParameter(new Parameter("location", "location", Location.class));
-		final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    dsd.setName("get Patients Who Started Art And TPT Previows - Dessagragation");
+    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dsd.addParameter(new Parameter("location", "location", Location.class));
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
-		dsd.addSearch("STARTED-TPT-AND-ART",
-				EptsReportUtils
-						.map(this.genericCohorts.generalSql("Finding Patients Previously on ART Who Have Started TPT",
-								TxTbPrevQueriesInterface.QUERY
-										.findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
-												DisaggregationTypes.PREVIOUSLY_ENROLLED)),
-								mappings));
+    dsd.addSearch(
+        "STARTED-TPT-AND-ART",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients Previously on ART Who Have Started TPT",
+                TxTbPrevQueriesInterface.QUERY
+                    .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
+                        DisaggregationTypes.PREVIOUSLY_ENROLLED)),
+            mappings));
 
-		dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
-		dsd.setCompositionString("STARTED-TPT-AND-ART NOT TROUT");
-		return dsd;
-	}
+    dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
+    dsd.setCompositionString("STARTED-TPT-AND-ART NOT TROUT");
+    return dsd;
+  }
 
-	@DocumentedDefinition(value = "findPatientsTransferredOut")
-	private CohortDefinition findPatientsTransferredOut() {
-		final SqlCohortDefinition definition = new SqlCohortDefinition();
+  @DocumentedDefinition(value = "findPatientsTransferredOut")
+  private CohortDefinition findPatientsTransferredOut() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-		definition.setName("get Patients Who were Transferred Out");
-		definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-		definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-		definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("get Patients Who were Transferred Out");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
 
-		definition.setQuery(TxTbPrevQueriesInterface.QUERY.findPatientsTransferredOut);
+    definition.setQuery(TxTbPrevQueriesInterface.QUERY.findPatientsTransferredOut);
 
-		return definition;
-	}
+    return definition;
+  }
 }
