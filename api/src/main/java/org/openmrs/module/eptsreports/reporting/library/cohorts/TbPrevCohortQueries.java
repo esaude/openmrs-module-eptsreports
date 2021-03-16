@@ -192,7 +192,7 @@ public class TbPrevCohortQueries {
             getPatientsWhoHaveRegimeTPTWith3HPMarkedOnFirstPickUpDateOnFILT(),
             "startDate=${onOrAfter-6m},endDate=${onOrBefore-6m},location=${location}"));
     definition.setCompositionString(
-        "started-by-end-previous-reporting-period AND ((started-isoniazid OR initiated-profilaxia OR regime-tpt-isoniazid OR outras-prescricoes-isoniazid) OR (outras-prescricoes-3hp OR regime-tpt-3hp) NOT (transferred-out NOT completed-isoniazid))");
+        "started-by-end-previous-reporting-period AND ((started-isoniazid OR initiated-profilaxia OR regime-tpt-isoniazid OR outras-prescricoes-isoniazid) OR (outras-prescricoes-3hp OR regime-tpt-3hp) AND NOT (transferred-out AND NOT completed-isoniazid))");
     return definition;
   }
 
