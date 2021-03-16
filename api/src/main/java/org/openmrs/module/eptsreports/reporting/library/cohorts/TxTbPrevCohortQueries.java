@@ -38,7 +38,16 @@ public class TxTbPrevCohortQueries {
             mappings));
     dsd.addSearch("TRF-OUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
 
-    dsd.setCompositionString("STARTED-TPT NOT TRF-OUT ");
+    dsd.addSearch(
+        "ENDED-TPT",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients Who have Completed TPT",
+                TxTbPrevQueriesInterface.QUERY
+                    .findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
+            mappings));
+
+    dsd.setCompositionString("STARTED-TPT NOT (TRF-OUT NOT ENDED-TPT) ");
 
     return dsd;
   }
