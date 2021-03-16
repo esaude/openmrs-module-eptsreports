@@ -157,7 +157,7 @@ public class CXCASCRNCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getBB(List<Concept> answers) {
+  private CohortDefinition getBB(CXCASCRNResult result) {
     CXCASCRNBBCalculation cxcascrnCalculation =
         Context.getRegisteredComponents(CXCASCRNBBCalculation.class).get(0);
 
@@ -167,7 +167,7 @@ public class CXCASCRNCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
-    cd.addCalculationParameter("answers", answers);
+    cd.addCalculationParameter("result", result);
 
     return cd;
   }
@@ -232,7 +232,7 @@ public class CXCASCRNCohortQueries {
     CohortDefinition a = getA();
     CohortDefinition aa = getAA(cxcascrnResult);
     CohortDefinition aa4 = getAA3OrAA4(CXCASCRNResult.POSITIVE);
-    CohortDefinition bb = getBB(getAnswers(CXCASCRNResult.ALL));
+    CohortDefinition bb = getBB(cxcascrnResult);
 
     cd.addSearch(
         "A",

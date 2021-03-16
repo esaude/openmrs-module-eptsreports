@@ -89,7 +89,7 @@ public class CXCASCRNBBCalculation extends AbstractPatientCalculation {
             TimeQualifier.ANY,
             null,
             endDate,
-            EPTSMetadataDatetimeQualifier.VALUE_DATETIME,
+            EPTSMetadataDatetimeQualifier.OBS_DATETIME,
             context);
 
     CalculationResultMap viaResultRefenceResulMap =
@@ -103,7 +103,7 @@ public class CXCASCRNBBCalculation extends AbstractPatientCalculation {
             TimeQualifier.ANY,
             null,
             endDate,
-            EPTSMetadataDatetimeQualifier.VALUE_DATETIME,
+            EPTSMetadataDatetimeQualifier.OBS_DATETIME,
             context);
 
     for (Integer pId : cohort) {
@@ -134,9 +134,9 @@ public class CXCASCRNBBCalculation extends AbstractPatientCalculation {
         }
 
         for (Obs criotherapyDate : criotherapyDates) {
-          if (criotherapyDate.getValueDatetime().compareTo(aa4LastDate) >= 0
+          if (criotherapyDate.getObsDatetime().compareTo(aa4LastDate) >= 0
               && criotherapyDate
-                      .getValueDatetime()
+                      .getObsDatetime()
                       .compareTo(obs.getEncounter().getEncounterDatetime())
                   <= 0) {
             map.put(pId, new SimpleResult(criotherapyDate, this));
@@ -146,9 +146,9 @@ public class CXCASCRNBBCalculation extends AbstractPatientCalculation {
 
         for (Obs viaResultRefence : viaResultRefences) {
 
-          if (viaResultRefence.getValueDatetime().compareTo(aa4LastDate) >= 0
+          if (viaResultRefence.getObsDatetime().compareTo(aa4LastDate) >= 0
               && viaResultRefence
-                      .getValueDatetime()
+                      .getObsDatetime()
                       .compareTo(obs.getEncounter().getEncounterDatetime())
                   <= 0) {
             map.put(pId, new SimpleResult(viaResultRefence, this));

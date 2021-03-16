@@ -205,7 +205,7 @@ public class CXCASCRNAACalculation extends AbstractPatientCalculation {
 
     if (result == CXCASCRNCohortQueries.CXCASCRNResult.ALL) {
       num.add(suspectedCancerConcept.getConceptId());
-      num.add(suspectedCancerConcept.getConceptId());
+      num.add(positive.getConceptId());
       num.add(negative.getConceptId());
       return num;
     }
