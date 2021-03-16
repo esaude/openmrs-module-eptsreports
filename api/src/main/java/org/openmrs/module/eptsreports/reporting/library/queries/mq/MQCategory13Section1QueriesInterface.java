@@ -255,7 +255,7 @@ public interface MQCategory13Section1QueriesInterface {
                 + " and e.encounter_datetime between :startInclusionDate and :endRevisionDate "
                 + " group by p.patient_id  "
                 + " ) maxLinha "
-                + " join encounter e on e.patient_id = maxLinha.patient_id "
+                + " join encounter e on e.patient_id = maxLinha.patient_id and maxLinha.maxDataLinha = e.encounter_datetime and e.encounter_type = 6 "
                 + " join obs on obs.encounter_id = e.encounter_id "
                 + " where obs.concept_id = 21151 and obs.value_coded = 21150 and maxLinha.maxDataLinha = e.encounter_datetime "
                 + " and obs.voided = 0 and obs.location_id = :location and e.location_id = :location "
