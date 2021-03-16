@@ -56,7 +56,7 @@ public class TxTPTCompletationCohortQueries {
             this.findPatientsWhoCompleted3HPTherapyBeforeReportEndDate(), mappings));
 
     dsd.setCompositionString(
-        "TXCURR AND ((STARTED-INH AND COMPLETED-INH) AND (STARTED-3HP AND COMPLETED-3HP))");
+        "TXCURR AND ((STARTED-INH AND COMPLETED-INH) OR (STARTED-3HP AND COMPLETED-3HP))");
 
     return dsd;
   }
