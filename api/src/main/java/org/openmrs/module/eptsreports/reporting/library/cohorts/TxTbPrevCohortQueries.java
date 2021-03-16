@@ -49,23 +49,12 @@ public class TxTbPrevCohortQueries {
 
     dsd.addSearch(
         "NEWLY-ART",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "Finding Patients New on ART Who Have Started TPT",
-                TxTbPrevQueriesInterface.QUERY
-                    .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
-                        DisaggregationTypes.NEWLY_ENROLLED)),
-            mappings));
+        EptsReportUtils.map(this.findPatientsWhoStartedArtAndTpiNewDessagragation(), mappings));
 
     dsd.addSearch(
         "PREVIOUS-ART",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "Finding Patients Previously on ART Who Have Started TPT",
-                TxTbPrevQueriesInterface.QUERY
-                    .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
-                        DisaggregationTypes.PREVIOUSLY_ENROLLED)),
-            mappings));
+            this.findPatientsWhoStartedArtAndTpiPreviouslyDessagragation(), mappings));
 
     dsd.setCompositionString(
         "(STARTED-TPT AND (NEWLY-ART OR PREVIOUS-ART)) NOT (TRF-OUT NOT ENDED-TPT) ");
@@ -117,9 +106,7 @@ public class TxTbPrevCohortQueries {
                     .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
                         DisaggregationTypes.NEWLY_ENROLLED)),
             mappings));
-
-    dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
-    dsd.setCompositionString("STARTED-TPT-AND-ART NOT TROUT ");
+    dsd.setCompositionString("STARTED-TPT-AND-ART");
 
     return dsd;
   }
@@ -143,9 +130,7 @@ public class TxTbPrevCohortQueries {
                     .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
                         DisaggregationTypes.PREVIOUSLY_ENROLLED)),
             mappings));
-
-    dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
-    dsd.setCompositionString("STARTED-TPT-AND-ART NOT TROUT");
+    dsd.setCompositionString("STARTED-TPT-AND-ART");
     return dsd;
   }
 
