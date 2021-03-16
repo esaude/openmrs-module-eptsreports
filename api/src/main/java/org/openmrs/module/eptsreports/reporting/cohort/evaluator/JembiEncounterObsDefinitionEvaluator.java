@@ -41,8 +41,7 @@ public class JembiEncounterObsDefinitionEvaluator implements PatientDataEvaluato
       List<Obs> obss = listMap.get(pId);
 
       if (def.getTimeQualifier() == TimeQualifier.FIRST
-          && def.getEptsMetadataDatetimeQualifier()
-              != EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME) {
+          && def.getEptsMetadataDatetimeQualifier() == EPTSMetadataDatetimeQualifier.OBS_DATETIME) {
         Obs obs = obss.get(0);
 
         evaluatedPatientData.addData(pId, obs);
@@ -50,9 +49,8 @@ public class JembiEncounterObsDefinitionEvaluator implements PatientDataEvaluato
       }
 
       if (def.getTimeQualifier() == TimeQualifier.LAST
-          && def.getEptsMetadataDatetimeQualifier()
-              != EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME) {
-        Obs obs = obss.get(obss.size() - 1);
+          && def.getEptsMetadataDatetimeQualifier() == EPTSMetadataDatetimeQualifier.OBS_DATETIME) {
+        Obs obs = obss.get(0);
 
         evaluatedPatientData.addData(pId, obs);
         continue;
@@ -70,7 +68,25 @@ public class JembiEncounterObsDefinitionEvaluator implements PatientDataEvaluato
       if (def.getTimeQualifier() == TimeQualifier.LAST
           && def.getEptsMetadataDatetimeQualifier()
               == EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME) {
-        Obs obs = obss.get(obss.size() - 1);
+        Obs obs = obss.get(0);
+
+        evaluatedPatientData.addData(pId, obs);
+        continue;
+      }
+
+      if (def.getTimeQualifier() == TimeQualifier.LAST
+          && def.getEptsMetadataDatetimeQualifier()
+              == EPTSMetadataDatetimeQualifier.VALUE_DATETIME) {
+        Obs obs = obss.get(0);
+
+        evaluatedPatientData.addData(pId, obs);
+        continue;
+      }
+
+      if (def.getTimeQualifier() == TimeQualifier.FIRST
+          && def.getEptsMetadataDatetimeQualifier()
+              == EPTSMetadataDatetimeQualifier.VALUE_DATETIME) {
+        Obs obs = obss.get(0);
 
         evaluatedPatientData.addData(pId, obs);
         continue;

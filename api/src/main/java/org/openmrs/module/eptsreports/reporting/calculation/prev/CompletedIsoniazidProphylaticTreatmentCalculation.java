@@ -94,6 +94,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       Concept c23985 = tbMetadata.getRegimeTPTConcept();
       EncounterType e60 = tbMetadata.getRegimeTPTEncounterType();
       EncounterType e6 = hivMetadata.getAdultoSeguimentoEncounterType();
+      EncounterType e9 = hivMetadata.getPediatriaSeguimentoEncounterType();
+      EncounterType e53 = hivMetadata.getMasterCardEncounterType();
       Concept c656 = tbMetadata.getIsoniazidConcept();
       Concept c23982 = tbMetadata.getIsoniazidePiridoxinaConcept();
       Concept c1719 = tbMetadata.getTreatmentPrescribedConcept();
@@ -106,6 +108,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       Concept c23720 = hivMetadata.getQuarterlyConcept();
       Concept c23954 = tbMetadata.get3HPConcept();
       Concept c23984 = tbMetadata.get3HPPiridoxinaConcept();
+      Concept c6129 = hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept();
 
       /** ----- all patients who started IPT in the previous reporting period ---- */
       // I.
@@ -192,7 +195,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
       // V
       CalculationResultMap endProfilaxiaObservations =
           ePTSCalculationService.lastObs(
-              hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept(),
+              c6129,
               null,
               location,
               false,
@@ -200,6 +203,42 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               completionPeriodEndDate,
               consultationEncounterTypes,
               cohort,
+              context);
+      CalculationResultMap endProfilaxiaObservations6 =
+          ePTSCalculationService.getObs(
+              c6129,
+              e6,
+              cohort,
+              location,
+              null,
+              TimeQualifier.LAST,
+              null,
+              onOrBefore,
+              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
+              context);
+      CalculationResultMap endProfilaxiaObservations53 =
+          ePTSCalculationService.getObs(
+              c6129,
+              e53,
+              cohort,
+              location,
+              null,
+              TimeQualifier.LAST,
+              null,
+              onOrBefore,
+              EPTSMetadataDatetimeQualifier.VALUE_DATETIME,
+              context);
+      CalculationResultMap endProfilaxiaObservations9 =
+          ePTSCalculationService.getObs(
+              c6129,
+              e9,
+              cohort,
+              location,
+              null,
+              TimeQualifier.LAST,
+              null,
+              onOrBefore,
+              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
       // VI
       CalculationResultMap completedDrugsObservations =
@@ -753,15 +792,23 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
             getObsListFromResultMap(exclusionOutrasPrescricoesPreviousPeriodMap, patientId);
 
         // ipt end date section
-        Obs endProfilaxiaObs =
-            EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations, patientId);
+        // Obs endProfilaxiaObs =
+        //   EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations, patientId);
+        Obs endProfilaxiaObs6 =
+            EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations6, patientId);
+        Obs endProfilaxiaObs53 =
+            EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations53, patientId);
+        Obs endProfilaxiaObs9 =
+            EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations9, patientId);
         Obs endDrugsObs =
             EptsCalculationUtils.obsResultForPatient(completedDrugsObservations, patientId);
         /*
-         * If We can't find a startDate from Ficha de Seguimento (adults and children) / Ficha
-         * Resumo or Ficha Clinica-MasterCard, we can't do the calculations. -Just move to the next
-         * patient.
-         */
+                 * If We can't find a startDatvamos ao room1
+        ￼
+        e from Ficha de Seguimento (adults and children) / Ficha
+                 * Resumo or Ficha Clinica-MasterCard, we can't do the calculations. -Just move to the next
+                 * patient.
+                 */
         if (startProfilaxiaObs == null && startDrugsObs == null) {
           continue;
         }
@@ -782,7 +829,11 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
                 true);
 
         Date iptEndDate =
-            getMinOrMaxObsDate(Arrays.asList(endProfilaxiaObs, endDrugsObs), Priority.MAX, false);
+            getMinOrMaxObsDate(
+                Arrays.asList(
+                    endProfilaxiaObs53, endProfilaxiaObs6, endProfilaxiaObs9, endDrugsObs),
+                Priority.MAX,
+                true);
 
         // viii
         int viii =
@@ -1022,8 +1073,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
    * @param priority MIN to retrieve the start drugs date, MAX to retrieve the end drugs date
    * @return The earliest or most recent date according to the priority parameter
    */
-  private Date getMinOrMaxObsDate(
-      List<Obs> obss, Priority priority, boolean useValueDatetimefor1stObs) {
+  private Date getMinOrMaxObsDate(List<Obs> obss, Priority priority, boolean useValueDatetimeObs) {
 
     Date returedDate = null;
 
@@ -1031,9 +1081,11 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
     for (Obs o : obss) {
 
       if (o != null) {
-        if (useValueDatetimefor1stObs
+        if (useValueDatetimeObs
             && o.equals(obss.get(0))
-            && o.getConcept().equals(hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept())) {
+            && (o.getConcept().equals(hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept())
+                || o.getConcept()
+                    .equals(hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept()))) {
           dates.add(o.getValueDatetime());
         } else {
           dates.add(o.getEncounter().getEncounterDatetime());
