@@ -47,7 +47,17 @@ public class TxTbPrevCohortQueries {
                     .findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
             mappings));
 
-    dsd.setCompositionString("STARTED-TPT NOT (TRF-OUT NOT ENDED-TPT) ");
+    dsd.addSearch(
+        "NEWLY-ART",
+        EptsReportUtils.map(this.findPatientsWhoStartedArtAndTpiNewDessagragation(), mappings));
+
+    dsd.addSearch(
+        "PREVIOUS-ART",
+        EptsReportUtils.map(
+            this.findPatientsWhoStartedArtAndTpiPreviouslyDessagragation(), mappings));
+
+    dsd.setCompositionString(
+        "(STARTED-TPT AND (NEWLY-ART OR PREVIOUS-ART)) NOT (TRF-OUT NOT ENDED-TPT) ");
 
     return dsd;
   }
@@ -96,9 +106,7 @@ public class TxTbPrevCohortQueries {
                     .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
                         DisaggregationTypes.NEWLY_ENROLLED)),
             mappings));
-
-    dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
-    dsd.setCompositionString("STARTED-TPT-AND-ART NOT TROUT ");
+    dsd.setCompositionString("STARTED-TPT-AND-ART");
 
     return dsd;
   }
@@ -122,9 +130,7 @@ public class TxTbPrevCohortQueries {
                     .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
                         DisaggregationTypes.PREVIOUSLY_ENROLLED)),
             mappings));
-
-    dsd.addSearch("TROUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
-    dsd.setCompositionString("STARTED-TPT-AND-ART NOT TROUT");
+    dsd.setCompositionString("STARTED-TPT-AND-ART");
     return dsd;
   }
 
