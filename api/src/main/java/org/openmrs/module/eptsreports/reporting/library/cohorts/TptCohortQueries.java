@@ -2,7 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.TxTbPrevQueriesInterface;
+import org.openmrs.module.eptsreports.reporting.library.queries.List1Queries;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
@@ -21,9 +21,7 @@ public class TptCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
 
-    definition.setQuery(
-        TxTbPrevQueriesInterface.QUERY
-            .findPatientsWhoStartedTbPrevPreventiveTreatmentDuringPreviousReportingPeriod);
+    definition.setQuery(List1Queries.QUERY.finPatientsWhoInitieted3hp);
 
     return definition;
   }
