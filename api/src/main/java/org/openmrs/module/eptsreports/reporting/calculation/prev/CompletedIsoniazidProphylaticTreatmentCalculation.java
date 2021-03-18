@@ -1170,19 +1170,23 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
   private int evaluateOccurrence(List<Obs> obss, Date iptStartDate, int nTimes, int plusIPTDate) {
     int num = 0;
-    for (Obs o : obss) {
-
-      if (o.getEncounter()
-                  .getEncounterDatetime()
-                  .compareTo(DateUtils.addMonths(iptStartDate, plusIPTDate))
-              <= 0
-          && o.getEncounter().getEncounterDatetime().compareTo(iptStartDate) >= 0) {
-        num++;
-        if (num == nTimes) {
-          break;
+    if (iptStartDate != null) {
+      for (Obs o : obss) {
+        if (o.getEncounter() != null) {
+          if (o.getEncounter()
+                      .getEncounterDatetime()
+                      .compareTo(DateUtils.addMonths(iptStartDate, plusIPTDate))
+                  <= 0
+              && o.getEncounter().getEncounterDatetime().compareTo(iptStartDate) >= 0) {
+            num++;
+            if (num == nTimes) {
+              break;
+            }
+          }
         }
       }
     }
+
     return num;
   }
 
