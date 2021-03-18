@@ -322,7 +322,7 @@ public interface MQQueriesInterface {
             + ") carga_viral ";
 
     public static final String findPatientsWhoHaveLastFirstLineTerapeutic =
-        " select firstLine.patient_id from ( "
+        " select distinct firstLine.patient_id from ( "
             + " select maxLinha.patient_id, maxLinha.maxDataLinha from ( "
             + " select p.patient_id,max(o.obs_datetime) maxDataLinha from patient p "
             + " join encounter e on p.patient_id=e.patient_id "
