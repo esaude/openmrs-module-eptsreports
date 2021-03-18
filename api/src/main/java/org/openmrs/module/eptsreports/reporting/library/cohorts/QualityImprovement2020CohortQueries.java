@@ -4198,7 +4198,7 @@ public class QualityImprovement2020CohortQueries {
           "age",
           EptsReportUtils.map(
               commonCohortQueries.getMOHPatientsAgeOnLastClinicalConsultationDate(0, 4),
-              "startDate=${endDate},endDate=${revisionEndDate},location=${location}"));
+              "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
     } else if (line == 7) {
       compositionCohortDefinition.addSearch(
           "age",
