@@ -5083,8 +5083,6 @@ public class QualityImprovement2020CohortQueries {
             + "                                            AND e.location_id = :location  "
             + "                                        GROUP  BY p.patient_id   "
             + "                                    ) union_tbl  "
-            + "                            WHERE  union_tbl.art_date  "
-            + "                                BETWEEN :startDate AND :endDate   "
             + "                        ) AS inicio ON inicio.patient_id = p.patient_id   "
             + "            INNER JOIN ( "
             + "                        SELECT p.patient_id, MIN(e.encounter_datetime) AS first_gestante, e.encounter_id "
@@ -5112,7 +5110,8 @@ public class QualityImprovement2020CohortQueries {
             + "            AND o.value_coded = ${1065}  "
             + "            AND e.encounter_datetime > inicio.art_date "
             + "            AND e.encounter_datetime BETWEEN  :startDate AND :endDate "
-            + "            AND e.location_id = :location ";
+            + "            AND e.location_id = :location "
+            + "      GROUP BY p.patient_id ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
 
@@ -5140,14 +5139,9 @@ public class QualityImprovement2020CohortQueries {
     Map<String, Integer> map = new HashMap<>();
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put("52", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put("1190", hivMetadata.getARVStartDateConcept().getConceptId());
-    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
-    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
-    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
-    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
     map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
-    map.put("856", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
 
     StringSubstitutor sb = new StringSubstitutor(map);
 
@@ -5222,16 +5216,11 @@ public class QualityImprovement2020CohortQueries {
     cd.setName(" B4 - categoria 13 - Denominador - part 2");
 
     Map<String, Integer> map = new HashMap<>();
-    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put("52", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put("1190", hivMetadata.getARVStartDateConcept().getConceptId());
-    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
     map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
-    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
     map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
     map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
-    map.put("856", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
 
     StringSubstitutor sb = new StringSubstitutor(map);
 
