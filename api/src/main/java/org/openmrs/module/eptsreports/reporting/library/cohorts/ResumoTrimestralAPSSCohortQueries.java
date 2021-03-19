@@ -257,7 +257,7 @@ public class ResumoTrimestralAPSSCohortQueries {
                     .findPatientsRegistredInLivroDeChamadasVisitasDomiciliariasWithElegivelParaReintegracaoRF15E1),
             mappings));
 
-    compsitionDefinition.setCompositionString("FALTOSOS OR ABANDONOS AND REINTEGRACAO");
+    compsitionDefinition.setCompositionString("(FALTOSOS OR ABANDONOS) AND REINTEGRACAO");
 
     return compsitionDefinition;
   }
