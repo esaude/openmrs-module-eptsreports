@@ -182,14 +182,16 @@ public class TxRttDataset extends BaseDataSet {
             mappings),
         "");
 
-    // TODO: Vai entrar na proxima versao
-    //		definition.addColumn("PLHIVUNKOWN", "PLHIV Unknown Desaggregation",
-    //				EptsReportUtils.map(
-    //						eptsGeneralIndicator.getIndicator("patients PLHIV With unknown date of IIT ",
-    //								EptsReportUtils.map(this.txRTTCohortQueries.getPLHIVUnknownDesaggregation(),
-    // mappings)),
-    //						mappings),
-    //				"");
+    definition.addColumn(
+        "PLHIVUNKOWN",
+        "PLHIV Unknown Desaggregation",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "patients PLHIV With unknown date of IIT ",
+                EptsReportUtils.map(
+                    this.txRTTCohortQueries.getPLHIVUnknownDesaggregation(), mappings)),
+            mappings),
+        "");
 
     definition.addColumn(
         "PLHIVTOTAL",

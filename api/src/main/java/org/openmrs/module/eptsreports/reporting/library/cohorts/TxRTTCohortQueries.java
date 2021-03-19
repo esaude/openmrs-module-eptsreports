@@ -23,6 +23,8 @@ public class TxRTTCohortQueries {
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
+  @Autowired private TRFINCohortQueries tRFINCohortQueries;
+
   @DocumentedDefinition(value = "TxRttPatientsOnRTT")
   public CohortDefinition getPatientsOnRTT() {
 
@@ -52,8 +54,14 @@ public class TxRTTCohortQueries {
             this.txCurrCohortQueries.findPatientsWhoAreActiveOnART(),
             "endDate=${endDate},location=${location}"));
 
+    compositionDefinition.addSearch(
+        "TRF-IN",
+        EptsReportUtils.map(
+            this.tRFINCohortQueries.getPatiensWhoAreTransferredIn(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
     compositionDefinition.setCompositionString(
-        "(IIT-PREVIOUS-PERIOD NOT RTT-TRANFERRED-OUT) AND TX-CURR");
+        "((IIT-PREVIOUS-PERIOD NOT RTT-TRANFERRED-OUT) AND TX-CURR) NOT TRF-IN");
 
     return compositionDefinition;
   }
@@ -163,7 +171,14 @@ public class TxRTTCohortQueries {
     compositionDefinition.addSearch(
         "RTT-LESS12MONTHS", EptsReportUtils.map(this.getPLHIVLess12MonthCalculation(), mappings));
 
-    compositionDefinition.setCompositionString("RTT-LESS12MONTHS OR RTT-GREATER12MONTHS");
+    compositionDefinition.addSearch(
+        "RTT-PLHIVUNKNOWN",
+        EptsReportUtils.map(
+            this.getPLHIVUnknownDesaggregation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    compositionDefinition.setCompositionString(
+        "RTT-LESS12MONTHS OR RTT-GREATER12MONTHS OR RTT-PLHIVUNKNOWN");
 
     return compositionDefinition;
   }
