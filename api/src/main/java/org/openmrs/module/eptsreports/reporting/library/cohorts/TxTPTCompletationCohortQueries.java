@@ -525,7 +525,7 @@ public class TxTPTCompletationCohortQueries {
     definition.addSearch(
         "tb-genexpert-or-culture-test-or-lam-test",
         EptsReportUtils.map(
-            tXTBCohortQueries.getTbGenExpertORCultureTestOrTbLam(), generalParameterMapping));
+            tXTBCohortQueries.getTbGenExpertORCultureTestOrTbLamOrBk(), generalParameterMapping));
 
     definition.setCompositionString(
         "tuberculosis-symptoms OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-or-culture-test-or-lam-test");
