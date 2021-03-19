@@ -155,6 +155,8 @@ public class QualityImprovement2020Queries {
         "Patients that returned for another clinical consultation or ARV pickup between 25 and 33 days after ART start date(Oldest date From A)");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -173,8 +175,9 @@ public class QualityImprovement2020Queries {
             + "  FROM   patient p  "
             + "      INNER JOIN encounter e  "
             + "         ON e.patient_id = p.patient_id  "
-            + "      INNER JOIN "
-            + "                ( "
+            + "      INNER JOIN ( "
+            + "            SELECT patient_id, ficha_resumo.data_inicio "
+            + "            FROM ( "
             + "                   SELECT p.patient_id, Min(value_datetime) AS data_inicio  "
             + "                   FROM   patient p  "
             + "                       INNER JOIN encounter e  "
@@ -189,7 +192,8 @@ public class QualityImprovement2020Queries {
             + "                       AND o.value_datetime IS NOT NULL  "
             + "                       AND o.value_datetime <= :endDate  "
             + "                       AND e.location_id = :location  "
-            + "                   GROUP  BY p.patient_id "
+            + "                   GROUP  BY p.patient_id) AS ficha_resumo "
+            + "              WHERE ficha_resumo.data_inicio BETWEEN :startDate AND :endDate "
             + "                 ) inicio    "
             + "           ON inicio.patient_id = p.patient_id                   "
             + "  WHERE p.voided = 0 "
