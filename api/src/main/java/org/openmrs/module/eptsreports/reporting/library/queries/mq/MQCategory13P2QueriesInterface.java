@@ -40,13 +40,17 @@ public interface MQCategory13P2QueriesInterface {
             + " ) art_start "
             + " GROUP BY patient_id "
             + " ) tx_new "
-            + " inner join encounter e_ ON e_.patient_id = tx_new.patient_id "
-            + " inner join obs o ON o.encounter_id = e_.encounter_id "
-            + " inner join person pe ON pe.person_id = e_.patient_id "
-            + " WHERE o.concept_id = 1982 AND o.value_coded = 1065 AND o.voided = 0 and e_.location_id = :location "
-            + " and o.location_id = :location and e_.voided = 0 and e_.encounter_type = 6 and pe.gender = 'F' "
-            + " AND e_.encounter_datetime >= :startInclusionDate AND e_.encounter_datetime <= :endInclusionDate "
-            + " AND e_.encounter_datetime > tx_new.art_start_date ";
+            + " INNER JOIN "
+            + " ( "
+            + " SELECT p.patient_id, MIN(e.encounter_datetime) dataConsulta FROM "
+            + " patient p "
+            + " INNER JOIN encounter e ON e.patient_id = p.patient_id and p.voided = 0 and e.voided = 0 and e.encounter_type = 6 and e.location_id = :location "
+            + " INNER JOIN obs o ON o.encounter_id = e.encounter_id and o.voided = 0 and o.concept_id = 1982 and o.value_coded = 1065 and o.location_id = :location "
+            + " INNER JOIN person pe ON pe.person_id = e.patient_id and pe.gender = 'F' "
+            + " GROUP by p.patient_id "
+            + " ) firstConsult ON firstConsult.patient_id = tx_new.patient_id "
+            + " WHERE firstConsult.dataConsulta >= :startInclusionDate AND firstConsult.dataConsulta <= :endInclusionDate "
+            + " AND firstConsult.dataConsulta> tx_new.art_start_date ";
 
     public static final String
         findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodByB3 =
