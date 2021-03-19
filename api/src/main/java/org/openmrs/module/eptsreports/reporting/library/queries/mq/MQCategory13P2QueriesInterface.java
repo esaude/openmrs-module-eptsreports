@@ -47,6 +47,7 @@ public interface MQCategory13P2QueriesInterface {
             + " INNER JOIN encounter e ON e.patient_id = p.patient_id and p.voided = 0 and e.voided = 0 and e.encounter_type = 6 and e.location_id = :location "
             + " INNER JOIN obs o ON o.encounter_id = e.encounter_id and o.voided = 0 and o.concept_id = 1982 and o.value_coded = 1065 and o.location_id = :location "
             + " INNER JOIN person pe ON pe.person_id = e.patient_id and pe.gender = 'F' "
+            + " WHERE e.encounter_datetime <= :endInclusionDate "
             + " GROUP by p.patient_id "
             + " ) firstConsult ON firstConsult.patient_id = tx_new.patient_id "
             + " WHERE firstConsult.dataConsulta >= :startInclusionDate AND firstConsult.dataConsulta <= :endInclusionDate "
