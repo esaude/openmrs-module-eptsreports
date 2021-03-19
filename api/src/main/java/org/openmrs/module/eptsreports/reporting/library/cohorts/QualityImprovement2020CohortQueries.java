@@ -2431,6 +2431,8 @@ public class QualityImprovement2020CohortQueries {
             + "        AND o.location_id = :location "
             + "        AND o.concept_id = ${856} "
             + "        AND o.value_numeric > 1000 "
+            + "        AND e.encounter_datetime BETWEEN "
+            + "        :startDate AND :endDate "
             + " GROUP BY p.patient_id) filtered ON p.patient_id = filtered.patient_id; ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
@@ -4949,6 +4951,8 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
+    CohortDefinition adults = this.ageCohortQueries.createXtoYAgeCohort("adullts", 2, 14);
+
     CohortDefinition patientsFromFichaClinicaLinhaTerapeutica =
         getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
 
@@ -4981,7 +4985,7 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition G = getMQ13P4G();
 
     CohortDefinition H = getMQ13P4H();
-
+    compositionCohortDefinition.addSearch("adults", EptsReportUtils.map(adults, ""));
     compositionCohortDefinition.addSearch(
         "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING1));
 
@@ -5008,7 +5012,7 @@ public class QualityImprovement2020CohortQueries {
             "(B1 AND B2) AND NOT (B4 or B5 or E or F)");
       } else if (line == 12) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND B2) AND NOT (B4 or B5 or E or F)");
+            "((B1 AND B2) AND NOT (B4 or B5 or E or F)) AND adults");
       } else if (line == 18) {
         compositionCohortDefinition.setCompositionString("(B1 AND B4) AND NOT (B5 or E or F)");
       }
