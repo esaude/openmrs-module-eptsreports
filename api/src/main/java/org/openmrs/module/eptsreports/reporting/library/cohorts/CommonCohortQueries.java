@@ -575,78 +575,72 @@ public class CommonCohortQueries {
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put("21151", hivMetadata.getTherapeuticLineConcept().getConceptId());
     map.put("21150", hivMetadata.getFirstLineConcept().getConceptId());
-    map.put("1190", hivMetadata.getFirstLineConcept().getConceptId());
+    map.put("1190", hivMetadata.getARVStartDateConcept().getConceptId());
 
     String query =
-        " SELECT pa.patient_id  "
-            + "FROM   patient pa  "
-            + "       JOIN encounter enc  "
-            + "         ON enc.patient_id = pa.patient_id  "
-            + "       JOIN obs ob  "
-            + "         ON ob.encounter_id = enc.encounter_id  "
-            + "       JOIN (SELECT p.patient_id,  "
-            + "                    filtered.encounter_datetime  "
-            + "             FROM   patient p  "
-            + "                    JOIN encounter e  "
-            + "                      ON e.patient_id = p.patient_id  "
-            + "                    JOIN obs o  "
-            + "                      ON o.encounter_id = e.encounter_id  "
-            + "                    INNER JOIN (SELECT p.patient_id,  "
-            + "                                       Max(e.encounter_datetime) AS  "
-            + "                                       encounter_datetime  "
-            + "                                FROM   patient p  "
-            + "                                       INNER JOIN encounter e  "
-            + "                                               ON e.patient_id = p.patient_id  "
-            + "                                       JOIN obs o  "
-            + "                                         ON o.encounter_id = e.encounter_id  "
-            + "                                WHERE  e.encounter_type = ${6}  "
-            + "                                       AND p.voided = 0  "
-            + "                                       AND e.voided = 0  "
-            + "                                       AND e.location_id = :location  "
-            + "                                       AND o.voided = 0  "
-            + "                                       AND e.encounter_datetime BETWEEN  "
-            + "                                           :startDate AND :revisionEndDate  "
-            + "                                GROUP  BY p.patient_id) filtered  "
-            + "                            ON filtered.patient_id = p.patient_id  "
-            + "             WHERE  e.encounter_datetime = filtered.encounter_datetime  "
-            + "                    AND e.location_id = :location  "
-            + "                    AND o.concept_id = ${21151}  "
-            + "                    AND e.voided = 0  "
-            + "                    AND o.voided = 0  "
-            + "                    AND o.value_coded = ${21150}  "
-            + "                    AND e.encounter_type = ${6}) first_line  "
-            + "         ON first_line.patient_id = pa.patient_id  "
-            + "       INNER JOIN (SELECT p.patient_id,  "
-            + "                          Max(e.encounter_datetime) last_visit  "
-            + "                   FROM   patient p  "
-            + "                          INNER JOIN encounter e  "
-            + "                                  ON e.patient_id = p.patient_id  "
-            + "                   WHERE  p.voided = 0  "
-            + "                          AND e.voided = 0  "
-            + "                          AND e.encounter_type = ${6}  "
-            + "                          AND e.location_id = :location  "
-            + "                          AND e.encounter_datetime BETWEEN  "
-            + "                              :startDate AND :endDate  "
-            + "                   GROUP  BY p.patient_id) AS last_clinical  "
-            + "               ON last_clinical.patient_id = pa.patient_id  "
-            + "       INNER JOIN (SELECT p.patient_id,  "
-            + "                          o.value_datetime AS arv_date  "
-            + "                   FROM   patient p  "
-            + "                          INNER JOIN encounter e  "
-            + "                                  ON e.patient_id = p.patient_id  "
-            + "                          INNER JOIN obs o  "
-            + "                                  ON o.encounter_id = e.encounter_id  "
-            + "                   WHERE  o.concept_id = ${1190}  "
-            + "                          AND e.encounter_type = ${53}  "
-            + "                          AND e.location_id = :location  "
-            + "                          AND p.voided = 0  "
-            + "                          AND e.voided = 0  "
-            + "                          AND o.voided = 0) arv_start_date  "
-            + "               ON arv_start_date.patient_id = pa.patient_id  "
-            + "                  AND Date(arv_start_date.arv_date) <= Date_sub(  "
-            + "                      last_clinical.last_visit,  "
-            + "                                                       INTERVAL 6 month)  "
-            + "GROUP  BY pa.patient_id  ";
+        " SELECT "
+            + "     pa.patient_id "
+            + " FROM "
+            + "     patient pa "
+            + "          JOIN "
+            + "     encounter enc ON enc.patient_id = pa.patient_id "
+            + "          JOIN "
+            + "     obs ob ON ob.encounter_id = enc.encounter_id "
+            + "          JOIN "
+            + "      (SELECT "
+            + "          p.patient_id, filtered.encounter_datetime "
+            + "      FROM "
+            + "          patient p "
+            + "      JOIN encounter e ON e.patient_id = p.patient_id "
+            + "      JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "      INNER JOIN (SELECT "
+            + "          p.patient_id, "
+            + "              MAX(e.encounter_datetime) AS encounter_datetime "
+            + "      FROM "
+            + "          patient p "
+            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "      WHERE "
+            + "          e.encounter_type = ${6} AND p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "             AND e.location_id = :location "
+            + "              AND e.encounter_datetime BETWEEN :startDate AND :revisionEndDate "
+            + "      GROUP BY p.patient_id) filtered ON filtered.patient_id = p.patient_id "
+            + "      WHERE "
+            + "          e.encounter_datetime = filtered.encounter_datetime "
+            + "              AND e.location_id = :location "
+            + "              AND o.concept_id = ${21151} "
+            + "              AND e.voided = 0 "
+            + "              AND o.voided = 0 "
+            + "              AND o.value_coded = ${21150} "
+            + "              AND e.encounter_type = ${6}) first_line ON first_line.patient_id = pa.patient_id "
+            + "          INNER JOIN "
+            + "      (SELECT "
+            + "          p.patient_id, MAX(e.encounter_datetime) last_visit "
+            + "      FROM "
+            + "          patient p "
+            + "      INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "      WHERE "
+            + "          p.voided = 0 AND e.voided = 0 "
+            + "              AND e.encounter_type = ${6} "
+            + "              AND e.location_id = :location "
+            + "              AND e.encounter_datetime BETWEEN :startDate AND :revisionEndDate "
+            + "      GROUP BY p.patient_id) AS last_clinical ON last_clinical.patient_id = pa.patient_id "
+            + "          INNER JOIN "
+            + "      (SELECT "
+            + "          p.patient_id, o.value_datetime AS arv_date "
+            + "      FROM "
+            + "          patient p "
+            + "      INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "      INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "      WHERE "
+            + "          o.concept_id = ${1190} "
+            + "              AND e.encounter_type = ${53} "
+            + "              AND e.location_id = :location "
+            + "              AND p.voided = 0 "
+            + "              AND e.voided = 0 "
+            + "              AND o.voided = 0) arv_start_date ON arv_start_date.patient_id = pa.patient_id "
+            + "          AND DATE(arv_start_date.arv_date) <= DATE_SUB(last_clinical.last_visit, INTERVAL 6 MONTH) "
+            + "  GROUP BY pa.patient_id ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -786,93 +780,6 @@ public class CommonCohortQueries {
     map.put("exclusionEncounter", String.valueOf(exclusionEncounter.getEncounterTypeId()));
     map.put("exclusionConcept", String.valueOf(exclusionConcept.getConceptId()));
     map.put("exclusionValueCoded", StringUtils.join(answerIds2, ","));
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
-    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
-
-    return sqlCohortDefinition;
-  }
-
-  /**
-   * <b>Description:</b> MOH Patients to Exclude From Treatment in 6 Months
-   *
-   * <p><b>Technical Specs</b>
-   *
-   * <blockquote>
-   *
-   * B2E - Exclude all patients from Ficha Clinica (encounter type 6, encounter_datetime) who have
-   * “LINHA TERAPEUTICA”(Concept id 21151) with value coded DIFFERENT THAN “SEGUNDA LINHA”(Concept
-   * id 21150) and obs_datetime > “REGIME ARV SEGUNDA LINHA” (from B2New) and <= “Last Clinical
-   * Consultation” (last encounter_datetime from B1)
-   *
-   * </blockquote>
-   *
-   * @return {@link CohortDefinition}
-   */
-  public CohortDefinition getPatientsToExcludeFromTreatmentIn6MonthsB2E(
-      EncounterType clinicalEncounter,
-      EncounterType mastercardEncounter,
-      Concept arvSecondLineConcept,
-      Concept therapeuticLineConcept,
-      Concept firstLineConcept) {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Patients to exclude in treatment in the last 6 months");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlCohortDefinition.addParameter(
-        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
-
-    Map<String, String> map = new HashMap<>();
-    map.put("6", String.valueOf(clinicalEncounter.getEncounterTypeId()));
-    map.put("53", String.valueOf(mastercardEncounter.getEncounterTypeId()));
-    map.put("21187", String.valueOf(arvSecondLineConcept.getConceptId()));
-    map.put("21151", String.valueOf(therapeuticLineConcept.getConceptId()));
-    map.put("21150", String.valueOf(firstLineConcept.getConceptId()));
-
-    String query =
-        "SELECT p.patient_id FROM patient p "
-            + "JOIN encounter e ON e.patient_id = p.patient_id "
-            + "JOIN obs o ON o.encounter_id = e.encounter_id  "
-            + "JOIN (SELECT p.patient_id, o.obs_datetime "
-            + "                     FROM "
-            + "                       patient p "
-            + "                        INNER JOIN "
-            + "                        encounter e ON e.patient_id = p.patient_id "
-            + "                            INNER JOIN "
-            + "                        obs o ON o.encounter_id = e.encounter_id "
-            + "                        INNER JOIN( "
-            + "                        SELECT p.patient_id, "
-            + "                                  Max(e.encounter_datetime) last_visit "
-            + "                           FROM   patient p "
-            + "                                  INNER JOIN encounter e "
-            + "                                          ON e.patient_id = p.patient_id "
-            + "                           WHERE  p.voided = 0 "
-            + "                                  AND e.voided = 0 "
-            + "                                  AND e.encounter_type = ${6} "
-            + "                                  AND e.location_id = :location "
-            + "                                  AND e.encounter_datetime BETWEEN :startDate AND :revisionEndDate "
-            + "                           GROUP  BY p.patient_id) AS last_clinical "
-            + "                           ON last_clinical.patient_id = p.patient_id "
-            + "                        WHERE e.voided = 0 AND p.voided = 0 "
-            + "                        AND o.voided = 0 "
-            + "                        AND e.encounter_type = ${53} "
-            + "                        AND e.location_id = :location  "
-            + "                        AND o.concept_id = ${21187} "
-            + "                        AND o.value_coded IS NOT NULL "
-            + "                        AND o.obs_datetime >= :startDate "
-            + "                        AND o.obs_datetime <= :endDate "
-            + "                        AND DATE(o.obs_datetime) <= DATE_SUB(last_clinical.last_visit,INTERVAL 6 MONTH)) b2_new "
-            + "                        ON b2_new.patient_id = p.patient_id "
-            + "                        WHERE e.encounter_type = ${6} "
-            + "                        AND o.concept_id = ${21151} "
-            + "                        AND o.value_coded <> ${21150} "
-            + "                        AND o.voided = 0 "
-            + "                        AND p.voided = 0 "
-            + "                        AND e.voided = 0 "
-            + "                        AND e.location_id = :location "
-            + "                        AND DATE(o.obs_datetime) > DATE(b2_new.obs_datetime)";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
