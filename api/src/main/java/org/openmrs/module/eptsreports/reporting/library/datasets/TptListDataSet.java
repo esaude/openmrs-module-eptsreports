@@ -1,7 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.queries.List1Queries;
+import org.openmrs.module.eptsreports.reporting.library.queries.ListOfPatientsWhoInitiatedTPTQueries;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.SqlDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -14,7 +14,7 @@ public class TptListDataSet extends BaseDataSet {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
     dsd.setName("INICIOTPI");
     dsd.addParameters(parameterList);
-    dsd.setSqlQuery(List1Queries.QUERY.finPatientsWhoInitietedINH);
+    dsd.setSqlQuery(ListOfPatientsWhoInitiatedTPTQueries.QUERY.finPatientsWhoInitietedTPTList);
     return dsd;
   }
 }
