@@ -133,8 +133,8 @@ public interface MQCategory13Section1QueriesInterface {
                 + "and obsLinha.voided=0 and e.voided=0 and obsLinha.obs_datetime<enc.encounter_datetime and e.location_id=:location "
                 + "group by enc.patient_id "
                 + ") linhaAlternativa "
-                + " left join encounter e_ on e_.patient_id = linhaAlternativa.patient_id and e_.voided = 0 and e_.encounter_type = 6 and e_.location_id = :location "
-                + " left join obs obsDiferenteLinha on e_.encounter_id = obsDiferenteLinha.encounter_id "
+                + " inner join encounter e_ on e_.patient_id = linhaAlternativa.patient_id and e_.voided = 0 and e_.encounter_type = 6 and e_.location_id = :location "
+                + " inner join obs obsDiferenteLinha on e_.encounter_id = obsDiferenteLinha.encounter_id "
                 + "and obsDiferenteLinha.voided=0 and obsDiferenteLinha.concept_id=21151 and obsDiferenteLinha.value_coded<>21150 "
                 + "and obsDiferenteLinha.obs_datetime>linhaAlternativa.dataLinha "
                 + "and obsDiferenteLinha.obs_datetime<=linhaAlternativa.ultimaConsulta "
@@ -181,7 +181,7 @@ public interface MQCategory13Section1QueriesInterface {
             + "inner join obs o on o.encounter_id=e.encounter_id	 "
             + "where  e.voided=0 and o.concept_id = 23722 and o.value_coded=856 and e.encounter_type=6 and o.voided=0 and e.location_id=:location "
             + ") cvPedido on cvPedido.patient_id=enc.patient_id "
-            + "where cvPedido.dataPedidoCV BETWEEN date_add(enc.encounter_datetime, interval -3 MONTH) and enc.encounter_datetime "
+            + "where cvPedido.dataPedidoCV >= date_add(enc.encounter_datetime, interval -3 MONTH) and cvPedido.dataPedidoCV < enc.encounter_datetime "
             + "group by patient_id "
             + ") final";
 

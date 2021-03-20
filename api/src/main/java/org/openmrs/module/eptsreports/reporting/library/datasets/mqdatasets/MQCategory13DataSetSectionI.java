@@ -100,8 +100,8 @@ public class MQCategory13DataSetSectionI extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT13CV1014NUMERATOR",
-        "13.7: Crianças (5-9 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, "
-            + "eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Numerador",
+        "13.8: Crianças (10-14 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram "
+            + "elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mQCategory13Section1CohortQueries.findFinalNumeratorCategory13SectionIC(),

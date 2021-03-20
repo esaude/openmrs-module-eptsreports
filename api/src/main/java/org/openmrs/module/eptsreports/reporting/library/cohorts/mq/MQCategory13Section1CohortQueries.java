@@ -360,7 +360,7 @@ public class MQCategory13Section1CohortQueries {
     definition.addSearch(
         "G", EptsReportUtils.map(this.findNumeratorCategory13Section1C(), mappings));
 
-    definition.setCompositionString("Denominator AND G");
+    definition.setCompositionString("(Denominator AND G)");
 
     return definition;
   }
