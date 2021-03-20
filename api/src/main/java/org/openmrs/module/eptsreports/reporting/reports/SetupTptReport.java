@@ -82,7 +82,8 @@ public class SetupTptReport extends EptsDataExportManager {
     ReportDesign reportDesign = null;
     try {
       reportDesign =
-          createXlsReportDesign(reportDefinition, "TPT.xls", "TPT", getExcelDesignUuid(), null);
+          createXlsReportDesign(
+              reportDefinition, "TPT.xls", "INICIO TPI", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("repeatingSections", "sheet:1,row:4,dataset:INICIOTPI");
 
