@@ -79,7 +79,7 @@ public class QueryDisaggregationProcessor {
           EvaluationContext context,
           Integer encounterTypeId,
           List<Integer> questions,
-          Concept answer) {
+          List<Integer> answers) {
 
     SqlQueryBuilder qb =
         new SqlQueryBuilder(
@@ -88,7 +88,7 @@ public class QueryDisaggregationProcessor {
                     .findMaxEncounterDateTimeByEncounterTypesAndConceptsAndAnswerAndEndOfReportingPeriod,
                 encounterTypeId,
                 StringUtils.join(questions, ","),
-                answer.getConceptId()),
+                StringUtils.join(answers, ",")),
             context.getParameterValues());
 
     return Context.getRegisteredComponents(EvaluationService.class)

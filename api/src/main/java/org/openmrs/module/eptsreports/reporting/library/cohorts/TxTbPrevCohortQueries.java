@@ -37,7 +37,6 @@ public class TxTbPrevCohortQueries {
                     .findPatientsWhoStartedTbPrevPreventiveTreatmentDuringPreviousReportingPeriod),
             mappings));
     dsd.addSearch("TRF-OUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
-
     dsd.addSearch(
         "ENDED-TPT",
         EptsReportUtils.map(
@@ -46,11 +45,9 @@ public class TxTbPrevCohortQueries {
                 TxTbPrevQueriesInterface.QUERY
                     .findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
             mappings));
-
     dsd.addSearch(
         "NEWLY-ART",
         EptsReportUtils.map(this.findPatientsWhoStartedArtAndTpiNewDessagragation(), mappings));
-
     dsd.addSearch(
         "PREVIOUS-ART",
         EptsReportUtils.map(

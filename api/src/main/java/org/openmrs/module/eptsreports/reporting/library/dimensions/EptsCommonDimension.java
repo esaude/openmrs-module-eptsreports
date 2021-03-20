@@ -171,6 +171,43 @@ public class EptsCommonDimension {
     return dim;
   }
 
+  public CohortDefinitionDimension ageCX(final AgeDimensionCohortInterface ageDimensionCohort) {
+    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setParameters(ageDimensionCohort.getParameters());
+    dim.setName("age dimension");
+
+    dim.addCohortDefinition("UK", ageDimensionCohort.createUnknownAgeCohort());
+    dim.addCohortDefinition(
+        "15-19",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 15 and 19 ", 15, 19));
+    dim.addCohortDefinition(
+        "20-24",
+        ageDimensionCohort.createXtoYAgeCohort(
+            "patients with age between 20 and 24 years", 20, 24));
+    dim.addCohortDefinition(
+        "25-29",
+        ageDimensionCohort.createXtoYAgeCohort(
+            "patients with age between 25 and 29s years", 25, 29));
+    dim.addCohortDefinition(
+        "30-34",
+        ageDimensionCohort.createXtoYAgeCohort(
+            "patients with age between 30 and 34 years", 30, 34));
+    dim.addCohortDefinition(
+        "35-39",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 35 and 39", 35, 39));
+    dim.addCohortDefinition(
+        "40-44",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 40 and 44", 40, 44));
+    dim.addCohortDefinition(
+        "45-49",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 45 and 49", 45, 49));
+
+    dim.addCohortDefinition(
+        "50+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 50", 50, null));
+
+    return dim;
+  }
+
   /** @return CohortDefinitionDimension */
   public CohortDefinitionDimension maternityDimension() {
     final CohortDefinitionDimension dim = new CohortDefinitionDimension();

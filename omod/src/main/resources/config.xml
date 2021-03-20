@@ -1522,6 +1522,43 @@
 			UUID for the SPUTUM FOR ACID FAST BACILLI concept
 		</description>
 	</globalProperty>
+	
+	<!--12 -->
+	<globalProperty>
+		<property>eptsreports.raioxtorax</property>
+		<defaultValue>e1cdb3b6-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the Raio X TORAX  concept
+		</description>
+	</globalProperty>
+	
+	
+	<!--1138 -->
+	<globalProperty>
+		<property>eptsreports.indeterminate</property>
+		<defaultValue>e1d89f2e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID for the INDETERMINATE  concept
+		</description>
+	</globalProperty>
+	
+	<!--165184 -->
+	<globalProperty>
+		<property>eptsreports.notfound</property>
+		<defaultValue>8ee04ec1-9a35-43ba-9a61-4f7927300f87</defaultValue>
+		<description>
+			UUID for the NOT FOUND concept
+		</description>
+	</globalProperty>
+	
+	<!--165189 -->
+	<globalProperty>
+		<property>eptsreports.xpertmtb</property>
+		<defaultValue>8dc1afbd-c10b-4834-a327-396c73848c73</defaultValue>
+		<description>
+			UUID for the XPert MTB/RIF concept
+		</description>
+	</globalProperty>
 
 	<!--23944 -->
 	<globalProperty>

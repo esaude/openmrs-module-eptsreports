@@ -6,10 +6,6 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaSCRNDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaTXDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TbPrevDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -21,28 +17,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupMERSemiAnnualReport extends EptsDataExportManager {
-
-  @Autowired private TxMlDataset txMlDataset;
-
-  @Autowired private GenericCohortQueries genericCohortQueries;
-
-  @Autowired private TxTBDataset txTBDataset;
-
-  @Autowired private TbPrevDataset tbPrevDataset;
+@Deprecated
+public class SetupCXCASCRN extends EptsDataExportManager {
 
   @Autowired private CxCaSCRNDataSet cxCaSCRNDataSet;
-
-  @Autowired private CxCaTXDataSet CxCaTXDataSet;
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Override
   public String getExcelDesignUuid() {
-    return "61fea06a-472b-11e9-8b42-876961a472ef";
+    return "61fea06a-472b-11e9-8b42-876961a47296";
   }
 
   @Override
   public String getUuid() {
-    return "6febad76-472b-11e9-a41e-db8c77c788cd";
+    return "6febad76-472b-11e9-a41e-db8c77c78800";
   }
 
   @Override
@@ -52,12 +40,12 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.5 Semi-Annual";
+    return "CXCASCRN";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR MER 2.5 Semi-Annual Report";
+    return "CXCASCRN";
   }
 
   @Override
@@ -66,11 +54,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.setParameters(txMlDataset.getParameters());
-    rd.addDataSetDefinition("T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
-    rd.addDataSetDefinition("TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
+    rd.setParameters(cxCaSCRNDataSet.getParameters());
     rd.addDataSetDefinition("CX", Mapped.mapStraightThrough(cxCaSCRNDataSet.constructDatset()));
-    rd.addDataSetDefinition("CXT", Mapped.mapStraightThrough(CxCaTXDataSet.constructDatset()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -86,11 +71,7 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition,
-              "PEPFAR_MER_2.5_Semiannual.xls",
-              "PEPFAR MER 2.5 Semi-Annual Report",
-              getExcelDesignUuid(),
-              null);
+              reportDefinition, "CXCASCRN.xls", "CXCASCRN ", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
