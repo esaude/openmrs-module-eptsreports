@@ -18,6 +18,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.melhoriaQualidade.En
 import org.openmrs.module.eptsreports.reporting.calculation.melhoriaQualidade.SecondFollowingEncounterAfterOldestARTStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.melhoriaQualidade.ThirdFollowingEncounterAfterOldestARTStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovement2020Queries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -4985,7 +4986,8 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition G = getMQ13P4G();
 
     CohortDefinition H = getMQ13P4H();
-    compositionCohortDefinition.addSearch("adults", EptsReportUtils.map(adults, ""));
+    compositionCohortDefinition.addSearch(
+        "adults", EptsReportUtils.map(adults, "effectiveDate=${endDate}"));
     compositionCohortDefinition.addSearch(
         "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING1));
 
