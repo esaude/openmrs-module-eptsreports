@@ -13,8 +13,8 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TPTCompletationCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxTPTCompletationCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -27,7 +27,7 @@ public class TPTCompletationDataSet extends BaseDataSet {
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
-  @Autowired private TxTPTCompletationCohortQueries txTPTCompletationCohortQueries;
+  @Autowired private TPTCompletationCohortQueries txTPTCompletationCohortQueries;
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 

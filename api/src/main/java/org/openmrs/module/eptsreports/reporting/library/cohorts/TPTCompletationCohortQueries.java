@@ -5,8 +5,9 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.TPTCompletationQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.TxTPTCompletationQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxTbPrevQueriesInterface.QUERY.DisaggregationTypes;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -17,13 +18,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxTPTCompletationCohortQueries {
+public class TPTCompletationCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohorts;
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
   @Autowired private TXTBCohortQueries tXTBCohortQueries;
+
+  @Autowired private TxTbPrevCohortQueries txTbPrevCohortQueries;
 
   @Autowired private TbMetadata tbMetadata;
 
@@ -158,25 +161,14 @@ public class TxTPTCompletationCohortQueries {
     dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
     dsd.addParameter(new Parameter("location", "location", Location.class));
     final String mappings = "endDate=${endDate},location=${location}";
-    String generalParameterMapping =
-        "startDate=${endDate-210d},endDate=${endDate},location=${location}";
 
     dsd.addSearch(
         "TPT-NO-COMPLETION",
         EptsReportUtils.map(this.findTxCurrWithoutTPTCompletation(), mappings));
     dsd.addSearch(
-        "TB-DENOMINATOR",
-        EptsReportUtils.map(
-            this.findTxCurrWithoutTPTCompletionWhoWereTreatedForTBForLast3Years(), mappings));
+        "TBPREV-DENOMINATOR", EptsReportUtils.map(this.getTbPrevTotalDenominator(), mappings));
 
-    dsd.addSearch(
-        "denominator",
-        EptsReportUtils.map(
-            this.getTxTBDenominator(
-                generalParameterMapping,
-                "startDate=${endDate-6m-210d},endDate=${endDate-1d},location=${location}"),
-            generalParameterMapping));
-    dsd.setCompositionString("TPT-NO-COMPLETION AND TB-DENOMINATOR");
+    dsd.setCompositionString("TPT-NO-COMPLETION AND TBPREV-DENOMINATOR");
 
     return dsd;
   }
@@ -213,7 +205,7 @@ public class TxTPTCompletationCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(
-        TxTPTCompletationQueries.QUERY.findPatientsWhoStartedINHTherapyBeforeReportingEndDate);
+        TPTCompletationQueries.QUERY.findPatientsWhoStartedINHTherapyBeforeReportingEndDate);
 
     return definition;
   }
@@ -226,7 +218,7 @@ public class TxTPTCompletationCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
 
-    definition.setQuery(TxTPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy);
+    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy);
 
     return definition;
   }
@@ -245,7 +237,7 @@ public class TxTPTCompletationCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "Patients Who have Started 3HP Therapy before Report End Date",
-                TxTPTCompletationQueries.QUERY
+                TPTCompletationQueries.QUERY
                     .findPatientsWhoStarted3HPTherapyBeforeReportingEndDate),
             mappings));
 
@@ -269,7 +261,7 @@ public class TxTPTCompletationCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "get Patients Who Completed 3HP Therapy",
-                TxTPTCompletationQueries.QUERY.findPatientsWhoCompleted3HPTherapy),
+                TPTCompletationQueries.QUERY.findPatientsWhoCompleted3HPTherapy),
             mappings));
     dsd.addSearch(
         "COMPLETED-INH", EptsReportUtils.map(this.findPatientsWhoCompletedINHTherapy(), mappings));
@@ -531,6 +523,62 @@ public class TxTPTCompletationCohortQueries {
         "tuberculosis-symptoms OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-or-culture-test-or-lam-test");
 
     return definition;
+  }
+
+  @DocumentedDefinition(value = "getTbPrevTotalDenominator")
+  public CohortDefinition getTbPrevTotalDenominator() {
+    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
+
+    dsd.setName("Patients Who Started TPT");
+    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dsd.addParameter(new Parameter("location", "location", Location.class));
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    dsd.addSearch(
+        "STARTED-TPT",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients Who have Started TPT During Previous Reporting Period",
+                TPTCompletationQueries.QUERY
+                    .findPatientsWhoStartedTbPrevPreventiveTreatmentDuringPreviousReportingPeriod),
+            mappings));
+    dsd.addSearch(
+        "TRF-OUT",
+        EptsReportUtils.map(txTbPrevCohortQueries.findPatientsTransferredOut(), mappings));
+    dsd.addSearch(
+        "ENDED-TPT",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients Who have Completed TPT",
+                TPTCompletationQueries.QUERY
+                    .findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
+            mappings));
+
+    dsd.addSearch(
+        "NEWLY-ART",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients New on ART Who Have Started TPT",
+                TPTCompletationQueries.QUERY
+                    .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
+                        DisaggregationTypes.NEWLY_ENROLLED)),
+            mappings));
+
+    dsd.addSearch(
+        "PREVIOUS-ART",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "Finding Patients Previously on ART Who Have Started TPT",
+                TPTCompletationQueries.QUERY
+                    .findPatientsWhoStartedArtAndTbPrevPreventiveTreatmentInDisaggregation(
+                        DisaggregationTypes.PREVIOUSLY_ENROLLED)),
+            mappings));
+
+    dsd.setCompositionString(
+        "(STARTED-TPT AND (NEWLY-ART OR PREVIOUS-ART)) NOT (TRF-OUT NOT ENDED-TPT) ");
+
+    return dsd;
   }
 
   private void addGeneralParameters(final CohortDefinition cd) {

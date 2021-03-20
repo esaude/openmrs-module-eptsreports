@@ -132,7 +132,7 @@ public class TxTbPrevCohortQueries {
   }
 
   @DocumentedDefinition(value = "findPatientsTransferredOut")
-  private CohortDefinition findPatientsTransferredOut() {
+  public CohortDefinition findPatientsTransferredOut() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
     definition.setName("get Patients Who were Transferred Out");
