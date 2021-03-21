@@ -954,8 +954,13 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
 
         // ( I or II or III or IV ) and (V or VI) or VII or VIII ... XIII)
         if (iptStartDate != null && iptEndDate != null) {
-          if (getProfilaxiaDuration(iptStartDate, iptEndDate) >= MINIMUM_DURATION_IN_DAYS
-              || viii >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED
+          if (getProfilaxiaDuration(iptStartDate, iptEndDate) >= MINIMUM_DURATION_IN_DAYS) {
+            map.put(patientId, new BooleanResult(true, this));
+          }
+        }
+
+        if (iptStartDate != null) {
+          if (viii >= NUMBER_ISONIAZID_USAGE_TO_CONSIDER_COMPLETED
               || (ixa + ixb) >= 6
               || (xa + xb) >= 2
               || (xia + xib) >= 2
