@@ -393,9 +393,11 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "refusedTreatment",
         EptsReportUtils.map(this.getPatientsWhoRefusedOrStoppedTreatment(), mapping));
+    cd.addSearch(
+        "numerator", EptsReportUtils.map(this.getPatientsWhoMissedNextApointment(), mapping));
 
     cd.setCompositionString(
-        "missedAppointmentLess3Month NOT (dead OR transferedOut OR refusedTreatment)");
+        "(numerator AND missedAppointmentLess3Month) NOT (dead OR transferedOut OR refusedTreatment)");
     return cd;
   }
 
@@ -416,9 +418,11 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "refusedTreatment",
         EptsReportUtils.map(this.getPatientsWhoRefusedOrStoppedTreatment(), mapping));
+    cd.addSearch(
+        "numerator", EptsReportUtils.map(this.getPatientsWhoMissedNextApointment(), mapping));
 
     cd.setCompositionString(
-        "missedAppointmentGreater3Month NOT (dead OR transferedOut OR refusedTreatment)");
+        "(numerator AND missedAppointmentGreater3Month) NOT (dead OR transferedOut OR refusedTreatment)");
     return cd;
   }
 
