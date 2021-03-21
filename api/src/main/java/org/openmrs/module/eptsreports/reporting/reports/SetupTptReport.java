@@ -1,21 +1,18 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TptListDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TptTotalDataseet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +24,7 @@ public class SetupTptReport extends EptsDataExportManager {
   @Autowired private TptListDataSet tptListDataSet;
   @Autowired private TptTotalDataseet tptTotalDataseet;
   @Autowired protected GenericCohortQueries genericCohortQueries;
+  @Autowired private TxRttDataset txRttDataset;
 
   @Override
   public String getExcelDesignUuid() {
@@ -40,7 +38,7 @@ public class SetupTptReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR LISTA DE PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA (TPI)";
+    return "LISTA DE PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA (TPI)";
   }
 
   @Override
@@ -54,11 +52,12 @@ public class SetupTptReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.addParameters(getDataParameters());
+    rd.addParameters(txRttDataset.getParameters());
 
     rd.addDataSetDefinition(
         "INICIOTPI",
-        Mapped.mapStraightThrough(tptListDataSet.eTptDataSetDefinition(getDataParameters())));
+        Mapped.mapStraightThrough(
+            tptListDataSet.eTptDataSetDefinition(txRttDataset.getParameters())));
 
     rd.addDataSetDefinition(
         "TPI", Mapped.mapStraightThrough(this.tptTotalDataseet.constructDataset()));
@@ -95,13 +94,5 @@ public class SetupTptReport extends EptsDataExportManager {
     }
 
     return Arrays.asList(reportDesign);
-  }
-
-  private List<Parameter> getDataParameters() {
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    parameters.add(ReportingConstants.START_DATE_PARAMETER);
-    parameters.add(ReportingConstants.END_DATE_PARAMETER);
-    parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
-    return parameters;
   }
 }
