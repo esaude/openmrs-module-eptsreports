@@ -58,6 +58,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.getPatientAgeBasedOnFirstViralLoadDate(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+
     // Category 3 Denominator
     CohortIndicator MQC3D1 =
         eptsGeneralIndicator.getIndicator(

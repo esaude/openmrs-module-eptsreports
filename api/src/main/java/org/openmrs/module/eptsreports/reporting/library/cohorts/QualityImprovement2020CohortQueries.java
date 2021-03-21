@@ -2135,8 +2135,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
-    String mapping =
-        "startDate=${startDate},endDate=${endDate},less3mDate=${startDate-3m},location=${location}";
+
     String mapping2 =
         "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
 
@@ -2239,7 +2238,6 @@ public class QualityImprovement2020CohortQueries {
           "((A AND NOT C AND NOT D) OR B1) AND NOT (F OR E) AND age");
     if (indicator == 5 || indicator == 14)
       compositionCohortDefinition.setCompositionString("B2New AND NOT (F OR E) AND age");
-
     return compositionCohortDefinition;
   }
 
@@ -3536,7 +3534,20 @@ public class QualityImprovement2020CohortQueries {
             + "               AND o.concept_id = ${21190} "
             + "               AND o.value_coded IS NOT NULL "
             + "               AND e.location_id = :location "
-            + "               AND o2.concept_id = ${1792} AND o2.value_coded <> ${1982}"
+            + "               AND ( "
+            + "                      (o2.concept_id = ${1792} AND o2.value_coded <> ${1982})"
+            + "                       OR "
+            + "                      (o2.concept_id = ${1792} AND o2.value_coded IS NULL) "
+            + "                       OR "
+            + "                      ( "
+            + "                       NOT EXISTS ( "
+            + "                               SELECT * FROM obs oo "
+            + "                               WHERE oo.voided = 0 "
+            + "                               AND oo.encounter_id = e.encounter_id "
+            + "                               AND oo.concept_id = 1792 "
+            + "                           ) "
+            + "                     ) "
+            + "                    ) "
             + "               AND e.voided = 0 "
             + "               AND p.voided = 0 "
             + "               AND o.voided = 0 "
@@ -3663,26 +3674,34 @@ public class QualityImprovement2020CohortQueries {
     map.put("1792", hivMetadata.getJustificativeToChangeArvTreatment().getConceptId());
 
     String query =
-        "SELECT p.patient_id"
-            + "   FROM"
-            + "   patient p"
-            + "       INNER JOIN"
-            + "   encounter e ON e.patient_id = p.patient_id"
-            + "       INNER JOIN"
-            + "   obs o ON o.encounter_id = e.encounter_id"
-            + "      INNER JOIN"
-            + "   obs o2 ON o2.encounter_id = e.encounter_id"
-            + "   WHERE e.voided = 0 AND p.voided = 0"
-            + "   AND o.voided = 0"
-            + "   AND o2.voided = 0"
-            + "   AND e.encounter_type = ${53}"
-            + "   AND e.location_id = :location"
-            + "   AND o.concept_id = ${21187}"
-            + "   AND o.value_coded IS NOT NULL"
-            + "   AND o.obs_datetime >= :startDate"
-            + "   AND o.obs_datetime <= :endDate"
-            + "   AND o2.concept_id = ${1792}"
-            + "   AND o2.value_coded <> ${1982}";
+        "SELECT p.patient_id "
+            + "  FROM patient p "
+            + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "       INNER JOIN obs o2 ON o2.encounter_id = e.encounter_id "
+            + "  WHERE e.voided = 0 AND p.voided = 0 "
+            + "    AND o.voided = 0 "
+            + "    AND o2.voided = 0 "
+            + "    AND e.encounter_type = ${53} "
+            + "    AND e.location_id = :location "
+            + "    AND (o.concept_id = ${21187} AND o.value_coded IS NOT NULL) "
+            + "               AND ( "
+            + "                      (o2.concept_id = ${1792} AND o2.value_coded <> ${1982})"
+            + "                       OR "
+            + "                      (o2.concept_id = ${1792} AND o2.value_coded IS NULL) "
+            + "                       OR "
+            + "                      ( "
+            + "                       NOT EXISTS ( "
+            + "                               SELECT * FROM obs oo "
+            + "                               WHERE oo.voided = 0 "
+            + "                               AND oo.encounter_id = e.encounter_id "
+            + "                               AND oo.concept_id = 1792 "
+            + "                           ) "
+            + "                     ) "
+            + "                    ) "
+            + "    AND o.obs_datetime >= :startDate "
+            + "    AND o.obs_datetime <= :endDate "
+            + "  GROUP BY p.patient_id";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -4333,6 +4352,12 @@ public class QualityImprovement2020CohortQueries {
                   15,
                   null),
               "effectiveDate=${endDate}"));
+    } else if (indicator == 5) {
+      cd.addSearch(
+          "age",
+          EptsReportUtils.map(
+              getAgeOnObsDatetime(15, null),
+              "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     } else if (indicator == 9) {
       cd.addSearch(
           "age",
@@ -4360,7 +4385,7 @@ public class QualityImprovement2020CohortQueries {
                   10,
                   14),
               "effectiveDate=${endDate}"));
-    } else if (indicator == 14 || indicator == 5) {
+    } else if (indicator == 14) {
       cd.addSearch(
           "age",
           EptsReportUtils.map(
@@ -4410,8 +4435,10 @@ public class QualityImprovement2020CohortQueries {
     if (indicator == 2 || indicator == 9 || indicator == 10 || indicator == 11)
       cd.setCompositionString(
           "((A AND NOT C AND NOT D AND G) OR (B1 AND H)) AND NOT (F OR E) AND age");
-    if (indicator == 5 || indicator == 14)
-      cd.setCompositionString("(B2New AND I) AND NOT (F OR E) AND age");
+
+    if (indicator == 5) cd.setCompositionString("(B2New AND I) AND NOT (F OR E) AND age");
+
+    if (indicator == 14) cd.setCompositionString("(B2New AND I) AND NOT (F OR E) AND age");
 
     return cd;
   }
@@ -4472,7 +4499,7 @@ public class QualityImprovement2020CohortQueries {
             + "                           OR ( o.concept_id = ${1305} "
             + "                                AND o.value_coded IS NOT NULL ) ))G_tbl "
             + "         ON G_tbl.patient_id = art_tbl.patient_id "
-            + "WHERE  G_tbl.encounter_datetime BETWEEN Date_add(art_tbl.data_inicio, "
+            + "       WHERE  G_tbl.encounter_datetime BETWEEN Date_add(art_tbl.data_inicio, "
             + "                                        interval 6 month) "
             + "                                        AND "
             + "       Date_add(art_tbl.data_inicio, interval 9 month)  ";
@@ -4574,57 +4601,47 @@ public class QualityImprovement2020CohortQueries {
     sqlCohortDefinition.setName("Category 13 Part 3- Numerator - I");
 
     Map<String, Integer> map = new HashMap<>();
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("1982", commonMetadata.getPregnantConcept().getConceptId());
+    map.put("21187", hivMetadata.getRegArvSecondLine().getConceptId());
+    map.put("1792", hivMetadata.getJustificativeToChangeArvTreatment().getConceptId());
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
-    map.put("21151", hivMetadata.getTherapeuticLineConcept().getConceptId());
-    map.put("21148", hivMetadata.getSecondLineConcept().getConceptId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
     map.put("1305", hivMetadata.getHivViralLoadQualitative().getConceptId());
 
     String query =
-        "SELECT B2.patient_id "
-            + "         FROM   ( "
-            + "          "
-            + "         SELECT patient_id, regime_date "
-            + " FROM   (SELECT p.patient_id, last_visit AS regime_date "
-            + " FROM patient p  "
-            + " INNER JOIN encounter e ON e.patient_id = p.patient_id  "
-            + " INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
-            + " INNER JOIN (SELECT p.patient_id, MAX(e.encounter_datetime) last_visit  "
-            + "    FROM patient p  "
-            + "          INNER JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "          WHERE  p.voided = 0 AND e.voided = 0  "
-            + "      AND e.encounter_type = ${6}  "
-            + "      AND e.location_id = :location  "
-            + "      AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
-            + "    GROUP BY p.patient_id) last_linha_terapeutica ON last_linha_terapeutica.patient_id = e.patient_id  "
-            + " WHERE p.voided = 0 AND e.voided = 0  AND o.voided = 0  "
-            + "    AND e.encounter_type = ${6}  "
-            + "    AND e.location_id = :location  "
-            + "          AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
-            + "          AND e.encounter_datetime = last_linha_terapeutica.last_visit  "
-            + "          AND o.concept_id = ${21151}  "
-            + "          AND o.value_coded = ${21148} ) bI2 "
-            + " WHERE  bI2.patient_id NOT IN (SELECT p.patient_id  "
-            + "                          FROM   patient p  "
-            + "                                 JOIN encounter e  "
-            + "                                   ON e.patient_id = p.patient_id  "
-            + "                                 JOIN obs o  "
-            + "                                   ON o.encounter_id = e.encounter_id  "
-            + "                          WHERE  e.encounter_type = ${6}  "
-            + "                                 AND bI2.patient_id = p.patient_id  "
-            + "                                 AND o.concept_id = ${23722}  "
-            + "                                 AND o.value_coded = ${856}  "
-            + "                                 AND e.location_id = :location  "
-            + "                                 AND e.voided = 0  "
-            + "                                 AND p.voided = 0  "
-            + "                                 AND o.voided = 0  "
-            + "                                 AND e.encounter_datetime BETWEEN :less3mDate AND :startDate  "
-            + "                          GROUP  BY p.patient_id)   "
-            + "          "
-            + "          "
+        " SELECT B2.patient_id "
+            + "         FROM   ( SELECT p.patient_id, MAX(o.obs_datetime) as regime_date "
+            + "   FROM "
+            + "   patient p "
+            + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "       INNER JOIN obs o2 ON o2.encounter_id = e.encounter_id "
+            + "   WHERE e.voided = 0 AND p.voided = 0 "
+            + "   AND o.voided = 0 "
+            + "   AND o2.voided = 0 "
+            + "   AND e.encounter_type = ${53} "
+            + "   AND e.location_id = :location  "
+            + "   AND (o.concept_id = ${21187} AND o.value_coded IS NOT NULL) "
+            + "               AND ( "
+            + "                      (o2.concept_id = ${1792} AND o2.value_coded <> ${1982})"
+            + "                       OR "
+            + "                      (o2.concept_id = ${1792} AND o2.value_coded IS NULL) "
+            + "                       OR "
+            + "                      ( "
+            + "                       NOT EXISTS ( "
+            + "                               SELECT * FROM obs oo "
+            + "                               WHERE oo.voided = 0 "
+            + "                               AND oo.encounter_id = e.encounter_id "
+            + "                               AND oo.concept_id = 1792 "
+            + "                           ) "
+            + "                     ) "
+            + "                    ) "
+            + "   AND o.obs_datetime >= :startDate "
+            + "   AND o.obs_datetime <= :endDate "
+            + "  GROUP BY p.patient_id "
             + "         ) B2  "
-            + "                join (SELECT p.patient_id, e.encounter_datetime  "
+            + "                join ( SELECT p.patient_id, e.encounter_datetime  "
             + "                      FROM   patient p  "
             + "                             join encounter e ON e.patient_id = p.patient_id  "
             + "                             join obs o ON o.encounter_id = e.encounter_id  "

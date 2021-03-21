@@ -117,12 +117,24 @@ public class AgeOnObsDatetimeCalculation extends AbstractPatientCalculation {
             + "   AND o2.voided = 0"
             + "   AND e.encounter_type = ${53}"
             + "   AND e.location_id = :location  "
-            + "   AND o.concept_id = ${21187}"
-            + "   AND o.value_coded IS NOT NULL"
+            + "   AND (o.concept_id = ${21187} AND o.value_coded IS NOT NULL) "
+            + "   AND ( "
+            + "        (o2.concept_id = ${1792} AND o2.value_coded <> ${1982})"
+            + "         OR "
+            + "        (o2.concept_id = ${1792} AND o2.value_coded IS NULL) "
+            + "         OR "
+            + "        ( "
+            + "         NOT EXISTS ( "
+            + "                 SELECT * FROM obs oo "
+            + "                 WHERE oo.voided = 0 "
+            + "                 AND oo.encounter_id = e.encounter_id "
+            + "                 AND oo.concept_id = 1792 "
+            + "             ) "
+            + "       ) "
+            + "      ) "
             + "   AND o.obs_datetime >= :onOrAfter"
             + "   AND o.obs_datetime <= :onOrBefore"
-            + "   AND o2.concept_id = ${1792}"
-            + "   AND o2.value_coded <> ${1982}";
+            + "  GROUP BY p.patient_id";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     def.setSql(stringSubstitutor.replace(sql));
