@@ -1,17 +1,14 @@
 package org.openmrs.module.eptsreports.reporting.reports.tuberculosis.report;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.tuberculosis.report.PatientsWithPositiveTuberculosisScreeningDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
-import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +19,8 @@ public class SetupPatientsWithTuberculosisScreeningPositiveReport extends EptsDa
 
   private PatientsWithPositiveTuberculosisScreeningDataSet
       patientsWithPositiveTuberculosisScreeningDataSet;
+
+  @Autowired private TxRttDataset txRttDataset;
 
   @Autowired
   public SetupPatientsWithTuberculosisScreeningPositiveReport(
@@ -43,7 +42,7 @@ public class SetupPatientsWithTuberculosisScreeningPositiveReport extends EptsDa
 
   @Override
   public String getName() {
-    return "Lista de Rastreio TB Positivo - 2021";
+    return "LISTA DE RASTREIO DE TB POSITIVO - PEPFAR";
   }
 
   @Override
@@ -57,13 +56,14 @@ public class SetupPatientsWithTuberculosisScreeningPositiveReport extends EptsDa
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.addParameters(getDataParameters());
+    rd.setParameters(this.txRttDataset.getParameters());
 
     rd.addDataSetDefinition(
         "TB1",
         Mapped.mapStraightThrough(
             patientsWithPositiveTuberculosisScreeningDataSet
-                .patientsWithPositiveTuberculosisScreeningDataSet(getDataParameters())));
+                .patientsWithPositiveTuberculosisScreeningDataSet(
+                    this.txRttDataset.getParameters())));
 
     return rd;
   }
@@ -93,13 +93,5 @@ public class SetupPatientsWithTuberculosisScreeningPositiveReport extends EptsDa
     }
 
     return Arrays.asList(reportDesign);
-  }
-
-  private List<Parameter> getDataParameters() {
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    parameters.add(ReportingConstants.START_DATE_PARAMETER);
-    parameters.add(ReportingConstants.END_DATE_PARAMETER);
-    parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
-    return parameters;
   }
 }
