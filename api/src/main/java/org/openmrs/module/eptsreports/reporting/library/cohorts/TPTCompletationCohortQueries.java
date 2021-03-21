@@ -284,7 +284,7 @@ public class TPTCompletationCohortQueries {
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
             tXTBCohortQueries.getTbDrugTreatmentStartDateWithinReportingDate(),
-            "startDate=${endDate-6m-1095d},endDate=${endDate-1d},location=${location}"));
+            "startDate=${endDate-6m-1095d},endDate=${endDate-1095d-1d},location=${location}"));
     cd.setCompositionString("A NOT started-tb-treatment-previous-period");
 
     addGeneralParameters(cd);
@@ -340,7 +340,7 @@ public class TPTCompletationCohortQueries {
         EptsReportUtils.map(
             this.getTxTBDenominator(
                 generalParameterMapping,
-                "startDate=${endDate-6m-14d},endDate=${endDate-1d},location=${location}"),
+                "startDate=${endDate-6m-14d},endDate=${endDate-14d-1d},location=${location}"),
             generalParameterMapping));
     definition.addSearch(
         "positive-screening",
