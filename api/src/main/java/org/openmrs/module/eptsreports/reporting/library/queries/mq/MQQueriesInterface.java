@@ -61,7 +61,7 @@ public interface MQQueriesInterface {
             + "inner join obs o on e.encounter_id=o.encounter_id "
             + "inner join obs obsGravida on e.encounter_id=obsGravida.encounter_id "
             + "where pe.voided=0 and p.voided=0 and e.voided=0 and o.voided=0 and obsGravida.voided=0 and e.encounter_type=53 and e.location_id=:location and "
-            + "o.concept_id=1190 and o.value_datetime is not null and o.value_datetime BETWEEN :startInclusionDate AND :endInclusionDate and "
+            + "o.concept_id=1190 and o.value_datetime is not null and "
             + "obsGravida.concept_id=1982 and obsGravida.value_coded=1065 and pe.gender='F' ";
 
     public static final String findPatientsWhoAreBreastfeedingInclusionDateRF09 =
@@ -71,7 +71,7 @@ public interface MQQueriesInterface {
             + "inner join obs o on e.encounter_id=o.encounter_id "
             + "inner join obs obsLactante on e.encounter_id=obsLactante.encounter_id "
             + "where 	pe.voided=0 and p.voided=0 and e.voided=0 and o.voided=0 and obsLactante.voided=0 and e.encounter_type=53 and e.location_id=:location and "
-            + "o.concept_id=1190 and o.value_datetime is not null and o.value_datetime BETWEEN :startInclusionDate AND :endInclusionDate and "
+            + "o.concept_id=1190 and o.value_datetime is not null and "
             + "obsLactante.concept_id=6332 and obsLactante.value_coded=1065 and pe.gender='F' ";
 
     public static final String
