@@ -493,13 +493,15 @@ public class TxMlCohortQueries {
   }
 
   @DocumentedDefinition(value = "patientsWhoAreLTFUGreatherThan3MonthsCalculation")
-  private CohortDefinition getPatientsWhoAreLTFUGreatherThan3MonthsCalculation() {
+  public CohortDefinition getPatientsWhoAreLTFUGreatherThan3MonthsCalculation() {
+
     BaseFghCalculationCohortDefinition cd =
         new BaseFghCalculationCohortDefinition(
             "patientsWhoAreLTFUGreatherThan3MonthsCalculation",
             Context.getRegisteredComponents(
                     TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation.class)
                 .get(0));
+    cd.setName("getPatientsWhoAreLTFUGreatherThan3MonthsCalculation");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "end Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
