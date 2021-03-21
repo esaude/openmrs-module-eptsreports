@@ -4214,7 +4214,7 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.addSearch(
           "age",
           EptsReportUtils.map(
-              commonCohortQueries.getMOHPatientsAgeOnLastClinicalConsultationDate(2, null),
+              commonCohortQueries.getMOHPatientsAgeOnLastClinicalConsultationDate(2, 14),
               "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
     }
 
@@ -4261,12 +4261,12 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addSearch(
         "B4E",
         EptsReportUtils.map(
-            B4E, "startDate=${endDate},endDate=${revisionEndDate},location=${location}"));
+            B4E, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "B5E",
         EptsReportUtils.map(
-            B5E, "startDate=${endDate},endDate=${revisionEndDate},location=${location}"));
+            B5E, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "G",

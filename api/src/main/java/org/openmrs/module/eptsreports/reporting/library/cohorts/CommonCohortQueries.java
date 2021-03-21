@@ -509,7 +509,7 @@ public class CommonCohortQueries {
             + "         p.voided = 0 AND e.voided = 0  "
             + "             AND e.encounter_type = ${lastClinicalEncounter}  "
             + "             AND e.location_id = :location  "
-            + "             AND e.encounter_datetime > :startDate AND e.encounter_datetime <= :endDate  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
             + "     GROUP BY p.patient_id) AS clinical ON clinical.patient_id = p.patient_id  "
             + "     WHERE  "
             + "         p.voided = 0 AND e.voided = 0  "
@@ -727,7 +727,7 @@ public class CommonCohortQueries {
             + "         p.voided = 0 AND e.voided = 0  "
             + "             AND e.encounter_type = ${clinicalEncounter}  "
             + "             AND e.location_id = :location  "
-            + "             AND e.encounter_datetime > :startDate AND e.encounter_datetime <= :endDate  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
             + "     GROUP BY p.patient_id) AS clinical ON clinical.patient_id = p.patient_id  "
             + "     WHERE  "
             + "         p.voided = 0 AND e.voided = 0  "
@@ -759,7 +759,7 @@ public class CommonCohortQueries {
             + "         p.voided = 0 AND e.voided = 0  "
             + "             AND e.encounter_type = ${clinicalEncounter}  "
             + "             AND e.location_id = :location  "
-            + "             AND e.encounter_datetime > :startDate AND e.encounter_datetime <= :endDate  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
             + "     GROUP BY p.patient_id) AS clinical ON clinical.patient_id = p.patient_id  "
             + " WHERE  "
             + "     p.voided = 0 AND e.voided = 0  "
@@ -904,7 +904,7 @@ public class CommonCohortQueries {
             + "         p.voided = 0 AND e.voided = 0  "
             + "             AND e.encounter_type = ${6}  "
             + "             AND e.location_id = :location  "
-            + "             AND e.encounter_datetime > :startDate AND e.encounter_datetime <= :endDate  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
             + "     GROUP BY p.patient_id) clinical ON clinical.patient_id = p.patient_id  "
             + " WHERE  "
             + "     p.voided = 0 AND e.voided = 0  "
@@ -912,7 +912,7 @@ public class CommonCohortQueries {
             + "         AND e.location_id = :location  ";
     if (b4e) {
       query +=
-          "         AND (((concept_id = ${856} AND o.value_numeric IS NOT NULL)  "
+          "         AND ((((concept_id = ${856} AND o.value_numeric IS NOT NULL)  "
               + "               OR (concept_id = ${1305}  AND o.value_coded IS NOT NULL)) ";
     } else if (b5e) {
       query += "         AND (concept_id = ${23722}  " + "         AND o.value_coded =  ${856}  ";
@@ -935,7 +935,7 @@ public class CommonCohortQueries {
               + "         AND o.value_numeric IS NOT NULL "
               + "         AND e.encounter_type = ${53}  "
               + "         AND o.obs_datetime BETWEEN DATE_SUB(clinical.last_visit,  "
-              + "         INTERVAL 12 MONTH) AND DATE(clinical.last_visit))"
+              + "         INTERVAL 12 MONTH) AND DATE(clinical.last_visit)))"
               + " GROUP BY p.patient_id";
     } else if (b5e) {
       query += " GROUP BY patient_id";
@@ -1057,7 +1057,11 @@ public class CommonCohortQueries {
             + "             GROUP  BY p.patient_id) last_clinical "
             + "         ON last_clinical.patient_id = p.person_id "
             + " WHERE  last_clinical.clinical_encounter = e.encounter_datetime "
+            + "       AND e.voided = 0"
+            + "       AND p.voided = 0"
+            + "       AND o.voided = 0"
             + "       AND p.gender = 'F' "
+            + "       AND e.encounter_type = 6"
             + "       AND o.concept_id = ${question} "
             + "       AND o.value_coded = ${answer}  ";
 
