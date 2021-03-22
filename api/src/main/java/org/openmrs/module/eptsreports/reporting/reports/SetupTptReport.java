@@ -38,12 +38,12 @@ public class SetupTptReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "LISTA DE PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA (TPI)";
+    return "Lista de Pacientes que Iniciaram Tratamento Preventivo de Tuberculose (TPT)";
   }
 
   @Override
   public String getDescription() {
-    return "LISTA DE PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA (TPI)";
+    return "Lista de Pacientes que Iniciaram Tratamento Preventivo de Tuberculose (TPT)";
   }
 
   @Override
