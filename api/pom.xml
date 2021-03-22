@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.openmrs.module</groupId>
 		<artifactId>eptsreports</artifactId>
-		<version>1.11.1-SNAPSHOT</version>
+		<version>1.12.0</version>
 	</parent>
 
 	<artifactId>eptsreports-api</artifactId>
