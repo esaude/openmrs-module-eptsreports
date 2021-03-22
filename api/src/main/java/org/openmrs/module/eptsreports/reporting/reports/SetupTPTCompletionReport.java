@@ -75,7 +75,7 @@ public class SetupTPTCompletionReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "TPT_Completion_Report_v1.0.xls",
+              "TPT_Completion_Report_v1.1.xls",
               "TPT Completion Report",
               getExcelDesignUuid(),
               null);
@@ -90,7 +90,6 @@ public class SetupTPTCompletionReport extends EptsDataExportManager {
 
   private List<Parameter> getDataParameters() {
     List<Parameter> parameters = new ArrayList<>();
-    parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
     parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
     return parameters;
