@@ -21,6 +21,7 @@ public class MQGenericCohortQueries {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
+    definition.setName("MQ TX_NEW");
     definition.addParameter(
         new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "Data Fim Inclusão", Date.class));

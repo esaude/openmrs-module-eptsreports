@@ -14,13 +14,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class MQDataSet extends BaseDataSet {
 
-  @Autowired private MQCategory14DataSet mqCategory14DataSet;
-  @Autowired private MQCategory3DataSet mqCategory3DataSet;
-  @Autowired private MQCategory4Dataset mQCategory4Dataset;
-  @Autowired private MQCategory5DataSet mQCategory5DataSet;
-  @Autowired private MQCategory6Dataset mQCategory6Dataset;
+  //  @Autowired private MQCategory14DataSet mqCategory14DataSet;
+  //  @Autowired private MQCategory3DataSet mqCategory3DataSet;
+  //  @Autowired private MQCategory4Dataset mQCategory4Dataset;
+  //  @Autowired private MQCategory5DataSet mQCategory5DataSet;
+  //  @Autowired private MQCategory6Dataset mQCategory6Dataset;
   @Autowired private MQCategory7Dataset mQCategory7Dataset;
-  @Autowired private MQCategory10DataSet mQCategory10DataSet;
+  //  @Autowired private MQCategory10DataSet mQCategory10DataSet;
   @Autowired private MQCategory11DataSet mQCategory11DataSet;
   @Autowired private MQCategory12DataSet mQCategory12DataSet;
   @Autowired private MQCategory12P2DataSet mQCategory12SectionIIDataSet;
@@ -30,7 +30,7 @@ public class MQDataSet extends BaseDataSet {
   @Autowired private MQCategory13P3DataSet mQCategory13P3DataSet;
   @Autowired private MQCategory15DataSet mQCategory15DataSet;
   @Autowired private MQCategory13P4DataSet mQCategory13P4DataSet;
-  @Autowired private MQCategory9DataSet mQCategory9DataSet;
+  //  @Autowired private MQCategory9DataSet mQCategory9DataSet;
   @Autowired private MQCommonsDementions mQCommonsDementions;
 
   public DataSetDefinition constructTMqDatset() {
@@ -45,13 +45,13 @@ public class MQDataSet extends BaseDataSet {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     this.mQCommonsDementions.getMQCommonDementions(dataSetDefinition, mappings);
-    this.mqCategory3DataSet.constructTMqDatset(dataSetDefinition, mappings);
-    this.mQCategory4Dataset.constructTMqDatset(dataSetDefinition, mappings);
-    this.mQCategory5DataSet.constructTMqDatset(dataSetDefinition, mappings);
-    this.mQCategory6Dataset.constructTMqDatset(dataSetDefinition, mappings);
+    //    this.mqCategory3DataSet.constructTMqDatset(dataSetDefinition, mappings);
+    //    this.mQCategory4Dataset.constructTMqDatset(dataSetDefinition, mappings);
+    //    this.mQCategory5DataSet.constructTMqDatset(dataSetDefinition, mappings);
+    //    this.mQCategory6Dataset.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory7Dataset.constructTMqDatset(dataSetDefinition, mappings);
-    this.mQCategory9DataSet.constructTMqDatset(dataSetDefinition, mappings);
-    this.mQCategory10DataSet.constructTMqDatset(dataSetDefinition, mappings);
+    //    this.mQCategory9DataSet.constructTMqDatset(dataSetDefinition, mappings);
+    //    this.mQCategory10DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory11DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory12DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory12SectionIIDataSet.constructTMqDatset(dataSetDefinition, mappings);
@@ -60,7 +60,7 @@ public class MQDataSet extends BaseDataSet {
     this.mQCategory13P2DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory13P3DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory13P4DataSet.constructTMqDatset(dataSetDefinition, mappings);
-    this.mqCategory14DataSet.constructTMqDatset(dataSetDefinition, mappings);
+    //    this.mqCategory14DataSet.constructTMqDatset(dataSetDefinition, mappings);
     this.mQCategory15DataSet.constructTMqDatset(dataSetDefinition, mappings);
 
     return dataSetDefinition;
