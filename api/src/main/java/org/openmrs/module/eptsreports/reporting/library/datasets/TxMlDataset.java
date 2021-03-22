@@ -101,34 +101,34 @@ public class TxMlDataset extends BaseDataSet {
     super.addRow(
         dsd,
         "M4",
-        "LTFU < 90 days",
+        "IIT < 90 days",
         EptsReportUtils.map(ltfuLessThan3MonthsIndicator, mappings),
         getColumnsForAgeAndGender());
     dsd.addColumn(
         "M4-TotalMale",
-        "LTFU < 90 days (Totals male) ",
+        "IIT < 90 days (Totals male) ",
         EptsReportUtils.map(ltfuLessThan3MonthsIndicator, mappings),
         "gender=M");
     dsd.addColumn(
         "M4-TotalFemale",
-        "LTFU < 90 days (Totals female) ",
+        "IIT < 90 days (Totals female) ",
         EptsReportUtils.map(ltfuLessThan3MonthsIndicator, mappings),
         "gender=F");
 
     super.addRow(
         dsd,
         "M5",
-        "LTFU >= 90 days",
+        "IIT >= 90 days",
         EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
         getColumnsForAgeAndGender());
     dsd.addColumn(
         "M5-TotalMale",
-        "LTFU >= 90 days (Totals male) ",
+        "IIT >= 90 days (Totals male) ",
         EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
         "gender=M");
     dsd.addColumn(
         "M5-TotalFemale",
-        "LTFU >= 90 days (Totals female) ",
+        "IIT >= 90 days (Totals female) ",
         EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
         "gender=F");
 

@@ -18,6 +18,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxRTTPatientsWhoAreTransferedOutCalculation extends BaseFghCalculation {
 
+  public static Integer AUTO_TRANSFER = 23863;
+
   @SuppressWarnings("unchecked")
   @Override
   public CalculationResultMap evaluate(
@@ -42,7 +44,7 @@ public class TxRTTPatientsWhoAreTransferedOutCalculation extends BaseFghCalculat
                 Arrays.asList(
                     hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
                     hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
-                hivMetadata.getTransferOutToAnotherFacilityConcept());
+                Arrays.asList(hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId()));
 
     Map<Integer, Date> transferredOutInFichaResumo =
         queryDisaggregation
@@ -54,9 +56,22 @@ public class TxRTTPatientsWhoAreTransferedOutCalculation extends BaseFghCalculat
                     hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
                 hivMetadata.getTransferOutToAnotherFacilityConcept());
 
+    Map<Integer, Date> transferrdOutInHomeVisitCard =
+        queryDisaggregation
+            .findMapMaxEncounterDatetimeByEncountersAndQuestionsAndAnswerAndEndOfReportingPeriod(
+                context,
+                hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
+                Arrays.asList(hivMetadata.getDefaultingMotiveConcept().getConceptId()),
+                Arrays.asList(
+                    hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId(),
+                    AUTO_TRANSFER));
+
     Map<Integer, Date> maxResultFromAllSources =
         CalculationProcessorUtils.getMaxMapDateByPatient(
-            transferedOutByProgram, transferrdOutInFichaClinica, transferredOutInFichaResumo);
+            transferedOutByProgram,
+            transferrdOutInFichaClinica,
+            transferredOutInFichaResumo,
+            transferrdOutInHomeVisitCard);
 
     // Excluir todos pacientes com consulta ou levantamento apos terem sido marcados
     // como transferidos para

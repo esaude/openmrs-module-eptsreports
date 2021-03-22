@@ -8,7 +8,7 @@ import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.QualityImprovementCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.MQDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets.MQDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;

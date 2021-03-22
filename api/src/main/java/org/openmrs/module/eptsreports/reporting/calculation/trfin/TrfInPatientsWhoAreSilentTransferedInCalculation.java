@@ -58,7 +58,7 @@ public class TrfInPatientsWhoAreSilentTransferedInCalculation extends BaseFghCal
                 Arrays.asList(
                     hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
                     hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
-                hivMetadata.getTransferOutToAnotherFacilityConcept());
+                Arrays.asList(hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId()));
 
     Map<Integer, Date> transferredOutInFichaResumo =
         queryDisaggregation

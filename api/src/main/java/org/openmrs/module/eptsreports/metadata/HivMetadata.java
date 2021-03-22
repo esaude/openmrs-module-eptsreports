@@ -783,6 +783,13 @@ public class HivMetadata extends ProgramsMetadata {
     return getEncounterType(uuid);
   }
 
+  // Encounter types
+  // encounterType_id = 60
+  public EncounterType getTpt60EncounterType() {
+    final String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tpt60");
+    return getEncounterType(uuid);
+  }
+
   // encounterType_id = 9
   public EncounterType getARVPediatriaSeguimentoEncounterType() {
     final String uuid =
