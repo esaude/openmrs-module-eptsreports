@@ -40,6 +40,11 @@ public class MQCategory7CohortQueries {
             this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
+        "START-ART",
+        EptsReportUtils.map(
+            this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
+
+    definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
             this.mQCohortQueries
@@ -73,7 +78,7 @@ public class MQCategory7CohortQueries {
             this.mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.setCompositionString(
-        "PREGNANT NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7 OR TRANSFERED-IN OR TRANSFERED-OUT OR BREASTFEEDING)");
+        "(PREGNANT AND START-ART)  NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7 OR TRANSFERED-IN OR TRANSFERED-OUT OR BREASTFEEDING)");
 
     return definition;
   }
@@ -266,6 +271,11 @@ public class MQCategory7CohortQueries {
             this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
+        "START-ART",
+        EptsReportUtils.map(
+            this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
+
+    definition.addSearch(
         "START-TPI",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientWhoStartTPIDuringPeriodCategory7(), mappings));
@@ -317,7 +327,7 @@ public class MQCategory7CohortQueries {
             mappings));
 
     definition.setCompositionString(
-        "(PREGNANT AND START-TPI) NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7 OR TRANSFERED-IN OR TRANSFERED-OUT OR TB-ACTIVE-TPI-CAT7-H OR TB-TBSCREENING-TPI-CAT7-I OR TB-TREATMENT-TPI-CAT7-J)");
+        "(PREGNANT AND START-TPI AND START-ART) NOT (TB-ACTIVE-CAT7 OR TB-SCREENING-CAT7 OR TB-TREATMENT-CAT7 OR TRANSFERED-IN OR TRANSFERED-OUT OR TB-ACTIVE-TPI-CAT7-H OR TB-TBSCREENING-TPI-CAT7-I OR TB-TREATMENT-TPI-CAT7-J)");
 
     return definition;
   }

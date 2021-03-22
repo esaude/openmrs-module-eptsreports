@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCategory13P3CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCategory13Section1CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
@@ -21,6 +22,7 @@ public class MQCohortTest extends DefinitionsFGHLiveTest {
 
   @Autowired private MQCohortQueries mQCohortQueries;
   @Autowired private MQCategory13Section1CohortQueries mQCategory13Section1CohortQueries;
+  @Autowired private MQCategory13P3CohortQueries mQCategory13P3CohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
@@ -44,7 +46,8 @@ public class MQCohortTest extends DefinitionsFGHLiveTest {
         new Parameter(EptsReportConstants.END_REVISION_DATE, "End Date", Date.class), revisionDate);
 
     CohortDefinition cohortDefinition =
-        mQCategory13Section1CohortQueries.findDenominatorCategory13SectionIB();
+        mQCategory13P3CohortQueries
+            .findPatientsInFirstLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13Denominador();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(cohortDefinition, parameters);

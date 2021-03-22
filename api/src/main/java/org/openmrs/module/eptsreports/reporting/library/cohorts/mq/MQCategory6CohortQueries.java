@@ -221,6 +221,11 @@ public class MQCategory6CohortQueries {
             this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
     definition.addSearch(
+        "START-ART",
+        EptsReportUtils.map(
+            this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
+
+    definition.addSearch(
         "TRANSFERED-IN",
         EptsReportUtils.map(
             this.mQCohortQueries
@@ -239,7 +244,8 @@ public class MQCategory6CohortQueries {
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
-    definition.setCompositionString("PREGNANT NOT (TB-ACTIVE OR TRANSFERED-IN OR BREASTFEEDING)");
+    definition.setCompositionString(
+        "(PREGNANT AND START-ART) NOT (TB-ACTIVE OR TRANSFERED-IN OR BREASTFEEDING)");
 
     return definition;
   }
@@ -307,6 +313,11 @@ public class MQCategory6CohortQueries {
             this.mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
 
     definition.addSearch(
+        "START-ART",
+        EptsReportUtils.map(
+            this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
+
+    definition.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
@@ -325,7 +336,8 @@ public class MQCategory6CohortQueries {
                 .findPatientsWhoDiagnosedWithTBActiveInTheLastConsultationIThePeriodCatetory6(),
             mappings));
 
-    definition.setCompositionString("BREASTFEEDING NOT (TB-ACTIVE OR TRANSFERED-IN OR PREGNANT )");
+    definition.setCompositionString(
+        "(BREASTFEEDING AND START-ART)  NOT (TB-ACTIVE OR TRANSFERED-IN OR PREGNANT )");
 
     return definition;
   }

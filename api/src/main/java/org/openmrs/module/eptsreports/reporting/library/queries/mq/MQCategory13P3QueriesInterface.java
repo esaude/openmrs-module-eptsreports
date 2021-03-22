@@ -41,7 +41,7 @@ public interface MQCategory13P3QueriesInterface {
                 + " inner join obs o on o.encounter_id = e.encounter_id "
                 + " where e.voided = 0 and e.encounter_type = 6 and e.location_id = :location "
                 + " and o.voided = 0 and o.concept_id = 21151 and o.value_coded <> 21150 "
-                + " and e.encounter_datetime > alternativa.data_linha23898 and e.encounter_datetime <= :endInclusionDate ";
+                + " and e.encounter_datetime > alternativa.data_linha23898 and e.encounter_datetime <= :endRevisionDate ";
 
     public static final String
         findPatientsWhoAlternativeLineFirstLineExcludePatintsFromClinicalConsultationWithTherapheuticLineDiferentFirstLineCategory13_3_Denominador_B1 =
