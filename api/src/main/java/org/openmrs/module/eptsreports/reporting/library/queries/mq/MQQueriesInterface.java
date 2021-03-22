@@ -264,7 +264,7 @@ public interface MQQueriesInterface {
             + "select p.patient_id,max(obsTPI.obs_datetime) dataInicioTPI from  patient p "
             + "inner join encounter e on e.patient_id=p.patient_id "
             + "inner join obs obsTPI on obsTPI.encounter_id=e.encounter_id "
-            + "where p.voided=0 and e.voided=0 and obsTPI.obs_datetime between :startInclusionDate and :endInclusionDate and  "
+            + "where p.voided=0 and e.voided=0 and obsTPI.obs_datetime between :startInclusionDate and :endRevisionDate and  "
             + "e.location_id=:location and e.encounter_type=6 and obsTPI.concept_id=6122 and obsTPI.value_coded=1256 and obsTPI.voided=0 "
             + "group by p.patient_id "
             + ") inicioTPI "

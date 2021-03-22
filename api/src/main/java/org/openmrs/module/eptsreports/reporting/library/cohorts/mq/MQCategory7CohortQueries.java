@@ -233,10 +233,10 @@ public class MQCategory7CohortQueries {
             mappings));
 
     definition.addSearch(
-        "END-TPI",
+        "END-TPI-G",
         EptsReportUtils.map(this.mQCohortQueries.findPatientWhoCompleteTPICategory7(), mappings));
 
-    definition.setCompositionString("RF25-DENOMINATOR AND END-TPI");
+    definition.setCompositionString("RF25-DENOMINATOR AND END-TPI-G");
 
     return definition;
   }
