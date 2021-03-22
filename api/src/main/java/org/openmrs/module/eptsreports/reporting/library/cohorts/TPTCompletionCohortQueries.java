@@ -236,9 +236,17 @@ public class TPTCompletionCohortQueries {
         "tpt1", EptsReportUtils.map(getTxCurrWithoutTPTCompletion(), mapping));
 
     compositionCohortDefinition.addSearch(
-        "F", EptsReportUtils.map(txTbCohortQueries.getDenominator(), generalParameterMapping));
+        "Denominator",
+        EptsReportUtils.map(txTbCohortQueries.getDenominator(), generalParameterMapping));
 
-    compositionCohortDefinition.setCompositionString("tpt1 AND F");
+    compositionCohortDefinition.addSearch(
+        "PositiveScreening",
+        EptsReportUtils.map(txTbCohortQueries.positiveScreening(), generalParameterMapping));
+
+    // F = Dnominator AND Positive Screening
+
+    compositionCohortDefinition.setCompositionString(
+        "tpt1 AND (Denominator AND PositiveScreening)");
 
     return compositionCohortDefinition;
   }
@@ -272,7 +280,7 @@ public class TPTCompletionCohortQueries {
         "tpt3",
         EptsReportUtils.map(getTxCurrWithoutTPTCompletionWithPositiveTBScreening(), mapping));
 
-    compositionCohortDefinition.setCompositionString("tpt1 AND (tpt2 OR tpt3)");
+    compositionCohortDefinition.setCompositionString("tpt1 AND NOT (tpt2 OR tpt3)");
 
     return compositionCohortDefinition;
   }
