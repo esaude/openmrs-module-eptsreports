@@ -21,7 +21,7 @@ public class TbPrevQueries {
     }
 
     String query =
-        " SELECT p.patient_id "
+        " SELECT distinct p.patient_id "
             + " FROM  patient p  "
             + " INNER JOIN encounter e ON e.patient_id = p.patient_id  "
             + " INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
@@ -38,8 +38,11 @@ public class TbPrevQueries {
             + "                 AND o.value_coded IN (${answers}) "
             + "                 AND e.encounter_datetime >= :startDate "
             + "                 AND e.encounter_datetime <= :endDate "
-            + "             GROUP BY p.patient_id) AS inh "
-            + " WHERE p.patient_id NOT IN ( SELECT patient_id  "
+            + "             GROUP BY p.patient_id) AS inh  on inh.patient_id = p.patient_id "
+            + " WHERE p.voided = 0 "
+            + "    and e.voided = 0 "
+            + "    and o.voided = 0 "
+            + "    and p.patient_id NOT IN ( SELECT patient_id  "
             + "                             FROM patient p "
             + "                             WHERE 	 p.voided = 0  "
             + "                                  AND e.voided = 0  "
