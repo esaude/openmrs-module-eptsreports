@@ -3607,7 +3607,7 @@ public class QualityImprovement2020CohortQueries {
 
     String query =
         "SELECT p.patient_id "
-            + "FROM   patient p"
+            + " FROM   patient p"
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = p.patient_id "
             + "       INNER JOIN obs o "
@@ -3625,7 +3625,7 @@ public class QualityImprovement2020CohortQueries {
             + "                             :startDate AND :revisionEndDate "
             + "                  GROUP  BY p.patient_id) AS last_clinical "
             + "               ON last_clinical.patient_id = p.patient_id "
-            + "WHERE  e.voided = 0 "
+            + " WHERE  e.voided = 0 "
             + "       AND p.voided = 0 "
             + "       AND o.voided = 0 "
             + "       AND e.encounter_type = ${53} "
@@ -3634,9 +3634,8 @@ public class QualityImprovement2020CohortQueries {
             + "       AND o.value_coded IS NOT NULL "
             + "       AND o.obs_datetime >= :startDate "
             + "       AND o.obs_datetime <= :endDate "
-            + "       AND Date(e.encounter_datetime) <= Date_sub(last_clinical.last_visit,"
-            + "                                         INTERVAL 6 month)  ";
-
+            + "       AND TIMESTAMPDIFF(MONTH, o.obs_datetime,  last_clinical.last_visit) >= 6 ";
+                     
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
