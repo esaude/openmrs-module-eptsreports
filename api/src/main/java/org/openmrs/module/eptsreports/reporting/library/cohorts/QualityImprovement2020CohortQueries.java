@@ -951,8 +951,6 @@ public class QualityImprovement2020CohortQueries {
             + "         AND e.encounter_type = ${6} "
             + "         AND o.concept_id = ${23758} "
             + "         AND o.value_coded IN (${1065}) "
-            + "         AND e.encounter_datetime >= :startDate "
-            + "         AND e.encounter_datetime <= :endDate "
             + "         AND e.encounter_datetime BETWEEN last.encounter AND DATE_ADD(last.encounter, INTERVAL 9 MONTH) "
             + "         AND p.voided = 0 "
             + "         AND e.voided = 0 "
