@@ -407,6 +407,11 @@ public class EptsCommonDimension {
         EptsReportUtils.map(
             genericCohortQueries.getAgeOnMOHArtStartDate(null, 14, false),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    dim.addCohortDefinition(
+        "2-14",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnMOHArtStartDate(2, 14, false),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
 
     return dim;
   }
