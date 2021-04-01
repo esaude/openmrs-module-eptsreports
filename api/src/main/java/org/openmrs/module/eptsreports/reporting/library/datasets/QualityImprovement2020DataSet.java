@@ -852,7 +852,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ12DEN5,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=<15");
+        "ageBasedOnArt=childrenArt");
 
     CohortIndicator MQ12DEN6 =
         eptsGeneralIndicator.getIndicator(

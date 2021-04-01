@@ -3633,7 +3633,7 @@ public class QualityImprovement2020CohortQueries {
             + "       AND o.obs_datetime >= :startDate "
             + "       AND o.obs_datetime <= :endDate "
             + "       AND TIMESTAMPDIFF(MONTH, o.obs_datetime,  last_clinical.last_visit) >= 6 ";
-                     
+
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
