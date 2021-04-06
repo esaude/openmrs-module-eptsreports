@@ -105,7 +105,7 @@ public interface TPTCompletationQueries {
             + "					where e.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (6,9) and obsLevTPI.concept_id=6122 and obsLevTPI.value_coded in (1257,1065,1256) "
             + "						and e.encounter_datetime between inicio_inh.data_inicio_inh and (inicio_inh.data_inicio_inh + INTERVAL 7 MONTH) 				"
             + "						and obsDTINH.concept_id is null and e.location_id=:location 																	"
-            + "						group by inicio_inh.patient_id,inicio_inh.data_inicio_inh having count(*)>=6 													"
+            + "						group by inicio_inh.patient_id, e.encounter_datetime having count(*)>=6 													"
             + "					union 																																"
             + "					select inicio_inh.patient_id from 																									"
             + "					( 																																	"
@@ -135,7 +135,7 @@ public interface TPTCompletationQueries {
             + "					where e.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (6,9) and obsLevTPI.concept_id=6122 and obsLevTPI.value_coded in (1257,1065,1256) "
             + "						and obsDTINH.concept_id=1719 and obsDTINH.value_coded=23955 																	"
             + "						and e.encounter_datetime between inicio_inh.data_inicio_inh and (inicio_inh.data_inicio_inh + INTERVAL 5 MONTH) and e.location_id=:location "
-            + "						group by inicio_inh.patient_id,inicio_inh.data_inicio_inh having count(*)>=2 													"
+            + "						group by inicio_inh.patient_id, e.encounter_datetime having count(*)>=2 													"
             + "					union 																																"
             + "					select inicio_inh.patient_id from 																									"
             + "					( 																																	"
@@ -169,7 +169,7 @@ public interface TPTCompletationQueries {
             + "						where e.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (6,9) and obsLevTPI.concept_id=6122 and obsLevTPI.value_coded in (1257,1065,1256) "
             + "							and e.encounter_datetime between inicio_inh.data_inicio_inh and (inicio_inh.data_inicio_inh + INTERVAL 7 MONTH)  			"
             + "							and obsDTINH.concept_id is null and e.location_id=:location 																"
-            + "							group by inicio_inh.patient_id,inicio_inh.data_inicio_inh having count(*)>=3 												"
+            + "							group by inicio_inh.patient_id, e.encounter_datetime having count(*)>=3 												"
             + "					) inicio_inh 																														"
             + "					inner join 																															"
             + "					( 																																	"
@@ -201,7 +201,7 @@ public interface TPTCompletationQueries {
             + "						where e.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (6,9) and obsLevTPI.concept_id=6122 and obsLevTPI.value_coded in (1257,1065,1256) "
             + "							and obsDTINH.concept_id=1719 and obsDTINH.value_coded=23955 																"
             + "							and e.encounter_datetime between inicio_inh.data_inicio_inh and (inicio_inh.data_inicio_inh + INTERVAL 7 MONTH) and e.location_id=:location "
-            + "							group by inicio_inh.patient_id,inicio_inh.data_inicio_inh having count(*)>=1 												"
+            + "							group by inicio_inh.patient_id, e.encounter_datetime having count(*)>=1 												"
             + "					) inicio_inh_dt on inicio_inh_dt.patient_id = inicio_inh.patient_id 																"
             + "					union 																																"
             + "					select inicio_inh.patient_id from 																									"
@@ -232,7 +232,7 @@ public interface TPTCompletationQueries {
             + "					where e.voided=0 and obsDTINH.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (60) 											"
             + "						and obsDTINH.concept_id=23986 and obsDTINH.value_coded=1098  and obsLevTPI.concept_id=23985 and obsLevTPI.value_coded in (656,23982) "
             + "						and e.encounter_datetime between inicio_inh.data_inicio_inh and (inicio_inh.data_inicio_inh + INTERVAL 7 MONTH) and e.location_id=:location "
-            + "						group by inicio_inh.patient_id,inicio_inh.data_inicio_inh having count(*)>=6 													"
+            + "						group by inicio_inh.patient_id, e.encounter_datetime having count(*)>=6 													"
             + "					union 																																"
             + "					select inicio_inh.patient_id from 																									"
             + "					( 																																	"
@@ -262,7 +262,7 @@ public interface TPTCompletationQueries {
             + "					where e.voided=0 and obsDTINH.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (60) 											"
             + "						and obsDTINH.concept_id=23986 and obsDTINH.value_coded=23720  and obsLevTPI.concept_id=23985 and obsLevTPI.value_coded in (656,23982) "
             + "						and e.encounter_datetime between inicio_inh.data_inicio_inh and (inicio_inh.data_inicio_inh + INTERVAL 5 MONTH) and e.location_id=:location "
-            + "						group by inicio_inh.patient_id,inicio_inh.data_inicio_inh having count(*)>=2 													"
+            + "						group by inicio_inh.patient_id, e.encounter_datetime having count(*)>=2 													"
             + "					union 																																"
             + "					select inicio_inh.patient_id from 																									"
             + "					( 																																	"
@@ -294,7 +294,7 @@ public interface TPTCompletationQueries {
             + "						where e.voided=0 and obsDTINH.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (60) 										"
             + "							and obsDTINH.concept_id=23986 and obsDTINH.value_coded=1098  and obsLevTPI.concept_id=23985 and obsLevTPI.value_coded in (656,23982) "
             + "							and e.encounter_datetime between inicio_inh.data_inicio_inh and (inicio_inh.data_inicio_inh + INTERVAL 7 MONTH) and e.location_id=:location "
-            + "							group by inicio_inh.patient_id,inicio_inh.data_inicio_inh having count(*)>=3												"
+            + "							group by inicio_inh.patient_id, e.encounter_datetime having count(*)>=3												"
             + "					) inicio_inh 																														"
             + "					inner join 																															"
             + "					( 																																	"
@@ -326,7 +326,7 @@ public interface TPTCompletationQueries {
             + "						where e.voided=0 and obsDTINH.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (60) 										"
             + "							and obsDTINH.concept_id=23986 and obsDTINH.value_coded=23720  and obsLevTPI.concept_id=23985 and obsLevTPI.value_coded in (656,23982) "
             + "							and e.encounter_datetime between inicio_inh.data_inicio_inh and (inicio_inh.data_inicio_inh + INTERVAL 7 MONTH) and e.location_id=:location "
-            + "							group by inicio_inh.patient_id,inicio_inh.data_inicio_inh having count(*)>=1   												"
+            + "							group by inicio_inh.patient_id, e.encounter_datetime having count(*)>=1   											      	"
             + "				 ) inicio_inh_dt on inicio_inh_dt.patient_id = inicio_inh.patient_id 																	";
 
     public static final String findPatientsWhoStarted3HPTherapyBeforeReportingEndDate =
@@ -368,7 +368,7 @@ public interface TPTCompletationQueries {
             + "	inner join obs o on o.encounter_id=e.encounter_id                                                                                                    	"
             + "	where e.voided=0 and o.voided=0 and e.encounter_type in (6,9) and o.concept_id=1719 and o.value_coded=23954                                          	"
             + "		and e.encounter_datetime between inicio_3HP.data_inicio_3HP and (inicio_3HP.data_inicio_3HP + INTERVAL 4 month) and e.location_id= :location     	"
-            + "		group by inicio_3HP.patient_id,inicio_3HP.data_inicio_3HP having count(*)>=3                                                                        "
+            + "		group by inicio_3HP.patient_id, e.encounter_datetime having count(*)>=3                                                                        "
             + "	union                                                                                                                                                	"
             + "	select inicio_3HP.patient_id from                                                                                                                    	"
             + "	(                                                                                                                                                    	"
@@ -390,7 +390,7 @@ public interface TPTCompletationQueries {
             + "	where e.voided=0 and obs3hp.voided=0 and obsTipo.voided=0                                                                                             	"
             + "		and e.encounter_type=60 and obs3hp.concept_id=23985 and obs3hp.value_coded in (23954,23984) and obsTipo.concept_id=23986 and obsTipo.value_coded=23720  "
             + "		and e.encounter_datetime between inicio_3HP.data_inicio_3HP and (inicio_3HP.data_inicio_3HP + INTERVAL 4 month) and e.location_id= :location     	"
-            + "		group by inicio_3HP.patient_id,inicio_3HP.data_inicio_3HP having count(*)>=1                                                                        "
+            + "		group by inicio_3HP.patient_id, e.encounter_datetime having count(*)>=1                                                                        "
             + "	union                                                                                                                                                	"
             + "	select inicio_3HP.patient_id from                                                                                                                    	"
             + "	(                                                                                                                                                    	"
@@ -412,7 +412,7 @@ public interface TPTCompletationQueries {
             + "	where e.voided=0 and obs3hp.voided=0 and obsTipo.voided=0                                                                                             	"
             + "		and e.encounter_type=60 and obs3hp.concept_id=23985 and obs3hp.value_coded in (23954,23984) and obsTipo.concept_id=23986 and obsTipo.value_coded=1098 "
             + "		and e.encounter_datetime between inicio_3HP.data_inicio_3HP and (inicio_3HP.data_inicio_3HP + INTERVAL 4 month) and e.location_id= :location    	"
-            + "		group by inicio_3HP.patient_id,inicio_3HP.data_inicio_3HP having count(*)>=3                                                                        ";
+            + "		group by inicio_3HP.patient_id, e.encounter_datetime having count(*)>=3                                                                        ";
 
     public static final String
         findPatientsWhoStartedTbPrevPreventiveTreatmentDuringPreviousReportingPeriod =
