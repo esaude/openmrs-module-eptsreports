@@ -164,7 +164,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               null,
               TimeQualifier.ANY,
               null,
-              onOrBefore,
+              null,
               EPTSMetadataDatetimeQualifier.VALUE_DATETIME,
               context);
 
@@ -178,7 +178,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               Arrays.asList(hivMetadata.getCompletedConcept()),
               TimeQualifier.ANY,
               null,
-              onOrBefore,
+              null,
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
@@ -192,7 +192,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               null,
               TimeQualifier.ANY,
               null,
-              onOrBefore,
+              null,
               EPTSMetadataDatetimeQualifier.VALUE_DATETIME,
               context);
 
@@ -206,7 +206,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               null,
               TimeQualifier.ANY,
               null,
-              onOrBefore,
+              null,
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
@@ -220,7 +220,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               Arrays.asList(c1256, c1257),
               TimeQualifier.ANY,
               null,
-              onOrBefore,
+              null,
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
@@ -234,7 +234,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               Arrays.asList(c23955),
               TimeQualifier.ANY,
               null,
-              onOrBefore,
+              null,
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
@@ -248,7 +248,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               null,
               TimeQualifier.ANY,
               null,
-              onOrBefore,
+              null,
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
@@ -262,7 +262,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               Arrays.asList(c1098),
               TimeQualifier.ANY,
               null,
-              onOrBefore,
+              null,
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
@@ -276,7 +276,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               Arrays.asList(c23720),
               TimeQualifier.ANY,
               null,
-              onOrBefore,
+              null,
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
@@ -414,7 +414,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
                     5);
 
             int evaluateINHOccurrences3 =
-                evaluateOccurrence(
+                evaluateOccurrence2(
                     obsICList,
                     outrasPrescricoesINHObsList,
                     a2.getEncounter().getEncounterDatetime(),
@@ -427,9 +427,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               b5Map.put(patientId, new BooleanResult(true, this));
             }
 
-            List<Obs> b5 = getObsListFromResultMap(b5Map, patientId);
-
-            if (b1 != null || b2 != null || b3 != null || b4 != null || !b5.isEmpty()) {
+            if (b1 != null || b2 != null || b3 != null || b4 != null || !b5Map.isEmpty()) {
               patientMap.put(patientId, new BooleanResult(true, this));
             }
           }
@@ -469,7 +467,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
                     obsICList, outrasPrescricoesINHObsList, a3.getValueDatetime(), 2, 5);
 
             int evaluateINHOccurrences3 =
-                evaluateOccurrence(
+                evaluateOccurrence2(
                     obsICList, outrasPrescricoesINHObsList, a3.getValueDatetime(), 3, 7);
 
             if (evaluateINHOccurrences6 >= 6
@@ -478,9 +476,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
               b5Map.put(patientId, new BooleanResult(true, this));
             }
 
-            List<Obs> b5 = getObsListFromResultMap(b5Map, patientId);
-
-            if (b1 != null || b2 != null || b3 != null || b4 != null || !b5.isEmpty()) {
+            if (b1 != null || b2 != null || b3 != null || b4 != null || !b5Map.isEmpty()) {
               patientMap.put(patientId, new BooleanResult(true, this));
             }
           }
@@ -560,19 +556,16 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
                     getObsListFromResultMap(regimeTPT1stPickUpMap, patientId),
                     getObsListFromResultMap(filtTypeOfDispensationTrimestralMap, patientId),
                     a5.getEncounter().getEncounterDatetime(),
-                    3,
+                    1,
                     7);
 
             if (evaluateRegimeTPTOccurrences6 >= 6
                 || evaluateRegimeTPTOccurrences2 >= 2
-                || evaluateRegimeTPTOccurrences3DM >= 3
-                || evaluateRegimeTPTOccurrences3DT >= 3) {
+                || (evaluateRegimeTPTOccurrences3DM >= 3 && evaluateRegimeTPTOccurrences3DT >= 1)) {
               b6Map.put(patientId, new BooleanResult(true, this));
             }
 
-            List<Obs> b6 = getObsListFromResultMap(b6Map, patientId);
-
-            if (b1 != null || b2 != null || b3 != null || b4 != null || !b6.isEmpty()) {
+            if (b1 != null || b2 != null || b3 != null || b4 != null || !b6Map.isEmpty()) {
               patientMap.put(patientId, new BooleanResult(true, this));
             }
           }
@@ -712,6 +705,46 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
         }
       }
     }
+    return num;
+  }
+
+  /**
+   * Given 2 list of obs the method extracts the encounter list from both, and then check for each
+   * encounter in the fisrt list evaluates if AT LEAST ONE ENCOUNTER is present in the second list
+   *
+   * @param a list of OBs
+   * @param b
+   * @param iptStartDate
+   * @param nTimes
+   * @param plusIPTDate
+   * @return
+   */
+  private int evaluateOccurrence2(
+      List<Obs> a, List<Obs> b, Date iptStartDate, int nTimes, int plusIPTDate) {
+    List<Encounter> encountersA = new ArrayList<>();
+    List<Encounter> encountersB = new ArrayList<>();
+
+    for (Obs obs : a) {
+      encountersA.add(obs.getEncounter());
+    }
+    for (Obs obs : b) {
+      encountersB.add(obs.getEncounter());
+    }
+    int num = 0;
+
+    for (Encounter e : encountersA) {
+      if (e.getEncounterDatetime().compareTo(DateUtils.addMonths(iptStartDate, plusIPTDate)) <= 0
+          && e.getEncounterDatetime().compareTo(iptStartDate) >= 0) {
+        num++;
+      }
+    }
+
+    for (Encounter e : encountersA) {
+      if (encountersB.contains(e) && num == nTimes) {
+        break;
+      }
+    }
+
     return num;
   }
 
