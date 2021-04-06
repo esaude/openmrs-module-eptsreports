@@ -62,6 +62,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     Assert.assertEquals(Boolean.TRUE, result.getValue());
   }
 
+  @Ignore
   @Test
   public void evaluateShouldBeNullIfStartDateIsOutsideThePeriod() {
     Map<String, Object> parameterValues = new HashMap<>();
