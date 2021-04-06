@@ -38,12 +38,12 @@ public class SetupTptReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Lista de Pacientes que Iniciaram Tratamento Preventivo de Tuberculose (TPT)";
+    return "LISTA DE PACIENTES QUE INICIARAM TRATAMENTO PREVENTIVO DE TUBERCULOSE (TPT)";
   }
 
   @Override
   public String getDescription() {
-    return "Lista de Pacientes que Iniciaram Tratamento Preventivo de Tuberculose (TPT)";
+    return "LISTA DE PACIENTES QUE INICIARAM TRATAMENTO PREVENTIVO DE TUBERCULOSE (TPT)";
   }
 
   @Override
