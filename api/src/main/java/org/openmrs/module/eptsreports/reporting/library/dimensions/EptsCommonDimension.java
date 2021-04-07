@@ -144,6 +144,37 @@ public class EptsCommonDimension {
     return dim;
   }
 
+  public CohortDefinitionDimension ageEndInclusionDate(
+      final AgeDimensionCohortInterface ageDimensionCohort) {
+    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
+
+    dim.setParameters(ageDimensionCohort.getParameters());
+    dim.setName("age dimension");
+
+    dim.addCohortDefinition(
+        "<15", ageDimensionCohort.createXtoYAgeCohort("patients with age below 15", null, 14));
+
+    dim.addCohortDefinition(
+        "15+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 15", 15, null));
+
+    dim.addCohortDefinition(
+        "0-14",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 14 years", 0, 14));
+
+    dim.addCohortDefinition(
+        "2-14",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 4 years", 2, 14));
+
+    dim.addCohortDefinition(
+        "5-9",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 15 years", 5, 9));
+
+    dim.addCohortDefinition(
+        "3-14",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 15 years", 3, 14));
+    return dim;
+  }
+
   public CohortDefinitionDimension mqAgeDimention(
       final AgeDimensionCohortInterface ageDimensionCohort) {
     final CohortDefinitionDimension dim = new CohortDefinitionDimension();
@@ -167,6 +198,43 @@ public class EptsCommonDimension {
 
     dim.addCohortDefinition(
         "2-14", ageDimensionCohort.createXtoYAgeCohort("patients with age below 15", 2, 14));
+
+    return dim;
+  }
+
+  public CohortDefinitionDimension ageCX(final AgeDimensionCohortInterface ageDimensionCohort) {
+    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setParameters(ageDimensionCohort.getParameters());
+    dim.setName("age dimension");
+
+    dim.addCohortDefinition("UK", ageDimensionCohort.createUnknownAgeCohort());
+    dim.addCohortDefinition(
+        "15-19",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 15 and 19 ", 15, 19));
+    dim.addCohortDefinition(
+        "20-24",
+        ageDimensionCohort.createXtoYAgeCohort(
+            "patients with age between 20 and 24 years", 20, 24));
+    dim.addCohortDefinition(
+        "25-29",
+        ageDimensionCohort.createXtoYAgeCohort(
+            "patients with age between 25 and 29s years", 25, 29));
+    dim.addCohortDefinition(
+        "30-34",
+        ageDimensionCohort.createXtoYAgeCohort(
+            "patients with age between 30 and 34 years", 30, 34));
+    dim.addCohortDefinition(
+        "35-39",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 35 and 39", 35, 39));
+    dim.addCohortDefinition(
+        "40-44",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 40 and 44", 40, 44));
+    dim.addCohortDefinition(
+        "45-49",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 45 and 49", 45, 49));
+
+    dim.addCohortDefinition(
+        "50+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 50", 50, null));
 
     return dim;
   }

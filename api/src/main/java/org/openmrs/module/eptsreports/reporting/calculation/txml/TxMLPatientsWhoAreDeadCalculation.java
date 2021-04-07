@@ -55,7 +55,7 @@ public class TxMLPatientsWhoAreDeadCalculation extends BaseFghCalculation {
                 Arrays.asList(
                     hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
                     hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
-                hivMetadata.getPatientHasDiedConcept());
+                Arrays.asList(hivMetadata.getPatientHasDiedConcept().getConceptId()));
 
     Map<Integer, Date> deadFichaResumo =
         queryDisaggregation

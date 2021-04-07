@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaSCRNDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaTXDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TbPrevDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
@@ -29,6 +31,10 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Autowired private TbPrevDataset tbPrevDataset;
 
+  @Autowired private CxCaSCRNDataSet cxCaSCRNDataSet;
+
+  @Autowired private CxCaTXDataSet CxCaTXDataSet;
+
   @Override
   public String getExcelDesignUuid() {
     return "61fea06a-472b-11e9-8b42-876961a472ef";
@@ -46,12 +52,12 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.4 Semi-Annual";
+    return "PEPFAR MER 2.5 Semi-Annual";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR MER 2.4 Semi-Annual Report";
+    return "PEPFAR MER 2.5 Semi-Annual Report";
   }
 
   @Override
@@ -63,6 +69,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     rd.setParameters(txMlDataset.getParameters());
     rd.addDataSetDefinition("T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
     rd.addDataSetDefinition("TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
+    rd.addDataSetDefinition("CX", Mapped.mapStraightThrough(cxCaSCRNDataSet.constructDatset()));
+    rd.addDataSetDefinition("CXT", Mapped.mapStraightThrough(CxCaTXDataSet.constructDatset()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -79,8 +87,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.4_Semiannual.xls",
-              "PEPFAR MER 2.4 Semi-Annual Report",
+              "PEPFAR_MER_2.5_Semiannual.xls",
+              "PEPFAR MER 2.5 Semi-Annual Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();

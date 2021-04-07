@@ -133,7 +133,7 @@ public class IMR1CohortQueries {
   }
 
   @DocumentedDefinition(value = "PatientsEnrolledInArtCareDuringReportingPeriod")
-  private CohortDefinition getAllPatientsEnrolledInArtCareDuringReportingPeriod() {
+  public CohortDefinition getAllPatientsEnrolledInArtCareDuringReportingPeriod() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("PatientsEnrolledInArtCareDuringReportingPeriod Cohort");
@@ -172,7 +172,7 @@ public class IMR1CohortQueries {
   }
 
   @DocumentedDefinition(value = "PatientsTransferredInByEndReportingDate")
-  private CohortDefinition getAllPatientsTransferredInByEndReportingDate() {
+  public CohortDefinition getAllPatientsTransferredInByEndReportingDate() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("PatientsTransferredInByEndReportingDate Cohort");

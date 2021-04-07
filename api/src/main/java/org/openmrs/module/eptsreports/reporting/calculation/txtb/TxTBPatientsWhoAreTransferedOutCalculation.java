@@ -52,7 +52,7 @@ public class TxTBPatientsWhoAreTransferedOutCalculation extends BaseFghCalculati
                 context,
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 Arrays.asList(hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
-                hivMetadata.getTransferOutToAnotherFacilityConcept());
+                Arrays.asList(hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId()));
 
     Map<Integer, Date> transferredOutInFichaResumo =
         queryDisaggregation

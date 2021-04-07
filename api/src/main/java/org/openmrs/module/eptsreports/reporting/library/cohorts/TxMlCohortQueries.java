@@ -393,9 +393,11 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "refusedTreatment",
         EptsReportUtils.map(this.getPatientsWhoRefusedOrStoppedTreatment(), mapping));
+    cd.addSearch(
+        "numerator", EptsReportUtils.map(this.getPatientsWhoMissedNextApointment(), mapping));
 
     cd.setCompositionString(
-        "missedAppointmentLess3Month NOT (dead OR transferedOut OR refusedTreatment)");
+        "(numerator AND missedAppointmentLess3Month) NOT (dead OR transferedOut OR refusedTreatment)");
     return cd;
   }
 
@@ -416,9 +418,11 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "refusedTreatment",
         EptsReportUtils.map(this.getPatientsWhoRefusedOrStoppedTreatment(), mapping));
+    cd.addSearch(
+        "numerator", EptsReportUtils.map(this.getPatientsWhoMissedNextApointment(), mapping));
 
     cd.setCompositionString(
-        "missedAppointmentGreater3Month NOT (dead OR transferedOut OR refusedTreatment)");
+        "(numerator AND missedAppointmentGreater3Month) NOT (dead OR transferedOut OR refusedTreatment)");
     return cd;
   }
 
@@ -493,13 +497,15 @@ public class TxMlCohortQueries {
   }
 
   @DocumentedDefinition(value = "patientsWhoAreLTFUGreatherThan3MonthsCalculation")
-  private CohortDefinition getPatientsWhoAreLTFUGreatherThan3MonthsCalculation() {
+  public CohortDefinition getPatientsWhoAreLTFUGreatherThan3MonthsCalculation() {
+
     BaseFghCalculationCohortDefinition cd =
         new BaseFghCalculationCohortDefinition(
             "patientsWhoAreLTFUGreatherThan3MonthsCalculation",
             Context.getRegisteredComponents(
                     TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation.class)
                 .get(0));
+    cd.setName("getPatientsWhoAreLTFUGreatherThan3MonthsCalculation");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "end Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));

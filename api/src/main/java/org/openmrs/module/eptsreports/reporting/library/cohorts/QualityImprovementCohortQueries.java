@@ -10,7 +10,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
-import org.openmrs.module.eptsreports.reporting.library.queries.QualiltyImprovementQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.MQtQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
@@ -58,7 +58,7 @@ public class QualityImprovementCohortQueries {
         new Parameter("dataFinalAvaliacao", "dataFinalAvaliacao", Date.class));
 
     String query =
-        QualiltyImprovementQueries.getPatientStartedTarvInInclusionPeriodWithAtLeastOneEncounter(
+        MQtQueriesInterface.getPatientStartedTarvInInclusionPeriodWithAtLeastOneEncounter(
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
@@ -102,7 +102,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientWithEncontersWithinSevenDaysAfterDiagnostic(
+        MQtQueriesInterface.getPatientWithEncontersWithinSevenDaysAfterDiagnostic(
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getDateOfHivDiagnosisConcept().getConceptId(),
@@ -159,7 +159,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientWithTrackInEachTBEncounter(
+        MQtQueriesInterface.getPatientWithTrackInEachTBEncounter(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             tbMetadata.getTbScreeningConcept().getConceptId()));
@@ -210,7 +210,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries
+        MQtQueriesInterface
             .getPragnantPatientsEnrolledInARVThatStartedInInclusionPeriodPregnantSample(
                 hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
@@ -322,7 +322,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPacientsEnrolledInTBProgram(
+        MQtQueriesInterface.getPacientsEnrolledInTBProgram(
             tbMetadata.getTBProgram().getProgramId()));
 
     return sqlCohortDefinition;
@@ -575,12 +575,11 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries
-            .getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted(
-                hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId(),
-                hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept().getConceptId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
+        MQtQueriesInterface.getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriodAndCompleted(
+            hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId(),
+            hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept().getConceptId(),
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
 
     return sqlCohortDefinition;
   }
@@ -630,7 +629,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriod(
+        MQtQueriesInterface.getPatientWhoStartedIsoniazidProphylaxisInInclusioPeriod(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId()));
@@ -801,7 +800,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsWithEnconterInPeriodAndHadScreeningForSTI(
+        MQtQueriesInterface.getPatientsWithEnconterInPeriodAndHadScreeningForSTI(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             commonMetadata.getScreeningForSTIConcept().getConceptId()));
@@ -854,7 +853,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPacientsWithCD4RegisteredIn33Days(
+        MQtQueriesInterface.getPacientsWithCD4RegisteredIn33Days(
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata
@@ -911,7 +910,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsWhomStartedARVIn15Days(
+        MQtQueriesInterface.getPatientsWhomStartedARVIn15Days(
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
@@ -972,7 +971,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPacientsStartedARVInAPeriodAndHadEncounter33DaysAfterBegining(
+        MQtQueriesInterface.getPacientsStartedARVInAPeriodAndHadEncounter33DaysAfterBegining(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
@@ -1041,7 +1040,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("testStart", "Test Start ", Boolean.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsWhoHadAtLeast3EncountersIn3MonthsAfterBeginingART(
+        MQtQueriesInterface.getPatientsWhoHadAtLeast3EncountersIn3MonthsAfterBeginingART(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
@@ -1108,7 +1107,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("testStart", "Test Start ", Boolean.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientWhoAtLeast3JoiningEvaluationWithin3MothsARIEL(
+        MQtQueriesInterface.getPatientWhoAtLeast3JoiningEvaluationWithin3MothsARIEL(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
@@ -1179,7 +1178,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPacientesWithMonthEncountersAfterInitialization(
+        MQtQueriesInterface.getPacientesWithMonthEncountersAfterInitialization(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
@@ -1241,7 +1240,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsWithAPSSMonthEncountersAfterTARVInitialization(
+        MQtQueriesInterface.getPatientsWithAPSSMonthEncountersAfterTARVInitialization(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
@@ -1378,7 +1377,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
-    sqlCohortDefinition.setQuery(QualiltyImprovementQueries.getPatientsEnrolledInGaacInAPeriod());
+    sqlCohortDefinition.setQuery(MQtQueriesInterface.getPatientsEnrolledInGaacInAPeriod());
     return sqlCohortDefinition;
   }
 
@@ -1394,7 +1393,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsWithCD4GreterThan200ORCVLessThan1000InLast12Months(
+        MQtQueriesInterface.getPatientsWithCD4GreterThan200ORCVLessThan1000InLast12Months(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
@@ -1416,7 +1415,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsInTARVMoreThan6Months(
+        MQtQueriesInterface.getPatientsInTARVMoreThan6Months(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
@@ -1511,7 +1510,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientEnrolledARTProgramFinalPeriod(
+        MQtQueriesInterface.getPatientEnrolledARTProgramFinalPeriod(
             hivMetadata.getARTProgram().getProgramId()));
 
     return sqlCohortDefinition;
@@ -1574,7 +1573,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientWhoCameOutARTProgramFinalPeriod(
+        MQtQueriesInterface.getPatientWhoCameOutARTProgramFinalPeriod(
             hivMetadata.getARTProgram().getProgramId(),
             hivMetadata
                 .getTransferredOutToAnotherHealthFacilityWorkflowState()
@@ -1628,7 +1627,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries
+        MQtQueriesInterface
             .getPatientWhichMoreThan60DaysPassedWithoutReturnAndNotNitifiedAsAbandonment(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
@@ -1713,7 +1712,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPregnantPatientEnrolledInTARVService(
+        MQtQueriesInterface.getPregnantPatientEnrolledInTARVService(
             commonMetadata.getPregnantConcept().getConceptId(),
             commonMetadata.getPregnancyDueDate().getConceptId(),
             commonMetadata.getNumberOfWeeksPregnant().getConceptId(),
@@ -1811,7 +1810,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientWithDeliveryDate2YearsAgoBreatFeeding(
+        MQtQueriesInterface.getPatientWithDeliveryDate2YearsAgoBreatFeeding(
             hivMetadata.getPtvEtvProgram().getProgramId(),
             hivMetadata.getPatientIsBreastfeedingWorkflowState().getProgramWorkflowStateId()));
 
@@ -1942,7 +1941,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientWithAtLeastOneEncounterInPeriod(
+        MQtQueriesInterface.getPatientWithAtLeastOneEncounterInPeriod(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId()));
 
@@ -1964,7 +1963,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsStartTuberculoseTreatmentNotComplete(
+        MQtQueriesInterface.getPatientsStartTuberculoseTreatmentNotComplete(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             tbMetadata.getTBLivroEncounterType().getEncounterTypeId(),
@@ -1989,7 +1988,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsNotifiedSarcomaKaposi(
+        MQtQueriesInterface.getPatientsNotifiedSarcomaKaposi(
             commonMetadata.getStage4PediatricMozambiqueConcept().getConceptId(),
             commonMetadata.getAdultClinicalHistoryConcept().getConceptId(),
             commonMetadata.getSkimExamFindingsConcept().getConceptId(),
@@ -2081,7 +2080,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries
+        MQtQueriesInterface
             .getPatientsWhoHadEnconterInLast7MonthAndWereMarkedToNextEncounterIn6Months(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
@@ -2103,7 +2102,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsTookARVInLast5MonthAndWereMarkedToNextEncounter(
+        MQtQueriesInterface.getPatientsTookARVInLast5MonthAndWereMarkedToNextEncounter(
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
 
@@ -2241,16 +2240,15 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries
-            .getPatientWhoReceivedViralLoadFindingBetween6to9MonthAfterTARVStart(
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
-                hivMetadata.getARVPlanConcept().getConceptId(),
-                commonMetadata.getStartDrugsConcept().getConceptId(),
-                hivMetadata.getARVStartDate().getConceptId(),
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata.getHivViralLoadConcept().getConceptId()));
+        MQtQueriesInterface.getPatientWhoReceivedViralLoadFindingBetween6to9MonthAfterTARVStart(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVPlanConcept().getConceptId(),
+            commonMetadata.getStartDrugsConcept().getConceptId(),
+            hivMetadata.getARVStartDate().getConceptId(),
+            hivMetadata.getARTProgram().getProgramId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId()));
 
     return sqlCohortDefinition;
   }
@@ -2323,7 +2321,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientsWithImmunologicFailture(
+        MQtQueriesInterface.getPatientsWithImmunologicFailture(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
@@ -2346,7 +2344,7 @@ public class QualityImprovementCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     sqlCohortDefinition.setQuery(
-        QualiltyImprovementQueries.getPatientWithClinicFailtures(
+        MQtQueriesInterface.getPatientWithClinicFailtures(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
