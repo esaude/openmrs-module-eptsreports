@@ -879,8 +879,6 @@ public class QualityImprovement2020CohortQueries {
             + "         AND e.encounter_type = ${6} "
             + "         AND o.concept_id = ${23761} "
             + "         AND o.value_coded IN (${1065}) "
-            + "         AND e.encounter_datetime >= :startDate "
-            + "         AND e.encounter_datetime <= :endDate "
             + "         AND e.encounter_datetime BETWEEN last.encounter AND DATE_ADD(last.encounter, INTERVAL 9 MONTH) "
             + "         AND p.voided = 0 "
             + "         AND e.voided = 0 "
@@ -1021,8 +1019,6 @@ public class QualityImprovement2020CohortQueries {
             + "         AND e.encounter_type = ${6}  "
             + "         AND o.concept_id = ${1268}  "
             + "         AND o.value_coded IN (${1256} , ${1257}, ${1267})  "
-            + "         AND e.encounter_datetime >= :startDate  "
-            + "         AND e.encounter_datetime <= :endDate  "
             + "         AND DATE(o.obs_datetime) between DATE(last.encounter) AND DATE(DATE_ADD(last.encounter, INTERVAL 9 MONTH))  "
             + "         AND p.voided = 0  "
             + "         AND e.voided = 0  "
@@ -1678,7 +1674,7 @@ public class QualityImprovement2020CohortQueries {
           "(A AND B4) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
     } else if (num == 2 || num == 4) {
       compositionCohortDefinition.setName(
-          "(A AND B4 AND G) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
+          "(A AND B4 AND G) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F )");
     } else if (num == 5) {
       compositionCohortDefinition.setName(
           "(A AND C AND B4) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
