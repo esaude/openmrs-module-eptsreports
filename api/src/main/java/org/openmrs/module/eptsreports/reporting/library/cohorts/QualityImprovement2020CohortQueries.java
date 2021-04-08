@@ -4085,12 +4085,12 @@ public class QualityImprovement2020CohortQueries {
             + "         p.voided = 0 AND e.voided = 0  "
             + "             AND e.encounter_type = ${6}  "
             + "             AND e.location_id = :location  "
-            + "             AND e.encounter_datetime > :startDate AND e.encounter_datetime <= :endDate  "
+            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
             + "     GROUP BY p.patient_id) b1 ON b1.patient_id = e.patient_id"
             + "     WHERE p.voided = 0 AND e.voided = 0  AND o.voided = 0"
             + "    AND e.encounter_type = ${6}  "
             + "    AND e.location_id = :location  "
-            + "    AND e.encounter_datetime > :startDate AND e.encounter_datetime <= :endDate  "
+            + "    AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
             + "    AND e.encounter_datetime = b1.last_visit"
             + "        AND o.concept_id = ${23722}"
             + "        AND o.value_coded = ${856}";
@@ -4176,7 +4176,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition B5E =
         commonCohortQueries.getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
-            false, true, 3);
+            false, true, -3);
 
     CohortDefinition G = getMQ13G();
 

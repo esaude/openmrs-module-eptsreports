@@ -920,13 +920,13 @@ public class CommonCohortQueries {
     if (b5e) {
       query +=
           "         AND e.encounter_type = ${6}  "
-              + "         AND DATE(e.encounter_datetime) >= DATE_SUB(clinical.last_visit, INTERVAL ${period} MONTH) "
-              + "         AND DATE(e.encounter_datetime) < DATE(clinical.last_visit))  ";
+              + "         AND e.encounter_datetime >= date_add(clinical.last_visit, INTERVAL ${period} MONTH) "
+              + "         AND e.encounter_datetime < clinical.last_visit)  ";
     } else {
       query +=
           "         AND e.encounter_type = ${6}  "
               + "         AND DATE(e.encounter_datetime) BETWEEN DATE_SUB(clinical.last_visit,  "
-              + "         INTERVAL ${period} MONTH) AND DATE(clinical.last_visit))  ";
+              + "         INTERVAL ${period} MONTH) AND clinical.last_visit)  ";
     }
     if (b4e) {
       query +=
@@ -935,10 +935,7 @@ public class CommonCohortQueries {
               + "         AND o.value_numeric IS NOT NULL "
               + "         AND e.encounter_type = ${53}  "
               + "         AND o.obs_datetime BETWEEN DATE_SUB(clinical.last_visit,  "
-              + "         INTERVAL 12 MONTH) AND DATE(clinical.last_visit)))"
-              + " GROUP BY p.patient_id";
-    } else if (b5e) {
-      query += " GROUP BY patient_id";
+              + "         INTERVAL 12 MONTH) AND clinical.last_visit))";
     }
 
     Map<String, Integer> map = new HashMap<>();
