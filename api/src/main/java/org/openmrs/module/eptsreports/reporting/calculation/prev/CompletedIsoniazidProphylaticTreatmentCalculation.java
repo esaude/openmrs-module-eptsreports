@@ -164,33 +164,6 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
-      // IV. Patients who have Outras Prescrições with the values (DT-INH) */
-      CalculationResultMap outrasPrescricoesPreviousPeriodMap =
-          ePTSCalculationService.getObs(
-              c1719,
-              e6,
-              cohort,
-              location,
-              Arrays.asList(c23955),
-              TimeQualifier.FIRST,
-              DateUtils.addMonths(onOrAfter, -6),
-              DateUtils.addMonths(onOrBefore, -6),
-              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
-              context);
-
-      CalculationResultMap exclusionOutrasPrescricoesPreviousPeriodMap =
-          ePTSCalculationService.getObs(
-              c1719,
-              e6,
-              cohort,
-              location,
-              Arrays.asList(c23955),
-              TimeQualifier.ANY,
-              DateUtils.addMonths(onOrAfter, -13),
-              DateUtils.addMonths(onOrBefore, -6),
-              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
-              context);
-
       /** ------ who completed IPT treatment during the reporting period--- */
       // V
       CalculationResultMap endProfilaxiaObservations =
@@ -785,14 +758,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
         List<Obs> exclisionRegimeTPT1stPickUpPreviousPeriod =
             getObsListFromResultMap(exclisionRegimeTPT1stPickUpPreviousPeriodMap, patientId);
 
-        Obs outrasPrescricoesPreviousPeriod =
-            EptsCalculationUtils.obsResultForPatient(outrasPrescricoesPreviousPeriodMap, patientId);
-        List<Obs> exclusionOutrasPrescricoesPreviousPeriod =
-            getObsListFromResultMap(exclusionOutrasPrescricoesPreviousPeriodMap, patientId);
-
         // ipt end date section
-        // Obs endProfilaxiaObs =
-        //   EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations, patientId);
+
         Obs endProfilaxiaObs6 =
             EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations6, patientId);
         Obs endProfilaxiaObs53 =
@@ -810,10 +777,6 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
                     this.exclude(
                         regimeTPT1stPickUpPreviousPeriod,
                         exclisionRegimeTPT1stPickUpPreviousPeriod,
-                        -7),
-                    this.exclude(
-                        outrasPrescricoesPreviousPeriod,
-                        exclusionOutrasPrescricoesPreviousPeriod,
                         -7)),
                 Priority.MIN,
                 true);
