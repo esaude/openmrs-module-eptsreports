@@ -177,11 +177,6 @@ public class TbPrevCohortQueries {
             getPatientsWhoHaveRegimeTPTWithINHMarkedOnFirstPickUpDateOnFILT(),
             "startDate=${onOrAfter-6m},endDate=${onOrBefore-6m},location=${location}"));
     definition.addSearch(
-        "outras-prescricoes-isoniazid",
-        EptsReportUtils.map(
-            getPatientsWhoHaveOutrasPrescricoesWithINHMarkedOnFichaClinica(),
-            "startDate=${onOrAfter-6m},endDate=${onOrBefore-6m},location=${location}"));
-    definition.addSearch(
         "outras-prescricoes-3hp",
         EptsReportUtils.map(
             getPatientsWhoHaveOutrasPrescricoesWith3HPMarkedOnFichaClinica(),
@@ -194,7 +189,7 @@ public class TbPrevCohortQueries {
     definition.setCompositionString(
         "started-by-end-previous-reporting-period "
             + " AND ("
-            + "            (started-isoniazid OR initiated-profilaxia OR regime-tpt-isoniazid OR outras-prescricoes-isoniazid) "
+            + "            (started-isoniazid OR initiated-profilaxia OR regime-tpt-isoniazid) "
             + "         OR (outras-prescricoes-3hp OR regime-tpt-3hp) "
             + "    AND NOT (transferred-out AND NOT completed-isoniazid)"
             + "     ) ");
@@ -445,35 +440,6 @@ public class TbPrevCohortQueries {
             tbMetadata.getRegimeTPTConcept(),
             Arrays.asList(
                 tbMetadata.getIsoniazidConcept(), tbMetadata.getIsoniazidePiridoxinaConcept()),
-            7));
-
-    return sqlCohortDefinition;
-  }
-
-  /**
-   * <b>Description:</b> Patients who have Outras Prescrições with the values (DT-INH) marked on
-   * Ficha Clínica - Mastercard during the previous reporting period (INH Start Date) and no other
-   * DT-INH values marked on Ficha Clinica in the 7 months prior to the INH Start Date
-   *
-   * <p><b>Technical Specs</b>
-   *
-   * </blockquote>
-   *
-   * @return {@link CohortDefinition}
-   */
-  public CohortDefinition getPatientsWhoHaveOutrasPrescricoesWithINHMarkedOnFichaClinica() {
-
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName(
-        "Patients Who Have Outras Prescricoes With INH Marked On Ficha Clinica");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
-    sqlCohortDefinition.setQuery(
-        TbPrevQueries.getRegimeTPTOrOutrasPrescricoes(
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            tbMetadata.getTreatmentPrescribedConcept(),
-            Arrays.asList(tbMetadata.getDtINHConcept()),
             7));
 
     return sqlCohortDefinition;

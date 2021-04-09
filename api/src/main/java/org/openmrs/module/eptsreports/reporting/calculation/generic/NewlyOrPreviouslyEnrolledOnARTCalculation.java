@@ -148,30 +148,6 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             endDate,
             EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
             context);
-    CalculationResultMap firstDtINHDateMap =
-        ePTSCalculationService.getObs(
-            tbMetadata.getTreatmentPrescribedConcept(),
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            cohort,
-            location,
-            Arrays.asList(tbMetadata.getDtINHConcept()),
-            TimeQualifier.FIRST,
-            startDate,
-            endDate,
-            EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
-            context);
-    CalculationResultMap notInDtINHDateMap =
-        ePTSCalculationService.getObs(
-            tbMetadata.getTreatmentPrescribedConcept(),
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            cohort,
-            location,
-            Arrays.asList(tbMetadata.getDtINHConcept()),
-            TimeQualifier.ANY,
-            DateUtils.addMonths(startDate, -7),
-            endDate,
-            EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
-            context);
     CalculationResultMap first3HPDateMap =
         ePTSCalculationService.getObs(
             tbMetadata.getTreatmentPrescribedConcept(),
@@ -231,9 +207,6 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             EptsCalculationUtils.resultForPatient(startDrugsObservations, patientId);
         Obs firstINHDateObs = EptsCalculationUtils.obsResultForPatient(firstINHDateMap, patientId);
         List<Obs> notInINHDateObs = getObsListFromResultMap(notInINHDateMap, patientId);
-        Obs firstDtINHDateObs =
-            EptsCalculationUtils.obsResultForPatient(firstDtINHDateMap, patientId);
-        List<Obs> notInDtINHDateObs = getObsListFromResultMap(notInDtINHDateMap, patientId);
         Obs first3HPDateObs = EptsCalculationUtils.obsResultForPatient(first3HPDateMap, patientId);
         List<Obs> notIn3HPDateObs = getObsListFromResultMap(notIn3HPDateMap, patientId);
         Obs first3HPOr3HPPlusPiridoxinaDateObs =
@@ -244,7 +217,6 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
         if ((seguimentoOrFichaResumo == null
                 && fichaClinicaMasterCardStartDrugsObs == null
                 && firstINHDateObs == null
-                && firstDtINHDateObs == null
                 && first3HPDateObs == null
                 && first3HPOr3HPPlusPiridoxinaDateObs == null)
             || artStartDate == null) {
@@ -259,7 +231,6 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
                             seguimentoOrFichaResumo,
                             fichaClinicaMasterCardStartDrugsObs,
                             this.getObsNotInMonthsPriorTo(firstINHDateObs, notInINHDateObs, -7),
-                            this.getObsNotInMonthsPriorTo(firstDtINHDateObs, notInDtINHDateObs, -7),
                             this.getObsNotInMonthsPriorTo(first3HPDateObs, notIn3HPDateObs, -4),
                             this.getObsNotInMonthsPriorTo(
                                 first3HPOr3HPPlusPiridoxinaDateObs,
