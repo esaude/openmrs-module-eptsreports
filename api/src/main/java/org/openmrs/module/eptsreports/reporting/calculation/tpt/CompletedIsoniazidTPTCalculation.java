@@ -731,20 +731,23 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
       encountersB.add(obs.getEncounter());
     }
     int num = 0;
+    boolean flag = false;
 
     for (Encounter e : encountersA) {
       if (e.getEncounterDatetime().compareTo(DateUtils.addMonths(iptStartDate, plusIPTDate)) <= 0
           && e.getEncounterDatetime().compareTo(iptStartDate) >= 0) {
+        if (encountersB.contains(e)) {
+          flag = true;
+        }
         num++;
+        if (num == nTimes && flag == true) {
+          break;
+        }
       }
     }
-
-    for (Encounter e : encountersA) {
-      if (encountersB.contains(e) && num == nTimes) {
-        break;
-      }
+    if (flag == false) {
+      num = 0;
     }
-
     return num;
   }
 
