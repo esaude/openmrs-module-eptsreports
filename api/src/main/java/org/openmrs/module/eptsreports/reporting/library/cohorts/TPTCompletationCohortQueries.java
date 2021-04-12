@@ -438,10 +438,7 @@ public class TPTCompletationCohortQueries {
 												DisaggregationTypes.PREVIOUSLY_ENROLLED)),
 								mappings));
 
-//    dsd.setCompositionString(
-//        "(STARTED-TPT AND (NEWLY-ART OR PREVIOUS-ART)) NOT (TRF-OUT NOT ENDED-TPT) ");
-
-		dsd.setCompositionString("ENDED-TPT");
+		dsd.setCompositionString("(STARTED-TPT AND (NEWLY-ART OR PREVIOUS-ART)) NOT (TRF-OUT NOT ENDED-TPT) ");
 
 		return dsd;
 	}
@@ -477,8 +474,7 @@ public class TPTCompletationCohortQueries {
 		definition.setName("Finding Patients Who completed INH Therapy - query 1");
 		definition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
-		definition.setQuery(
-				TPTCompletationQueries.QUERY.findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod_query1);
+		definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query1);
 		return definition;
 	}
 
@@ -488,8 +484,7 @@ public class TPTCompletationCohortQueries {
 		definition.setName("Finding Patients Who completed INH Therapy - query 2");
 		definition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
-		definition.setQuery(
-				TPTCompletationQueries.QUERY.findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod_query2);
+		definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query2);
 		return definition;
 	}
 
@@ -499,8 +494,7 @@ public class TPTCompletationCohortQueries {
 		definition.setName("Finding Patients Who completed INH Therapy - query 3");
 		definition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
-		definition.setQuery(
-				TPTCompletationQueries.QUERY.findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod_query3);
+		definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query3);
 		return definition;
 	}
 
@@ -510,8 +504,7 @@ public class TPTCompletationCohortQueries {
 		definition.setName("Finding Patients Who completed INH Therapy - query 4");
 		definition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
-		definition.setQuery(
-				TPTCompletationQueries.QUERY.findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod_query4);
+		definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query4);
 		return definition;
 	}
 
@@ -521,8 +514,7 @@ public class TPTCompletationCohortQueries {
 		definition.setName("Finding Patients Who completed INH Therapy - query 5");
 		definition.addParameter(new Parameter("endDate", "End Date", Date.class));
 		definition.addParameter(new Parameter("location", "location", Location.class));
-		definition.setQuery(
-				TPTCompletationQueries.QUERY.findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod_query5);
+		definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query5);
 		return definition;
 	}
 
