@@ -26,9 +26,9 @@ public class TxTbPrevCalculationTest extends DefinitionsFGHLiveTest {
   public void shouldFindPatientsWhoAre3HP() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(398);
-    final Date startDate = DateUtil.getDateTime(2020, 6, 21);
+    final Date startDate = DateUtil.getDateTime(2020, 9, 21);
 
-    final Date endDate = DateUtil.getDateTime(2020, 12, 20);
+    final Date endDate = DateUtil.getDateTime(2021, 3, 20);
 
     final Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
