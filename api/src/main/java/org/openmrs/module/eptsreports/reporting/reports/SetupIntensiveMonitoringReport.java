@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.IntensiveMonitoringDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.QualityImprovement2020DataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -24,11 +25,16 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
 
   private QualityImprovement2020DataSet initQltyImpDataSet;
 
+  private IntensiveMonitoringDataSet intensiveMonitoringDataSet;
+
   @Autowired
   public SetupIntensiveMonitoringReport(
-      GenericCohortQueries genericCohortQueries, QualityImprovement2020DataSet initQltyImpDataSet) {
+      GenericCohortQueries genericCohortQueries,
+      QualityImprovement2020DataSet initQltyImpDataSet,
+      IntensiveMonitoringDataSet intensiveMonitoringDataSet) {
     this.genericCohortQueries = genericCohortQueries;
     this.initQltyImpDataSet = initQltyImpDataSet;
+    this.intensiveMonitoringDataSet = intensiveMonitoringDataSet;
   }
 
   @Override
@@ -63,6 +69,11 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
     reportDefinition.setName(getName());
     reportDefinition.setDescription(getDescription());
     reportDefinition.setParameters(getParameters());
+    reportDefinition.addDataSetDefinition(
+        "IM",
+        Mapped.mapStraightThrough(
+            intensiveMonitoringDataSet.constructIntensiveMonitoringDataSet()));
+
     reportDefinition.addDataSetDefinition(
         "ALL",
         Mapped.mapStraightThrough(initQltyImpDataSet.constructQualityImprovement2020DataSet()));
