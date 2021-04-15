@@ -806,89 +806,106 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "mqAge=MqChildren");
 
     // Category 12 denominator indicators Part 1
-    CohortIndicator MQ12DEN1 =
+    CohortIndicator MI12DEN1 =
         eptsGeneralIndicator.getIndicator(
-            "MQ12DEN1",
+            "MI12DEN1",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ12DEN(1),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-3m+1d},endDate=${revisionEndDate-2m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ12DEN1.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI12DEN1.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ12DEN1",
+        "MI12DEN1",
         "# de adultos (15/+anos) que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV",
         EptsReportUtils.map(
-            MQ12DEN1,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI12DEN1,
+            "startDate=${revisionEndDate-3m+1d},endDate=${revisionEndDate-2m},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ12DEN2 =
+    CohortIndicator MI12DEN2 =
         eptsGeneralIndicator.getIndicator(
-            "MQ12DEN2",
+            "MI12DEN2",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ12DEN(2),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ12DEN2.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI12DEN2.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ12DEN2",
+        "MI12DEN2",
         "# de adultos (15/+anos) que iniciaram o TARV no período de inclusão e que tiveram consultas clínicas ou levantamentos de ARVs dentro de 99 dias após o início do TARV",
         EptsReportUtils.map(
-            MQ12DEN2,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI12DEN2,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ12DEN5 =
+    CohortIndicator MI12DEN5 =
         eptsGeneralIndicator.getIndicator(
-            "MQ12DEN5",
+            "MI12DEN5",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ12DEN(5),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-3m+1d},endDate=${revisionEndDate-2m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ12DEN5.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI12DEN5.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ12DEN5",
+        "MI12DEN5",
         "Crianças (0-14 anos) que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV",
         EptsReportUtils.map(
-            MQ12DEN5,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI12DEN5,
+            "startDate=${revisionEndDate-3m+1d},endDate=${revisionEndDate-2m},revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt=childrenArt");
 
-    CohortIndicator MQ12DEN6 =
+    CohortIndicator MI12DEN6 =
         eptsGeneralIndicator.getIndicator(
-            "MQ12DEN6",
+            "MI12DEN6",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ12DEN(6),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ12DEN6.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI12DEN6.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ12DEN6",
+        "MI12DEN6",
         "# de crianças (0-14 anos) que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV",
         EptsReportUtils.map(
-            MQ12DEN6,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI12DEN6,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ12DEN10 =
+    CohortIndicator MI12DEN9 =
         eptsGeneralIndicator.getIndicator(
-            "MQ12DEN10",
+            "MI12DEN9",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ12DEN(10),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                qualityImprovement2020CohortQueries.getMQ12DEN(9),
+                "startDate=${revisionEndDate-3m+1d},endDate=${revisionEndDate-2m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ12DEN10.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI12DEN9.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ12DEN10",
+        "MI12DEN9",
         "# de mulheres grávidas HIV+  que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV",
         EptsReportUtils.map(
-            MQ12DEN10,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI12DEN9,
+            "startDate=${revisionEndDate-3m+1d},endDate=${revisionEndDate-2m},revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+
+    CohortIndicator MI12DEN10 =
+        eptsGeneralIndicator.getIndicator(
+            "MI12DEN10",
+            EptsReportUtils.map(
+                qualityImprovement2020CohortQueries.getMQ12DEN(10),
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    MI12DEN10.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+
+    dataSetDefinition.addColumn(
+        "MI12DEN10",
+        "# de mulheres grávidas HIV+  que iniciaram o TARV no período de inclusão e que retornaram para uma consulta clínica ou levantamento de ARVs dentro de 33 dias após o início do TARV",
+        EptsReportUtils.map(
+            MI12DEN10,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
     // Category 12 denominator indicators Part 2
