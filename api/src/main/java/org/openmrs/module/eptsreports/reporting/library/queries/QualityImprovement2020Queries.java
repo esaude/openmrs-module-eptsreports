@@ -1208,7 +1208,6 @@ public class QualityImprovement2020Queries {
             + "                     AND o.value_coded = ${1065}    "
             + "                     AND e.encounter_datetime BETWEEN :startDate AND :endDate   "
             + "                     AND e.location_id = :location    "
-            + "             GROUP BY p.patient_id  "
             + "           ) AS mulher ON mulher.patient_id = p.patient_id  "
             + " WHERE p.voided = 0  "
             + "       AND lab.first_carga_viral = mulher.gestante";
