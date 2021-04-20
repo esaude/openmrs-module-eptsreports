@@ -4,6 +4,7 @@ import java.util.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -75,6 +76,7 @@ public class CXCASCRNCalculationAATest extends BasePatientCalculationTest {
     Assert.assertEquals(suspectedCancerConcept, obs.getValueCoded());
   }
 
+  @Ignore(" FichaClinica And FichaResumo and resumo are no longer evaluated   ")
   @Test
   public void evaluateFichaClinicaAndFichaResumo_ShouldPickFichaResumo() {
 

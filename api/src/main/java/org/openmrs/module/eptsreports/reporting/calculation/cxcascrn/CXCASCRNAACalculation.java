@@ -86,8 +86,6 @@ public class CXCASCRNAACalculation extends AbstractPatientCalculation {
     // loading metadata
     EncounterType rastreioDoCancroDoColoUterinoEncounterType =
         hivMetadata.getRastreioDoCancroDoColoUterinoEncounterType();
-    EncounterType adultoSeguimentoEncounterType = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType masterCardEncounterType = hivMetadata.getMasterCardEncounterType();
 
     Concept resultadoViaConcept = hivMetadata.getResultadoViaConcept();
 
@@ -115,66 +113,14 @@ public class CXCASCRNAACalculation extends AbstractPatientCalculation {
             EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
             context);
 
-    CalculationResultMap fichaClinicaResulMap =
-        eptsCalculationService.getObs(
-            resultadoViaConcept,
-            adultoSeguimentoEncounterType,
-            cohort,
-            location,
-            conceptsAnswers,
-            TimeQualifier.FIRST,
-            startDate,
-            endDate,
-            EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
-            context);
-
-    CalculationResultMap fichaResumoResulMap =
-        eptsCalculationService.getObs(
-            resultadoViaConcept,
-            masterCardEncounterType,
-            cohort,
-            location,
-            conceptsAnswers,
-            TimeQualifier.FIRST,
-            startDate,
-            endDate,
-            EPTSMetadataDatetimeQualifier.VALUE_DATETIME,
-            context);
-
     for (Integer pId : cohort) {
       Obs finchaCCU = EptsCalculationUtils.resultForPatient(finchaCCUResulMap, pId);
-      Obs fichaClinica = EptsCalculationUtils.resultForPatient(fichaClinicaResulMap, pId);
-      Obs fichaResumo = EptsCalculationUtils.resultForPatient(fichaResumoResulMap, pId);
 
       if (finchaCCU != null) {
         if (intResults.contains(finchaCCU.getValueCoded().getConceptId())) {
           map.put(pId, new SimpleResult(finchaCCU, this));
         }
         continue;
-        // TODO:  if there occur on the same date?
-      } else if (fichaClinica != null && fichaResumo != null) {
-        if (fichaClinica
-                .getEncounter()
-                .getEncounterDatetime()
-                .compareTo(fichaResumo.getValueDatetime())
-            > 0) {
-          if (intResults.contains(fichaResumo.getValueCoded().getConceptId())) {
-            map.put(pId, new SimpleResult(fichaResumo, this));
-          }
-        } else {
-          if (intResults.contains(fichaClinica.getValueCoded().getConceptId())) {
-            map.put(pId, new SimpleResult(fichaClinica, this));
-          }
-        }
-      } else if (fichaClinica == null && fichaResumo != null) {
-        if (intResults.contains(fichaResumo.getValueCoded().getConceptId())) {
-          map.put(pId, new SimpleResult(fichaResumo, this));
-        }
-      } else if (fichaClinica != null && fichaResumo == null) {
-
-        if (intResults.contains(fichaClinica.getValueCoded().getConceptId())) {
-          map.put(pId, new SimpleResult(fichaClinica, this));
-        }
       }
     }
 

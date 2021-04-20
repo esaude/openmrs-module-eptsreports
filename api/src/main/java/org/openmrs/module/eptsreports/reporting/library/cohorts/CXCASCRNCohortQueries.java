@@ -147,8 +147,6 @@ public class CXCASCRNCohortQueries {
             isAA1,
             max,
             hivMetadata.getRastreioDoCancroDoColoUterinoEncounterType().getEncounterTypeId(),
-            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getResultadoViaConcept().getConceptId(),
             hivMetadata.getNegative().getConceptId(),
             hivMetadata.getPositive().getConceptId(),
@@ -194,7 +192,7 @@ public class CXCASCRNCohortQueries {
     cd.addSearch("AA1", EptsReportUtils.map(aa1, "onOrAfter=${startDate},location=${location}"));
     cd.addSearch("AA2", EptsReportUtils.map(aa2, "onOrAfter=${startDate},location=${location}"));
 
-    cd.setCompositionString("A AND AA AND NOT (AA1 OR AA2)");
+    cd.setCompositionString("A AND AA AND NOT AA1 ");
     return cd;
   }
 
