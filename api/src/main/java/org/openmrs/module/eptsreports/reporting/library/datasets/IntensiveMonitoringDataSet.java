@@ -358,207 +358,127 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    // Category 7 denominator indicators
-    CohortIndicator MQ7DEN1 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7DEN1",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7A(1),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7DEN1.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+    //  CATEGORY 7 from report named “Monitoria Intensiva MQHIV 2021 denominator
+    // 7.1
     dataSetDefinition.addColumn(
-        "MQ7DEN1",
+        "MI7DEN1",
         "% de adultos HIV+ em TARV elegíveis ao TPT e que iniciaram TPT",
         EptsReportUtils.map(
-            MQ7DEN1,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202171Definition("DEN"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt=adultsArt");
-
-    CohortIndicator MQ7DEN2 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7DEN2",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7A(2),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7DEN2.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+    // 7.2
     dataSetDefinition.addColumn(
-        "MQ7DEN2",
+        "MI7DEN2",
         "% de adultos HIV+ em TARV elegiveis ao TPT que iniciaram e  completaram TPT",
         EptsReportUtils.map(
-            MQ7DEN2,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202172Definition("DEN"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=15+");
-
-    CohortIndicator MQ7DEN3 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7DEN3",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7A(3),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-    MQ7DEN3.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+        "ageBasedOnArt=adultsArt");
+    // 7.3
     dataSetDefinition.addColumn(
-        "MQ7DEN3",
+        "MI7DEN3",
         "% de crianças HIV+ em TARV elegiveis ao TPT  e que iniciaram TPT",
         EptsReportUtils.map(
-            MQ7DEN3,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202173Definition("DEN"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt=childrenArt");
-
-    CohortIndicator MQ7DEN4 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7DEN4",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7A(4),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7DEN4.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+    // 7.4
     dataSetDefinition.addColumn(
-        "MQ7DEN4",
+        "MI7DEN4",
         "% de crianças HIV+ em TARV elegíveis que iniciaram e completaram TPT",
         EptsReportUtils.map(
-            MQ7DEN4,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202174Definition("DEN"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=<15");
-
-    CohortIndicator MQ7DEN5 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7DEN5",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7A(5),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7DEN5.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+        "ageBasedOnArt=childrenArt");
+    // 7.5
     dataSetDefinition.addColumn(
-        "MQ7DEN5",
+        "MI7DEN5",
         "% de mulheres grávidas HIV+ elegíveis ao TPI e que iniciaram TPI",
         EptsReportUtils.map(
-            MQ7DEN5,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202175Definition("DEN"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
-
-    CohortIndicator MQ7DEN6 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7DEN6",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7A(6),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7DEN6.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+    // 7.6
     dataSetDefinition.addColumn(
-        "MQ7DEN6",
+        "MI7DEN6",
         "% de MG HIV+ em TARV que iniciou TPI e que terminou TPI",
         EptsReportUtils.map(
-            MQ7DEN6,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202176Definition("DEN"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    // Category 7 numerator indicators
-    CohortIndicator MQ7NUM1 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7NUM1",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7B(1),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7NUM1.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+    // CATEGORY 7 from report named “Monitoria Intensiva MQHIV 2021 numerator
+    // 7.1
     dataSetDefinition.addColumn(
-        "MQ7NUM1",
+        "MI7NUM1",
         "% de adultos HIV+ em TARV elegíveis ao TPT e que iniciaram TPT",
         EptsReportUtils.map(
-            MQ7NUM1,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202171Definition("NUM"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=15+");
-
-    CohortIndicator MQ7NUM2 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7NUM2",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7B(2),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7NUM2.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+        "ageBasedOnArt=adultsArt");
+    // 7.2
     dataSetDefinition.addColumn(
-        "MQ7NUM2",
+        "MI7NUM2",
         "% de adultos HIV+ em TARV elegiveis ao TPT que iniciaram e  completaram TPT",
         EptsReportUtils.map(
-            MQ7NUM2,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202172Definition("NUM"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=15+");
-
-    CohortIndicator MQ7NUM3 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7NUM3",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7B(3),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7NUM3.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+        "ageBasedOnArt=adultsArt");
+    // 7.3
     dataSetDefinition.addColumn(
-        "MQ7NUM3",
+        "MI7NUM3",
         "% de crianças HIV+ em TARV elegiveis ao TPT  e que iniciaram TPT",
         EptsReportUtils.map(
-            MQ7NUM3,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202173Definition("NUM"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=<15");
-
-    CohortIndicator MQ7NUM4 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7NUM4",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7B(4),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7NUM4.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+        "ageBasedOnArt=childrenArt");
+    // 7.4
     dataSetDefinition.addColumn(
-        "MQ7NUM4",
+        "MI7NUM4",
         "% de crianças HIV+ em TARV elegíveis que iniciaram e completaram TPT",
         EptsReportUtils.map(
-            MQ7NUM4,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202174Definition("NUM"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=<15");
-
-    CohortIndicator MQ7NUM5 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7NUM5",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7B(5),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7NUM5.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+        "ageBasedOnArt=childrenArt");
+    // 7.5
     dataSetDefinition.addColumn(
-        "MQ7NUM5",
+        "MI7NUM5",
         "% de mulheres grávidas HIV+ elegíveis ao TPI e que iniciaram TPI",
         EptsReportUtils.map(
-            MQ7NUM5,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202175Definition("NUM"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
-
-    CohortIndicator MQ7NUM6 =
-        eptsGeneralIndicator.getIndicator(
-            "MQ7NUM6",
-            EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ7B(6),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    MQ7NUM6.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
+    // 7.6
     dataSetDefinition.addColumn(
-        "MQ7NUM6",
+        "MI7NUM6",
         "% de MG HIV+ em TARV que iniciou TPI e que terminou TPI",
         EptsReportUtils.map(
-            MQ7NUM6,
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat7MOHIV202176Definition("NUM"),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
