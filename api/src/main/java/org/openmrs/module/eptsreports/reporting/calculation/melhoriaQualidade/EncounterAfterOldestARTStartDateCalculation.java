@@ -64,28 +64,51 @@ public class EncounterAfterOldestARTStartDateCalculation extends AbstractPatient
 
       List<Encounter> appEncounters = EptsCalculationUtils.extractResultValues(listResult);
 
-      if (artStartDate != null) {
+      List<Encounter> orderedApssList = orderEncounterByEncounterDateTime(appEncounters);
+      if (orderedApssList.size() > 0) {
 
-        Date lower = EptsCalculationUtils.addDays(artStartDate, lowerBoundary);
+        List<Encounter> firstApss = new ArrayList<>();
 
-        Date upper = EptsCalculationUtils.addDays(artStartDate, upperBoundary);
+        firstApss.add(orderedApssList.get(0));
 
-        Date date = evaluateConsultation(appEncounters, lower, upper);
+        if (artStartDate != null) {
 
-        if (date != null) {
-          calculationResultMap.put(patientId, new SimpleResult(date, this));
+          Date lower = EptsCalculationUtils.addDays(artStartDate, lowerBoundary);
+
+          Date upper = EptsCalculationUtils.addDays(artStartDate, upperBoundary);
+
+          Date date = evaluateConsultation(firstApss, lower, upper, artStartDate);
+
+          if (date != null) {
+            calculationResultMap.put(patientId, new SimpleResult(date, this));
+          }
         }
       }
     }
     return calculationResultMap;
   }
 
-  private Date evaluateConsultation(List<Encounter> appEncounters, Date lower, Date upper) {
+  private List<Encounter> orderEncounterByEncounterDateTime(List<Encounter> encounters) {
+    Collections.sort(
+        encounters,
+        new Comparator<Encounter>() {
+          @Override
+          public int compare(Encounter a, Encounter b) {
+            return a.getEncounterDatetime().compareTo(b.getEncounterDatetime());
+          }
+        });
+    return encounters;
+  }
+
+  private Date evaluateConsultation(
+      List<Encounter> appEncounters, Date lower, Date upper, Date artStartDate) {
 
     for (Encounter e : appEncounters) {
-      if (e.getEncounterDatetime().compareTo(lower) >= 0
-          && e.getEncounterDatetime().compareTo(upper) <= 0) {
-        return e.getEncounterDatetime();
+      if (e.getEncounterDatetime().compareTo(artStartDate) >= 0) {
+        if (e.getEncounterDatetime().compareTo(lower) >= 0
+            && e.getEncounterDatetime().compareTo(upper) <= 0) {
+          return e.getEncounterDatetime();
+        }
       }
     }
     return null;

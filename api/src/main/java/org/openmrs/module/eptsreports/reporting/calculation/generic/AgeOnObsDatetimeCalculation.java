@@ -27,7 +27,7 @@ import org.springframework.stereotype.Component;
  * The Class calculates the age of the patient based on report obs_datetime <br>
  * <code>PatientAge = obs_datetime - PatientBirthDate</code> <br>
  * The <i>minAge</i> and the <i>maxAge</i> are the boundaries to evaluate if the patient belong to
- * specific renge of age
+ * specific range of age
  */
 @Component
 public class AgeOnObsDatetimeCalculation extends AbstractPatientCalculation {
