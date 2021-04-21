@@ -69,18 +69,26 @@ public class EncounterAfterOldestARTStartDateCalculation extends AbstractPatient
 
         List<Encounter> firstApss = new ArrayList<>();
 
-        firstApss.add(orderedApssList.get(0));
+        for (Encounter e : orderedApssList) {
+          if (artStartDate != null) {
 
-        if (artStartDate != null) {
+            if (e.getEncounterDatetime().compareTo(artStartDate) > 0) {
 
-          Date lower = EptsCalculationUtils.addDays(artStartDate, lowerBoundary);
+              if (firstApss.size() < 1) {
 
-          Date upper = EptsCalculationUtils.addDays(artStartDate, upperBoundary);
+                firstApss.add(e);
 
-          Date date = evaluateConsultation(firstApss, lower, upper, artStartDate);
+                Date lower = EptsCalculationUtils.addDays(artStartDate, lowerBoundary);
 
-          if (date != null) {
-            calculationResultMap.put(patientId, new SimpleResult(date, this));
+                Date upper = EptsCalculationUtils.addDays(artStartDate, upperBoundary);
+
+                Date date = evaluateConsultation(firstApss, lower, upper);
+
+                if (date != null) {
+                  calculationResultMap.put(patientId, new SimpleResult(date, this));
+                }
+              }
+            }
           }
         }
       }
@@ -100,15 +108,12 @@ public class EncounterAfterOldestARTStartDateCalculation extends AbstractPatient
     return encounters;
   }
 
-  private Date evaluateConsultation(
-      List<Encounter> appEncounters, Date lower, Date upper, Date artStartDate) {
+  private Date evaluateConsultation(List<Encounter> appEncounters, Date lower, Date upper) {
 
     for (Encounter e : appEncounters) {
-      if (e.getEncounterDatetime().compareTo(artStartDate) >= 0) {
-        if (e.getEncounterDatetime().compareTo(lower) >= 0
-            && e.getEncounterDatetime().compareTo(upper) <= 0) {
-          return e.getEncounterDatetime();
-        }
+      if (e.getEncounterDatetime().compareTo(lower) >= 0
+          && e.getEncounterDatetime().compareTo(upper) <= 0) {
+        return e.getEncounterDatetime();
       }
     }
     return null;
