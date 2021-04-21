@@ -411,36 +411,44 @@ public interface MQQueriesInterface {
             + "AND TIMESTAMPDIFF(year,birthdate,:endInclusionDate) <  %d AND birthdate IS NOT NULL";
 
     public static final String findPatientHaveTBACTIVEAndTPIDuringPeriodCategory7AsH =
-        " SELECT p.patient_id FROM patient p "
-            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+        " select B4.patient_id FROM "
+            + " (select p.patient_id, MAX(e.encounter_datetime) AS encounter_datetime from patient p "
+            + " inner join encounter e on e.patient_id = p.patient_id "
+            + " inner join obs obsTPI on obsTPI.encounter_id = e.encounter_id "
+            + " where p.voided = 0 and e.voided=0 and obsTPI.obs_datetime between :startInclusionDate and :endInclusionDate and "
+            + " e.location_id = :location and e.encounter_type = 6 and obsTPI.concept_id = 6122 and obsTPI.value_coded = 1256 and obsTPI.voided = 0 "
+            + " group by p.patient_id) AS B4 "
+            + " INNER JOIN encounter e ON e.patient_id = B4.patient_id "
             + " INNER JOIN obs obsTBActiva ON obsTBActiva.encounter_id = e.encounter_id "
-            + " INNER JOIN obs obsTPI ON obsTPI.encounter_id = e.encounter_id "
-            + " WHERE p.voided = 0 AND e.voided = 0 AND obsTPI.obs_datetime BETWEEN :startInclusionDate AND :endInclusionDate AND "
-            + " e.encounter_datetime BETWEEN obsTPI.obs_datetime AND (obsTPI.obs_datetime + INTERVAL 9 MONTH) AND "
-            + " e.location_id = :location AND e.encounter_type = 6 AND obsTBActiva.concept_id = 23761 AND obsTBActiva.value_coded = 1065 AND obsTBActiva.voided = 0 "
-            + " AND obsTPI.concept_id = 6122 AND obsTPI.value_coded = 1256 AND obsTPI.voided = 0 "
-            + " group by p.patient_id ";
+            + " WHERE e.voided = 0 AND e.location_id = :location AND obsTBActiva.voided = 0 AND "
+            + " e.encounter_datetime BETWEEN B4.encounter_datetime AND (B4.encounter_datetime + INTERVAL 9 MONTH) AND "
+            + " e.encounter_type = 6 AND obsTBActiva.concept_id = 23761 AND obsTBActiva.value_coded = 1065";
 
     public static final String findPatientHaveTBSCREENINGAndTPIDuringPeriodCategory7AsI =
-        " SELECT p.patient_id FROM patient p "
-            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+        " select B4.patient_id FROM "
+            + " (select p.patient_id, MAX(e.encounter_datetime) AS encounter_datetime FROM patient p "
+            + " inner join encounter e on e.patient_id = p.patient_id "
+            + " inner join obs obsTPI on obsTPI.encounter_id = e.encounter_id "
+            + " where p.voided = 0 and e.voided=0 and obsTPI.obs_datetime between :startInclusionDate and :endInclusionDate and "
+            + " e.location_id = :location and e.encounter_type = 6 and obsTPI.concept_id=6122 and obsTPI.value_coded = 1256 and obsTPI.voided = 0 "
+            + " group by p.patient_id) AS B4 "
+            + " INNER JOIN encounter e ON e.patient_id = B4.patient_id "
             + " INNER JOIN obs obsTBPositivo ON obsTBPositivo.encounter_id = e.encounter_id "
-            + " INNER JOIN obs obsTPI ON obsTPI.encounter_id = e.encounter_id "
-            + " WHERE p.voided = 0 AND e.voided = 0 AND obsTPI.obs_datetime BETWEEN :startInclusionDate AND :endInclusionDate AND "
-            + " e.encounter_datetime BETWEEN obsTPI.obs_datetime AND (obsTPI.obs_datetime + INTERVAL 9 MONTH) AND "
-            + " e.location_id = :location AND e.encounter_type = 6 AND obsTBPositivo.concept_id = 23758 AND obsTBPositivo.value_coded = 1065 AND obsTBPositivo.voided = 0 "
-            + " AND obsTPI.concept_id = 6122 AND obsTPI.value_coded = 1256 AND obsTPI.voided = 0 "
-            + " group by p.patient_id ";
+            + " WHERE e.voided = 0 AND obsTBPositivo.voided = 0 AND e.encounter_datetime BETWEEN B4.encounter_datetime AND (B4.encounter_datetime + INTERVAL 9 MONTH) AND "
+            + " e.location_id = :location AND e.encounter_type = 6 AND obsTBPositivo.concept_id = 23758 AND obsTBPositivo.value_coded = 1065 ";
 
     public static final String findPatientHaveTBTREATMENTAndTPIDuringPeriodCategory7AsJ =
-        " SELECT p.patient_id FROM patient p "
-            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+        " select B4.patient_id FROM "
+            + " (select p.patient_id, MAX(e.encounter_datetime) AS encounter_datetime from patient p "
+            + " inner join encounter e on e.patient_id = p.patient_id "
+            + " inner join obs obsTPI on obsTPI.encounter_id = e.encounter_id "
+            + " where p.voided = 0 and e.voided=0 and obsTPI.obs_datetime between :startInclusionDate and :endInclusionDate and "
+            + " e.location_id = :location  and e.encounter_type = 6 and obsTPI.concept_id=6122 and obsTPI.value_coded = 1256 and obsTPI.voided = 0 "
+            + " group by p.patient_id) AS B4 "
+            + " INNER JOIN encounter e ON e.patient_id = B4.patient_id "
             + " INNER JOIN obs obsTB ON obsTB.encounter_id = e.encounter_id "
-            + " INNER JOIN obs obsTPI ON obsTPI.encounter_id = e.encounter_id "
-            + " WHERE p.voided = 0 AND e.voided = 0 AND obsTPI.obs_datetime BETWEEN :startInclusionDate AND :endInclusionDate AND "
-            + " e.encounter_datetime BETWEEN obsTPI.obs_datetime AND (obsTPI.obs_datetime + INTERVAL 9 MONTH) AND "
-            + " e.location_id = :location AND e.encounter_type = 6 AND obsTB.concept_id = 1268 AND obsTB.value_coded IN (1256,1257,1267) AND obsTB.voided = 0 "
-            + " AND obsTPI.concept_id = 6122 AND obsTPI.value_coded = 1256 AND obsTPI.voided = 0 "
-            + " group by p.patient_id ";
+            + " WHERE e.voided = 0 AND e.location_id = :location  AND obsTB.voided = 0 AND "
+            + " obsTB.obs_datetime BETWEEN B4.encounter_datetime AND (B4.encounter_datetime + INTERVAL 9 MONTH) AND "
+            + " e.encounter_type = 6 AND obsTB.concept_id = 1268 AND obsTB.value_coded IN (1256,1257,1267) ";
   }
 }
