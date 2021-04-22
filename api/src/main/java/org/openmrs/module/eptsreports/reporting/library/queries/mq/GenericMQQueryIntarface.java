@@ -116,7 +116,7 @@ public interface GenericMQQueryIntarface {
               + "group by p.patient_id "
               + ") carga_viral "
               + "inner join person on person_id = carga_viral.patient_id "
-              + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) > %s  AND birthdate IS NOT NULL and voided = 0  ";
+              + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) >= %s  AND birthdate IS NOT NULL and voided = 0  ";
 
       return String.format(sql, startAge);
     }
