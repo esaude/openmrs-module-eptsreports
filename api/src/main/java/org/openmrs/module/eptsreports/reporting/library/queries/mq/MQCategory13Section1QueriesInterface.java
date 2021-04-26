@@ -102,7 +102,7 @@ public interface MQCategory13Section1QueriesInterface {
         findPatientsWithLastClinicalConsultationwhoAreInLinhaAlternativaDenominatorB3 =
             "Select final.patient_id from ( "
                 + "Select alternativeLine.patient_id,alternativeLine.dataLinha, alternativeLine.ultimaConsulta from ( "
-                + "Select enc.patient_id,enc.encounter_datetime ultimaConsulta,min(obsLinha.obs_datetime) dataLinha from ( "
+                + "Select enc.patient_id,enc.encounter_datetime ultimaConsulta,max(obsLinha.obs_datetime) dataLinha from ( "
                 + "Select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
                 + "inner join encounter e on p.patient_id=e.patient_id "
                 + "where p.voided=0 and e.voided=0 and e.encounter_type=6 and "
