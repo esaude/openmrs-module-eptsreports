@@ -846,22 +846,42 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
                   5);
 
           // xii
+          // Aggregating the exclusion list
+          List<Obs> part1 = getObsListFromResultMap(atLeast3FichaClínicaINHMap3, patientId);
+          List<Obs> part2 =
+              getObsListFromResultMap(exclusionAtLeast3FichaClínicaINHMap3, patientId);
+          List<Obs> finalExclusionListFor1719 = new ArrayList<>(part1);
+          finalExclusionListFor1719.addAll(part2);
+
+          //
+          List<Obs> atLeast3FichaClínicaINHMap3Cleaned1 =
+              exclude(
+                  getObsListFromResultMap(atLeast3FichaClínicaINHMap1, patientId),
+                  finalExclusionListFor1719);
           int xiia1 =
               evaluateOccurrence(
-                  getObsListFromResultMap(atLeast3FichaClínicaINHMap1, patientId),
+                  exclude2ndCriteria(
+                      atLeast3FichaClínicaINHMap3Cleaned1, finalExclusionListFor1719),
                   iptStartDate,
                   3,
                   7);
-          List<Obs> atLeast3FichaClínicaINHMap3Cleaned =
+          List<Obs> atLeast3FichaClínicaINHMap3Cleaned2 =
               exclude(
                   getObsListFromResultMap(atLeast3FichaClínicaINHMap2, patientId),
-                  getObsListFromResultMap(atLeast3FichaClínicaINHMap3, patientId));
+                  finalExclusionListFor1719);
 
-          int xiia2 = evaluateOccurrence(atLeast3FichaClínicaINHMap3Cleaned, iptStartDate, 3, 7);
+          int xiia2 =
+              evaluateOccurrence(
+                  exclude2ndCriteria(
+                      atLeast3FichaClínicaINHMap3Cleaned2, finalExclusionListFor1719),
+                  iptStartDate,
+                  3,
+                  7);
 
           int xiib1 =
               evaluateOccurrence(
                   getObsListFromResultMap(atLeast3FichaClínicaINHMap4, patientId),
+                  getObsListFromResultMap(atLeast3FichaClínicaINHMap6, patientId),
                   iptStartDate,
                   1,
                   7);
@@ -1191,6 +1211,22 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
     for (Obs o : pure) {
       if (!dirty.contains(o)) {
         clean.add(o);
+      }
+    }
+    return clean;
+  }
+
+  private List<Obs> exclude2ndCriteria(List<Obs> pure, List<Obs> dirty) {
+    List<Obs> clean = new ArrayList<>();
+    for (Obs p : pure) {
+      boolean infected = false;
+      for (Obs d : dirty) {
+        if (p.getEncounter().getEncounterId() == d.getEncounter().getEncounterId()) {
+          infected = true;
+        }
+      }
+      if (!infected) {
+        clean.add(p);
       }
     }
     return clean;
