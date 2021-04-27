@@ -484,245 +484,245 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
 
     // Category 11 denominator indicators
 
-    CohortIndicator MQ11DEN1 =
+    CohortIndicator MI11DEN1 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11DEN1",
+            "MI11DEN1",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11DEN(1),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11DEN1.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11DEN1.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11DEN1",
+        "MI11DEN1",
         "Adultos em TARV com o mínimo de 3 consultas de seguimento de adesão na FM-ficha de APSS/PP nos primeiros 3 meses após início do TARV",
         EptsReportUtils.map(
-            MQ11DEN1,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11DEN1,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt=adultsArt");
 
-    CohortIndicator MQ11DEN2 =
+    CohortIndicator MI11DEN2 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11DEN2",
+            "MI11DEN2",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11DEN(2),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11DEN2.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11DEN2.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11DEN2",
+        "MI11DEN2",
         "Pacientes na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas de APSS/PP mensais consecutivas para reforço de adesão",
         EptsReportUtils.map(
-            MQ11DEN2,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11DEN2,
+            "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"),
         "mqAge=MqAdults");
 
-    CohortIndicator MQ11DEN3 =
+    CohortIndicator MI11DEN3 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11DEN3",
+            "MI11DEN3",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11DEN(3),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11DEN3.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11DEN3.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11DEN3",
+        "MI11DEN3",
         " MG em TARV com o mínimo de 3 consultas de seguimento de adesão na FM-ficha de APSS/PP nos primeiros 3 meses após início do TARV",
         EptsReportUtils.map(
-            MQ11DEN3,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11DEN3,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ11DEN4 =
+    CohortIndicator MI11DEN4 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11DEN4",
+            "MI11DEN4",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11DEN(4),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11DEN4.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11DEN4.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11DEN4",
+        "MI11DEN4",
         "MG na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas de APSS/PP mensais consecutivas para reforço de adesão",
         EptsReportUtils.map(
-            MQ11DEN4,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11DEN4,
+            "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ11DEN5 =
+    CohortIndicator MI11DEN5 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11DEN5",
+            "MI11DEN5",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11DEN(5),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11DEN5.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11DEN5.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11DEN5",
+        "MI11DEN5",
         "Crianças > 2 anos de idade em TARV com registo mensal de seguimento da adesão na ficha de APSS/PP nos primeiros 99 dias de TARV",
         EptsReportUtils.map(
-            MQ11DEN5,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11DEN5,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt=2-14");
 
-    CohortIndicator MQ11DEN6 =
+    CohortIndicator MI11DEN6 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11DEN6",
+            "MI11DEN6",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11DEN(6),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11DEN6.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11DEN6.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11DEN6",
+        "MI11DEN6",
         "Crianças < 2 anos de idade em TARV com registo mensal de seguimento da adesão na ficha de APSS/PP no primeiro Ano de TARV",
         EptsReportUtils.map(
-            MQ11DEN6,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11DEN6,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "ageInMonths=<9m");
 
-    CohortIndicator MQ11DEN7 =
+    CohortIndicator MI11DEN7 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11DEN7",
+            "MI11DEN7",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11DEN(7),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11DEN7.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11DEN7.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11DEN7",
+        "MI11DEN7",
         "Crianças (0-14 anos) na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas mensais consecutivas de APSS/PP para reforço de adesão",
         EptsReportUtils.map(
-            MQ11DEN7,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11DEN7,
+            "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"),
         "mqAge=MqChildren");
 
     // Numerator CAT 11
-    CohortIndicator MQ11NUM1 =
+    CohortIndicator MI11NUM1 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11NUM1",
+            "MI11NUM1",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFandGAdultss(),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11NUM1.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11NUM1.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11NUM1",
+        "MI11NUM1",
         "1.1. % de adultos em TARV com o mínimo de 3 consultas de seguimento de adesão na FM-ficha de APSS/PP nos primeiros 3 meses após início do TARV",
         EptsReportUtils.map(
-            MQ11NUM1,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11NUM1,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "age=15+");
 
-    CohortIndicator MQ11NUM2 =
+    CohortIndicator MI11NUM2 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11NUM2",
+            "MI11NUM2",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries
                     .getMQC11NumB1nB2notCnotDnotEnotEnotFnHandAdultss(),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11NUM2.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11NUM2.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11NUM2",
+        "MI11NUM2",
         "11.2. % de pacientes na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas de APSS/PP mensais consecutivas para reforço de adesão ",
         EptsReportUtils.map(
-            MQ11NUM2,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11NUM2,
+            "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"),
         "mqAge=MqAdults");
 
-    CohortIndicator MQ11NUM3 =
+    CohortIndicator MI11NUM3 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11NUM3",
+            "MI11NUM3",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11NumAnB3nCnotDnotEnotEnotFnG(),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11NUM3.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11NUM3.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11NUM3",
+        "MI11NUM3",
         "11.3. % de crianças >2 anos de idade em TARV com registo mensal de seguimento da adesão na ficha de APSS/PP nos primeiros 99 dias de TARV ",
         EptsReportUtils.map(
-            MQ11NUM3,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11NUM3,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ11NUM4 =
+    CohortIndicator MI11NUM4 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11NUM4",
+            "MI11NUM4",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11NumB1nB2nB3nCnotDnotEnotEnotFnH(),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11NUM4.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11NUM4.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11NUM4",
+        "MI11NUM4",
         "11.4. % de crianças <2 anos de idade em TARV com registo mensal de seguimento da adesão na ficha de APSS/PP no primeiro ano de TARV ",
         EptsReportUtils.map(
-            MQ11NUM4,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11NUM4,
+            "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ11NUM5 =
+    CohortIndicator MI11NUM5 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11NUM5",
+            "MI11NUM5",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFnotGnChildren(),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11NUM5.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11NUM5.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11NUM5",
+        "MI11NUM5",
         "11.5. % de crianças (0-14 anos) na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas mensais consecutivas de APSS/PP para reforço de adesão",
         EptsReportUtils.map(
-            MQ11NUM5,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11NUM5,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "age=2-14");
 
-    CohortIndicator MQ11NUM6 =
+    CohortIndicator MI11NUM6 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11NUM6",
+            "MI11NUM6",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries
                     .getMQC11NumAnotCnotDnotEnotFnotIlessThan9Month(),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11NUM6.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11NUM6.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11NUM6",
+        "MI11NUM6",
         "11.6. % de crianças <2 anos de idade em TARV com registo mensal de seguimento da adesão na ficha de APSS/PP no primeiro ano de TARV (Line 61 in the template) Numerador (Column D in the",
         EptsReportUtils.map(
-            MQ11NUM6,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11NUM6,
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ11NUM7 =
+    CohortIndicator MI11NUM7 =
         eptsGeneralIndicator.getIndicator(
-            "MQ11NUM7",
+            "MI11NUM7",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQC11NumB1nB2notCnotDnotEnotFnHChildren(),
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+                "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ11NUM7.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MI11NUM7.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ11NUM7",
+        "MI11NUM7",
         "11.7. % de crianças (0-14 anos) na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3  consultas mensais consecutivas de APSS/PP para reforço de adesão",
         EptsReportUtils.map(
-            MQ11NUM7,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
+            MI11NUM7,
+            "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"),
         "mqAge=MqChildren");
 
     // Category 12 denominator indicators Part 1
