@@ -424,7 +424,7 @@ public interface MQQueriesInterface {
     public static final String findPatientsBiggerThan =
         "SELECT patient_id FROM patient "
             + "INNER JOIN person ON patient_id = person_id WHERE patient.voided=0 AND person.voided=0 "
-            + "AND TIMESTAMPDIFF(year,birthdate,:endInclusionDate) >=  %d AND birthdate IS NOT NULL";
+            + "AND TIMESTAMPDIFF(year,birthdate,:endInclusionDate) > %d AND birthdate IS NOT NULL";
 
     public static final String findPatientsLessThan =
         "SELECT patient_id FROM patient "
