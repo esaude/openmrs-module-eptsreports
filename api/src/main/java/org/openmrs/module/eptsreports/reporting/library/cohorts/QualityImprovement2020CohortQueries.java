@@ -6212,7 +6212,7 @@ public class QualityImprovement2020CohortQueries {
     } else if (num == 5 || num == 6) {
       comp.setCompositionString("Den5 AND G2");
     } else if (num == 7 || num == 8) {
-      comp.setCompositionString("Den5 AND H1");
+      comp.setCompositionString("Den5 AND H1 AND G2");
     } else if (num == 9 || num == 10) {
       comp.setCompositionString("Den5 AND H2 AND G2");
     } else if (num == 11 || num == 12) {
