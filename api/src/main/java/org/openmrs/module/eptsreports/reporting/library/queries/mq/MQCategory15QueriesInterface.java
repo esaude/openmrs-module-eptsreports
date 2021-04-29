@@ -30,7 +30,7 @@ public interface MQCategory15QueriesInterface {
             + "		          join obs o on o.encounter_id = e.encounter_id        	 		"
             + "		   	where p.voided =0 and e.voided =0 and o.voided =0            		"
             + "		     	and e.encounter_type = 6 and o.concept_id in(23724,23730) and o.value_coded =1256 		"
-            + "		          and e.encounter_datetime between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) and e.location_id =:location "
+            + "		          and DATE(e.encounter_datetime) between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) and e.location_id =:location "
             + "		     group by p.patient_id                                                                                                                               "
             + "		     union                                                                                                                                                "
             + "		     select max_tipo_despensa.* from(																													"
@@ -41,7 +41,7 @@ public interface MQCategory15QueriesInterface {
             + "						join obs o on o.encounter_id=e.encounter_id              																				"
             + "					where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 																		"
             + "						and o.concept_id=23739 and e.location_id=:location 																						"
-            + "						and o.obs_datetime between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) group by p.patient_id) max_tl "
+            + "						and DATE(o.obs_datetime) between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) group by p.patient_id) max_tl "
             + "					join obs on obs.person_id=max_tl.patient_id and max_tl.max_datatl=obs.obs_datetime              												"
             + "					where obs.concept_id=23739 and obs.value_coded=23720 and obs.voided=0 and obs.location_id=:location 											"
             + "		             	) max_tipo_despensa) result                                                																	";
@@ -92,7 +92,7 @@ public interface MQCategory15QueriesInterface {
                 + "				join obs o on o.encounter_id=e.encounter_id              																				"
                 + "			where e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 																		"
                 + "				and o.concept_id=23739 and e.location_id=:location 																						"
-                + "				and o.obs_datetime between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) group by p.patient_id) max_tl "
+                + "				and DATE(o.obs_datetime) between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) group by p.patient_id) max_tl "
                 + "			join obs on obs.person_id=max_tl.patient_id and max_tl.max_datatl=obs.obs_datetime              											"
                 + "			where obs.concept_id=23739 and obs.value_coded=23720 and obs.voided=0 and obs.location_id=:location 			 						    "
                 + "	        	) max_tipo_dispensa                																	                                   	";
@@ -104,7 +104,7 @@ public interface MQCategory15QueriesInterface {
                 + "  	join obs o on o.encounter_id = e.encounter_id        	 		                                  "
                 + " where p.voided =0 and e.voided =0 and o.voided =0            		                              "
                 + " 	and e.encounter_type = 6 and o.concept_id = 23730 and o.value_coded =1256 						  "
-                + "  	and e.encounter_datetime between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) "
+                + "  	and DATE(e.encounter_datetime) between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) "
                 + "		and e.location_id =:location group by p.patient_id        "
                 + "                                           ";
 
@@ -119,7 +119,7 @@ public interface MQCategory15QueriesInterface {
             + " join obs o on o.encounter_id = e.encounter_id "
             + " where 	p.voided =0 and e.voided =0 and o.voided =0 "
             + " and e.encounter_type = 6 and o.concept_id in(23724,23730) and o.value_coded =1256 "
-            + " and e.encounter_datetime between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) "
+            + " and DATE(e.encounter_datetime) between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) "
             + " and e.location_id =:location "
             + " group by p.patient_id "
             + " union "
@@ -131,7 +131,7 @@ public interface MQCategory15QueriesInterface {
             + " join obs o on o.encounter_id=e.encounter_id "
             + " where 	e.encounter_type=6 and e.voided=0 and o.voided=0 and p.voided=0 "
             + " and o.concept_id=23739 and e.location_id=:location "
-            + " and o.obs_datetime between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) "
+            + " and DATE(o.obs_datetime) between (:endRevisionDate - INTERVAL 14 MONTH) and (:endRevisionDate - INTERVAL 11 MONTH) "
             + " group by p.patient_id  "
             + " ) max_tl "
             + " join encounter e on e.patient_id=max_tl.patient_id "
