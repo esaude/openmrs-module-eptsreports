@@ -27,7 +27,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_2_3_4_DENOMINATOR",
-        "15.2: Adultos (15/+anos) inscritos há pelo menos 12 meses em algum MDS (DT ou GAAC) com pedido de pelo menos uma CV Denominador",
+        "15.2 (15.3 e 15.4): Adultos (15/+anos) inscritos há pelo menos 12 meses em algum MDS (DT ou GAAC) com pedido de pelo menos uma CV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getDenominatorCategory15_Indicator_2_and_3_And_4(),
@@ -49,7 +49,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_7_9_11_DENOMINATOR",
-        "15.7: Crianças (2-9 anos de idade) inscritas há 12 meses em algum MDS (DT) com pedido de pelo menos uma CV Denominador",
+        "15.7 (15.9 e 15.11): Crianças (2-9 anos de idade) inscritas há 12 meses em algum MDS (DT) com pedido de pelo menos uma CV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getDenominatorCategory15_Indicator_7_And_9_And_11(),
@@ -71,7 +71,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_8_10_12_DENOMINATOR",
-        "15.8: Crianças (10-14 anos de idade) inscritas há 12 meses em algum MDS (DT) com pedido de pelo menos uma CV Denominador",
+        "15.8 (15.10 e 15.12): Crianças (10-14 anos de idade) inscritas há 12 meses em algum MDS (DT) com pedido de pelo menos uma CV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getDenominatorCategory15_Indicator_8_And_10_And_12(),
@@ -171,7 +171,7 @@ public class MQCategory15DataSet extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15INDICATOR_9_NUMERATOR",
-        "15.9: Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) que receberam pelo menos um resultado de CV Denominador",
+        "15.9: Crianças (2-9 anos) inscritas há 12 meses em algum MDS (DT) que receberam pelo menos um resultado de CV NUMERATOR",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCohortCategory15Queries.getNumeratorCategory15_Indicator_9(),
