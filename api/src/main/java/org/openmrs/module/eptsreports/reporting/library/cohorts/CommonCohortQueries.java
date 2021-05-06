@@ -488,47 +488,103 @@ public class CommonCohortQueries {
     for (Concept concept : treatmentValueCoded) {
       answerIds.add(concept.getConceptId());
     }
-
-    String query = " SELECT  " + "     patient_id  " + " FROM  " + "     (SELECT   ";
+    String query = "";
     if (masterCard) {
-      query += "         p.patient_id, MAX(o.obs_datetime)  ";
+      query =
+          " SELECT "
+              + " max_table.patient_id "
+              + " FROM "
+              + " ( "
+              + " SELECT "
+              + " p.patient_id, "
+              + " MAX(o.obs_datetime) AS max_obs_datetime "
+              + " FROM "
+              + " patient p "
+              + " INNER JOIN "
+              + " encounter e "
+              + " ON e.patient_id = p.patient_id "
+              + " INNER JOIN "
+              + " obs o "
+              + " ON o.encounter_id = e.encounter_id "
+              + " INNER JOIN "
+              + " ( "
+              + " SELECT "
+              + " p.patient_id, "
+              + " MAX(e.encounter_datetime) last_visit "
+              + " FROM "
+              + " patient p "
+              + " INNER JOIN "
+              + " encounter e "
+              + " ON e.patient_id = p.patient_id "
+              + " WHERE "
+              + " p.voided = 0 "
+              + " AND e.voided = 0 "
+              + " AND e.encounter_type = ${lastClinicalEncounter} "
+              + " AND e.location_id = :location "
+              + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+              + " GROUP BY p.patient_id "
+              + " ) AS clinical ON clinical.patient_id = p.patient_id "
+              + " WHERE "
+              + " p.voided = 0 "
+              + " AND e.voided = 0 "
+              + " AND o.voided = 0 "
+              + " AND e.encounter_type = ${treatmentEncounter} "
+              + " AND e.location_id = :location "
+              + " AND o.concept_id = ${treatmentConcept} "
+              + " AND o.value_coded IS NOT NULL "
+              + " GROUP BY p.patient_id "
+              + " ) max_table INNER JOIN "
+              + " ( "
+              + " SELECT "
+              + " p.patient_id, "
+              + " MAX(e.encounter_datetime) last_visit "
+              + " FROM "
+              + " patient p "
+              + " INNER JOIN "
+              + " encounter e "
+              + " ON e.patient_id = p.patient_id "
+              + " WHERE "
+              + " p.voided = 0 "
+              + " AND e.voided = 0 "
+              + " AND e.encounter_type = ${lastClinicalEncounter} "
+              + " AND e.location_id = :location "
+              + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+              + " GROUP BY p.patient_id "
+              + " ) "
+              + " AS clinc_max ON max_table.patient_id = clinc_max.patient_id "
+              + " WHERE "
+              + " max_table.max_obs_datetime <= clinc_max.last_visit "
+              + " AND max_table.max_obs_datetime <= DATE_SUB(clinc_max.last_visit, INTERVAL 6 MONTH) ";
     } else {
-      query += "         p.patient_id, MIN(e.encounter_datetime)  ";
+      query =
+          " SELECT treatment_line.patient_id FROM( "
+              + " SELECT p.patient_id, MIN(e.encounter_datetime) "
+              + " FROM patient p "
+              + " INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+              + " INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+              + " INNER JOIN "
+              + " (SELECT "
+              + " p.patient_id, MAX(e.encounter_datetime) last_visit "
+              + " FROM patient p "
+              + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+              + " WHERE "
+              + " p.voided = 0 AND e.voided = 0 "
+              + " AND e.encounter_type = ${lastClinicalEncounter} "
+              + " AND e.location_id = :location "
+              + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+              + " GROUP BY p.patient_id "
+              + ") AS clinical ON clinical.patient_id = p.patient_id "
+              + " WHERE "
+              + " p.voided = 0 AND e.voided = 0 "
+              + " AND o.voided = 0 "
+              + " AND e.encounter_type = ${treatmentEncounter} "
+              + " AND e.location_id = :location "
+              + " AND o.concept_id = ${treatmentConcept} "
+              + " AND o.value_coded IN (${treatmentValueCoded) "
+              + " AND DATE(e.encounter_datetime) < DATE(clinical.last_visit) "
+              + " AND DATE(e.encounter_datetime) <= DATE_SUB(clinical.last_visit,INTERVAL 6 MONTH) "
+              + "  GROUP BY p.patient_id) treatment_line ";
     }
-    query +=
-        "     FROM  "
-            + "         patient p  "
-            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
-            + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
-            + "     INNER JOIN (SELECT   "
-            + "         p.patient_id, MAX(e.encounter_datetime) last_visit  "
-            + "     FROM  "
-            + "         patient p  "
-            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
-            + "     WHERE  "
-            + "         p.voided = 0 AND e.voided = 0  "
-            + "             AND e.encounter_type = ${lastClinicalEncounter}  "
-            + "             AND e.location_id = :location  "
-            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
-            + "     GROUP BY p.patient_id) AS clinical ON clinical.patient_id = p.patient_id  "
-            + "     WHERE  "
-            + "         p.voided = 0 AND e.voided = 0  "
-            + "             AND o.voided = 0  "
-            + "             AND e.encounter_type = ${treatmentEncounter}  "
-            + "             AND e.location_id = :location  "
-            + "             AND o.concept_id = ${treatmentConcept}  ";
-    if (masterCard) {
-      query +=
-          "             AND o.value_coded IS NOT NULL  "
-              + "             AND DATE(o.obs_datetime) <= DATE(clinical.last_visit)  "
-              + "         AND DATE(o.obs_datetime) <= DATE_SUB(clinical.last_visit,INTERVAL 6 MONTH) ";
-    } else {
-      query +=
-          "             AND o.value_coded IN (${treatmentValueCoded})  "
-              + "             AND DATE(e.encounter_datetime) < DATE(clinical.last_visit)  "
-              + "         AND DATE(e.encounter_datetime) <= DATE_SUB(clinical.last_visit,INTERVAL 6 MONTH)  "; // check other queries for time they use
-    }
-    query += "     GROUP BY p.patient_id) AS treatment_line;";
 
     Map<String, String> map = new HashMap<>();
     map.put("lastClinicalEncounter", String.valueOf(lastClinicalEncounter.getEncounterTypeId()));
