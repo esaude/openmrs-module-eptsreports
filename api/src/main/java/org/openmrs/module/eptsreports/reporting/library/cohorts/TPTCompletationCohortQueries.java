@@ -210,19 +210,6 @@ public class TPTCompletationCohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapy")
-  private CohortDefinition findPatientsWhoCompletedINHTherapy() {
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-
-    definition.setName("get Patients Who completed INH Therapy");
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-
-    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy);
-
-    return definition;
-  }
-
   @DocumentedDefinition(value = "findPatientsWhoStarted3HPTherapyBeforeReportEndDate")
   private CohortDefinition findPatientsWhoStarted3HPTherapyBeforeReportEndDate() {
     final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
@@ -554,7 +541,6 @@ public class TPTCompletationCohortQueries {
                 TPTCompletationQueries.QUERY
                     .findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
             mappings));
-
     dsd.addSearch(
         "NEWLY-ART",
         EptsReportUtils.map(
@@ -579,6 +565,86 @@ public class TPTCompletationCohortQueries {
         "(STARTED-TPT AND (NEWLY-ART OR PREVIOUS-ART)) NOT (TRF-OUT NOT ENDED-TPT) ");
 
     return dsd;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery1")
+  public CohortDefinition findPatientsWhoCompletedINHTherapy() {
+    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
+
+    dsd.setName("Patients Who completed INH Therapy");
+    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dsd.addParameter(new Parameter("location", "location", Location.class));
+    final String mappings = "endDate=${endDate},location=${location}";
+
+    dsd.addSearch(
+        "INH-1", EptsReportUtils.map(findPatientsWhoCompletedINHTherapyQuery1(), mappings));
+
+    dsd.addSearch(
+        "INH-2", EptsReportUtils.map(findPatientsWhoCompletedINHTherapyQuery2(), mappings));
+
+    dsd.addSearch(
+        "INH-3", EptsReportUtils.map(findPatientsWhoCompletedINHTherapyQuery3(), mappings));
+
+    dsd.addSearch(
+        "INH-4", EptsReportUtils.map(findPatientsWhoCompletedINHTherapyQuery4(), mappings));
+
+    dsd.addSearch(
+        "INH-5", EptsReportUtils.map(findPatientsWhoCompletedINHTherapyQuery5(), mappings));
+
+    dsd.setCompositionString("INH-1 OR INH-2 OR INH-3 OR INH-4 OR INH-5");
+
+    return dsd;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery1")
+  private CohortDefinition findPatientsWhoCompletedINHTherapyQuery1() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("Finding Patients Who completed INH Therapy - query 1");
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query1);
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery2")
+  private CohortDefinition findPatientsWhoCompletedINHTherapyQuery2() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("Finding Patients Who completed INH Therapy - query 2");
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query2);
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery3")
+  private CohortDefinition findPatientsWhoCompletedINHTherapyQuery3() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("Finding Patients Who completed INH Therapy - query 3");
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query3);
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery4")
+  private CohortDefinition findPatientsWhoCompletedINHTherapyQuery4() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("Finding Patients Who completed INH Therapy - query 4");
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query4);
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery5")
+  private CohortDefinition findPatientsWhoCompletedINHTherapyQuery5() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("Finding Patients Who completed INH Therapy - query 5");
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query5);
+    return definition;
   }
 
   private void addGeneralParameters(final CohortDefinition cd) {

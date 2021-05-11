@@ -9,7 +9,7 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>eptsreports</artifactId>
-	<version>1.12.1-BETA</version>
+	<version>1.12.2-BETA</version>
 	<packaging>pom</packaging>
 	<name>EPTS reports</name>
 	<description>PEPFAR reports for EPTS project in Mozambique</description>
@@ -161,6 +161,7 @@
 					<configuration>
 						<autoVersionSubmodules>true</autoVersionSubmodules>
 						<tagNameFormat>@{project.version}</tagNameFormat>
+						<skipTests>${tests.skip}</skipTests>
 					</configuration>
 				</plugin>
 			</plugins>
