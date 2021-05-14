@@ -64,8 +64,8 @@ public class TxRttNextSeguimentoUntilEndDateCalculation extends BaseFghCalculati
     if (lastDateSeguimento != null) {
       if (allObsSeguimento != null) {
         for (Obs obs : allObsSeguimento) {
-          if (obs != null && obs.getObsDatetime() != null) {
-            if (obs.getObsDatetime().compareTo(lastDateSeguimento) == 0) {
+          if (obs != null) {
+            if (obs.getEncounter().getEncounterDatetime().compareTo(lastDateSeguimento) == 0) {
               Date valueDatetime = obs.getValueDatetime();
               if (valueDatetime != null && valueDatetime.compareTo(maxDate) > 0) {
                 maxDate = valueDatetime;

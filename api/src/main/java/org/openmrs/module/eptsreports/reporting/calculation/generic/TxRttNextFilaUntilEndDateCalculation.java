@@ -56,8 +56,8 @@ public class TxRttNextFilaUntilEndDateCalculation extends BaseFghCalculation {
     if (lastDateFila != null) {
       if (allObsFila != null) {
         for (Obs obs : allObsFila) {
-          if (obs != null && obs.getObsDatetime() != null) {
-            if (obs.getObsDatetime().compareTo(lastDateFila) == 0) {
+          if (obs != null) {
+            if (obs.getEncounter().getEncounterDatetime().compareTo(lastDateFila) == 0) {
               Date valueDatetime = obs.getValueDatetime();
               if (valueDatetime != null && valueDatetime.compareTo(maxDate) > 0) {
                 maxDate = valueDatetime;
