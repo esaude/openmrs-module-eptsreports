@@ -613,6 +613,43 @@ public class MQCohortQueries {
     return definition;
   }
 
+  @DocumentedDefinition(value = "findPatientWithCVOver1000CopiesAndPregnatCategory11B4")
+  public CohortDefinition findPatientWithCVOver1000CopiesAndPregnatCategory11B4() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findAdultWithCVOver1000CopiesCategory11B2");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query = MQQueriesInterface.QUERY.findPatientWithCVOver1000CopiesAndPregnatCategory11B4;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findPatientWithCVOver1000CopiesAndPregnatCategory11B4")
+  public CohortDefinition findPatientWithCVOver1000CopiesAndBreastfeedingCategory11B5() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findPatientWithCVOver1000CopiesAndBreastfeedingCategory11B5");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQQueriesInterface.QUERY.findPatientWithCVOver1000CopiesAndBreastfeedingCategory11B5;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
   @DocumentedDefinition(value = "findPatientsWhoHaveLastFirstLineTerapeutic")
   public CohortDefinition findPatientsWhoHaveLastFirstLineTerapeutic() {
 
