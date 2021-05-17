@@ -18,7 +18,7 @@ public class MIDataSet extends BaseDataSet {
   @Autowired private MQCommonsDementions mQCommonsDementions;
   @Autowired private MICategory7Dataset miCategory7Dataset;
   @Autowired private MICategory11DataSet miCategory11DataSet;
-  @Autowired private MICategory12Dataset miCategory12Dataset;
+  @Autowired private MICategory12P1Dataset miCategory12Dataset;
 
   public DataSetDefinition constructTMqDatset() {
     final String mappings =
