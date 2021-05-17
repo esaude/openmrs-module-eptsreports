@@ -18,6 +18,7 @@ public class MIDataSet extends BaseDataSet {
   @Autowired private MQCommonsDementions mQCommonsDementions;
   @Autowired private MICategory7Dataset miCategory7Dataset;
   @Autowired private MICategory11DataSet miCategory11DataSet;
+  @Autowired private MICategory12Dataset miCategory12Dataset;
 
   public DataSetDefinition constructTMqDatset() {
     final String mappings =
@@ -33,6 +34,7 @@ public class MIDataSet extends BaseDataSet {
 
     miCategory7Dataset.constructTMiDatset(dataSetDefinition, mappings);
     miCategory11DataSet.constructTMiDatset(dataSetDefinition, mappings);
+    miCategory12Dataset.constructTMiDatset(dataSetDefinition, mappings);
 
     return dataSetDefinition;
   }
