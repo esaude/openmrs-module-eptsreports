@@ -7,9 +7,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCategory13P3CohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCategory13Section1CohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory7CohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -20,9 +18,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class MQCohortTest extends DefinitionsFGHLiveTest {
 
-  @Autowired private MQCohortQueries mQCohortQueries;
-  @Autowired private MQCategory13Section1CohortQueries mQCategory13Section1CohortQueries;
-  @Autowired private MQCategory13P3CohortQueries mQCategory13P3CohortQueries;
+  /*  @Autowired private MICategory11CohortQueries miCategory11CohortQueries;
+   */ @Autowired private MICategory7CohortQueries miCategory7CohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
@@ -46,13 +43,15 @@ public class MQCohortTest extends DefinitionsFGHLiveTest {
         new Parameter(EptsReportConstants.END_REVISION_DATE, "End Date", Date.class), revisionDate);
 
     CohortDefinition cohortDefinition =
-        mQCategory13P3CohortQueries
-            .findPatientsInFirstLineTherapheuticWhoReceivedViralChargeBetweenSixthAndNinthMonthAfterARTStartCategory13Denominador();
+        miCategory7CohortQueries
+            .findPatientWhoAreNewlyEnrolledOnARTDuringRevisionPeriodAndStartTPIAndElegibleTPTCategory7RF19Denominator();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(cohortDefinition, parameters);
 
     System.out.println(evaluateCohortDefinition.getMemberIds().size());
+    System.out.println(
+        evaluateCohortDefinition.getContext().getParameterValue("startInclusionDate"));
 
     for (int t : evaluateCohortDefinition.getMemberIds()) {
       System.out.println(t);

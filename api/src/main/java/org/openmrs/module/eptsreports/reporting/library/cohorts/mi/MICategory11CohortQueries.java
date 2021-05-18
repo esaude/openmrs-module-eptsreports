@@ -33,10 +33,10 @@ public class MICategory11CohortQueries {
     definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     definition.addParameter(new Parameter("location", "location", Date.class));
 
-    final String mappingsMI =
+    final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    final String mappings =
+    final String mappingsMI =
         "startInclusionDate=${endRevisionDate-4m+1d},endInclusionDate=${endRevisionDate-3m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
@@ -52,13 +52,15 @@ public class MICategory11CohortQueries {
     definition.addSearch(
         "B4",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientWithCVOver1000CopiesAndPregnatCategory11B4(),
+            this.mQCohortQueries
+                .findPatientsWhoHasCVBiggerThan1000AndMarkedAsPregnantInTheSameClinicalConsultation(),
             mappingsMI));
 
     definition.addSearch(
         "B5",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientWithCVOver1000CopiesAndBreastfeedingCategory11B5(),
+            this.mQCohortQueries
+                .findPatientsWhoHasCVBiggerThan1000AndMarkedAsBreastFeedingInTheSameClinicalConsultation(),
             mappingsMI));
 
     definition.addSearch(
@@ -101,8 +103,8 @@ public class MICategory11CohortQueries {
         "DENOMINATOR",
         EptsReportUtils.map(
             this.mQGenericCohortQueries
-                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOut(),
-            ""));
+                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMI(),
+            mappings));
 
     definition.addSearch(
         "G-APSS-PP",
@@ -139,7 +141,7 @@ public class MICategory11CohortQueries {
         "DENOMINATOR",
         EptsReportUtils.map(
             this.mQGenericCohortQueries
-                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOut(),
+                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMI(),
             ""));
 
     definition.addSearch(
@@ -178,7 +180,7 @@ public class MICategory11CohortQueries {
         EptsReportUtils.map(
             this
                 .findPatietsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11Denominator(),
-            ""));
+            mappings));
 
     definition.addSearch(
         "H",

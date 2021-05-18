@@ -300,7 +300,7 @@ public class MICategory11P2CohortQueries {
         EptsReportUtils.map(
             this
                 .findPregnantOnARTStartedExcludingBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11DenominatorP2(),
-            ""));
+            mappings));
 
     definition.addSearch(
         "H",

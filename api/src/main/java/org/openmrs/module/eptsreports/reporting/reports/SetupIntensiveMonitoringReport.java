@@ -11,6 +11,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.midatasets.MIDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets.MQDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -23,11 +24,12 @@ import org.springframework.stereotype.Component;
 public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
-  @Autowired private MIDataSet miDataSet;
+  @Autowired MIDataSet miDataSet;
+  @Autowired MQDataSet mqDataSet;
 
   @Override
   public String getUuid() {
-    return "565258f6-0774-4429-826c-2baop84ec8b2";
+    return "845b7c3c-b7e5-11eb-8c08-6f823c2e1af5";
   }
 
   @Override
@@ -47,7 +49,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
 
   @Override
   public String getExcelDesignUuid() {
-    return "5bbbd64c-4d0e-4e8f-99d6-cd8b45333726";
+    return "8e912dd2-b7e5-11eb-a937-a7c714e47784";
   }
 
   @Override
@@ -60,7 +62,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
     reportDefinition.addDataSetDefinition(
         "HF", mapStraightThrough(new LocationDataSetDefinition()));
     reportDefinition.addDataSetDefinition(
-        "MI", Mapped.mapStraightThrough(miDataSet.constructTMqDatset()));
+        "MI", Mapped.mapStraightThrough(miDataSet.constructTMiDatset()));
     return reportDefinition;
   }
 
@@ -70,11 +72,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition,
-              "MI.xls",
-              "Relatorio de Monitoria Intesiva",
-              getExcelDesignUuid(),
-              null);
+              reportDefinition, "MI.xls", "Intensive Monitorin Report", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);

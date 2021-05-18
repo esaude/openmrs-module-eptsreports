@@ -128,16 +128,15 @@ public class MICategory7CohortQueries {
     final String mappingsMI =
         "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate-7m+1d},location=${location}";
 
-    /*    final String mappings =
-            "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    */
     definition.addSearch(
         "RF25-DENOMINATOR",
         EptsReportUtils.map(
             this
                 .findPatientsWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndEndTPICategory7RF25Denominator(),
-            ""));
+            mappings));
 
     definition.addSearch(
         "END-TPI-G",
@@ -365,9 +364,9 @@ public class MICategory7CohortQueries {
     definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     definition.addParameter(new Parameter("location", "location", Date.class));
 
-    /*    final String mappings =
-            "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
-    */
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
     final String mappingsMI =
         "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
@@ -376,14 +375,14 @@ public class MICategory7CohortQueries {
         EptsReportUtils.map(
             this
                 .findPatientWhoAreNewlyEnrolledOnARTDuringRevisionPeriodAndStartTPIAndElegibleTPTCategory7RF19Denominator(),
-            ""));
+            mappings));
 
     definition.addSearch(
-        "START-TPI",
+        "START-TPI-B4",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientWhoStartTPIDuringPeriodCategory7(), mappingsMI));
 
-    definition.setCompositionString("RF19-DENOMINATOR AND START-TPI");
+    definition.setCompositionString("RF19-DENOMINATOR AND START-TPI-B4");
 
     return definition;
   }
@@ -479,15 +478,15 @@ public class MICategory7CohortQueries {
     final String mappingsMI =
         "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
-    /*    final String mappings =
-            "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
-    */
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
     definition.addSearch(
         "RF23-DENOMINATOR",
         EptsReportUtils.map(
             this
                 .findPregnantWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndStartTPIAndElegibleTPTCategory7RF23Denominator(),
-            ""));
+            mappings));
 
     definition.addSearch(
         "START-TPI-B4",

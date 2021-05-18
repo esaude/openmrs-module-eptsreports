@@ -16,19 +16,19 @@ public class MICategory7Dataset extends MQAbstractDataSet {
       CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
 
     dataSetDefinition.addColumn(
-        "CAT7AdultDENOMINATOR",
+        "CAT7AdultDENOMINATOR_7_1",
         "7.1: Adultos (15/+anos) HIV+ em TARV elegiveis ao TPT e que iniciaram TPT Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mICategory7CohortQueries
                     .findPatientWhoAreNewlyEnrolledOnARTDuringRevisionPeriodAndStartTPIAndElegibleTPTCategory7RF19Denominator(),
-                "CAT7AdultDENOMINATOR",
+                "CAT7AdultDENOMINATOR_7_1",
                 mappings),
             mappings),
         "ageMqNewART=15+");
 
     dataSetDefinition.addColumn(
-        "CAT7AdultoNUMERATOR",
+        "CAT7AdultoNUMERATOR_7_1",
         "7.1: Adultos (15/+anos) HIV+ em TARV elegiveis ao TPT e que iniciaram TPT Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(

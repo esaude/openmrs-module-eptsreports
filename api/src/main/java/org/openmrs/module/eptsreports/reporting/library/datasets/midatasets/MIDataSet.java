@@ -20,17 +20,17 @@ public class MIDataSet extends BaseDataSet {
   @Autowired private MICategory11DataSet miCategory11DataSet;
   @Autowired private MICategory12P1Dataset miCategory12Dataset;
 
-  public DataSetDefinition constructTMqDatset() {
-    final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
-
+  public DataSetDefinition constructTMiDatset() {
     final CohortIndicatorDataSetDefinition dataSetDefinition =
         new CohortIndicatorDataSetDefinition();
 
-    this.mQCommonsDementions.getMQCommonDementions(dataSetDefinition, mappings);
-
-    dataSetDefinition.setName("MI Data Set");
+    dataSetDefinition.setName("MQ Data Set");
     dataSetDefinition.setParameters(getParameters());
+
+    final String mappings =
+        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    this.mQCommonsDementions.getMQCommonDementions(dataSetDefinition, mappings);
 
     miCategory7Dataset.constructTMiDatset(dataSetDefinition, mappings);
     miCategory11DataSet.constructTMiDatset(dataSetDefinition, mappings);
