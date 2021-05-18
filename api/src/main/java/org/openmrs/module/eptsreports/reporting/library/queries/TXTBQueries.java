@@ -127,6 +127,15 @@ public class TXTBQueries {
         tbProgramId);
   }
 
+  public static String inTBProgramWithinPreviousReportingPeriodAtLocation(Integer tbProgramId) {
+    return String.format(
+        "select pg.patient_id from patient p inner join patient_program pg on "
+            + " p.patient_id=pg.patient_id where pg.voided=0 and "
+            + " p.voided=0 and program_id=%s "
+            + "and date_enrolled between date_add(:startDate, interval -6 MONTH) and date_add(:startDate, interval -6 DAY) and location_id=:location",
+        tbProgramId);
+  }
+
   public static String dateObs(
       Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
     String sql =
@@ -142,6 +151,22 @@ public class TXTBQueries {
     return sql;
   }
 
+  public static String dateObsForPreviousReportingPeriod(
+      Integer questionId, List<Integer> encounterTypeIds, boolean startDate) {
+    String sql =
+        String.format(
+            "select obs.person_id from obs inner join encounter on encounter.encounter_id = obs.encounter_id "
+                + " where obs.concept_id = %s and encounter.encounter_type in(%s) and obs.location_id = :location and obs.voided=0 and ",
+            questionId, StringUtils.join(encounterTypeIds, ","));
+    if (startDate) {
+      sql +=
+          "obs.value_datetime >= date_add(:startDate, interval -6 MONTH) and obs.value_datetime <= date_add(:startDate, interval -1 MONTH)";
+    } else {
+      sql += "obs.value_datetime <= date_add(:startDate, interval -1 MONTH)";
+    }
+    return sql;
+  }
+
   public static String dateObsByObsDateTimeClausule(
       Integer conceptQuestionId, Integer conceptAnswerId, Integer encounterId) {
     String sql =
@@ -150,6 +175,19 @@ public class TXTBQueries {
                 + "    inner join encounter on encounter.encounter_id = obs.encounter_id "
                 + "  where obs.concept_id =%s and obs.value_coded =%s and encounter.encounter_type =%s "
                 + "  and obs.location_id =:location and obs.obs_datetime >=:startDate and obs.obs_datetime <=:endDate and obs.voided=0",
+            conceptQuestionId, conceptAnswerId, encounterId);
+
+    return sql;
+  }
+
+  public static String dateObsByObsDateTimeClausuleInPreviousReportingPeriod(
+      Integer conceptQuestionId, Integer conceptAnswerId, Integer encounterId) {
+    String sql =
+        String.format(
+            "select distinct obs.person_id from obs "
+                + "    inner join encounter on encounter.encounter_id = obs.encounter_id "
+                + "  where obs.concept_id =%s and obs.value_coded =%s and encounter.encounter_type =%s "
+                + "  and obs.location_id =:location and obs.obs_datetime >=date_add(:startDate, interval -6 MONTH) and obs.obs_datetime <=date_add(:startDate, interval -1 DAY) and obs.voided=0",
             conceptQuestionId, conceptAnswerId, encounterId);
 
     return sql;

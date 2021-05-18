@@ -48,6 +48,7 @@ public class TXTBCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
   }
 
   /**
@@ -418,13 +419,63 @@ public class TXTBCohortQueries {
     final CohortDefinition A = this.txTbNumeratorA();
     cd.addSearch("A", this.map(A, this.generalParameterMapping));
 
+    CohortDefinition numeratorPreviosPeriod = getNumeratorPreviosPeriod();
+    cd.addSearch(
+        "A-PREVIOUS-PERIOD",
+        this.map(
+            numeratorPreviosPeriod,
+            "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
+
     cd.addSearch(
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
             this.getTbDrugTreatmentStartDateWithinReportingDate(),
             "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
 
-    cd.setCompositionString("A NOT started-tb-treatment-previous-period");
+    cd.addSearch(
+        "started-by-end-reporting-period",
+        EptsReportUtils.map(
+            this.genericCohortQueries.getStartedArtBeforeDate(false),
+            "onOrBefore=${startDate-1d},location=${location}"));
+
+    cd.setCompositionString(
+        "A NOT (started-tb-treatment-previous-period OR (A-PREVIOUS-PERIOD AND started-by-end-reporting-period ))");
+    this.addGeneralParameters(cd);
+    return cd;
+  }
+
+  private CohortDefinition getNumeratorPreviosPeriod() {
+
+    String parameters = "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}";
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("TxTB - txTbNumerator Previous Period");
+    final CohortDefinition i =
+        this.genericCohortQueries.generalSql(
+            "onTbTreatment",
+            TXTBQueries.dateObs(
+                this.tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
+                Arrays.asList(
+                    this.hivMetadata.getAdultoSeguimentoEncounterType().getId(),
+                    this.hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
+                true));
+    final CohortDefinition ii = this.getInTBProgram();
+    this.addGeneralParameters(i);
+    cd.addSearch("i", this.map(i, this.generalParameterMapping));
+    cd.addSearch("ii", this.map(ii, this.generalParameterMapping));
+    cd.addSearch(
+        "iii", this.map(this.getPulmonaryTBWithinReportingDate(), this.generalParameterMapping));
+    cd.addSearch(
+        "iv",
+        this.map(
+            this.getTuberculosisTreatmentPlanWithinReportingDate(), this.generalParameterMapping));
+
+    cd.addSearch(
+        "started-tb-treatment-previous-period",
+        EptsReportUtils.map(
+            this.getTbDrugTreatmentStartDateWithinReportingDate(),
+            "startDate=${startDate-12m},endDate=${startDate-6m},location=${location}"));
+
+    cd.setCompositionString("(i OR ii OR iii OR iv) NOT started-tb-treatment-previous-period");
     this.addGeneralParameters(cd);
     return cd;
   }
@@ -549,6 +600,7 @@ public class TXTBCohortQueries {
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("NUM AND started-during-reporting-period");
     this.addGeneralParameters(cd);
+
     return cd;
   }
 
