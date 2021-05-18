@@ -250,8 +250,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     List<Obs> sortedObs;
     if (obsList.size() > 0) {
       sortedObs = sortObsByObsDatetime(obsList);
-      // get the first obs in the list
-      requiredObs = sortedObs.get(0);
+      // get the last obs in the list
+      requiredObs = sortedObs.get(sortedObs.size() - 1);
       // loop through all the obs collected for each patient per the encounter type and check if
       // there is any that occurred on same date
       for (Obs obs : sortedObs) {
