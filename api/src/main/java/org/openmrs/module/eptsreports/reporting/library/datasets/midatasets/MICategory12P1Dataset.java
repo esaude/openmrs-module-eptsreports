@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets.midatasets;
 
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.GenericMICohortQueryCategory12;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory12P1CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQGenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets.MQAbstractDataSet;
@@ -13,6 +14,7 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
 
   @Autowired private MICategory12P1CohortQueries miCategory12P1CohortQueries;
   @Autowired private MQGenericCohortQueries mQGenericCohortQueries;
+  @Autowired private GenericMICohortQueryCategory12 genericMICohortQueryCategory12;
 
   public void constructTMiDatset(
       CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
@@ -23,8 +25,8 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
             + "ARVs dentro de 33 dias após início do TARV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.mQGenericCohortQueries
-                    .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOut(),
+                this.genericMICohortQueryCategory12
+                    .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_1(),
                 "CAT12ADULTDENOMINADOR33DAYS",
                 mappings),
             mappings),
@@ -49,8 +51,8 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
             + "ARVs dentro de 99 dias (nos primeiros 3 meses) após início do TARV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.mQGenericCohortQueries
-                    .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOut(),
+                this.genericMICohortQueryCategory12
+                    .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_2(),
                 "CAT12ADULTDENOMINADOR99DAYS",
                 mappings),
             mappings),
@@ -75,8 +77,8 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
             + "ARVs dentro de 33 dias após início do TARV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.mQGenericCohortQueries
-                    .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOut(),
+                this.genericMICohortQueryCategory12
+                    .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_2(),
                 "CAT12CHILDRENDENOMINADOR33DAYS",
                 mappings),
             mappings),
@@ -101,8 +103,8 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
             + "99 dias (nos primeiros 3 meses) após início do TARV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.mQGenericCohortQueries
-                    .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOut(),
+                this.genericMICohortQueryCategory12
+                    .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_2(),
                 "CAT12CHILDRENDENOMINADOR99DAYS",
                 mappings),
             mappings),
@@ -127,8 +129,8 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
             + "2ª consulta clínica ou levantamento de ARVs dentro de 33 dias após início do TARV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.miCategory12P1CohortQueries
-                    .findPregnantWhoStartedARTInTheInclusionPeriodCategory12ExcludingBreastfeedingAndTrasferedInOrOut(),
+                this.genericMICohortQueryCategory12
+                    .findPatientPregnantOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_9(),
                 "CAT12PREGNANTDENOMINADOR33DAYS",
                 mappings),
             mappings),
@@ -153,8 +155,8 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
             + "3 consultas mensais/levantamentos de ARVs dentro de 99 dias (nos primeiros 3 meses) após início do TARV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.miCategory12P1CohortQueries
-                    .findPregnantWhoStartedARTInTheInclusionPeriodCategory12ExcludingBreastfeedingAndTrasferedInOrOut(),
+                this.genericMICohortQueryCategory12
+                    .findPatientPregnantOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_10(),
                 "CAT12PREGNANTENOMINADOR99DAYS",
                 mappings),
             mappings),

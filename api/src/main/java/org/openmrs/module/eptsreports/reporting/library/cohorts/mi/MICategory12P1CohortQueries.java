@@ -16,6 +16,7 @@ public class MICategory12P1CohortQueries {
 
   @Autowired private MQCohortQueries mqCohortQueries;
   @Autowired private MQGenericCohortQueries mQGenericCohortQueries;
+  @Autowired private GenericMICohortQueryCategory12 genericMICohortQueryCategory12;
 
   @DocumentedDefinition(
       value =
@@ -88,8 +89,8 @@ public class MICategory12P1CohortQueries {
     definition.addSearch(
         "DENOMINATOR",
         EptsReportUtils.map(
-            this.mQGenericCohortQueries
-                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOut(),
+            this.genericMICohortQueryCategory12
+                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_2(),
             mappings));
 
     definition.addSearch(
@@ -126,8 +127,8 @@ public class MICategory12P1CohortQueries {
     definition.addSearch(
         "DENOMINATOR",
         EptsReportUtils.map(
-            this.mQGenericCohortQueries
-                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOut(),
+            this.genericMICohortQueryCategory12
+                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_2(),
             mappings));
 
     definition.addSearch(
@@ -163,8 +164,8 @@ public class MICategory12P1CohortQueries {
     definition.addSearch(
         "PREGNANT-DENOMINATOR",
         EptsReportUtils.map(
-            this
-                .findPregnantWhoStartedARTInTheInclusionPeriodCategory12ExcludingBreastfeedingAndTrasferedInOrOut(),
+            genericMICohortQueryCategory12
+                .findPatientPregnantOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_9(),
             mappings));
 
     definition.addSearch(
@@ -201,8 +202,8 @@ public class MICategory12P1CohortQueries {
     definition.addSearch(
         "PREGNANT-DENOMINATOR",
         EptsReportUtils.map(
-            this
-                .findPregnantWhoStartedARTInTheInclusionPeriodCategory12ExcludingBreastfeedingAndTrasferedInOrOut(),
+            genericMICohortQueryCategory12
+                .findPatientPregnantOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_10(),
             mappings));
 
     definition.addSearch(

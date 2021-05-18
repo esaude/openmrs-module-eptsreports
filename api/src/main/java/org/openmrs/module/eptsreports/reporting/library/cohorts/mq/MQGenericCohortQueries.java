@@ -65,7 +65,7 @@ public class MQGenericCohortQueries {
   @DocumentedDefinition(
       value = "findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMI")
   public CohortDefinition
-      findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMI() {
+      findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory11() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
