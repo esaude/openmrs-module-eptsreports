@@ -132,7 +132,7 @@ public class TXTBQueries {
         "select pg.patient_id from patient p inner join patient_program pg on "
             + " p.patient_id=pg.patient_id where pg.voided=0 and "
             + " p.voided=0 and program_id=%s "
-            + "and date_enrolled between date_add(:startDate, interval -6 MONTH) and date_add(:startDate, interval -6 DAY) and location_id=:location",
+            + "and date_enrolled between date_add(:startDate, interval -6 MONTH) and date_add(:startDate, interval -1 DAY) and location_id=:location",
         tbProgramId);
   }
 
@@ -160,9 +160,9 @@ public class TXTBQueries {
             questionId, StringUtils.join(encounterTypeIds, ","));
     if (startDate) {
       sql +=
-          "obs.value_datetime >= date_add(:startDate, interval -6 MONTH) and obs.value_datetime <= date_add(:startDate, interval -1 MONTH)";
+          "obs.value_datetime >= date_add(:startDate, interval -6 MONTH) and obs.value_datetime <= date_add(:startDate, interval -1 DAY)";
     } else {
-      sql += "obs.value_datetime <= date_add(:startDate, interval -1 MONTH)";
+      sql += "obs.value_datetime <= date_add(:startDate, interval -1 DAY)";
     }
     return sql;
   }

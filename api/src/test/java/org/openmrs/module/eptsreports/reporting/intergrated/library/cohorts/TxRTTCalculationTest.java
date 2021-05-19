@@ -10,6 +10,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoTrimestralAPSSCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -24,10 +25,12 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
   @Autowired private ResumoTrimestralAPSSCohortQueries resumoMensalAPSSCohortQueries;
 
+  @Autowired private TXTBCohortQueries txTBCohortQueries;
+
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
-    final Location location = Context.getLocationService().getLocation(400);
+    final Location location = Context.getLocationService().getLocation(208);
 
     System.out.println(location.getName());
     final Date startDate = DateUtil.getDateTime(2020, 6, 21);
@@ -46,8 +49,11 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
         this.resumoMensalAPSSCohortQueries
             .findPatientsWhoAreCurrentlyEnrolledOnArtWithPrevencaoPosetivaD1();
 
+    CohortDefinition numeratorPreviosPeriod =
+        this.txTBCohortQueries.getSpecimenSentCohortDefinition();
+
     final EvaluatedCohort evaluateCohortDefinition =
-        this.evaluateCohortDefinition(cohortDefinitionC1, parameters);
+        this.evaluateCohortDefinition(numeratorPreviosPeriod, parameters);
 
     System.out.println(evaluateCohortDefinition.getMemberIds().size());
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
@@ -59,6 +65,16 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
     }
   }
 
+  // @Override
+  // protected String username() {
+  // return "admin";
+  // }
+  //
+  // @Override
+  // protected String password() {
+  // return "H!$fGH0Mr$";
+  // }
+
   @Override
   protected String username() {
     return "admin";
@@ -66,6 +82,6 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
   @Override
   protected String password() {
-    return "H!$fGH0Mr$";
+    return "eSaude123";
   }
 }

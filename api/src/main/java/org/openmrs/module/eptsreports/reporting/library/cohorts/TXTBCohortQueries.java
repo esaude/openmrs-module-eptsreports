@@ -48,7 +48,6 @@ public class TXTBCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
   }
 
   /**
@@ -74,6 +73,18 @@ public class TXTBCohortQueries {
         this.genericCohortQueries.generalSql(
             "pulmonaryTBeWithinReportingDate",
             TXTBQueries.dateObsByObsDateTimeClausule(
+                this.tbMetadata.getPulmonaryTB().getConceptId(),
+                this.hivMetadata.getYesConcept().getConceptId(),
+                this.hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
+    this.addGeneralParameters(definition);
+    return definition;
+  }
+
+  public CohortDefinition getPulmonaryTBWithinPreviousReportingDate() {
+    final CohortDefinition definition =
+        this.genericCohortQueries.generalSql(
+            "pulmonaryTBWithinPreviousReportingDate",
+            TXTBQueries.dateObsByObsDateTimeClausuleInPreviousReportingPeriod(
                 this.tbMetadata.getPulmonaryTB().getConceptId(),
                 this.hivMetadata.getYesConcept().getConceptId(),
                 this.hivMetadata.getMasterCardEncounterType().getEncounterTypeId()));
@@ -248,12 +259,35 @@ public class TXTBCohortQueries {
     return definition;
   }
 
+  public CohortDefinition getTuberculosisTreatmentPlanWithinPreviousReportingDate() {
+    final CohortDefinition definition =
+        this.genericCohortQueries.generalSql(
+            "tuberculosisTreatmentPlanWithinReportingDate-Previous Reporting Period",
+            TXTBQueries.dateObsByObsDateTimeClausuleInPreviousReportingPeriod(
+                this.tbMetadata.getTBTreatmentPlanConcept().getConceptId(),
+                this.hivMetadata.getStartDrugsConcept().getConceptId(),
+                this.hivMetadata.getAdultoSeguimentoEncounterType().getId()));
+    this.addGeneralParameters(definition);
+    return definition;
+  }
+
   /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NUM PERIODO */
   public CohortDefinition getInTBProgram() {
     final CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "TBPROGRAMA",
             TXTBQueries.inTBProgramWithinReportingPeriodAtLocation(
+                this.tbMetadata.getTBProgram().getProgramId()));
+    this.addGeneralParameters(definition);
+    return definition;
+  }
+
+  /** PROGRAMA: PACIENTES INSCRITOS NO PROGRAMA DE TUBERCULOSE - NO PERIODO ANTERIOR */
+  public CohortDefinition getInTBProgramPreviousPeriod() {
+    final CohortDefinition definition =
+        this.genericCohortQueries.generalSql(
+            "TBPROGRAMA-Previous Reporting Period",
+            TXTBQueries.inTBProgramWithinPreviousReportingPeriodAtLocation(
                 this.tbMetadata.getTBProgram().getProgramId()));
     this.addGeneralParameters(definition);
     return definition;
@@ -419,13 +453,6 @@ public class TXTBCohortQueries {
     final CohortDefinition A = this.txTbNumeratorA();
     cd.addSearch("A", this.map(A, this.generalParameterMapping));
 
-    CohortDefinition numeratorPreviosPeriod = getNumeratorPreviosPeriod();
-    cd.addSearch(
-        "A-PREVIOUS-PERIOD",
-        this.map(
-            numeratorPreviosPeriod,
-            "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
-
     cd.addSearch(
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
@@ -433,47 +460,51 @@ public class TXTBCohortQueries {
             "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
 
     cd.addSearch(
-        "started-by-end-reporting-period",
+        "A-PREVIOUS-PERIOD", this.map(getNumeratorPreviosPeriod(), this.generalParameterMapping));
+
+    cd.addSearch(
+        "art-started-by-end-previous-reporting-period",
         EptsReportUtils.map(
             this.genericCohortQueries.getStartedArtBeforeDate(false),
             "onOrBefore=${startDate-1d},location=${location}"));
 
     cd.setCompositionString(
-        "A NOT (started-tb-treatment-previous-period OR (A-PREVIOUS-PERIOD AND started-by-end-reporting-period ))");
+        "A NOT (started-tb-treatment-previous-period OR (A-PREVIOUS-PERIOD AND art-started-by-end-previous-reporting-period ))");
+
     this.addGeneralParameters(cd);
     return cd;
   }
 
-  private CohortDefinition getNumeratorPreviosPeriod() {
-
-    String parameters = "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}";
+  public CohortDefinition getNumeratorPreviosPeriod() {
     final CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("TxTB - txTbNumerator Previous Period");
     final CohortDefinition i =
         this.genericCohortQueries.generalSql(
-            "onTbTreatment",
-            TXTBQueries.dateObs(
+            "onTbTreatment-Previous Reporting Period",
+            TXTBQueries.dateObsForPreviousReportingPeriod(
                 this.tbMetadata.getTBDrugTreatmentStartDate().getConceptId(),
                 Arrays.asList(
                     this.hivMetadata.getAdultoSeguimentoEncounterType().getId(),
                     this.hivMetadata.getARVPediatriaSeguimentoEncounterType().getId()),
                 true));
-    final CohortDefinition ii = this.getInTBProgram();
+    final CohortDefinition ii = this.getInTBProgramPreviousPeriod();
     this.addGeneralParameters(i);
     cd.addSearch("i", this.map(i, this.generalParameterMapping));
     cd.addSearch("ii", this.map(ii, this.generalParameterMapping));
     cd.addSearch(
-        "iii", this.map(this.getPulmonaryTBWithinReportingDate(), this.generalParameterMapping));
+        "iii",
+        this.map(this.getPulmonaryTBWithinPreviousReportingDate(), this.generalParameterMapping));
     cd.addSearch(
         "iv",
         this.map(
-            this.getTuberculosisTreatmentPlanWithinReportingDate(), this.generalParameterMapping));
+            this.getTuberculosisTreatmentPlanWithinPreviousReportingDate(),
+            this.generalParameterMapping));
 
     cd.addSearch(
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
             this.getTbDrugTreatmentStartDateWithinReportingDate(),
-            "startDate=${startDate-12m},endDate=${startDate-6m},location=${location}"));
+            "startDate=${startDate-12m},endDate=${startDate-6m-1d},location=${location}"));
 
     cd.setCompositionString("(i OR ii OR iii OR iv) NOT started-tb-treatment-previous-period");
     this.addGeneralParameters(cd);
@@ -661,6 +692,15 @@ public class TXTBCohortQueries {
             this.getPatientsWhoAreTransferredOut(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
+    definition.addSearch(
+        "A-PREVIOUS-PERIOD", this.map(getNumeratorPreviosPeriod(), this.generalParameterMapping));
+
+    definition.addSearch(
+        "art-started-by-end-previous-reporting-period",
+        EptsReportUtils.map(
+            this.genericCohortQueries.getStartedArtBeforeDate(false),
+            "onOrBefore=${startDate-1d},location=${location}"));
+
     CohortDefinition fichaResumoMasterCard =
         this.genericCohortQueries.generalSql(
             "onFichaResumoMasterCard",
@@ -694,7 +734,7 @@ public class TXTBCohortQueries {
     definition.setCompositionString(
         "(art-list AND "
             + " ( tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR ficha-resumo-master-card OR ficha-clinica-master-card OR all-tb-symptoms OR ficha-laboratorio-results)) "
-            + " NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
+            + " NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period OR (A-PREVIOUS-PERIOD AND art-started-by-end-previous-reporting-period ))");
 
     return definition;
   }
@@ -816,8 +856,11 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "lab-results", this.map(this.getResultsOnFichaLaboratorio(), this.generalParameterMapping));
 
+    definition.addSearch(
+        "DENOMINATOR", this.map(this.getDenominator(), this.generalParameterMapping));
+
     definition.setCompositionString(
-        "application-for-laboratory-research OR tb-genexpert-culture-lam-bk-test OR lab-results");
+        "(application-for-laboratory-research OR tb-genexpert-culture-lam-bk-test OR lab-results) AND DENOMINATOR");
 
     return definition;
   }
@@ -911,8 +954,10 @@ public class TXTBCohortQueries {
     cd.addSearch("gen-expert-lab-test", this.map(genXpertLabResults, this.generalParameterMapping));
     cd.addSearch("xpert-mtb-lab-tests", this.map(xpertMTBLabResults, this.generalParameterMapping));
 
+    cd.addSearch("DENOMINATOR", this.map(this.getDenominator(), this.generalParameterMapping));
+
     cd.setCompositionString(
-        "application-for-lab-research OR gen-expert-test OR gen-expert-lab-test OR xpert-mtb-lab-tests");
+        "(application-for-lab-research OR gen-expert-test OR gen-expert-lab-test OR xpert-mtb-lab-tests) AND DENOMINATOR");
 
     return cd;
   }
@@ -971,8 +1016,10 @@ public class TXTBCohortQueries {
         this.map(
             this.getGeneXpertMTBDiagnosticTestCohortDefinition(), this.generalParameterMapping));
 
+    cd.addSearch("DENOMINATOR", this.map(this.getDenominator(), this.generalParameterMapping));
+
     cd.setCompositionString(
-        "(exame-basiloscopia-fichaClinica OR resultad-exame-basiloscopia-ficha-clinica OR exame-basiloscopia-laboratorio) NOT gen-expert-test");
+        "((exame-basiloscopia-fichaClinica OR resultad-exame-basiloscopia-ficha-clinica OR exame-basiloscopia-laboratorio) NOT gen-expert-test) AND DENOMINATOR");
 
     return cd;
   }
@@ -1092,8 +1139,9 @@ public class TXTBCohortQueries {
     cd.addSearch(
         "tb-positive-result", this.map(tbPositiveResultReturned, this.generalParameterMapping));
     cd.addSearch("baciloscopia-result", this.map(baciloscopiaResult, this.generalParameterMapping));
+    cd.addSearch("DENOMINATOR", this.map(this.getDenominator(), this.generalParameterMapping));
 
-    cd.setCompositionString("tb-positive-result OR baciloscopia-result");
+    cd.setCompositionString("(tb-positive-result OR baciloscopia-result) AND DENOMINATOR");
 
     return cd;
   }
