@@ -48,13 +48,18 @@ public class QualityImprovement2020CohortQueries {
   private CommonCohortQueries commonCohortQueries;
 
   private TbMetadata tbMetadata;
+
   private TxPvlsCohortQueries txPvls;
+
+  private TxMlCohortQueries txMlCohortQueries;
 
   private final String MAPPING = "startDate=${startDate},endDate=${endDate},location=${location}";
   private final String MAPPING1 =
       "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}";
   private final String MAPPING2 =
       "startDate=${revisionEndDate-14m},endDate=${revisionEndDate-11m},location=${location}";
+  private final String MAPPING3 =
+      "startDate=${startDate},endDate=${revisionEndDate},location=${location}";
 
   @Autowired
   public QualityImprovement2020CohortQueries(
@@ -66,7 +71,8 @@ public class QualityImprovement2020CohortQueries {
       CommonCohortQueries commonCohortQueries,
       TbMetadata tbMetadata,
       TxPvlsCohortQueries txPvls,
-      AgeCohortQueries ageCohortQueries) {
+      AgeCohortQueries ageCohortQueries,
+      TxMlCohortQueries txMlCohortQueries) {
     this.genericCohortQueries = genericCohortQueries;
     this.hivMetadata = hivMetadata;
     this.commonMetadata = commonMetadata;
@@ -76,6 +82,7 @@ public class QualityImprovement2020CohortQueries {
     this.tbMetadata = tbMetadata;
     this.txPvls = txPvls;
     this.ageCohortQueries = ageCohortQueries;
+    this.txMlCohortQueries = txMlCohortQueries;
   }
 
   /**
@@ -2223,18 +2230,18 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
 
+    compositionCohortDefinition.addSearch(
+        "DD", EptsReportUtils.map(txMlCohortQueries.getDeadPatientsComposition(), MAPPING3));
+
     compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
 
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
 
-    if (indicator == 2)
+    if (indicator == 2 || indicator == 9 || indicator == 10 || indicator == 11)
       compositionCohortDefinition.setCompositionString(
-          "((A AND NOT C AND NOT D) OR B1) AND NOT (F OR E) AND age");
-    if (indicator == 9 || indicator == 10 || indicator == 11)
-      compositionCohortDefinition.setCompositionString(
-          "((A AND NOT C AND NOT D) OR B1) AND NOT (F OR E) AND age");
+          "((A AND NOT C AND NOT D) OR B1) AND NOT (F OR E OR DD) AND age");
     if (indicator == 5 || indicator == 14)
-      compositionCohortDefinition.setCompositionString("B2New AND NOT (F OR E) AND age");
+      compositionCohortDefinition.setCompositionString("B2New AND NOT (F OR E OR DD) AND age");
     return compositionCohortDefinition;
   }
 
