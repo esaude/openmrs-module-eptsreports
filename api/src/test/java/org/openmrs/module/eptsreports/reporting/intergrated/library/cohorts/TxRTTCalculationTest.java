@@ -10,6 +10,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoTrimestralAPSSCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TPTCompletationCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -27,14 +28,16 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
   @Autowired private TXTBCohortQueries txTBCohortQueries;
 
+  @Autowired private TPTCompletationCohortQueries tptCompletationCohortQueries;
+
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
-    final Location location = Context.getLocationService().getLocation(208);
+    final Location location = Context.getLocationService().getLocation(398);
 
     System.out.println(location.getName());
     final Date startDate = DateUtil.getDateTime(2020, 6, 21);
-    final Date endDate = DateUtil.getDateTime(2020, 9, 20);
+    final Date endDate = DateUtil.getDateTime(2020, 12, 20);
 
     System.out.println(startDate);
     System.out.println(endDate);
@@ -52,8 +55,11 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
     CohortDefinition numeratorPreviosPeriod =
         this.txTBCohortQueries.getSpecimenSentCohortDefinition();
 
+    CohortDefinition txCurrWithTPTCompletation =
+        this.tptCompletationCohortQueries.findTxCurrWithTPTCompletation();
+
     final EvaluatedCohort evaluateCohortDefinition =
-        this.evaluateCohortDefinition(numeratorPreviosPeriod, parameters);
+        this.evaluateCohortDefinition(txCurrWithTPTCompletation, parameters);
 
     System.out.println(evaluateCohortDefinition.getMemberIds().size());
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());
@@ -77,11 +83,11 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
   @Override
   protected String username() {
-    return "admin";
+    return "domingos.bernardo";
   }
 
   @Override
   protected String password() {
-    return "eSaude123";
+    return "dBernardo1";
   }
 }

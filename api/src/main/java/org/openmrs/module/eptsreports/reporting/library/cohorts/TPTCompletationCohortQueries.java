@@ -259,30 +259,63 @@ public class TPTCompletationCohortQueries {
   @DocumentedDefinition(value = "txTbNumerator")
   private CohortDefinition getTxTBNumerator() {
     final CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    String generalParameterMapping =
+        "startDate=${endDate-1095d},endDate=${endDate},location=${location}";
+    String previousPeriodParameters =
+        "startDate=${endDate-6m-1095d},endDate=${endDate-1095d-1d},location=${location}";
 
     cd.setName("TxTB - Numerator");
-    final CohortDefinition A = this.generateTxTBNumerator();
+    final CohortDefinition A = this.generateTxTBNumerator(generalParameterMapping);
+    cd.addSearch("A", EptsReportUtils.map(A, generalParameterMapping));
+
     cd.addSearch(
-        "A",
+        "A-PREVIOUS-PERIOD",
         EptsReportUtils.map(
-            A, "startDate=${endDate-1095d},endDate=${endDate},location=${location}"));
+            getTxTBNumeratorPreviousPeriod(
+                previousPeriodParameters,
+                "startDate=${endDate-12m-1095d},endDate=${endDate-6m-1095d-1d},location=${location}"),
+            previousPeriodParameters));
+    cd.addSearch(
+        "art-started-by-end-previous-reporting-period",
+        EptsReportUtils.map(
+            this.genericCohorts.getStartedArtBeforeDate(false),
+            "onOrBefore=${endDate-6m-1095d},location=${location}"));
 
     cd.addSearch(
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
             tXTBCohortQueries.getTbDrugTreatmentStartDateWithinReportingDate(),
-            "startDate=${endDate-6m-1095d},endDate=${endDate-1095d-1d},location=${location}"));
-    cd.setCompositionString("A NOT started-tb-treatment-previous-period");
+            previousPeriodParameters));
+
+    cd.setCompositionString(
+        "A NOT (started-tb-treatment-previous-period OR (A-PREVIOUS-PERIOD AND art-started-by-end-previous-reporting-period))");
+
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  @DocumentedDefinition(value = "txTbNumeratorPreviousPeriod")
+  private CohortDefinition getTxTBNumeratorPreviousPeriod(
+      String previousPeriodParameters, String tbTreatmentPeriod) {
+    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("TxTB - Numerator Previous Period");
+    final CohortDefinition A = this.generateTxTBNumerator(previousPeriodParameters);
+    cd.addSearch("A-PREVIOUS-PERIOD", EptsReportUtils.map(A, previousPeriodParameters));
+
+    cd.addSearch(
+        "started-tb-treatment-previous-period",
+        EptsReportUtils.map(
+            tXTBCohortQueries.getTbDrugTreatmentStartDateWithinReportingDate(), tbTreatmentPeriod));
+    cd.setCompositionString("A-PREVIOUS-PERIOD NOT started-tb-treatment-previous-period");
 
     addGeneralParameters(cd);
     return cd;
   }
 
   @DocumentedDefinition(value = "generateTxTBNumerator")
-  private CohortDefinition generateTxTBNumerator() {
+  private CohortDefinition generateTxTBNumerator(String generalParameterMapping) {
     final CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    String generalParameterMapping =
-        "startDate=${endDate-1095d},endDate=${endDate},location=${location}";
 
     cd.setName("TxTB - Numerator - generating Compositions");
     final CohortDefinition i =
@@ -392,7 +425,7 @@ public class TPTCompletationCohortQueries {
 
   @DocumentedDefinition(value = "getTxTBDenominator")
   private CohortDefinition getTxTBDenominator(
-      String generalParameterMapping, String specificParameterMapping) {
+      String generalParameterMapping, String previousPeriodParameterMapping) {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
     this.addGeneralParameters(definition);
@@ -423,10 +456,10 @@ public class TPTCompletationCohortQueries {
         "started-tb-treatment-previous-period",
         EptsReportUtils.map(
             tXTBCohortQueries.getTbDrugTreatmentStartDateWithinReportingDate(),
-            specificParameterMapping));
+            previousPeriodParameterMapping));
     definition.addSearch(
         "in-tb-program-previous-period",
-        EptsReportUtils.map(tXTBCohortQueries.getInTBProgram(), specificParameterMapping));
+        EptsReportUtils.map(tXTBCohortQueries.getInTBProgram(), previousPeriodParameterMapping));
 
     definition.addSearch(
         "transferred-out",
@@ -462,10 +495,24 @@ public class TPTCompletationCohortQueries {
         EptsReportUtils.map(
             this.getAllTBSymptomsForDemoninatorComposition(), generalParameterMapping));
 
+    definition.addSearch(
+        "A-PREVIOUS-PERIOD",
+        EptsReportUtils.map(
+            getTxTBNumeratorPreviousPeriod(
+                previousPeriodParameterMapping,
+                "startDate=${endDate-12m-14d},endDate=${endDate-6m-14d-1d},location=${location}"),
+            previousPeriodParameterMapping));
+
+    definition.addSearch(
+        "art-started-by-end-previous-reporting-period",
+        EptsReportUtils.map(
+            this.genericCohorts.getStartedArtBeforeDate(false),
+            "onOrBefore=${endDate-12m-14d},location=${location}"));
+
     definition.setCompositionString(
         "(art-list AND "
             + " ( tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR ficha-resumo-master-card OR ficha-clinica-master-card OR all-tb-symptoms)) "
-            + " NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
+            + " NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period OR (A-PREVIOUS-PERIOD AND art-started-by-end-previous-reporting-period))");
 
     return definition;
   }

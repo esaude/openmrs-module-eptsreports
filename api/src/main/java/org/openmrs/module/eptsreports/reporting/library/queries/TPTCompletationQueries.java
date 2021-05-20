@@ -1314,7 +1314,7 @@ public interface TPTCompletationQueries {
             + "   where e.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (6,9) and obsLevTPI.concept_id=6122 and obsLevTPI.value_coded in (1257,1065,1256)    "
             + "         and e.encounter_datetime between inicio_inh.data_inicio_inh and (inicio_inh.data_inicio_inh + INTERVAL 7 MONTH)   "
             + "         and obsDTINH.voided=0  and obsDTINH.concept_id=1719 and obsDTINH.value_coded=23955 and e.location_id=:location          "
-            + "         group by inicio_inh.patient_id,inicio_inh.data_inicio_inh having count(*)>=3   "
+            + "         group by inicio_inh.patient_id,inicio_inh.data_inicio_inh having count(*)>=1   "
             + " ) d2 on d1.patient_id = d2.patient_id "
             + " where d2.patient_id is null          "
             + "                 ) inicio_inh    "
