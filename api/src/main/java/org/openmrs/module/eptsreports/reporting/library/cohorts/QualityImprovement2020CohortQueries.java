@@ -4328,7 +4328,10 @@ public class QualityImprovement2020CohortQueries {
             G, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
     if (den) {
-      if (line == 1 || line == 6 || line == 7 || line == 8) {
+      if (line == 1) {
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND (B2NEW OR (B3 AND NOT B3E)) AND NOT B4E AND NOT B5E AND NOT B6E) AND NOT (C OR D) AND age");
+      } else if (line == 6 || line == 7 || line == 8) {
         compositionCohortDefinition.setCompositionString(
             "(B1 AND (B2NEW OR (B3 AND NOT B3E)) AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND age");
       } else if (line == 4 || line == 13) {
@@ -7057,6 +7060,54 @@ public class QualityImprovement2020CohortQueries {
             + "            ) AS tpt_inicio ON tpt_inicio.patient_id = p.patient_id  "
             + "WHERE p.voided = 0  "
             + "    AND TIMESTAMPDIFF(DAY, tpt_inicio.tpt_start_date,tpt_fim.tpt_end_date) BETWEEN  170 AND 297 ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(query));
+    return cd;
+  }
+
+  private CohortDefinition getB6E() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("23724", hivMetadata.getGaac().getConceptId());
+    map.put("23730", hivMetadata.getQuarterlyDispensation().getConceptId());
+    map.put("23739", hivMetadata.getTypeOfDispensationConcept().getConceptId());
+    map.put("23720", hivMetadata.getQuarterlyConcept().getConceptId());
+    map.put("1256", hivMetadata.getStartDrugs().getConceptId());
+
+    String query =
+        ""
+            + "SELECT last.patient_id "
+            + "FROM ( "
+            + "         SELECT p.patient_id, MAX(e.encounter_datetime) last_encounter "
+            + "         FROM patient p "
+            + "                  INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "         WHERE p.voided = 0 "
+            + "           AND e.voided = 0 "
+            + "           AND e.encounter_type = ${6} "
+            + "           AND e.location_id = :location "
+            + "           AND e.encounter_datetime between :startDate AND :endDate "
+            + "         GROUP BY p.patient_id "
+            + "     ) AS last "
+            + "    INNER JOIN encounter e1 ON e1.patient_id = last.patient_id "
+            + "    INNER JOIN obs o1 on e1.encounter_id = o1.encounter_id "
+            + "WHERE e1.voided = 0 "
+            + "  AND o1.voided = 0 "
+            + "  AND e1.encounter_datetime = last.last_encounter "
+            + "  AND e1.encounter_datetime between :startDate AND :endDate "
+            + "  AND e1.encounter_type = ${6} "
+            + "  AND e1.location_id = :location  "
+            + "  AND ( "
+            + "        (o1.concept_id = ${23724} OR o1.value_coded = ${1256}) OR "
+            + "        (o1.concept_id = ${23730} OR o1.value_coded = ${1256}) OR "
+            + "        (o1.concept_id = ${23739} OR o1.value_coded = ${23720}) "
+            + "    )";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     cd.setQuery(sb.replace(query));
