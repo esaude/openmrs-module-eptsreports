@@ -2,7 +2,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.midatasets;
 
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.GenericMICohortQueryCategory12;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory12P1CohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQGenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets.MQAbstractDataSet;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Component;
 public class MICategory12P1Dataset extends MQAbstractDataSet {
 
   @Autowired private MICategory12P1CohortQueries miCategory12P1CohortQueries;
-  @Autowired private MQGenericCohortQueries mQGenericCohortQueries;
   @Autowired private GenericMICohortQueryCategory12 genericMICohortQueryCategory12;
 
   public void constructTMiDatset(
@@ -30,7 +28,7 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
                 "CAT12ADULTDENOMINADOR33DAYS",
                 mappings),
             mappings),
-        "ageMqNewART=15+");
+        "ageMiNewART=LESS_3_MONTHS_15+");
 
     dataSetDefinition.addColumn(
         "CAT12ADULTNUMERATOR33DAYS",
@@ -43,7 +41,7 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
                 "CAT12ADULTNUMERATOR33DAYS",
                 mappings),
             mappings),
-        "ageMqNewART=15+");
+        "ageMiNewART=LESS_3_MONTHS_15+");
 
     dataSetDefinition.addColumn(
         "CAT12ADULTDENOMINADOR99DAYS",
@@ -56,7 +54,7 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
                 "CAT12ADULTDENOMINADOR99DAYS",
                 mappings),
             mappings),
-        "ageMqNewART=15+");
+        "ageMiNewART=LESS_5_MONTHS_15+");
 
     dataSetDefinition.addColumn(
         "CAT12ADULTNUMERATOR99DAYS",
@@ -69,7 +67,7 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
                 "CAT12ADULTNUMERATOR99DAYS",
                 mappings),
             mappings),
-        "ageMqNewART=15+");
+        "ageMiNewART=LESS_5_MONTHS_15+");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENDENOMINADOR33DAYS",
@@ -78,11 +76,11 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.genericMICohortQueryCategory12
-                    .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_2(),
+                    .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_5(),
                 "CAT12CHILDRENDENOMINADOR33DAYS",
                 mappings),
             mappings),
-        "ageMqNewART=15-");
+        "ageMiNewART=LESS_3_MONTHS_15-");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENNUMERATOR33DAYS",
@@ -95,7 +93,7 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
                 "CAT12CHILDRENNUMERATOR33DAYS",
                 mappings),
             mappings),
-        "ageMqNewART=15-");
+        "ageMiNewART=LESS_3_MONTHS_15-");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENDENOMINADOR99DAYS",
@@ -108,7 +106,7 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
                 "CAT12CHILDRENDENOMINADOR99DAYS",
                 mappings),
             mappings),
-        "ageMqNewART=15-");
+        "ageMiNewART=LESS_5_MONTHS_15-");
 
     dataSetDefinition.addColumn(
         "CAT12CHILDRENNUMERATOR99DAYS",
@@ -121,7 +119,7 @@ public class MICategory12P1Dataset extends MQAbstractDataSet {
                 "CAT12CHILDRENNUMERATOR99DAYS",
                 mappings),
             mappings),
-        "ageMqNewART=15-");
+        "ageMiNewART=LESS_5_MONTHS_15-");
 
     dataSetDefinition.addColumn(
         "CAT12PREGNANTDENOMINADOR33DAYS",

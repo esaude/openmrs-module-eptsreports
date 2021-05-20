@@ -37,12 +37,15 @@ public class MICategory11CohortQueries {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-4m+1d},endInclusionDate=${endRevisionDate-3m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
+
+    final String mappingsMIB1 =
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "B1",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientsWhoHaveLastFirstLineTerapeutic(), mappingsMI));
+            this.mQCohortQueries.findPatientsWhoHaveLastFirstLineTerapeutic(), mappingsMIB1));
 
     definition.addSearch(
         "B2",
@@ -99,6 +102,9 @@ public class MICategory11CohortQueries {
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
+
     definition.addSearch(
         "DENOMINATOR",
         EptsReportUtils.map(
@@ -111,7 +117,7 @@ public class MICategory11CohortQueries {
         EptsReportUtils.map(
             this.mQCohortQueries
                 .findPatientsOnARTWithMinimum3APSSFollowupConsultationsIntheFirst3MonthsAfterStartingARTCategory11Numerator(),
-            mappings));
+            mappingsMI));
 
     definition.setCompositionString("(DENOMINATOR AND G-APSS-PP)");
 
@@ -175,6 +181,9 @@ public class MICategory11CohortQueries {
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
+
     definition.addSearch(
         "DENOMINADOR",
         EptsReportUtils.map(
@@ -187,7 +196,7 @@ public class MICategory11CohortQueries {
         EptsReportUtils.map(
             this.mQCohortQueries
                 .findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11Numerator(),
-            mappings));
+            mappingsMI));
 
     definition.setCompositionString("(DENOMINADOR AND H)");
 

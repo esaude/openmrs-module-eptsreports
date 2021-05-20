@@ -2,7 +2,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts.mi;
 
 import java.util.Date;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQGenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -15,7 +14,6 @@ import org.springframework.stereotype.Component;
 public class MICategory12P1CohortQueries {
 
   @Autowired private MQCohortQueries mqCohortQueries;
-  @Autowired private MQGenericCohortQueries mQGenericCohortQueries;
   @Autowired private GenericMICohortQueryCategory12 genericMICohortQueryCategory12;
 
   @DocumentedDefinition(
@@ -85,6 +83,8 @@ public class MICategory12P1CohortQueries {
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "DENOMINATOR",
@@ -93,14 +93,18 @@ public class MICategory12P1CohortQueries {
                 .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_2(),
             mappings));
 
+    /*Na definicao do MI a retencao 99 dias nao verifica no periodo de inclusao apenas o inicio de TARV
+     * eh que verifica por isso criei uma outra query para ajustar os requisitos a query que alinha com os requisitos eh:
+     * findPatientsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12
+     */
     definition.addSearch(
-        "RET99DAYS",
+        "RET99DAYS-I",
         EptsReportUtils.map(
             this.mqCohortQueries
                 .findPatientsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12(),
-            mappings));
+            mappingsMI));
 
-    definition.setCompositionString("DENOMINATOR AND RET99DAYS");
+    definition.setCompositionString("DENOMINATOR AND RET99DAYS-I");
 
     return definition;
   }
@@ -124,21 +128,27 @@ public class MICategory12P1CohortQueries {
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-3m+1d},endInclusionDate=${endRevisionDate-2m},endRevisionDate=${endRevisionDate},location=${location}";
+
     definition.addSearch(
         "DENOMINATOR",
         EptsReportUtils.map(
             this.genericMICohortQueryCategory12
-                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_2(),
+                .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory12Section12_5(),
             mappings));
 
-    definition.addSearch(
-        "RET33DAYS",
+    /*Na definicao do MI a retencao 33 dias nao verifica no periodo de inclusao apenas o inicio de TARV
+     * eh que verifica por isso criei uma outra query para ajustar os requisitos a query que alinha com os requisitos eh:
+     * findPatientsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12MI
+     */ definition.addSearch(
+        "RET33DAYS-H",
         EptsReportUtils.map(
             this.mqCohortQueries
                 .findPatientsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12(),
-            mappings));
+            mappingsMI));
 
-    definition.setCompositionString("DENOMINATOR AND RET33DAYS");
+    definition.setCompositionString("DENOMINATOR");
 
     return definition;
   }
@@ -161,6 +171,9 @@ public class MICategory12P1CohortQueries {
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-3m+1d},endInclusionDate=${endRevisionDate-2m},endRevisionDate=${endRevisionDate},location=${location}";
+
     definition.addSearch(
         "PREGNANT-DENOMINATOR",
         EptsReportUtils.map(
@@ -169,13 +182,13 @@ public class MICategory12P1CohortQueries {
             mappings));
 
     definition.addSearch(
-        "RET33DAYS",
+        "RET33DAYS-H",
         EptsReportUtils.map(
             this.mqCohortQueries
                 .findPatientsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12(),
-            mappings));
+            mappingsMI));
 
-    definition.setCompositionString("PREGNANT-DENOMINATOR AND RET33DAYS");
+    definition.setCompositionString("PREGNANT-DENOMINATOR AND RET33DAYS-H");
 
     return definition;
   }
@@ -198,6 +211,8 @@ public class MICategory12P1CohortQueries {
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "PREGNANT-DENOMINATOR",
@@ -207,13 +222,13 @@ public class MICategory12P1CohortQueries {
             mappings));
 
     definition.addSearch(
-        "RET99DAYS",
+        "RET99DAYS-I",
         EptsReportUtils.map(
             this.mqCohortQueries
                 .findPatientsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation99DaysAfterAtartingARTCategory12(),
-            mappings));
+            mappingsMI));
 
-    definition.setCompositionString("PREGNANT-DENOMINATOR AND RET99DAYS");
+    definition.setCompositionString("PREGNANT-DENOMINATOR AND RET99DAYS-I");
 
     return definition;
   }

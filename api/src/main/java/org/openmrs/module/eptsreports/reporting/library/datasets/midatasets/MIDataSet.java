@@ -5,7 +5,6 @@ import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets.MQCommonsDementions;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -15,10 +14,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class MIDataSet extends BaseDataSet {
 
-  @Autowired private MQCommonsDementions mQCommonsDementions;
   @Autowired private MICategory7Dataset miCategory7Dataset;
   @Autowired private MICategory11DataSet miCategory11DataSet;
   @Autowired private MICategory12P1Dataset miCategory12Dataset;
+  @Autowired private MICommonsDementions mICommonsDementions;
 
   public DataSetDefinition constructTMiDatset() {
     final CohortIndicatorDataSetDefinition dataSetDefinition =
@@ -30,8 +29,7 @@ public class MIDataSet extends BaseDataSet {
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
-    this.mQCommonsDementions.getMQCommonDementions(dataSetDefinition, mappings);
-
+    this.mICommonsDementions.getMICommonDementions(dataSetDefinition, mappings);
     miCategory7Dataset.constructTMiDatset(dataSetDefinition, mappings);
     miCategory11DataSet.constructTMiDatset(dataSetDefinition, mappings);
     miCategory12Dataset.constructTMiDatset(dataSetDefinition, mappings);

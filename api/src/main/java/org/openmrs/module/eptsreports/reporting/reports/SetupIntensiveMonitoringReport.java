@@ -11,7 +11,6 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.midatasets.MIDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets.MQDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -25,7 +24,6 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
   @Autowired MIDataSet miDataSet;
-  @Autowired MQDataSet mqDataSet;
 
   @Override
   public String getUuid() {
@@ -59,8 +57,10 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
     reportDefinition.setName(getName());
     reportDefinition.setDescription(getDescription());
     reportDefinition.setParameters(getParameters());
+
     reportDefinition.addDataSetDefinition(
         "HF", mapStraightThrough(new LocationDataSetDefinition()));
+
     reportDefinition.addDataSetDefinition(
         "MI", Mapped.mapStraightThrough(miDataSet.constructTMiDatset()));
     return reportDefinition;
@@ -72,7 +72,11 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "MI.xls", "Intensive Monitorin Report", getExcelDesignUuid(), null);
+              reportDefinition,
+              "MI.xls",
+              "Intensive Monitoring Report",
+              getExcelDesignUuid(),
+              null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);

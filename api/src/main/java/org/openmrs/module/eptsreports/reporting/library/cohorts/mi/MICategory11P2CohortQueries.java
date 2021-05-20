@@ -199,7 +199,10 @@ public class MICategory11P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-4m+1d},endInclusionDate=${endRevisionDate-3m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
+
+    final String mappingsMIB1 =
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
@@ -207,7 +210,7 @@ public class MICategory11P2CohortQueries {
     definition.addSearch(
         "B1",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientsWhoHaveLastFirstLineTerapeutic(), mappingsMI));
+            this.mQCohortQueries.findPatientsWhoHaveLastFirstLineTerapeutic(), mappingsMIB1));
 
     definition.addSearch(
         "PREGNANT-B4",
@@ -262,7 +265,7 @@ public class MICategory11P2CohortQueries {
         EptsReportUtils.map(
             this
                 .findPregnantOnARTStartedExcludingBreastfeedingAndTransferredInCategory11DenominatorP2(),
-            ""));
+            mappings));
 
     definition.addSearch(
         "G-APSS-PP",
@@ -294,6 +297,8 @@ public class MICategory11P2CohortQueries {
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "DENOMINADOR",
@@ -307,7 +312,7 @@ public class MICategory11P2CohortQueries {
         EptsReportUtils.map(
             this
                 .findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11NumeratorAdultH(),
-            mappings));
+            mappingsMI));
 
     definition.setCompositionString("(DENOMINADOR AND H)");
 

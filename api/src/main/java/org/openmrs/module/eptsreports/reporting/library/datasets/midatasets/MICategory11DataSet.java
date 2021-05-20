@@ -31,7 +31,7 @@ public class MICategory11DataSet extends MQAbstractDataSet {
                 "CAT11AdultoAPSSPPDENOMINATOR",
                 mappings),
             mappings),
-        "ageMqNewART=15+");
+        "ageMiNewART=LESS_5_MONTHS_15+");
 
     dataSetDefinition.addColumn(
         "CAT11AdultoAPSSPPNUMERATOR",
@@ -44,7 +44,7 @@ public class MICategory11DataSet extends MQAbstractDataSet {
                 "CAT11AdultoAPSSPPNUMERATOR",
                 mappings),
             mappings),
-        "ageMqNewART=15+");
+        "ageMiNewART=LESS_5_MONTHS_15+");
 
     dataSetDefinition.addColumn(
         "CAT11Adulto1000CVDENOMINATOR",
@@ -57,7 +57,7 @@ public class MICategory11DataSet extends MQAbstractDataSet {
                 "CAT11Adulto1000CVDENOMINATOR",
                 mappings),
             mappings),
-        "ageOnCV=15+");
+        "ageOnCV=CV_LESS_4_MONTHS_15+");
 
     dataSetDefinition.addColumn(
         "CAT11Adulto1000CVNUMERATOR",
@@ -70,7 +70,7 @@ public class MICategory11DataSet extends MQAbstractDataSet {
                 "CAT11Adulto1000CVNUMERATOR",
                 mappings),
             mappings),
-        "ageOnCV=15+");
+        "ageOnCV=CV_LESS_4_MONTHS_15+");
 
     dataSetDefinition.addColumn(
         "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
@@ -83,7 +83,7 @@ public class MICategory11DataSet extends MQAbstractDataSet {
                 "CAT11ChildrenBiggerThen2eLess14APSSPPDENOMINATOR",
                 mappings),
             mappings),
-        "ageMqNewART=3-14");
+        "ageMiNewART=LESS_5_MONTHS_2-14");
 
     dataSetDefinition.addColumn(
         "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
@@ -96,7 +96,7 @@ public class MICategory11DataSet extends MQAbstractDataSet {
                 "CAT11ChildrenBiggerThen2eLess14APSSPPNUMERATOR",
                 mappings),
             mappings),
-        "ageMqNewART=3-14");
+        "ageMiNewART=LESS_5_MONTHS_2-14");
 
     dataSetDefinition.addColumn(
         "CAT11Least9APSSConsultationDENOMINATOR",
@@ -109,7 +109,7 @@ public class MICategory11DataSet extends MQAbstractDataSet {
                 "CAT11Least9APSSConsultationDENOMINATOR",
                 mappings),
             mappings),
-        "ageMqNewART=<9MONTHS");
+        "ageMiNewART=LESS_5_MONTHS_2-");
 
     dataSetDefinition.addColumn(
         "CAT11Least9APSSConsultationNUMERATOR",
@@ -122,7 +122,7 @@ public class MICategory11DataSet extends MQAbstractDataSet {
                 "CAT11Least9APSSConsultationNUMERATOR",
                 mappings),
             mappings),
-        "ageMqNewART=<9MONTHS");
+        "ageMiNewART=LESS_5_MONTHS_2-");
 
     dataSetDefinition.addColumn(
         "CAT11Children1000CVDENOMINATOR",
@@ -135,7 +135,7 @@ public class MICategory11DataSet extends MQAbstractDataSet {
                 "CAT11Children1000CVDENOMINATOR",
                 mappings),
             mappings),
-        "ageOnCV=15-");
+        "ageOnCV=CV_LESS_4_MONTHS_15-");
 
     dataSetDefinition.addColumn(
         "CAT11Children1000CVNUMERATOR",
@@ -148,7 +148,7 @@ public class MICategory11DataSet extends MQAbstractDataSet {
                 "CAT11Children1000CVNUMERATOR",
                 mappings),
             mappings),
-        "ageOnCV=15-");
+        "ageOnCV=CV_LESS_4_MONTHS_15-");
 
     dataSetDefinition.addColumn(
         "CAT11PREGNANTAPSSPPDENOMINATOR",
