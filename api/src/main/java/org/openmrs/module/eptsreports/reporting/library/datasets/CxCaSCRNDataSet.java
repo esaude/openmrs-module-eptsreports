@@ -59,7 +59,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                 "CXCA_SCRN: Number of individual HIV-positive women on ART who received a screening test for cervical cancer",
                 EptsReportUtils.map(this.cxCaSCRNCohortQueries.getTotalNumerator(), mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     dataSetDefinition.addColumn(
         "CXFRT",
@@ -70,7 +70,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                 EptsReportUtils.map(
                     this.cxCaSCRNCohortQueries.getTotalNumeratorFirstScreening(), mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -122,7 +122,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                         .getTotalNumeratorRescreenedAfterPreviousNegativeTotal(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -177,7 +177,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                         .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpTotal(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -234,7 +234,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                         .getTotalNumeratorRescreenedAfterPreviousPositiveTotal(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -291,7 +291,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                     this.CxCxSRNPositiveCohortQueries.findpatientwithCxCaPositiveTotal(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
