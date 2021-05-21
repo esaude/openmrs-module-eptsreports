@@ -8,8 +8,11 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.GenericMICohortQueryCategory12;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory11CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory11P2CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory12P1CohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory7CohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQGenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -20,10 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 public class MQCohortTest extends DefinitionsFGHLiveTest {
 
-  /*    @Autowired private MICategory11CohortQueries miCategory11CohortQueries;
-     @Autowired private MICategory7CohortQueries miCategory7CohortQueries;
-     @Autowired private MQGenericCohortQueries mQGenericCohortQueries;
-  */ @Autowired private MICategory11P2CohortQueries mICategory11P2CohortQueries;
+  @Autowired private MICategory11CohortQueries miCategory11CohortQueries;
+  @Autowired private MICategory7CohortQueries miCategory7CohortQueries;
+  @Autowired private MQGenericCohortQueries mQGenericCohortQueries;
+  @Autowired private MICategory11P2CohortQueries mICategory11P2CohortQueries;
   @Autowired private MICategory12P1CohortQueries mICategory12P1CohortQueries;
   @Autowired private GenericMICohortQueryCategory12 genericMICohortQueryCategory12;
 
@@ -49,8 +52,8 @@ public class MQCohortTest extends DefinitionsFGHLiveTest {
         new Parameter(EptsReportConstants.END_REVISION_DATE, "End Date", Date.class), revisionDate);
 
     CohortDefinition cohortDefinition =
-        mICategory12P1CohortQueries
-            .findPatientsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12Line62ColumnDInTheTemplateNumerator1();
+        miCategory7CohortQueries
+            .findPatientWhoAreNewlyEnrolledOnARTDuringRevisionPeriodAndStartTPIAndElegibleTPTCategory7RF19Denominator();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(cohortDefinition, parameters);
