@@ -1101,8 +1101,10 @@ public class TXTBCohortQueries {
             this.getSmearMicroscopyOnlyDiagnosticTestCohortDefinition(),
             this.generalParameterMapping));
 
+    cd.addSearch("DENOMINATOR", this.map(this.getDenominator(), this.generalParameterMapping));
+
     cd.setCompositionString(
-        "(application-for-lab-research OR culture-or-lam-test OR culture-laboratory-results OR tblam-laboratory-results) NOT (gen-expert-test OR smear-microscopy-only)");
+        "((application-for-lab-research OR culture-or-lam-test OR culture-laboratory-results OR tblam-laboratory-results) NOT (gen-expert-test OR smear-microscopy-only)) AND DENOMINATOR");
 
     return cd;
   }
