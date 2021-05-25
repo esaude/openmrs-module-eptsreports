@@ -53,7 +53,7 @@ public class SetupListOfChildrenARVFormulations extends EptsDataExportManager {
     rd.addParameters(txRttDataset.getParameters());
 
     rd.addDataSetDefinition(
-        "ARV-FORMULATIONS",
+        "FR",
         Mapped.mapStraightThrough(
             listOfChildrenARVFormulationsDataSet.costructDataSet(txRttDataset.getParameters())));
     rd.setBaseCohortDefinition(
