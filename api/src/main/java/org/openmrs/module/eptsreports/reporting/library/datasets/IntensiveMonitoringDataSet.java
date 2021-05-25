@@ -488,7 +488,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "MI11DEN1",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11DEN(1),
+                qualityImprovement2020CohortQueries.getMQC11DEN(1, "MI"),
                 "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11DEN1.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -505,8 +505,8 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "MI11DEN2",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11DEN(2),
-                "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
+                qualityImprovement2020CohortQueries.getMQC11DEN(2, "MI"),
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11DEN2.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
@@ -515,14 +515,14 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "Pacientes na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas de APSS/PP mensais consecutivas para reforço de adesão",
         EptsReportUtils.map(
             MI11DEN2,
-            "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"),
-        "mqAge=MqAdults");
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
+        "ageBasedOnArt=adultsArt");
 
     CohortIndicator MI11DEN3 =
         eptsGeneralIndicator.getIndicator(
             "MI11DEN3",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11DEN(3),
+                qualityImprovement2020CohortQueries.getMQC11DEN(3, "MI"),
                 "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11DEN3.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -539,7 +539,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "MI11DEN4",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11DEN(4),
+                qualityImprovement2020CohortQueries.getMQC11DEN(4, "MI"),
                 "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11DEN4.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -556,7 +556,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "MI11DEN5",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11DEN(5),
+                qualityImprovement2020CohortQueries.getMQC11DEN(5, "MI"),
                 "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11DEN5.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -573,7 +573,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "MI11DEN6",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11DEN(6),
+                qualityImprovement2020CohortQueries.getMQC11DEN(6, "MI"),
                 "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11DEN6.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -584,13 +584,13 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             MI11DEN6,
             "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
-        "ageInMonths=<9m");
+        "ageBasedOnArt=<2");
 
     CohortIndicator MI11DEN7 =
         eptsGeneralIndicator.getIndicator(
             "MI11DEN7",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11DEN(7),
+                qualityImprovement2020CohortQueries.getMQC11DEN(7, "MI"),
                 "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11DEN7.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -608,7 +608,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "MI11NUM1",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFandGAdultss(),
+                qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFandGAdultss("MI"),
                 "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11NUM1.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -619,15 +619,15 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             MI11NUM1,
             "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=15+");
+        "ageBasedOnArt=adultsArt");
 
     CohortIndicator MI11NUM2 =
         eptsGeneralIndicator.getIndicator(
             "MI11NUM2",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries
-                    .getMQC11NumB1nB2notCnotDnotEnotEnotFnHandAdultss(),
-                "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
+                    .getMQC11NumB1nB2notCnotDnotEnotEnotFnHandAdultss("MI"),
+                "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11NUM2.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
@@ -636,14 +636,14 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "11.2. % de pacientes na 1a linha de TARV com CV acima de 1000 cópias que tiveram 3 consultas de APSS/PP mensais consecutivas para reforço de adesão ",
         EptsReportUtils.map(
             MI11NUM2,
-            "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"),
-        "mqAge=MqAdults");
+            "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
+        "ageBasedOnArt=adultsArt");
 
     CohortIndicator MI11NUM3 =
         eptsGeneralIndicator.getIndicator(
             "MI11NUM3",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11NumAnB3nCnotDnotEnotEnotFnG(),
+                qualityImprovement2020CohortQueries.getMQC11NumAnB3nCnotDnotEnotEnotFnG("MI"),
                 "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11NUM3.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -660,7 +660,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "MI11NUM4",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11NumB1nB2nB3nCnotDnotEnotEnotFnH(),
+                qualityImprovement2020CohortQueries.getMQC11NumB1nB2nB3nCnotDnotEnotEnotFnH("MI"),
                 "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11NUM4.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -677,7 +677,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "MI11NUM5",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFnotGnChildren(),
+                qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFnotGnChildren("MI"),
                 "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11NUM5.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -688,14 +688,14 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             MI11NUM5,
             "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=2-14");
+        "ageBasedOnArt=2-14");
 
     CohortIndicator MI11NUM6 =
         eptsGeneralIndicator.getIndicator(
             "MI11NUM6",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries
-                    .getMQC11NumAnotCnotDnotEnotFnotIlessThan9Month(),
+                qualityImprovement2020CohortQueries.getMQC11NumAnotCnotDnotEnotFnotIlessThan9Month(
+                    "MI"),
                 "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11NUM6.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -706,13 +706,14 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             MI11NUM6,
             "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "ageBasedOnArt=<2");
 
     CohortIndicator MI11NUM7 =
         eptsGeneralIndicator.getIndicator(
             "MI11NUM7",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQC11NumB1nB2notCnotDnotEnotFnHChildren(),
+                qualityImprovement2020CohortQueries.getMQC11NumB1nB2notCnotDnotEnotFnHChildren(
+                    "MI"),
                 "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI11NUM7.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
