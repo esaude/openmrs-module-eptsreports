@@ -47,7 +47,7 @@ public class CXCASCRNDataset extends BaseDataSet {
                 cxcascrnCohortQueries.getTotal(CXCASCRNCohortQueries.CXCASCRNResult.ALL),
                 mappings));
 
-    dsd.addColumn("TOTAL", "Total", EptsReportUtils.map(total, mappings), "");
+    dsd.addColumn("TOTAL", "Total Screeeing", EptsReportUtils.map(total, mappings), "");
 
     /** 1st Time Screened - FTS */
     CohortIndicator f1rstTimeScreened =

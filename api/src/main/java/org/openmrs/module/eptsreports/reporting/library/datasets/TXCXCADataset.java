@@ -43,20 +43,21 @@ public class TXCXCADataset extends BaseDataSet {
     /** Total */
     CohortIndicator total =
         eptsGeneralIndicator.getIndicator(
-            "TOTAL", EptsReportUtils.map(cxcatxCohortQueries.getTotal(), mappings));
+            "TOTALTX", EptsReportUtils.map(cxcatxCohortQueries.getTotal(), mappings));
 
-    dsd.addColumn("TOTAL", "Total", EptsReportUtils.map(total, mappings), "");
+    dsd.addColumn("TOTALTX", "Total TX", EptsReportUtils.map(total, mappings), "");
 
     /** 1st Time Screened - FTS */
     CohortIndicator f1rstTimeScreened =
         eptsGeneralIndicator.getIndicator(
-            "FTS", EptsReportUtils.map(cxcatxCohortQueries.getf1srtTimeScreened(), mappings));
-    dsd.addColumn("FTS", "1st Time Screened", EptsReportUtils.map(f1rstTimeScreened, mappings), "");
+            "FTSTX", EptsReportUtils.map(cxcatxCohortQueries.getf1srtTimeScreened(), mappings));
+    dsd.addColumn(
+        "FTSTX", "1st Time Screened", EptsReportUtils.map(f1rstTimeScreened, mappings), "");
 
     // 1st Time Screened (B5) - FTSNB5
     CohortIndicator f1rstTimeScreenedB5 =
         eptsGeneralIndicator.getIndicator(
-            "FTSNB5",
+            "FTSNB5TX",
             EptsReportUtils.map(
                 this.cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getf1srtTimeScreened(),
@@ -65,7 +66,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "FTSNB5",
+        "FTSNB5TX",
         "1st Time Screened B5",
         EptsReportUtils.map(f1rstTimeScreenedB5, mappings),
         getColumnsForAge());
@@ -73,7 +74,7 @@ public class TXCXCADataset extends BaseDataSet {
     // 1st Time Screened (B6) - FTSB6
     CohortIndicator f1rstTimeScreenedB6 =
         eptsGeneralIndicator.getIndicator(
-            "FTSB6",
+            "FTSB6TX",
             EptsReportUtils.map(
                 this.cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getf1srtTimeScreened(),
@@ -82,7 +83,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "FTSB6",
+        "FTSB6TX",
         "1st Time Screened B6",
         EptsReportUtils.map(f1rstTimeScreenedB6, mappings),
         getColumnsForAge());
@@ -90,7 +91,7 @@ public class TXCXCADataset extends BaseDataSet {
     // 1st Time Screened (B7) - FTSB7
     CohortIndicator f1rstTimeScreenedB7 =
         eptsGeneralIndicator.getIndicator(
-            "FTSB7",
+            "FTSB7TX",
             EptsReportUtils.map(
                 this.cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getf1srtTimeScreened(),
@@ -99,7 +100,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "FTSB7",
+        "FTSB7TX",
         "1st Time Screened B7",
         EptsReportUtils.map(f1rstTimeScreenedB7, mappings),
         getColumnsForAge());
@@ -107,11 +108,11 @@ public class TXCXCADataset extends BaseDataSet {
     /** Rescreened after previous negative - RAPN */
     CohortIndicator rescreenedAfterPreviousNegative =
         eptsGeneralIndicator.getIndicator(
-            "RAPN",
+            "RAPNTX",
             EptsReportUtils.map(
                 cxcatxCohortQueries.getRescreenedAfterPreviousNegative(), mappings));
     dsd.addColumn(
-        "RAPN",
+        "RAPNTX",
         "Rescreened after previous negative",
         EptsReportUtils.map(rescreenedAfterPreviousNegative, mappings),
         "");
@@ -119,7 +120,7 @@ public class TXCXCADataset extends BaseDataSet {
     // Rescreened after previous negative (B5) - RAPNB5
     CohortIndicator rescreenedAfterPreviousNegativeB5 =
         eptsGeneralIndicator.getIndicator(
-            "RAPNB5",
+            "RAPNB5TX",
             EptsReportUtils.map(
                 this.cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getRescreenedAfterPreviousNegative(),
@@ -128,7 +129,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "RAPNB5",
+        "RAPNB5TX",
         "Rescreened after previous negative B5",
         EptsReportUtils.map(rescreenedAfterPreviousNegativeB5, mappings),
         getColumnsForAge());
@@ -136,7 +137,7 @@ public class TXCXCADataset extends BaseDataSet {
     // Rescreened after previous negative (B6) - RAPNB6
     CohortIndicator rescreenedAfterPreviousNegativeB6 =
         eptsGeneralIndicator.getIndicator(
-            "RAPNB6",
+            "RAPNB6TX",
             EptsReportUtils.map(
                 this.cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getRescreenedAfterPreviousNegative(),
@@ -145,7 +146,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "RAPNB6",
+        "RAPNB6TX",
         "Rescreened after previous negative B6",
         EptsReportUtils.map(rescreenedAfterPreviousNegativeB6, mappings),
         getColumnsForAge());
@@ -153,7 +154,7 @@ public class TXCXCADataset extends BaseDataSet {
     // Rescreened after previous negative (B7) - RAPNB7
     CohortIndicator rescreenedAfterPreviousNegativeB7 =
         eptsGeneralIndicator.getIndicator(
-            "RAPNB7",
+            "RAPNB7TX",
             EptsReportUtils.map(
                 this.cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getRescreenedAfterPreviousNegative(),
@@ -162,7 +163,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "RAPNB7",
+        "RAPNB7TX",
         "Rescreened after previous negative B7",
         EptsReportUtils.map(rescreenedAfterPreviousNegativeB7, mappings),
         getColumnsForAge());
@@ -170,9 +171,10 @@ public class TXCXCADataset extends BaseDataSet {
     /** Post-Treatment follow-up - PTFU */
     CohortIndicator postTreatmentFollowUp =
         eptsGeneralIndicator.getIndicator(
-            "PTFU", EptsReportUtils.map(cxcatxCohortQueries.getPostTreatmentFollowUp(), mappings));
+            "PTFUTX",
+            EptsReportUtils.map(cxcatxCohortQueries.getPostTreatmentFollowUp(), mappings));
     dsd.addColumn(
-        "PTFU",
+        "PTFUTX",
         "Post-Treatment follow-up",
         EptsReportUtils.map(postTreatmentFollowUp, mappings),
         "");
@@ -180,7 +182,7 @@ public class TXCXCADataset extends BaseDataSet {
     // Post-Treatment follow-up (B5) - PTFUB5
     CohortIndicator postTreatmentFollowUpB5 =
         eptsGeneralIndicator.getIndicator(
-            "PTFUB5",
+            "PTFUB5TX",
             EptsReportUtils.map(
                 this.cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getPostTreatmentFollowUp(),
@@ -189,7 +191,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "PTFUB5",
+        "PTFUB5TX",
         "Post-Treatment follow-up B5",
         EptsReportUtils.map(postTreatmentFollowUpB5, mappings),
         getColumnsForAge());
@@ -197,7 +199,7 @@ public class TXCXCADataset extends BaseDataSet {
     // Post-Treatment follow-up (B6) - PTFUB6
     CohortIndicator postTreatmentFollowUpB6 =
         eptsGeneralIndicator.getIndicator(
-            "PTFUB6",
+            "PTFUB6TX",
             EptsReportUtils.map(
                 this.cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getPostTreatmentFollowUp(),
@@ -206,7 +208,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "PTFUB6",
+        "PTFUB6TX",
         "Post-Treatment follow-up B6",
         EptsReportUtils.map(postTreatmentFollowUpB6, mappings),
         getColumnsForAge());
@@ -214,7 +216,7 @@ public class TXCXCADataset extends BaseDataSet {
     // Post-Treatment follow-up (B7) - PTFUB7
     CohortIndicator postTreatmentFollowUpB7 =
         eptsGeneralIndicator.getIndicator(
-            "PTFUB7",
+            "PTFUB7TX",
             EptsReportUtils.map(
                 this.cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getPostTreatmentFollowUp(),
@@ -223,7 +225,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "PTFUB7",
+        "PTFUB7TX",
         "Post-Treatment follow-up B7",
         EptsReportUtils.map(postTreatmentFollowUpB7, mappings),
         getColumnsForAge());
@@ -231,11 +233,11 @@ public class TXCXCADataset extends BaseDataSet {
     /** Rescreened after previous positive - RAPP */
     CohortIndicator rescreenedAfterPreviousPositive =
         eptsGeneralIndicator.getIndicator(
-            "RAPP",
+            "RAPPTX",
             EptsReportUtils.map(
                 cxcatxCohortQueries.getRescreenedAfterPreviousPositive(), mappings));
     dsd.addColumn(
-        "RAPP",
+        "RAPPTX",
         "Rescreened after previous positive",
         EptsReportUtils.map(rescreenedAfterPreviousPositive, mappings),
         "");
@@ -243,7 +245,7 @@ public class TXCXCADataset extends BaseDataSet {
     // Rescreened after previous positive (B5) - RAPPB5
     CohortIndicator rescreenedAfterPreviousPositiveB5 =
         eptsGeneralIndicator.getIndicator(
-            "RAPPB5",
+            "RAPPB5TX",
             EptsReportUtils.map(
                 cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getRescreenedAfterPreviousPositive(),
@@ -252,7 +254,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "RAPPB5",
+        "RAPPB5TX",
         "Rescreened after previous positive B5",
         EptsReportUtils.map(rescreenedAfterPreviousPositiveB5, mappings),
         getColumnsForAge());
@@ -260,7 +262,7 @@ public class TXCXCADataset extends BaseDataSet {
     // Rescreened after previous positive (B6) - RAPPB6
     CohortIndicator rescreenedAfterPreviousPositiveB6 =
         eptsGeneralIndicator.getIndicator(
-            "RAPPB6",
+            "RAPPB6TX",
             EptsReportUtils.map(
                 cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getRescreenedAfterPreviousPositive(),
@@ -269,7 +271,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "RAPPB6",
+        "RAPPB6TX",
         "Rescreened after previous positive B6",
         EptsReportUtils.map(rescreenedAfterPreviousPositiveB6, mappings),
         getColumnsForAge());
@@ -277,7 +279,7 @@ public class TXCXCADataset extends BaseDataSet {
     // Rescreened after previous positive (B7) - RAPPB7
     CohortIndicator rescreenedAfterPreviousPositiveB7 =
         eptsGeneralIndicator.getIndicator(
-            "RAPPB7",
+            "RAPPB7TX",
             EptsReportUtils.map(
                 cxcatxCohortQueries.getFinalComposition(
                     this.cxcatxCohortQueries.getRescreenedAfterPreviousPositive(),
@@ -286,7 +288,7 @@ public class TXCXCADataset extends BaseDataSet {
                 mappings));
     addRow(
         dsd,
-        "RAPPB7",
+        "RAPPB7TX",
         "Rescreened after previous positive B7",
         EptsReportUtils.map(rescreenedAfterPreviousPositiveB7, mappings),
         getColumnsForAge());

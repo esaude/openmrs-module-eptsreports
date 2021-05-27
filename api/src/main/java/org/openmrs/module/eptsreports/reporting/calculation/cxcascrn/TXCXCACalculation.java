@@ -13,6 +13,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EPTSMetadataDatetimeQualifier;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -53,11 +54,14 @@ public class TXCXCACalculation extends AbstractPatientCalculation {
     Concept leepConcept = hivMetadata.getLeepConcept();
     Concept conizationConcept = hivMetadata.getconizationConcept();
 
+    Map<String, Object> stringObjectMap = new HashMap<>();
+    stringObjectMap.put("result", CXCASCRNCohortQueries.CXCASCRNResult.POSITIVE);
+
     CalculationResultMap aaResultMap =
         calculate(
             Context.getRegisteredComponents(CXCASCRNAACalculation.class).get(0),
             cohort,
-            parameterValues,
+            stringObjectMap,
             context);
 
     CalculationResultMap criotherapyResulMap =
