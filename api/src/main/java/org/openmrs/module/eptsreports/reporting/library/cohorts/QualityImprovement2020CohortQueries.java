@@ -2504,6 +2504,7 @@ public class QualityImprovement2020CohortQueries {
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
 
     String query =
@@ -2519,7 +2520,7 @@ public class QualityImprovement2020CohortQueries {
             + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
             + " JOIN obs o ON o.encounter_id = e.encounter_id "
             + " WHERE "
-            + "    e.encounter_type = ${6} AND p.voided = 0 "
+            + "    e.encounter_type IN (${6}, ${53}) AND p.voided = 0 "
             + "        AND e.voided = 0 "
             + "        AND e.location_id = :location "
             + "        AND o.location_id = :location "
@@ -5136,15 +5137,17 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition patientsFromFichaClinicaCargaViral = getB2_13();
 
     CohortDefinition pregnantWithCargaViralHigherThan1000 =
-        QualityImprovement2020Queries.getMQ11DenB4(
+        QualityImprovement2020Queries.getMQ13DenB4_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
 
     CohortDefinition breastfeedingWithCargaViralHigherThan1000 =
-        QualityImprovement2020Queries.getMQ11DenB5(
+        QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
