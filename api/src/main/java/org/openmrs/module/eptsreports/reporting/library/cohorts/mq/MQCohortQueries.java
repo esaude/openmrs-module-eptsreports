@@ -873,6 +873,26 @@ public class MQCohortQueries {
     return definition;
   }
 
+  @DocumentedDefinition(value = "findAllPatientsWhoHaveCVResultAfter33DaysOfStarrDateByM")
+  public CohortDefinition findAllPatientsWhoHaveCVResultAfter33DaysOfStarrDateByM() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findAllPatientsWhoHaveCVResultAfter33DaysOfStarrDateByM");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13P2QueriesInterface.QUERY
+            .findAllPatientsWhoHaveCVResultAfter33DaysOfStarrDateByM;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
   @DocumentedDefinition(
       value = "findPatientsWhoHaveCVResultAfeter33DaysOfRequestForPregnantWishRequestedCVByL")
   public CohortDefinition
@@ -890,6 +910,26 @@ public class MQCohortQueries {
     String query =
         MQCategory13P2QueriesInterface.QUERY
             .findPatientsWhoHaveCVResultAfeter33DaysOfRequestForPregnantWishRequestedCVByL;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "findAllPatientsWhoArePregantsWithResultAfter33DaysRequestedCVByN")
+  public CohortDefinition findAllPatientsWhoArePregantsWithResultAfter33DaysRequestedCVByN() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findAllPatientsWhoArePregantsWithResultAfter33DaysRequestedCVByN");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13P2QueriesInterface.QUERY
+            .findAllPatientsWhoArePregantsWithResultAfter33DaysRequestedCVByN;
 
     definition.setQuery(query);
 

@@ -343,6 +343,18 @@ public class MQCategory13P2CohortQueries {
             mappings));
 
     definition.addSearch(
+        "M",
+        EptsReportUtils.map(
+            this.mQCohortQueries.findAllPatientsWhoHaveCVResultAfter33DaysOfStarrDateByM(),
+            mappings));
+
+    definition.addSearch(
+        "N",
+        EptsReportUtils.map(
+            this.mQCohortQueries.findAllPatientsWhoArePregantsWithResultAfter33DaysRequestedCVByN(),
+            mappings));
+
+    definition.addSearch(
         "BREASTFEEDING",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoAreBreastfeedingInclusionDateRF09(), mappings));
@@ -359,7 +371,7 @@ public class MQCategory13P2CohortQueries {
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "((START-ART AND PREGNANT AND B3 AND K) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)) OR (B2 AND B4 AND L) ");
+        "((START-ART AND PREGNANT AND B3 AND (K OR M)) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)) OR (B2 AND B4 AND (L OR N)) ");
 
     return definition;
   }
