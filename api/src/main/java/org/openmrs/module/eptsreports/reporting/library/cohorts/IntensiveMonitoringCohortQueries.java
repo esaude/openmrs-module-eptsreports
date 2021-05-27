@@ -129,17 +129,14 @@ public class IntensiveMonitoringCohortQueries {
                 null),
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
     cd.addSearch(
-        "B4",
+        "B41",
         EptsReportUtils.map(
-            commonCohortQueries.getMohMQPatientsOnCondition(
-                false,
-                false,
-                "once",
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getIsoniazidUsageConcept(),
-                Collections.singletonList(hivMetadata.getStartDrugs()),
-                null,
-                null),
+            this.qualityImprovement2020CohortQueries.getB4And1(),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+    cd.addSearch(
+        "B42",
+        EptsReportUtils.map(
+            this.qualityImprovement2020CohortQueries.getB4And2(),
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
     cd.addSearch(
         "C",
@@ -177,7 +174,7 @@ public class IntensiveMonitoringCohortQueries {
         "G",
         EptsReportUtils.map(
             qualityImprovement2020CohortQueries.getPatientsWithProphylaxyDuringRevisionPeriod(),
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "H",
@@ -202,7 +199,7 @@ public class IntensiveMonitoringCohortQueries {
 
     } else if (type.equals("NUM")) {
       cd.setCompositionString(
-          "A AND NOT B1 AND NOT B2 AND NOT B3 AND B4 AND NOT C AND NOT D AND NOT E AND NOT F");
+          "A AND NOT B1 AND NOT B2 AND NOT B3 AND (B41 OR B42) AND NOT C AND NOT D AND NOT E AND NOT F");
     }
     return cd;
   }
@@ -224,7 +221,7 @@ public class IntensiveMonitoringCohortQueries {
         "A",
         EptsReportUtils.map(
             qualityImprovement2020CohortQueries.getMOHArtStartDate(),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "B1",
         EptsReportUtils.map(
@@ -237,7 +234,7 @@ public class IntensiveMonitoringCohortQueries {
                 Collections.singletonList(hivMetadata.getYesConcept()),
                 null,
                 null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "B2",
         EptsReportUtils.map(
@@ -250,7 +247,7 @@ public class IntensiveMonitoringCohortQueries {
                 Collections.singletonList(hivMetadata.getYesConcept()),
                 null,
                 null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "B3",
         EptsReportUtils.map(
@@ -266,20 +263,17 @@ public class IntensiveMonitoringCohortQueries {
                     hivMetadata.getCompletedConcept()),
                 null,
                 null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
-        "B4",
+        "B41",
         EptsReportUtils.map(
-            commonCohortQueries.getMohMQPatientsOnCondition(
-                false,
-                false,
-                "once",
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getIsoniazidUsageConcept(),
-                Collections.singletonList(hivMetadata.getStartDrugs()),
-                null,
-                null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            this.qualityImprovement2020CohortQueries.getB4And1(),
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+    cd.addSearch(
+        "B42",
+        EptsReportUtils.map(
+            this.qualityImprovement2020CohortQueries.getB4And2(),
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "C",
         EptsReportUtils.map(
@@ -315,8 +309,8 @@ public class IntensiveMonitoringCohortQueries {
     cd.addSearch(
         "G",
         EptsReportUtils.map(
-            qualityImprovement2020CohortQueries.getPatientsWithProphylaxyDuringRevisionPeriod(),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},revisionEndDate=${revisionEndDate},location=${location}"));
+            qualityImprovement2020CohortQueries.getGNew(),
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
 
     cd.addSearch(
         "H",
@@ -337,11 +331,11 @@ public class IntensiveMonitoringCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     if (type.equals("DEN")) {
       cd.setCompositionString(
-          "A AND NOT B1 AND NOT B2 AND NOT B3 AND B4 AND NOT C AND NOT D AND NOT E AND NOT F AND NOT H AND NOT I AND NOT J");
+          "A AND NOT B1 AND NOT B2 AND NOT B3 AND (B41 OR B42) AND NOT C AND NOT D AND NOT E AND NOT F AND NOT H AND NOT I AND NOT J");
 
     } else if (type.equals("NUM")) {
       cd.setCompositionString(
-          "A AND NOT B1 AND NOT B2 AND NOT B3 AND B4 AND NOT C AND NOT D AND NOT E AND NOT F AND G AND NOT H AND NOT I AND NOT J");
+          "A AND NOT B1 AND NOT B2 AND NOT B3 AND (B41 OR B42) AND NOT C AND NOT D AND NOT E AND NOT F AND G AND NOT H AND NOT I AND NOT J");
     }
     return cd;
   }
@@ -407,17 +401,14 @@ public class IntensiveMonitoringCohortQueries {
                 null),
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
     cd.addSearch(
-        "B4",
+        "B41",
         EptsReportUtils.map(
-            commonCohortQueries.getMohMQPatientsOnCondition(
-                false,
-                false,
-                "once",
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getIsoniazidUsageConcept(),
-                Collections.singletonList(hivMetadata.getStartDrugs()),
-                null,
-                null),
+            this.qualityImprovement2020CohortQueries.getB4And1(),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+    cd.addSearch(
+        "B42",
+        EptsReportUtils.map(
+            this.qualityImprovement2020CohortQueries.getB4And2(),
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
     cd.addSearch(
         "C",
@@ -455,7 +446,7 @@ public class IntensiveMonitoringCohortQueries {
         "G",
         EptsReportUtils.map(
             qualityImprovement2020CohortQueries.getPatientsWithProphylaxyDuringRevisionPeriod(),
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "H",
@@ -480,7 +471,7 @@ public class IntensiveMonitoringCohortQueries {
 
     } else if (type.equals("NUM")) {
       cd.setCompositionString(
-          "A AND NOT B1 AND NOT B2 AND NOT B3 AND B4 AND NOT C AND NOT D AND NOT E AND NOT F");
+          "A AND NOT B1 AND NOT B2 AND NOT B3 AND (B41 OR B42) AND NOT C AND NOT D AND NOT E AND NOT F");
     }
     return cd;
   }
@@ -502,7 +493,7 @@ public class IntensiveMonitoringCohortQueries {
         "A",
         EptsReportUtils.map(
             qualityImprovement2020CohortQueries.getMOHArtStartDate(),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "B1",
         EptsReportUtils.map(
@@ -515,7 +506,7 @@ public class IntensiveMonitoringCohortQueries {
                 Collections.singletonList(hivMetadata.getYesConcept()),
                 null,
                 null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "B2",
         EptsReportUtils.map(
@@ -528,7 +519,7 @@ public class IntensiveMonitoringCohortQueries {
                 Collections.singletonList(hivMetadata.getYesConcept()),
                 null,
                 null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "B3",
         EptsReportUtils.map(
@@ -544,20 +535,17 @@ public class IntensiveMonitoringCohortQueries {
                     hivMetadata.getCompletedConcept()),
                 null,
                 null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
-        "B4",
+        "B41",
         EptsReportUtils.map(
-            commonCohortQueries.getMohMQPatientsOnCondition(
-                false,
-                false,
-                "once",
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getIsoniazidUsageConcept(),
-                Collections.singletonList(hivMetadata.getStartDrugs()),
-                null,
-                null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            this.qualityImprovement2020CohortQueries.getB4And1(),
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+    cd.addSearch(
+        "B42",
+        EptsReportUtils.map(
+            this.qualityImprovement2020CohortQueries.getB4And2(),
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "C",
         EptsReportUtils.map(
@@ -593,8 +581,8 @@ public class IntensiveMonitoringCohortQueries {
     cd.addSearch(
         "G",
         EptsReportUtils.map(
-            qualityImprovement2020CohortQueries.getPatientsWithProphylaxyDuringRevisionPeriod(),
-            "startDate=${revisionEndDate-7m+1d},endDate=${evisionEndDate-6m},revisionEndDate=${revisionEndDate},location=${location}"));
+            qualityImprovement2020CohortQueries.getGNew(),
+            "startDate=${revisionEndDate-8m+1d},endDate=${evisionEndDate-7m},location=${location}"));
 
     cd.addSearch(
         "H",
@@ -615,11 +603,11 @@ public class IntensiveMonitoringCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     if (type.equals("DEN")) {
       cd.setCompositionString(
-          "A AND NOT B1 AND NOT B2 AND NOT B3 AND  B4 AND NOT C AND NOT D AND NOT E AND NOT F AND NOT H AND NOT I AND NOT J");
+          "A AND NOT B1 AND NOT B2 AND NOT B3 AND  (B41 OR  B42) AND NOT C AND NOT D AND NOT E AND NOT F AND NOT H AND NOT I AND NOT J");
 
     } else if (type.equals("NUM")) {
       cd.setCompositionString(
-          "A AND NOT B1 AND NOT B2 AND NOT B3 AND  B4 AND NOT C AND NOT D AND NOT E AND NOT F AND G AND NOT H AND NOT I AND NOT J ");
+          "A AND NOT B1 AND NOT B2 AND NOT B3 AND  (B41 OR B42) AND NOT C AND NOT D AND NOT E AND NOT F AND G AND NOT H AND NOT I AND NOT J ");
     }
     return cd;
   }
@@ -685,17 +673,14 @@ public class IntensiveMonitoringCohortQueries {
                 null),
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
     cd.addSearch(
-        "B4",
+        "B41",
         EptsReportUtils.map(
-            commonCohortQueries.getMohMQPatientsOnCondition(
-                false,
-                false,
-                "once",
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getIsoniazidUsageConcept(),
-                Collections.singletonList(hivMetadata.getStartDrugs()),
-                null,
-                null),
+            this.qualityImprovement2020CohortQueries.getB4And1(),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+    cd.addSearch(
+        "B42",
+        EptsReportUtils.map(
+            this.qualityImprovement2020CohortQueries.getB4And2(),
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
     cd.addSearch(
         "C",
@@ -735,7 +720,7 @@ public class IntensiveMonitoringCohortQueries {
 
     } else if (type.equals("NUM")) {
       cd.setCompositionString(
-          "A AND NOT B1 AND NOT B2 AND NOT B3 AND B4 AND C AND NOT D AND NOT E AND NOT F");
+          "A AND NOT B1 AND NOT B2 AND NOT B3 AND (B41 OR B42) AND C AND NOT D AND NOT E AND NOT F");
     }
     return cd;
   }
@@ -757,7 +742,7 @@ public class IntensiveMonitoringCohortQueries {
         "A",
         EptsReportUtils.map(
             qualityImprovement2020CohortQueries.getMOHArtStartDate(),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "B1",
         EptsReportUtils.map(
@@ -770,7 +755,7 @@ public class IntensiveMonitoringCohortQueries {
                 Collections.singletonList(hivMetadata.getYesConcept()),
                 null,
                 null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "B2",
         EptsReportUtils.map(
@@ -783,7 +768,7 @@ public class IntensiveMonitoringCohortQueries {
                 Collections.singletonList(hivMetadata.getYesConcept()),
                 null,
                 null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "B3",
         EptsReportUtils.map(
@@ -799,20 +784,17 @@ public class IntensiveMonitoringCohortQueries {
                     hivMetadata.getCompletedConcept()),
                 null,
                 null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
-        "B4",
+        "B41",
         EptsReportUtils.map(
-            commonCohortQueries.getMohMQPatientsOnCondition(
-                false,
-                false,
-                "once",
-                hivMetadata.getAdultoSeguimentoEncounterType(),
-                hivMetadata.getIsoniazidUsageConcept(),
-                Collections.singletonList(hivMetadata.getStartDrugs()),
-                null,
-                null),
-            "startDate=${revisionEndDate-7m+1d},endDate=${revisionEndDate-6m},location=${location}"));
+            this.qualityImprovement2020CohortQueries.getB4And1(),
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+    cd.addSearch(
+        "B42",
+        EptsReportUtils.map(
+            this.qualityImprovement2020CohortQueries.getB4And2(),
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
     cd.addSearch(
         "C",
         EptsReportUtils.map(
@@ -848,8 +830,8 @@ public class IntensiveMonitoringCohortQueries {
     cd.addSearch(
         "G",
         EptsReportUtils.map(
-            qualityImprovement2020CohortQueries.getPatientsWithProphylaxyDuringRevisionPeriod(),
-            "startDate=${revisionEndDate-7m+1d},endDate=${evisionEndDate-6m},revisionEndDate=${revisionEndDate},location=${location}"));
+            qualityImprovement2020CohortQueries.getGNew(),
+            "startDate=${revisionEndDate-8m+1d},endDate=${evisionEndDate-7m},location=${location}"));
 
     cd.addSearch(
         "H",
@@ -870,11 +852,11 @@ public class IntensiveMonitoringCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     if (type.equals("DEN")) {
       cd.setCompositionString(
-          "A AND NOT B1 AND NOT B2 AND NOT B3 AND  B4 AND  C AND NOT D AND NOT E AND NOT F AND NOT H AND NOT I AND NOT J");
+          "A AND NOT B1 AND NOT B2 AND NOT B3 AND  (B41 OR B42) AND  C AND NOT D AND NOT E AND NOT F AND NOT H AND NOT I AND NOT J");
 
     } else if (type.equals("NUM")) {
       cd.setCompositionString(
-          "A AND NOT B1 AND NOT B2 AND NOT B3 AND B4 AND C AND NOT D AND NOT E AND NOT F AND G AND NOT H AND NOT I AND NOT J");
+          "A AND NOT B1 AND NOT B2 AND NOT B3 AND (B41 OR B42) AND C AND NOT D AND NOT E AND NOT F AND G AND NOT H AND NOT I AND NOT J");
     }
     return cd;
   }
