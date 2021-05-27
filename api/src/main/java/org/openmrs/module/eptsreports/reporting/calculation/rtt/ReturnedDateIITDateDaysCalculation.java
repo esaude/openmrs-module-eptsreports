@@ -198,7 +198,7 @@ public class ReturnedDateIITDateDaysCalculation extends AbstractPatientCalculati
     map1.put(
         "msterCardDrugPickupEncounterType",
         hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    map1.put("numDays", 28);
+    map1.put("numDays", 29);
 
     String query1 =
         " SELECT most_recent.patient_id, Date_add(Max(most_recent.value_datetime), interval ${numDays} day) final_encounter_date "

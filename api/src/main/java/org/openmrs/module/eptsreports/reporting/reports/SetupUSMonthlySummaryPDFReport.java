@@ -11,10 +11,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Deprecated
-@Component
 public class SetupUSMonthlySummaryPDFReport extends EptsDataExportManager {
 
   @Autowired private UsMonthlySummaryDataset usMonthlySummaryDataset;

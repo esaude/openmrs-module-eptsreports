@@ -18,10 +18,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 @Deprecated
-@Component
 public class SetupEc20DataQualityReport extends EptsDataExportManager {
 
   private SummaryEc20DataQualityCohorts summaryEc20DataQualityCohorts;
