@@ -12,7 +12,7 @@ public class ListOfChildrenARVFormulationsDataSet extends BaseDataSet {
 
   public DataSetDefinition costructDataSet(List<Parameter> parameterList) {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();
-    dsd.setName("List of Children and ARV Formulations");
+    dsd.setName("FR");
     dsd.addParameters(parameterList);
     dsd.setSqlQuery(ListOfChildrenARVFormulationsQueries.QUERY.findChildrenARVFormulations);
     return dsd;
