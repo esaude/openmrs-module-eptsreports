@@ -3,10 +3,13 @@ package org.openmrs.module.eptsreports.reporting.reports;
 import java.io.IOException;
 import java.util.*;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TPTEligiblePatientListCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TPTListOfPatientsEligibleDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TPTTotalListOfPatientsEligibleDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
+import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -18,26 +21,28 @@ import org.springframework.stereotype.Component;
 public class SetupTPTListOfPatientsEligibleReport extends EptsDataExportManager {
 
   private TPTListOfPatientsEligibleDataSet tptListOfPatientsEligibleDataSet;
-
+  private TPTEligiblePatientListCohortQueries tPTEligiblePatientListCohortQueries;
   private TPTTotalListOfPatientsEligibleDataSet tptTotalListOfPatientsEligibleDataSet;
 
   @Autowired
   public SetupTPTListOfPatientsEligibleReport(
       TPTListOfPatientsEligibleDataSet tptListOfPatientsEligibleDataSet,
-      TPTTotalListOfPatientsEligibleDataSet tptTotalListOfPatientsEligibleDataSet) {
+      TPTTotalListOfPatientsEligibleDataSet tptTotalListOfPatientsEligibleDataSet,
+      TPTEligiblePatientListCohortQueries tPTEligiblePatientListCohortQueries) {
 
     this.tptListOfPatientsEligibleDataSet = tptListOfPatientsEligibleDataSet;
     this.tptTotalListOfPatientsEligibleDataSet = tptTotalListOfPatientsEligibleDataSet;
+    this.tPTEligiblePatientListCohortQueries = tPTEligiblePatientListCohortQueries;
   }
 
   @Override
   public String getExcelDesignUuid() {
-    return "5e17f214-af0f-11eb-852c-ef10820bc4bd";
+    return "5e17f214-af0f-11eb-852c-ef10820bc4bj";
   }
 
   @Override
   public String getUuid() {
-    return "6ee04286-af0f-11eb-afea-e3389adce11f";
+    return "6ee04286-af0f-11eb-afea-e3389adce11h";
   }
 
   @Override
@@ -57,14 +62,20 @@ public class SetupTPTListOfPatientsEligibleReport extends EptsDataExportManager 
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.addParameters(getParameters());
+    rd.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            tPTEligiblePatientListCohortQueries.getTxCurrWithoutTPT(),
+            "endDate=${endDate},location=${location}"));
+
     rd.addDataSetDefinition(
         "TOTAL",
-        Mapped.mapStraightThrough(
-            tptTotalListOfPatientsEligibleDataSet.constructDataset(getParameters())));
-    rd.addDataSetDefinition(
-        "TPT",
-        Mapped.mapStraightThrough(
-            tptListOfPatientsEligibleDataSet.constructDataset(getParameters())));
+        Mapped.mapStraightThrough(tptTotalListOfPatientsEligibleDataSet.constructDataset()));
+    try {
+      rd.addDataSetDefinition(
+          "TPT", Mapped.mapStraightThrough(tptListOfPatientsEligibleDataSet.constructDataset()));
+    } catch (EvaluationException e) {
+      e.printStackTrace();
+    }
     return rd;
   }
 
@@ -85,6 +96,7 @@ public class SetupTPTListOfPatientsEligibleReport extends EptsDataExportManager 
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
+      props.put("repeatingSections", "sheet:1,row:4,dataset:TPT");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {

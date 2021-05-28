@@ -22,7 +22,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
  */
 @Handler(supports = CalculationDataDefinition.class, order = 50)
 public class CalculationDataEvaluator implements PatientDataEvaluator {
-
   /**
    * @see
    *     PatientDataEvaluator#evaluate(org.openmrs.module.reporting.data.patient.definition.PatientDataDefinition,
@@ -30,21 +29,18 @@ public class CalculationDataEvaluator implements PatientDataEvaluator {
    */
   public EvaluatedPatientData evaluate(PatientDataDefinition definition, EvaluationContext context)
       throws EvaluationException {
-
     CalculationDataDefinition def = (CalculationDataDefinition) definition;
     EvaluatedPatientData c = new EvaluatedPatientData(def, context);
-
     // return right away if there is nothing to evaluate
     if (context.getBaseCohort() != null && context.getBaseCohort().isEmpty()) {
       return c;
     }
-
-    // Use date from cohort definition, or from ${date} or ${endDate} or now
-    Date onDate = def.getOnDate();
+    // Use date from cohort definition, or from ${date} or ${onOrBefore} or now
+    Date onDate = def.getOnOrBefore();
     if (onDate == null) {
       onDate = (Date) context.getParameterValue("date");
       if (onDate == null) {
-        onDate = (Date) context.getParameterValue("endDate");
+        onDate = (Date) context.getParameterValue("onOrBefore");
         if (onDate == null) {
           onDate = new Date();
         }
@@ -53,6 +49,8 @@ public class CalculationDataEvaluator implements PatientDataEvaluator {
     // evaluate the calculation
     PatientCalculationService service = Context.getService(PatientCalculationService.class);
     PatientCalculationContext calcContext = service.createCalculationContext();
+    calcContext.addToCache("location", def.getLocation());
+    calcContext.addToCache("onOrBefore", def.getOnOrBefore());
     calcContext.setNow(onDate);
     CalculationResultMap resultMap =
         service.evaluate(
@@ -60,12 +58,10 @@ public class CalculationDataEvaluator implements PatientDataEvaluator {
             def.getCalculation(),
             def.getCalculationParameters(),
             calcContext);
-
     // move data into return object
     for (Map.Entry<Integer, CalculationResult> entry : resultMap.entrySet()) {
       c.addData(entry.getKey(), entry.getValue());
     }
-
     return c;
   }
 }

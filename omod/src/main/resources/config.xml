@@ -2812,6 +2812,14 @@
 			 	JUSTIFICATION TO CHANGE ARV TREATMENT
 		</description>
 	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.sugestiveConceptUuid</property>
+		<defaultValue>ade37613-d10a-45eb-9f8e-1892f83bf8b1</defaultValue>
+		<description>
+			 	SUGESTIVE concept
+		</description>
+	</globalProperty>
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
