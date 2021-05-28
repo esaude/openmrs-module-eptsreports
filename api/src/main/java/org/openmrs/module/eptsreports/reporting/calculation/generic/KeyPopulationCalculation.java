@@ -123,7 +123,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
       boolean equals = false;
 
       KeyPop patientKeyPop =
-          getAssignedKeyPop(pId, adultoSeguimento, apssPrevencaoPositiva, personAttribute);
+          getAssignedKeyPop(
+              pId, adultoSeguimento, apssPrevencaoPositiva, personAttribute, onOrBefore);
       if (type != null && type.equals(patientKeyPop)) {
         equals = true;
       }
@@ -137,12 +138,13 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
       Integer pId,
       CalculationResultMap adultoSeguimento,
       CalculationResultMap apssPrevencaoPositiva,
-      CalculationResultMap personAttribute) {
+      CalculationResultMap personAttribute,
+      Date endDate) {
 
     ListMap<Date, KeyPopAndSource> keyPopByDate = new ListMap<>(true);
 
     if (adultoSeguimento != null && adultoSeguimento.containsKey(pId)) {
-      Obs obs = getRequiredObservation(adultoSeguimento, pId);
+      Obs obs = getRequiredObservation(adultoSeguimento, pId, endDate);
       Date date;
       KeyPop keypop;
       if (obs != null
@@ -167,7 +169,7 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     }
 
     if (apssPrevencaoPositiva != null && apssPrevencaoPositiva.containsKey(pId)) {
-      Obs obs = getRequiredObservation(apssPrevencaoPositiva, pId);
+      Obs obs = getRequiredObservation(apssPrevencaoPositiva, pId, endDate);
       Date date;
       KeyPop keypop;
       if (obs != null
@@ -242,14 +244,21 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     return obs;
   }
 
-  private Obs getRequiredObservation(CalculationResultMap map, Integer pId) {
+  private Obs getRequiredObservation(CalculationResultMap map, Integer pId, Date endDate) {
+
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+    List<Obs> obsWithinReportingPeriod = new ArrayList<>();
     Obs requiredObs = null;
     ListResult listResult = (ListResult) map.get(pId);
     List<Obs> obsList = EptsCalculationUtils.extractResultValues(listResult);
+    for (Obs obs : obsList) {
+      if (endDate != null && endDate.compareTo(obs.getObsDatetime()) <= 0) {
+        obsWithinReportingPeriod.add(obs);
+      }
+    }
     List<Obs> sortedObs;
-    if (obsList.size() > 0) {
-      sortedObs = sortObsByObsDatetime(obsList);
+    if (obsWithinReportingPeriod.size() > 0) {
+      sortedObs = sortObsByObsDatetime(obsWithinReportingPeriod);
       // get the last obs in the list
       requiredObs = sortedObs.get(sortedObs.size() - 1);
       // loop through all the obs collected for each patient per the encounter type and check if
