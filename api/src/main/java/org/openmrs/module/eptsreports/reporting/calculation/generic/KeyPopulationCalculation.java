@@ -252,7 +252,7 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     ListResult listResult = (ListResult) map.get(pId);
     List<Obs> obsList = EptsCalculationUtils.extractResultValues(listResult);
     for (Obs obs : obsList) {
-      if (endDate != null && endDate.compareTo(obs.getObsDatetime()) <= 0) {
+      if (endDate != null && obs.getObsDatetime().compareTo(endDate) <= 0) {
         obsWithinReportingPeriod.add(obs);
       }
     }
