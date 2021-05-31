@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ListOfPatientsEligileToTPTDataSet;
+import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -66,11 +68,11 @@ public class SetupListPatientsEligibleTPT extends EptsDataExportManager {
         Mapped.mapStraightThrough(
             this.listOfPatientsEligileToTPTDataSet.getTotalEligibleTPTDataset()));
 
-    //    rd.setBaseCohortDefinition(
-    //        EptsReportUtils.map(
-    //            this.genericCohortQueries.generalSql(
-    //                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
-    //            "endDate=${endDate},location=${location}"));
+    rd.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
+            "endDate=${endDate},location=${location}"));
     return rd;
   }
 
@@ -85,7 +87,9 @@ public class SetupListPatientsEligibleTPT extends EptsDataExportManager {
               "LISTA DE PACIENTES ELEGIVEIS AO TPT",
               getExcelDesignUuid(),
               null);
+
       Properties props = new Properties();
+      props.put("repeatingSections", "sheet:1,row:4,dataset:TPTELIG");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
