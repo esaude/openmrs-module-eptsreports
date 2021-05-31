@@ -572,6 +572,55 @@ public class TXTBQueries {
     return sb.replace(s.toString());
   }
 
+  /**
+   * Patients with Pulmonary TB Date in Patient Clinical Record of ART date TB (Condicoes medicas
+   * importantes – Ficha Resumo Mastercard during reporting period
+   *
+   * @return String
+   */
+  public static String tbPulmonaryTBDate(
+      Integer encounterTypeId, Integer pulmonaryTb, Integer answer) {
+    return String.format(
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "           inner  join encounter e on p.patient_id = e.patient_id "
+            + "           inner join obs o on e.encounter_id = o.encounter_id "
+            + "WHERE  p.voided = 0 "
+            + "  and  e.voided = 0 "
+            + "  and o.voided = 0 "
+            + "  and e.encounter_type = %s "
+            + "  and o.concept_id = %s "
+            + "  and o.value_coded = %s "
+            + "  and o.obs_datetime between :startDate AND :endDate",
+        encounterTypeId, pulmonaryTb, answer);
+  }
+
+  /**
+   * Patients marked as “Tratamento TB– Inicio (I) ” – Ficha Clinica MasterCard Patients on
+   * treatment for TB
+   *
+   * @return String
+   */
+  public static String markedAsTratamentoTBInicio(
+      Integer adultoSeguimentoEncounterType,
+      Integer masterCardEncounterType,
+      Integer tbTreatmentPlan,
+      Integer startDrugs) {
+    return String.format(
+        "SELECT  p.patient_id "
+            + "from   patient p"
+            + "           inner  join encounter e on p.patient_id = e.patient_id "
+            + "           inner join obs o on e.encounter_id = o.encounter_id "
+            + "WHERE  p.voided = 0 "
+            + "   and e.voided = 0 "
+            + "   and o.voided = 0 "
+            + "   and e.encounter_type IN (%s,%s) "
+            + "   and o.concept_id = %s "
+            + "   and o.value_coded = %s "
+            + "   and o.obs_datetime between :startDate AND :endDate",
+        adultoSeguimentoEncounterType, masterCardEncounterType, tbTreatmentPlan, startDrugs);
+  }
+
   public static class AbandonedWithoutNotificationParams {
     protected Integer programId;
     protected Integer returnVisitDateConceptId;

@@ -82,6 +82,31 @@ public class TXTBCohortQueries {
     return definition;
   }
 
+  public CohortDefinition getPulmonaryTBDate() {
+    CohortDefinition definition =
+        genericCohortQueries.generalSql(
+            "pulmonaryTBDate",
+            TXTBQueries.tbPulmonaryTBDate(
+                hivMetadata.getMasterCardEncounterType().getId(),
+                tbMetadata.getPulmonaryTB().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getId()));
+    addGeneralParameters(definition);
+    return definition;
+  }
+
+  public CohortDefinition getMarkedAsTratamentoTBInicio() {
+    CohortDefinition definition =
+        genericCohortQueries.generalSql(
+            "markedAsTratamentoTBInicio",
+            TXTBQueries.markedAsTratamentoTBInicio(
+                hivMetadata.getAdultoSeguimentoEncounterType().getId(),
+                hivMetadata.getMasterCardEncounterType().getId(),
+                tbMetadata.getTBTreatmentPlanConcept().getConceptId(),
+                hivMetadata.getStartDrugs().getConceptId()));
+    addGeneralParameters(definition);
+    return definition;
+  }
+
   /**
    * <b>Description:</b> Number of patients enrolled in TB program <b>(program_id = 5)</b>
    *
@@ -1184,12 +1209,22 @@ public class TXTBCohortQueries {
         EptsReportUtils.map(
             getPatientsTransferredOut(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
+    definition.addSearch(
+        "pulmonary-tb-date",
+        EptsReportUtils.map(
+            getPulmonaryTBDate(),
+            "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
+    definition.addSearch(
+        "marked-as-tratamento-tb-inicio",
+        EptsReportUtils.map(
+            getMarkedAsTratamentoTBInicio(),
+            "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
 
     definition.setCompositionString(
         "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tb-treatment-start "
             + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR tb-genexpert-lab-test OR culture-test OR culture-test-lab "
             + "OR test-tb-lam OR test-tb-lam-lab OR test-bk OR x-ray-chest) OR result-for-basiloscopia)) "
-            + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period)");
+            + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period OR pulmonary-tb-date OR marked-as-tratamento-tb-inicio)");
 
     return definition;
   }
