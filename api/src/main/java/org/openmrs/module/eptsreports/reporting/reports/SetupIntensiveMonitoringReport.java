@@ -90,9 +90,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
   @Override
   public List<Parameter> getParameters() {
     return Arrays.asList(
-        new Parameter("startInclusionDate", "Data Inicio Inclusão", Date.class),
-        new Parameter("endInclusionDate", "  Data Final Inclusão", Date.class),
-        new Parameter("endRevisionDate", "Data Final Revisão", Date.class),
+        new Parameter("endRevisionDate", "Data da Recolha de Dados", Date.class),
         new Parameter("location", "Unidade Sanitária", Location.class));
   }
 }

@@ -35,7 +35,7 @@ public class MICategory7CohortQueries {
         "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate-7m+1d},location=${location}";
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "START-ART-A",
@@ -129,7 +129,7 @@ public class MICategory7CohortQueries {
         "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate-7m+1d},location=${location}";
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "RF25-DENOMINATOR",
@@ -167,7 +167,7 @@ public class MICategory7CohortQueries {
         "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate-7m+1d},location=${location}";
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "PREGNANT",
@@ -256,16 +256,15 @@ public class MICategory7CohortQueries {
     final String mappingsMI =
         "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate-7m+1d},location=${location}";
 
-    //    final String mappings =
-    //
-    // "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+    final String mappings =
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "RF29-DENOMINATOR",
         EptsReportUtils.map(
             this
                 .findPragnantWhoAreNewlyEnrolledOnARTDuringInclusionPeriodAndEndTPICategory7RF29Denominator(),
-            ""));
+            mappings));
 
     definition.addSearch(
         "END-TPI-G",
@@ -297,7 +296,7 @@ public class MICategory7CohortQueries {
         "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "START-ART-A",
@@ -365,7 +364,7 @@ public class MICategory7CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappingsMI =
         "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
@@ -408,7 +407,7 @@ public class MICategory7CohortQueries {
         "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "PREGNANT",
@@ -479,7 +478,7 @@ public class MICategory7CohortQueries {
         "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "RF23-DENOMINATOR",
