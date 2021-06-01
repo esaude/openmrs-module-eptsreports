@@ -382,6 +382,36 @@ public interface MQQueriesInterface {
             + " group by carga_viral.patient_id "
             + " ) final ";
 
+    public static final String findPatientWithCVOver1000CopiesAndPregnatCategory11B4 =
+        "select carga_viral.patient_id from (  "
+            + "Select p.patient_id, min(o.obs_datetime) data_carga from patient p  "
+            + "inner join encounter e on p.patient_id = e.patient_id  "
+            + "inner join obs o on e.encounter_id=o.encounter_id  "
+            + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and  "
+            + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000  "
+            + "group by p.patient_id  "
+            + ") carga_viral  "
+            + "inner join  obs obsGestante on obsGestante.person_id=carga_viral.patient_id  "
+            + "and obsGestante.concept_id=1982  "
+            + "and obsGestante.value_coded=1065  "
+            + "and obsGestante.obs_datetime=carga_viral.data_carga  "
+            + "and obsGestante.voided=0 ";
+
+    public static final String findPatientWithCVOver1000CopiesAndBreastfeedingCategory11B5 =
+        "select carga_viral.patient_id from (  "
+            + "Select p.patient_id, min(o.obs_datetime) data_carga from patient p  "
+            + "inner join encounter e on p.patient_id = e.patient_id  "
+            + "inner join obs o on e.encounter_id=o.encounter_id  "
+            + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and  "
+            + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000  "
+            + "group by p.patient_id  "
+            + ") carga_viral  "
+            + "inner join  obs obsGestante on obsGestante.person_id=carga_viral.patient_id  "
+            + "and obsGestante.concept_id=6332  "
+            + "and obsGestante.value_coded=1065  "
+            + "and obsGestante.obs_datetime=carga_viral.data_carga  "
+            + "and obsGestante.voided=0 ";
+
     public static final String findPatientsWhoHaveLastFirstLineTerapeutic =
         " select distinct firstLine.patient_id from ( "
             + " select maxLinha.patient_id, maxLinha.maxDataLinha from ( "
