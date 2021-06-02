@@ -266,10 +266,9 @@ public interface MQQueriesInterface {
             + "group by p.patient_id ";
 
     public static final String findPatientWhoCompleteTPICategory7 =
-              " select DISTINCT patient_id, dataFimTPI from( "
+        " select DISTINCT patient_id from( "
             + " select B4_1_2.patient_id, B4_1_2.dataInicioTPI, obsFimTPI.obs_datetime dataFimTPI, "
             + " obsTBActiva.obs_datetime dataTBActiva, obsRastreio.obs_datetime dataRastreioPositivo, obsTB.obs_datetime dataTB from ( "
-
             + " SELECT patient_id, MAX(dataInicioTPI) dataInicioTPI FROM ( "
             + " SELECT p.patient_id, MAX(e.encounter_datetime) AS dataInicioTPI FROM patient p "
             + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
@@ -277,9 +276,7 @@ public interface MQQueriesInterface {
             + " WHERE p.voided = 0 AND e.voided = 0 AND obsTPI.voided = 0 AND e.encounter_type = 6 AND e.location_id = :location "
             + " AND obsTPI.concept_id = 6122 AND obsTPI.value_coded = 1256 AND DATE(obsTPI.obs_datetime) BETWEEN :startInclusionDate AND :endInclusionDate "
             + " GROUP BY p.patient_id "
-
             + " UNION "
-
             + " SELECT p.patient_id, MAX(obsTPIFIM.value_datetime) AS dataInicioTPI FROM patient p "
             + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
             + " INNER JOIN obs obsTPIFIM ON obsTPIFIM.encounter_id = e.encounter_id "
@@ -288,11 +285,9 @@ public interface MQQueriesInterface {
             + " GROUP BY p.patient_id  "
             + " )maxdatainicio GROUP BY patient_id  "
             + " ) B4_1_2 "
-
             + " inner join "
             + " ( "
             + " SELECT person_id, MAX(obs_datetime) obs_datetime FROM ( "
-
             + " SELECT obs.person_id, MAX(obs_datetime) obs_datetime FROM "
             + " obs obs "
             + " INNER JOIN encounter e ON e.encounter_id = obs.encounter_id "
@@ -300,9 +295,7 @@ public interface MQQueriesInterface {
             + " e.encounter_type = 6 and e.location_id = :location and "
             + " DATE(obs.obs_datetime) between :startInclusionDate AND :endRevisionDate "
             + " group by obs.person_id "
-
             + " UNION "
-
             + " SELECT obs.person_id, MAX(value_datetime) obs_datetime FROM "
             + " obs obs "
             + " INNER JOIN encounter e ON e.encounter_id = obs.encounter_id "
@@ -311,7 +304,6 @@ public interface MQQueriesInterface {
             + " DATE(obs.value_datetime) between :startInclusionDate AND :endRevisionDate "
             + " group by obs.person_id "
             + " ) maxfimtpi group by person_id "
-
             + " ) obsFimTPI on obsFimTPI.person_id = B4_1_2.patient_id "
             + " left join obs obsTBActiva on obsTBActiva.person_id= B4_1_2.patient_id and obsTBActiva.voided = 0 and "
             + " obsTBActiva.concept_id = 23761 and obsTBActiva.value_coded = 1065 and "
