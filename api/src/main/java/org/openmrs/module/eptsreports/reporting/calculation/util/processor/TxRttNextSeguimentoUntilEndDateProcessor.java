@@ -32,6 +32,7 @@ public class TxRttNextSeguimentoUntilEndDateProcessor {
     HqlQueryBuilder q = new HqlQueryBuilder();
     q.select("o.personId", "o");
     q.from(Obs.class, "o");
+    q.innerJoin("fetch o.encounter", "e");
     q.wherePersonIn("o.personId", newContext);
     q.whereEqual("o.concept", hivMetadata.getReturnVisitDateConcept());
 
