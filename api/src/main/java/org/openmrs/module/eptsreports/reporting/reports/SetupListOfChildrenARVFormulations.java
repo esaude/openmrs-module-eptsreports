@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupListOfChildrenARVFormulations extends EptsDataExportManager {
 
-  @Autowired protected GenericCohortQueries genericCohortQueries;
+  @Autowired private GenericCohortQueries genericCohortQueries;
   @Autowired private ListOfChildrenARVFormulationsDataSet listOfChildrenARVFormulationsDataSet;
 
   @Override
