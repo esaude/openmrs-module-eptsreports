@@ -9,7 +9,7 @@ public interface ListOfChildrenARVFormulationsQueries {
             + "concat(ifnull(pn.given_name,''),' ',ifnull(pn.middle_name,''),' ',ifnull(pn.family_name,'')) as NomeCompleto,  "
             + "pid.identifier as NID,  "
             + "p.gender as gender,  "
-            + "round(datediff(:endDate,p.birthdate)/365,0) as idade_actual, "
+            + "(TIMESTAMPDIFF(year,birthdate,:endDate)) as idade_actual, "
             + "TB.criteria as criteria, "
             + "max_filaF.data_fila, "
             + "max_filaF.code, "
@@ -381,6 +381,6 @@ public interface ListOfChildrenARVFormulationsQueries {
             + "left join  obs obsProximaConsulta  on obsProximaConsulta.person_id=max_consulta.patient_id and obsProximaConsulta.concept_id=1410 and  obsProximaConsulta.value_datetime=max_consulta.data_seguimento "
             + "left join  obs obsRegConsulta  on obsRegConsulta.person_id=max_consulta.patient_id and obsRegConsulta.concept_id=1087 and  obsRegConsulta.obs_datetime=max_consulta.data_seguimento "
             + ") max_consulta_final on  coorte12meses_final.patient_id=max_consulta_final.patient_id "
-            + "where (data_estado is null or (data_estado is not null and  data_usar_c>data_estado)) and date_add(data_usar, interval 28 day) >=:endDate and round(datediff(:endDate,p.birthdate)/365,0)<=15 ";
+            + "where (data_estado is null or (data_estado is not null and  data_usar_c>data_estado)) and date_add(data_usar, interval 28 day) >=:endDate and (TIMESTAMPDIFF(year,birthdate,:endDate))<15 ";
   }
 }
