@@ -4,8 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.commons.text.StringSubstitutor;
+import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.joda.time.Interval;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -62,15 +62,13 @@ public class ReturnedDateIITDateDaysCalculation extends AbstractPatientCalculati
       Date b = EptsCalculationUtils.resultForPatient(oldestDate, pId);
 
       if (a != null && b != null) {
-        int days = Days.daysIn(new Interval(a.getTime(), b.getTime())).getDays();
-        if (period == PLHIVDays.LESS_THAN_365) {
-          if (days < YEAR_DAYS) {
-            calculationResultMap.put(pId, new SimpleResult(days, this));
-          }
-        } else if (period == PLHIVDays.MORE_THAN_365) {
-          if (days >= YEAR_DAYS) {
-            calculationResultMap.put(pId, new SimpleResult(days, this));
-          }
+        DateTime mostRecentDateTime = new DateTime(a.getTime());
+        DateTime oldestDateTime = new DateTime(b.getTime());
+        int days = Days.daysBetween(mostRecentDateTime, oldestDateTime).getDays();
+        if (period == PLHIVDays.LESS_THAN_365 && days < YEAR_DAYS) {
+          calculationResultMap.put(pId, new SimpleResult(days, this));
+        } else if (period == PLHIVDays.MORE_THAN_365 && days >= YEAR_DAYS) {
+          calculationResultMap.put(pId, new SimpleResult(days, this));
         }
       } else if ((a == null || b == null) && period == PLHIVDays.UNKNOWN) {
         calculationResultMap.put(pId, new SimpleResult(null, this));
@@ -274,10 +272,7 @@ public class ReturnedDateIITDateDaysCalculation extends AbstractPatientCalculati
             + "' "
             + "                       GROUP  BY pa.patient_id "
             + "                   ) most_recent "
-            + "               GROUP BY most_recent.patient_id "
-            + "               HAVING final_encounter_date < '"
-            + endDate
-            + "' ";
+            + "               GROUP BY most_recent.patient_id ";
 
     StringSubstitutor stringSubstitutor1 = new StringSubstitutor(map1);
     return stringSubstitutor1.replace(query1);
