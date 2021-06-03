@@ -140,14 +140,14 @@ public class TXCXCACohortQueries {
         "BB",
         EptsReportUtils.map(
             bb, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.addSearch("postTreatmentFollowUp", EptsReportUtils.map(f1srtTimeScreened, MAPPINGS));
+    cd.addSearch("f1srtTimeScreened", EptsReportUtils.map(f1srtTimeScreened, MAPPINGS));
     cd.addSearch(
         "rescreenedAfterPreviousNegative",
         EptsReportUtils.map(rescreenedAfterPreviousNegative, MAPPINGS));
     cd.addSearch("postTreatmentFollowUp", EptsReportUtils.map(postTreatmentFollowUp, MAPPINGS));
 
     cd.setCompositionString(
-        "B AND BB AND NOT (postTreatmentFollowUp OR rescreenedAfterPreviousNegative OR postTreatmentFollowUp)");
+        "B AND BB AND NOT (postTreatmentFollowUp OR rescreenedAfterPreviousNegative OR f1srtTimeScreened)");
 
     return cd;
   }
