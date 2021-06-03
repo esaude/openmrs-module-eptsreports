@@ -754,7 +754,7 @@ public class TPTCompletionCohortQueries {
             tbPrevCohortQueries.getPatientsWhoHaveRegimeTPTWith3HPMarkedOnFirstPickUpDateOnFILT(),
             "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
     definition.setCompositionString(
-    		"started-by-end-previous-reporting-period "
+        "started-by-end-previous-reporting-period "
             + " AND ("
             + "            (started-isoniazid OR initiated-profilaxia OR regime-tpt-isoniazid) "
             + "         OR (outras-prescricoes-3hp OR regime-tpt-3hp) "

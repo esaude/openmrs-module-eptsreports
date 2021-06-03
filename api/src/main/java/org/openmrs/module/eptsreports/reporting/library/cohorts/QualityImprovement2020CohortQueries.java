@@ -893,7 +893,7 @@ public class QualityImprovement2020CohortQueries {
             + "           AND o.value_coded = ${1256} "
             + "           AND e.encounter_type = ${6} "
             + "           AND e.location_id = :location "
-            + "           AND o.value_datetime BETWEEN :startDate AND :endDate "
+            + "           AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "         GROUP BY p.patient_id "
             + "     ) AS tpt_start "
             + "GROUP BY tpt_start.patient_id) AS last ON p.patient_id = last.patient_id "
@@ -974,7 +974,7 @@ public class QualityImprovement2020CohortQueries {
             + "                       AND o.value_coded = ${1256} "
             + "                       AND e.encounter_type = ${6} "
             + "                       AND e.location_id = :location "
-            + "                       AND o.value_datetime BETWEEN :startDate AND :endDate "
+            + "                       AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "                     GROUP BY p.patient_id "
             + "                 ) AS tpt_start "
             + "            GROUP BY tpt_start.patient_id ) AS last ON p.patient_id = last.patient_id "
@@ -1055,7 +1055,7 @@ public class QualityImprovement2020CohortQueries {
             + "                       AND o.value_coded = ${1256} "
             + "                       AND e.encounter_type = ${6} "
             + "                       AND e.location_id = :location "
-            + "                       AND o.value_datetime BETWEEN :startDate AND :endDate "
+            + "                       AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "                     GROUP BY p.patient_id "
             + "                 ) AS tpt_start "
             + "            GROUP BY tpt_start.patient_id ) AS last ON last.patient_id = p.patient_id  "
@@ -1851,7 +1851,7 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("B42", EptsReportUtils.map(b42, MAPPING));
 
-    compositionCohortDefinition.addSearch("GNEW", EptsReportUtils.map(getGNew(), MAPPING));
+    compositionCohortDefinition.addSearch("GNEW", EptsReportUtils.map(getGNew(), MAPPING1));
 
     if (num == 1 || num == 3) {
       compositionCohortDefinition.setCompositionString(
@@ -1864,7 +1864,7 @@ public class QualityImprovement2020CohortQueries {
           "(A AND C AND (B41 OR B42) ) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
     } else if (num == 6) {
       compositionCohortDefinition.setCompositionString(
-          "(A AND (B41 OR B42) AND C AND G) AND NOT (B1 OR B2 OR B3 OR D OR E OR F OR H OR I OR J)");
+          "(A AND (B41 OR B42) AND C AND GNEW) AND NOT (B1 OR B2 OR B3 OR D OR E OR F OR H OR I OR J)");
     }
     return compositionCohortDefinition;
   }
@@ -7275,7 +7275,7 @@ public class QualityImprovement2020CohortQueries {
             + "     AND o.value_coded = ${1256} "
             + "     AND e.encounter_type = ${6} "
             + "     AND e.location_id = :location "
-            + "     AND o.value_datetime between :startDate AND :endDate "
+            + "     AND e.encounter_datetime between :startDate AND :endDate "
             + "   GROUP BY p.patient_id "
             + ") AS  final";
 
@@ -7290,6 +7290,7 @@ public class QualityImprovement2020CohortQueries {
     cd.setName("G new ");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -7318,7 +7319,7 @@ public class QualityImprovement2020CohortQueries {
             + "                           AND o.concept_id = ${6129}  "
             + "                           AND e.encounter_type = ${53}  "
             + "                           AND e.location_id = :location  "
-            + "                           AND o.value_datetime BETWEEN :startDate AND :endDate  "
+            + "                           AND o.value_datetime BETWEEN :startDate AND :revisionEndDate  "
             + "                         GROUP BY p.patient_id  "
             + "                         UNION  "
             + "                         SELECT p.patient_id, MAX(e.encounter_datetime) last_encounter  "
@@ -7332,7 +7333,7 @@ public class QualityImprovement2020CohortQueries {
             + "                           AND o.value_coded = ${1267}  "
             + "                           AND e.encounter_type = ${6}  "
             + "                           AND e.location_id = :location  "
-            + "                           AND o.value_datetime BETWEEN :startDate AND :endDate  "
+            + "                           AND e.encounter_datetime BETWEEN :startDate AND :revisionEndDate  "
             + "                         GROUP BY p.patient_id  "
             + "                     ) AS tpt_end  "
             + "                GROUP BY  tpt_end.patient_id  "
@@ -7364,7 +7365,7 @@ public class QualityImprovement2020CohortQueries {
             + "                           AND o.value_coded = ${1256}  "
             + "                           AND e.encounter_type = ${6}  "
             + "                           AND e.location_id = :location  "
-            + "                           AND o.value_datetime BETWEEN :startDate AND :endDate  "
+            + "                           AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
             + "                         GROUP BY p.patient_id  "
             + "                     ) AS tpt_start  "
             + "                GROUP BY tpt_start.patient_id  "
