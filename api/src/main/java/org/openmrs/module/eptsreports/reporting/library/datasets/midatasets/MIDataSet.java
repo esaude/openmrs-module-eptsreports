@@ -18,6 +18,7 @@ public class MIDataSet extends BaseDataSet {
   @Autowired private MICategory11DataSet miCategory11DataSet;
   @Autowired private MICategory12P1Dataset miCategory12Dataset;
   @Autowired private MICommonsDementions mICommonsDementions;
+  @Autowired private MICategory13P1_1DataSet mICategory13P1_1DataSet;
 
   public DataSetDefinition constructTMiDatset() {
     final CohortIndicatorDataSetDefinition dataSetDefinition =
@@ -33,6 +34,7 @@ public class MIDataSet extends BaseDataSet {
     miCategory7Dataset.constructTMiDatset(dataSetDefinition, mappings);
     miCategory11DataSet.constructTMiDatset(dataSetDefinition, mappings);
     miCategory12Dataset.constructTMiDatset(dataSetDefinition, mappings);
+    mICategory13P1_1DataSet.constructTMqDatset(dataSetDefinition, mappings);
 
     return dataSetDefinition;
   }

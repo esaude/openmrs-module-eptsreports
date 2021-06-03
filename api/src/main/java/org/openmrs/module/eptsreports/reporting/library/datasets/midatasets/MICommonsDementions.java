@@ -36,5 +36,10 @@ public class MICommonsDementions {
         "ageOnCV",
         EptsReportUtils.map(
             this.mIAgeDimentions.getDimensionForPatientsPatientWithCVOver1000Copies(), mappings));
+
+    dataSetDefinition.addDimension(
+        "age",
+        EptsReportUtils.map(
+            this.mIAgeDimentions.getDimensionForLastClinicalConsultation(), mappings));
   }
 }

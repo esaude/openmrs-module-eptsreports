@@ -278,4 +278,56 @@ public class MIAgeDimentions {
 
     return dimension;
   }
+
+  /*		Calculate age on the last consultation
+   */ public CohortDefinitionDimension getDimensionForLastClinicalConsultation() {
+
+    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+
+    dimension.setName("patientsPregnantEnrolledOnART");
+    dimension.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    dimension.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    dimension.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    dimension.addParameter(new Parameter("location", "Location", Location.class));
+
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
+
+    dimension.addCohortDefinition(
+        "15+",
+        EptsReportUtils.map(
+            mQAgeDimensions
+                .findPatientsWithLastClinicalConsultationDenominatorB1AgeCalculation15Plus(15),
+            mappingsMI));
+
+    dimension.addCohortDefinition(
+        "0-4",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWithLastClinicalConsultationDenominatorB1AgeCalculation(
+                0, 4),
+            mappingsMI));
+
+    dimension.addCohortDefinition(
+        "5-9",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWithLastClinicalConsultationDenominatorB1AgeCalculation(
+                5, 9),
+            mappingsMI));
+
+    dimension.addCohortDefinition(
+        "10-14",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWithLastClinicalConsultationDenominatorB1AgeCalculation(
+                10, 14),
+            mappingsMI));
+
+    dimension.addCohortDefinition(
+        "2-14",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWithLastClinicalConsultationDenominatorB1AgeCalculation(
+                2, 14),
+            mappingsMI));
+
+    return dimension;
+  }
 }
