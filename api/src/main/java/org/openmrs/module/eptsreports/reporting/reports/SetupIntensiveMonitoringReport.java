@@ -49,7 +49,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Intensive Monitoring";
+    return "Monitoria Intensiva  - 2021";
   }
 
   @Override
@@ -73,11 +73,6 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
         "IM",
         Mapped.mapStraightThrough(
             intensiveMonitoringDataSet.constructIntensiveMonitoringDataSet()));
-
-    reportDefinition.addDataSetDefinition(
-        "ALL",
-        Mapped.mapStraightThrough(initQltyImpDataSet.constructQualityImprovement2020DataSet()));
-
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -111,8 +106,6 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
   @Override
   public List<Parameter> getParameters() {
     return Arrays.asList(
-        new Parameter("startDate", "Data Inicial Inclusão", Date.class),
-        new Parameter("endDate", "Data Final Inclusão", Date.class),
         new Parameter("revisionEndDate", "Data Final Revisão", Date.class),
         new Parameter("location", "Unidade Sanitária", Location.class));
   }
