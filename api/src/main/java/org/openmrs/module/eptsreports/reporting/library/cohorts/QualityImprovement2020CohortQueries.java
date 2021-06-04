@@ -2508,27 +2508,29 @@ public class QualityImprovement2020CohortQueries {
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
 
     String query =
-        "SELECT "
-            + " p.patient_id "
-            + " FROM "
-            + " patient p "
-            + "    INNER JOIN "
-            + " (SELECT "
-            + "    p.patient_id, MIN(e.encounter_datetime), e.encounter_id "
-            + " FROM "
-            + "    patient p "
-            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + " JOIN obs o ON o.encounter_id = e.encounter_id "
-            + " WHERE "
-            + "    e.encounter_type IN (${6}, ${53}) AND p.voided = 0 "
-            + "        AND e.voided = 0 "
-            + "        AND e.location_id = :location "
-            + "        AND o.location_id = :location "
-            + "        AND o.concept_id = ${856} "
-            + "        AND o.value_numeric > 1000 "
-            + "        AND e.encounter_datetime BETWEEN "
-            + "        :startDate AND :endDate "
-            + " GROUP BY p.patient_id) filtered ON p.patient_id = filtered.patient_id; ";
+        " SELECT"
+            + "             p.patient_id"
+            + "             FROM"
+            + "             patient p"
+            + "                INNER JOIN"
+            + "             (SELECT"
+            + "                p.patient_id, MIN(e.encounter_datetime) AS first_encounter"
+            + "             FROM"
+            + "                patient p"
+            + "             INNER JOIN encounter e ON e.patient_id = p.patient_id"
+            + "             JOIN obs o ON o.encounter_id = e.encounter_id"
+            + "             WHERE p.voided = 0"
+            + "                    AND e.voided = 0"
+            + "                    AND o.voided = 0"
+            + "                    AND e.location_id = :location"
+            + "                    AND o.location_id = :location"
+            + "                    AND o.concept_id = ${856}"
+            + "                    AND o.value_numeric > 1000"
+            + "                    AND (( e.encounter_type = ${6}"
+            + "                    AND e.encounter_datetime BETWEEN :startDate AND :endDate) "
+            + "                    OR (e.encounter_type = ${53}"
+            + "                    AND o.obs_datetime BETWEEN :startDate AND :endDate))"
+            + "             GROUP BY p.patient_id) filtered ON p.patient_id = filtered.patient_id";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -5193,7 +5195,7 @@ public class QualityImprovement2020CohortQueries {
             "(B1 AND B2) AND NOT (B4 or B5 or E or F)");
       } else if (line == 12) {
         compositionCohortDefinition.setCompositionString(
-            "((B1 AND B2) AND NOT (B4 or B5 or E or F)) AND adults");
+               "((B1 AND B2) AND NOT (B4 or B5 or E or F)) AND adults");
       } else if (line == 18) {
         compositionCohortDefinition.setCompositionString("(B1 AND B4) AND NOT (B5 or E or F)");
       }
