@@ -12,7 +12,7 @@ public class MICategory13P1_2Dataset extends MQAbstractDataSet {
 
   @Autowired private MICategory13P1_2CohortQueries mICategory13P1_2CohortQueries;
 
-  public void constructTMqDatset(
+  public void constructTMiDatset(
       CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
 
     dataSetDefinition.addColumn(
