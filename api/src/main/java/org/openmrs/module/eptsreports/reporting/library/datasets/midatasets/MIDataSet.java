@@ -34,7 +34,7 @@ public class MIDataSet extends BaseDataSet {
     miCategory7Dataset.constructTMiDatset(dataSetDefinition, mappings);
     miCategory11DataSet.constructTMiDatset(dataSetDefinition, mappings);
     miCategory12Dataset.constructTMiDatset(dataSetDefinition, mappings);
-    mICategory13P1_1DataSet.constructTMqDatset(dataSetDefinition, mappings);
+    mICategory13P1_1DataSet.constructTMiDatset(dataSetDefinition, mappings);
 
     return dataSetDefinition;
   }
