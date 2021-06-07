@@ -5099,7 +5099,7 @@ public class QualityImprovement2020CohortQueries {
             "(B1 AND B2) AND NOT (B4 or B5 or E or F)");
       } else if (line == 12) {
         compositionCohortDefinition.setCompositionString(
-               "((B1 AND B2) AND NOT (B4 or B5 or E or F)) AND adults");
+            "((B1 AND B2) AND NOT (B4 or B5 or E or F)) AND adults");
       } else if (line == 18) {
         compositionCohortDefinition.setCompositionString("(B1 AND B4) AND NOT (B5 or E or F)");
       }
