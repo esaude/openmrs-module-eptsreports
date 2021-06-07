@@ -1913,19 +1913,20 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition patientsFromFichaClinicaLinhaTerapeutica =
         getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
 
-    CohortDefinition patientsFromFichaClinicaCargaViral =
-        getPatientsFromFichaClinicaDenominatorB("B2_11");
+    CohortDefinition patientsFromFichaClinicaCargaViral = getB2_13();
 
     CohortDefinition pregnantWithCargaViralHigherThan1000 =
-        QualityImprovement2020Queries.getMQ11DenB4(
+        QualityImprovement2020Queries.getMQ13DenB4_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
-
+    
     CohortDefinition breastfeedingWithCargaViralHigherThan1000 =
-        QualityImprovement2020Queries.getMQ11DenB5(
+        QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
@@ -3101,21 +3102,25 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition b1 = getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
-    CohortDefinition b2 = getPatientsFromFichaClinicaDenominatorB("B2_11");
+    
+    CohortDefinition b2 = getB2_13();
 
     CohortDefinition b4 =
-        QualityImprovement2020Queries.getMQ11DenB4(
+        QualityImprovement2020Queries.getMQ13DenB4_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
 
     CohortDefinition b5 =
-        QualityImprovement2020Queries.getMQ11DenB5(
+        QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
+            
     CohortDefinition e =
         QualityImprovement2020Queries.getTransferredInPatients(
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
@@ -3209,19 +3214,23 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition b1 = getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
+
     CohortDefinition b4 =
-        QualityImprovement2020Queries.getMQ11DenB4(
+        QualityImprovement2020Queries.getMQ13DenB4_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
-    ;
+        
     CohortDefinition b5 =
-        QualityImprovement2020Queries.getMQ11DenB5(
+        QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
+
     CohortDefinition c =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
             commonMetadata.getPregnantConcept().getConceptId(),
@@ -3375,18 +3384,21 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition b1 = getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
-    CohortDefinition b2 = getPatientsFromFichaClinicaDenominatorB("B2_11");
+    
+    CohortDefinition b2 = getB2_13();
 
     CohortDefinition b4 =
-        QualityImprovement2020Queries.getMQ11DenB4(
+        QualityImprovement2020Queries.getMQ13DenB4_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
-
+        
     CohortDefinition b5 =
-        QualityImprovement2020Queries.getMQ11DenB5(
+        QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
