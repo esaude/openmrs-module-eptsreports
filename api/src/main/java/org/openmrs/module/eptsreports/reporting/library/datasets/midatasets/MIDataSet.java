@@ -18,9 +18,10 @@ public class MIDataSet extends BaseDataSet {
   @Autowired private MICategory11DataSet miCategory11DataSet;
   @Autowired private MICategory12P1Dataset miCategory12Dataset;
   @Autowired private MICommonsDementions mICommonsDementions;
-  @Autowired private MICategory13P1_1DataSet mICategory13P1_1DataSet;
-  @Autowired private MICategory13P1_2Dataset mICategory13P1_2Dataset;
-  @Autowired private MICategory13P2Dataset mICategory13P2Dataset;
+  @Autowired private MICategory13P1_1DataSet miCategory13P1_1DataSet;
+  @Autowired private MICategory13P1_2Dataset miCategory13P1_2Dataset;
+  @Autowired private MICategory13P2Dataset miCategory13P2Dataset;
+  @Autowired private MICategory13P3Dataset miCategory13P3Dataset;
 
   public DataSetDefinition constructTMiDatset() {
     final CohortIndicatorDataSetDefinition dataSetDefinition =
@@ -33,12 +34,15 @@ public class MIDataSet extends BaseDataSet {
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     this.mICommonsDementions.getMICommonDementions(dataSetDefinition, mappings);
+
     miCategory7Dataset.constructTMiDatset(dataSetDefinition, mappings);
     miCategory11DataSet.constructTMiDatset(dataSetDefinition, mappings);
     miCategory12Dataset.constructTMiDatset(dataSetDefinition, mappings);
-    mICategory13P1_1DataSet.constructTMiDatset(dataSetDefinition, mappings);
-    mICategory13P1_2Dataset.constructTMiDatset(dataSetDefinition, mappings);
-    mICategory13P2Dataset.constructTMiDatset(dataSetDefinition, mappings);
+
+    miCategory13P1_1DataSet.constructTMiDatset(dataSetDefinition, mappings);
+    miCategory13P1_2Dataset.constructTMiDatset(dataSetDefinition, mappings);
+    miCategory13P2Dataset.constructTMiDatset(dataSetDefinition, mappings);
+    miCategory13P3Dataset.constructTMiDatset(dataSetDefinition, mappings);
 
     return dataSetDefinition;
   }

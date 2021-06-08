@@ -41,5 +41,16 @@ public class MICommonsDementions {
         "age",
         EptsReportUtils.map(
             this.mIAgeDimentions.getDimensionForLastClinicalConsultation(), mappings));
+
+    dataSetDefinition.addDimension(
+        "ageOnEndInclusionDate",
+        EptsReportUtils.map(this.mIAgeDimentions.getDimensionAgeEndInclusionDate(), mappings));
+
+    dataSetDefinition.addDimension(
+        "ageOnB2NEW",
+        EptsReportUtils.map(
+            this.mIAgeDimentions
+                .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodP3B2NEWCalculeteAgeBiggerThan(),
+            mappings));
   }
 }

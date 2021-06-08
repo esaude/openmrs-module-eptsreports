@@ -2,7 +2,11 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.queries.mq.MQQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -327,6 +331,191 @@ public class MIAgeDimentions {
             mQAgeDimensions.findPatientsWithLastClinicalConsultationDenominatorB1AgeCalculation(
                 2, 14),
             mappingsMI));
+
+    return dimension;
+  }
+
+  /*   		Calculate age on the last consultation
+   */
+  public CohortDefinitionDimension getDimensionAgeEndInclusionDate() {
+    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+
+    dimension.setName("patientsPregnantEnrolledOnART");
+    dimension.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    dimension.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    dimension.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    dimension.addParameter(new Parameter("location", "Location", Location.class));
+
+    /*   		Calculate age on 10 months
+     */
+    final String mappings =
+        "startInclusionDate=${endRevisionDate-10m+1d},endInclusionDate=${endRevisionDate-9m},endRevisionDate=${endRevisionDate},location=${location}";
+
+    dimension.addCohortDefinition(
+        "<15-10MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeLessThan(15), mappings));
+
+    dimension.addCohortDefinition(
+        "15+10MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeBiggerThan(15), mappings));
+
+    dimension.addCohortDefinition(
+        "0-14-10MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeByAgeRenge(0, 14), mappings));
+
+    dimension.addCohortDefinition(
+        "2-14-10MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeByAgeRenge(2, 14), mappings));
+
+    dimension.addCohortDefinition(
+        "5-9-10MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeByAgeRenge(5, 9), mappings));
+
+    dimension.addCohortDefinition(
+        "3-14-10MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeByAgeRenge(3, 14), mappings));
+
+    dimension.addCohortDefinition(
+        "0-4-10MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeByAgeRenge(0, 4), mappings));
+
+    dimension.addCohortDefinition(
+        "10-14-10MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeByAgeRenge(10, 14), mappings));
+
+    dimension.addCohortDefinition(
+        "2-9-10MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeByAgeRenge(2, 9), mappings));
+
+    /*   		Calculate age on 5 months
+     */
+
+    final String mappings5Months =
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
+
+    dimension.addCohortDefinition(
+        "<15-5MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeLessThan(15), mappings5Months));
+
+    dimension.addCohortDefinition(
+        "15+5MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeBiggerThan(15), mappings5Months));
+
+    dimension.addCohortDefinition(
+        "0-14-5MONTHS",
+        EptsReportUtils.map(
+            mQAgeDimensions.calculateDefaulteAgeByAgeRenge(0, 14), mappings5Months));
+
+    dimension.addCohortDefinition(
+        "2-14-5MONTHS",
+        EptsReportUtils.map(
+            mQAgeDimensions.calculateDefaulteAgeByAgeRenge(2, 14), mappings5Months));
+
+    dimension.addCohortDefinition(
+        "5-9-5MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeByAgeRenge(5, 9), mappings5Months));
+
+    dimension.addCohortDefinition(
+        "3-14-5MONTHS",
+        EptsReportUtils.map(
+            mQAgeDimensions.calculateDefaulteAgeByAgeRenge(3, 14), mappings5Months));
+
+    dimension.addCohortDefinition(
+        "0-4-5MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeByAgeRenge(0, 4), mappings5Months));
+
+    dimension.addCohortDefinition(
+        "10-14-5MONTHS",
+        EptsReportUtils.map(
+            mQAgeDimensions.calculateDefaulteAgeByAgeRenge(10, 14), mappings5Months));
+
+    dimension.addCohortDefinition(
+        "2-9-5MONTHS",
+        EptsReportUtils.map(mQAgeDimensions.calculateDefaulteAgeByAgeRenge(2, 9), mappings5Months));
+
+    return dimension;
+  }
+
+  @DocumentedDefinition(
+      value =
+          "findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodP3B2NEWCalculeteAgeBiggerThan")
+  public CohortDefinition
+      findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodP3B2NEWCalculeteAgeBiggerThan(
+          int age) {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQQueriesInterface.QUERY
+            .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominatorBiggerThan;
+
+    String finalQuery = String.format(query, age);
+
+    definition.setQuery(finalQuery);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value =
+          "findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominatorLessThan")
+  public CohortDefinition
+      findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominatorLessThan(
+          int age) {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQQueriesInterface.QUERY
+            .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominatorLessThan;
+
+    String finalQuery = String.format(query, age);
+
+    definition.setQuery(finalQuery);
+
+    return definition;
+  }
+
+  public CohortDefinitionDimension
+      findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodP3B2NEWCalculeteAgeBiggerThan() {
+    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+
+    dimension.setName("patientsPregnantEnrolledOnART");
+    dimension.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    dimension.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    dimension.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    dimension.addParameter(new Parameter("location", "Location", Location.class));
+
+    final String mappings =
+        "startInclusionDate=${endRevisionDate-10m+1d},endInclusionDate=${endRevisionDate-9m},endRevisionDate=${endRevisionDate},location=${location}";
+
+    dimension.addCohortDefinition(
+        "15+10MONTHS",
+        EptsReportUtils.map(
+            this
+                .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodP3B2NEWCalculeteAgeBiggerThan(
+                    15),
+            mappings));
+
+    dimension.addCohortDefinition(
+        "<15-10MONTHS",
+        EptsReportUtils.map(
+            this
+                .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominatorLessThan(
+                    15),
+            mappings));
 
     return dimension;
   }
