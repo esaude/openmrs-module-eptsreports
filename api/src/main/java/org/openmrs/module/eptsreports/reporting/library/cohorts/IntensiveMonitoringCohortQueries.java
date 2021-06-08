@@ -25,6 +25,9 @@ public class IntensiveMonitoringCohortQueries {
 
   private QualityImprovement2020CohortQueries qualityImprovement2020CohortQueries;
 
+  private final String MAPPING =
+      "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}";
+
   @Autowired
   public IntensiveMonitoringCohortQueries(
       HivMetadata hivMetadata,
@@ -98,7 +101,70 @@ public class IntensiveMonitoringCohortQueries {
   }
 
   /**
-   * Get CAT 13.1, 13.4, 13.6, 13.7, 13.8, 13.13 Monitoria Intensiva MQHIV 2021 for the selected
+   * MEPTS-862_MI_REPORT_CAT13_P2 Get CAT 13.15, 13.16 and 13.17 P2 for Numerator and Denominator
+   * Monitoria Intensiva MQHIV 2021 for the selected location and reporting period Section
+   * (endDateRevision)
+   *
+   * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
+   */
+  public CohortDefinition getMICat13Part2(Integer level, String type) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("MI 13.15, 13.16 and 13.17 Numerator and Denominator");
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+
+    // DENOMINATOR
+    if (level == 15) {
+      cd.addSearch(
+          "MI13DEN15",
+          EptsReportUtils.map(
+              qualityImprovement2020CohortQueries.getgetMQC13P2DenMGInIncluisionPeriod(), MAPPING));
+    } else if (level == 16) {
+      cd.addSearch(
+          "MI13DEN16",
+          EptsReportUtils.map(
+              qualityImprovement2020CohortQueries.getgetMQC13P2DenMGInIncluisionPeriod33Month(),
+              MAPPING));
+    } else if (level == 17) {
+      cd.addSearch(
+          "MI13DEN17",
+          EptsReportUtils.map(
+              qualityImprovement2020CohortQueries.getMQC13P2DenMGInIncluisionPeriod33Days(),
+              MAPPING));
+    }
+
+    // NUMERATOR
+    if (level == 15) {
+      cd.addSearch(
+          "MI13NUM15",
+          EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQC13P2Num1(), MAPPING));
+    } else if (level == 16) {
+      cd.addSearch(
+          "MI13NUM16",
+          EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQC13P2Num2(), MAPPING));
+    } else if (level == 17) {
+      cd.addSearch(
+          "MI13NUM17",
+          EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQC13P2Num3(), MAPPING));
+    }
+
+    if ("DEN15".equals(type)) {
+      cd.setCompositionString("MI13DEN15");
+    } else if ("DEN16".equals(type)) {
+      cd.setCompositionString("MI13DEN16");
+    } else if ("DEN17".equals(type)) {
+      cd.setCompositionString("MI13DEN17");
+    } else if ("NUM15".equals(type)) {
+      cd.setCompositionString("MI13NUM15");
+    } else if ("NUM16".equals(type)) {
+      cd.setCompositionString("MI13NUM16");
+    } else if ("NUM17".equals(type)) {
+      cd.setCompositionString("MI13NUM17");
+    }
+    return cd;
+  }
+
+  /* Get CAT 13.1, 13.4, 13.6, 13.7, 13.8, 13.13 Monitoria Intensiva MQHIV 2021 for the selected
    * location and reporting period Section (endDateRevision)
    *
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}

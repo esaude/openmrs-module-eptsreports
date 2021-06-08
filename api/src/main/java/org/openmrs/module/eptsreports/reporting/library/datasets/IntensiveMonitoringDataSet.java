@@ -175,6 +175,74 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
+    // CAT 13 P2 DENOMINATOR
+    // 13.15
+    dataSetDefinition.addColumn(
+        "MI13DEN15",
+        "% de MG elegíveis a CV com registo de pedido de CV feito pelo clínico (MG que iniciaram TARV na CPN) Denominator: # de MG com registo de início do TARV na CPN dentro do período de inclusão. (Line 90,Column F in the Template) as following",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getMICat13Part2(15, "DEN15"),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+
+    // 13.16
+    dataSetDefinition.addColumn(
+        "MI13DEN16",
+        "% de MG elegíveis a CV com registo de pedido de CV feito pelo clínico na primeira CPN (MG que entraram em TARV na CPN) Denominator:# de MG que tiveram a primeira CPN no período de inclusão, e que já estavam em TARV há mais de 3 meses",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getMICat13Part2(16, "DEN16"),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+
+    // 13.17
+    dataSetDefinition.addColumn(
+        "MI13DEN17",
+        "% de MG que receberam o resultado da Carga Viral dentro de 33 dias após pedido Denominator: # de MG com registo de pedido de CV no período de revisão",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getMICat13Part2(17, "DEN17"),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+
+    // CAT 13 P2 NUMERATOR
+    // 13.15
+    dataSetDefinition.addColumn(
+        "MI13NUM15",
+        "% de MG elegíveis a CV com registo de pedido de CV feito pelo clínico (MG que iniciaram TARV na CPN) Denominator: # de MG com registo de início do TARV na CPN dentro do período de inclusão. (Line 90,Column F in the Template) as following",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getMICat13Part2(15, "NUM15"),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+
+    // 13.16
+    dataSetDefinition.addColumn(
+        "MI13NUM16",
+        "% de MG elegíveis a CV com registo de pedido de CV feito pelo clínico na primeira CPN (MG que entraram em TARV na CPN) Denominator:# de MG que tiveram a primeira CPN no período de inclusão, e que já estavam em TARV há mais de 3 meses",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getMICat13Part2(16, "NUM16"),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+
+    // 13.17
+    dataSetDefinition.addColumn(
+        "MI13NUM17",
+        "% de MG que receberam o resultado da Carga Viral dentro de 33 dias após pedido Denominator: # de MG com registo de pedido de CV no período de revisão",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getMICat13Part2(17, "NUM17"),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+
     // Category 13 Part-1
     // 13.1
     dataSetDefinition.addColumn(
@@ -418,6 +486,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
+
     return dataSetDefinition;
   }
 
