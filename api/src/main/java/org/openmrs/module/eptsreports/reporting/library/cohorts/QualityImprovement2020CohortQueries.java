@@ -1922,7 +1922,7 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
-    
+
     CohortDefinition breastfeedingWithCargaViralHigherThan1000 =
         QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
@@ -2123,11 +2123,11 @@ public class QualityImprovement2020CohortQueries {
     }
     if (indicatorFlag == 7) {
       compositionCohortDefinition.setCompositionString(
-          "(A AND B1) AND NOT B1E AND NOT (C OR D OR F)");
+          "(A AND B1) AND NOT B1E AND NOT (C OR D OR F) AND CHILDREN");
     }
     if (indicatorFlag == 8) {
       compositionCohortDefinition.setCompositionString(
-          "(A AND B2) AND NOT B2E AND NOT (C OR D OR F)");
+          "(A AND B2) AND NOT B2E AND NOT (C OR D OR F) AND CHILDREN");
     }
     if (indicatorFlag == 11) {
       compositionCohortDefinition.setCompositionString(
@@ -3102,7 +3102,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition b1 = getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
-    
+
     CohortDefinition b2 = getB2_13();
 
     CohortDefinition b4 =
@@ -3120,7 +3120,7 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
-            
+
     CohortDefinition e =
         QualityImprovement2020Queries.getTransferredInPatients(
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
@@ -3222,7 +3222,7 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
-        
+
     CohortDefinition b5 =
         QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
@@ -3384,7 +3384,7 @@ public class QualityImprovement2020CohortQueries {
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition b1 = getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
-    
+
     CohortDefinition b2 = getB2_13();
 
     CohortDefinition b4 =
@@ -3394,7 +3394,7 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
-        
+
     CohortDefinition b5 =
         QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
@@ -3875,15 +3875,19 @@ public class QualityImprovement2020CohortQueries {
         EptsReportUtils.map(
             genericCohortQueries.getAgeOnMOHArtStartDate(15, null, false),
             "onOrAfter=${revisionEndDate-14m},onOrBefore=${revisionEndDate-11m},location=${location}"));
-
+    cd.addSearch(
+        "CHILDREN",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnMOHArtStartDate(0, 14, true),
+            "onOrAfter=${revisionEndDate-14m},onOrBefore=${revisionEndDate-11m},location=${location}"));
     if (flag == 3) {
       cd.setCompositionString("(A AND B1 AND NOT (B1E OR C OR D OR F)) AND G AND ADULT");
     } else if (flag == 4) {
       cd.setCompositionString("(A AND B2 AND NOT (B2E OR C OR D OR F)) AND G AND ADULT");
     } else if (flag == 7) {
-      cd.setCompositionString("(A AND B1 AND NOT (B1E OR C OR D OR F)) AND G");
+      cd.setCompositionString("(A AND B1 AND NOT (B1E OR C OR D OR F)) AND G AND CHILDREN");
     } else if (flag == 8) {
-      cd.setCompositionString("(A AND B2) AND NOT (B2E OR C OR D OR F) AND G");
+      cd.setCompositionString("(A AND B2) AND NOT (B2E OR C OR D OR F) AND G AND CHILDREN");
     } else if (flag == 11) {
       cd.setCompositionString("(A AND B1 AND C) AND NOT (B1E OR D OR F) AND G");
     }
