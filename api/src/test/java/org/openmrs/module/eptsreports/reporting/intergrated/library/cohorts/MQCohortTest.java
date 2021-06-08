@@ -11,6 +11,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.GenericMICoho
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory11CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory11P2CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory12P1CohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory15CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory7CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQGenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants;
@@ -29,6 +30,7 @@ public class MQCohortTest extends DefinitionsFGHLiveTest {
   @Autowired private MICategory11P2CohortQueries mICategory11P2CohortQueries;
   @Autowired private MICategory12P1CohortQueries mICategory12P1CohortQueries;
   @Autowired private GenericMICohortQueryCategory12 genericMICohortQueryCategory12;
+  @Autowired private MICategory15CohortQueries category15;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
@@ -52,8 +54,8 @@ public class MQCohortTest extends DefinitionsFGHLiveTest {
         new Parameter(EptsReportConstants.END_REVISION_DATE, "End Date", Date.class), revisionDate);
 
     CohortDefinition cohortDefinition =
-        miCategory7CohortQueries
-            .findPatientWhoAreNewlyEnrolledOnARTDuringRevisionPeriodAndStartTPIAndElegibleTPTCategory7RF19Denominator();
+        category15
+            .findPatientsElegibleForMDSForStablePatientsWithClinicalConsultationInTheRevisionPeriod_Denominator_15_1();
 
     final EvaluatedCohort evaluateCohortDefinition =
         this.evaluateCohortDefinition(cohortDefinition, parameters);
