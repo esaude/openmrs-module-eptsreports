@@ -17,6 +17,7 @@ public class MIDataSet extends BaseDataSet {
   @Autowired private MICategory7Dataset miCategory7Dataset;
   @Autowired private MICategory11DataSet miCategory11DataSet;
   @Autowired private MICategory12P1Dataset miCategory12Dataset;
+  @Autowired private MICategory15DataSet miCategory15Dataset;
   @Autowired private MICommonsDementions mICommonsDementions;
   @Autowired private MICategory13P1_1DataSet miCategory13P1_1DataSet;
   @Autowired private MICategory13P1_2Dataset miCategory13P1_2Dataset;
@@ -43,6 +44,7 @@ public class MIDataSet extends BaseDataSet {
     miCategory13P2Dataset.constructTMiDatset(dataSetDefinition, mappings);
     miCategory13P3Dataset.constructTMiDatset(dataSetDefinition, mappings);
     miCategory13P4Dataset.constructTMqDatset(dataSetDefinition, mappings);
+    miCategory15Dataset.constructTMiDatset(dataSetDefinition, mappings);
 
     return dataSetDefinition;
   }

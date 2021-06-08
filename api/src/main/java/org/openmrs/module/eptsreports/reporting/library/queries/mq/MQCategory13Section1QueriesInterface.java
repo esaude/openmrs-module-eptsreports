@@ -26,7 +26,7 @@ public interface MQCategory13Section1QueriesInterface {
               + "group by p.patient_id "
               + ")maxEnc "
               + "INNER JOIN person pe ON maxEnc.patient_id=pe.person_id "
-              + "WHERE (TIMESTAMPDIFF(year,birthdate,maxEnc.encounter_datetime)) > %s AND (TIMESTAMPDIFF(year,birthdate,maxEnc.encounter_datetime)) <= %s AND birthdate IS NOT NULL and pe.voided = 0 "
+              + "WHERE (TIMESTAMPDIFF(year,birthdate,maxEnc.encounter_datetime)) >= %s AND (TIMESTAMPDIFF(year,birthdate,maxEnc.encounter_datetime)) <= %s AND birthdate IS NOT NULL and pe.voided = 0 "
               + " ) final ";
 
       return String.format(sql, startAge, endAge);
