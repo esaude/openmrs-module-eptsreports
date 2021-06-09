@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.time.DateUtils;
-import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -34,34 +33,36 @@ public class TxRttNextFilaUntilEndDateCalculation extends BaseFghCalculation {
     TxRttNextFilaUntilEndDateProcessor nextFilaProcessor =
         Context.getRegisteredComponents(TxRttNextFilaUntilEndDateProcessor.class).get(0);
 
-    ListMap<Integer, Obs> resutls =
+    ListMap<Integer, Date[]> resutls =
         nextFilaProcessor.getResutls(new ArrayList<>(lastFilaCalculationResult.keySet()), context);
 
     for (Integer patientId : lastFilaCalculationResult.keySet()) {
       CalculationResult calculationResult = lastFilaCalculationResult.get(patientId);
       Date lastDateFila = (Date) (calculationResult != null ? calculationResult.getValue() : null);
-      List<Obs> allObsFila = resutls.get(patientId);
-      this.setMaxValueDateTime(patientId, lastDateFila, allObsFila, resultMap);
-    }
 
+      List<Date[]> allObsNextFila = resutls.get(patientId);
+
+      this.setMaxValueDateTime(patientId, lastDateFila, allObsNextFila, resultMap);
+    }
     return resultMap;
   }
 
   private void setMaxValueDateTime(
-      Integer pId, Date lastDateFila, List<Obs> allObsFila, CalculationResultMap resultMap) {
+      Integer pId, Date lastDateFila, List<Date[]> allObsNextFila, CalculationResultMap resultMap) {
 
     Date finalComparisonDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
     Date maxDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
 
     if (lastDateFila != null) {
-      if (allObsFila != null) {
-        for (Obs obs : allObsFila) {
-          if (obs != null) {
-            if (obs.getEncounter().getEncounterDatetime().compareTo(lastDateFila) == 0) {
-              Date valueDatetime = obs.getValueDatetime();
-              if (valueDatetime != null && valueDatetime.compareTo(maxDate) > 0) {
-                maxDate = valueDatetime;
-              }
+      if (allObsNextFila != null) {
+        for (Date[] dates : allObsNextFila) {
+
+          Date proposedLastFilaDate = dates[0];
+          if (proposedLastFilaDate.compareTo(lastDateFila) == 0) {
+            Date nextScheduledDate = dates[1];
+
+            if (nextScheduledDate != null && nextScheduledDate.compareTo(maxDate) > 0) {
+              maxDate = nextScheduledDate;
             }
           }
         }
