@@ -14,6 +14,9 @@ public class IntensiveMonitoringCohortQueries {
 
   private QualityImprovement2020CohortQueries qualityImprovement2020CohortQueries;
 
+  private final String MAPPING2 =
+      "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},location=${location}";
+
   private final String MAPPING =
       "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}";
 
@@ -527,6 +530,34 @@ public class IntensiveMonitoringCohortQueries {
             "startDate=${revisionEndDate-10m+1d},endDate=${revisionEndDate-9m},location=${location}"));
     cd.setCompositionString("MI13NUM14");
 
+    return cd;
+  }
+
+  /**
+   * Get CAT 13 P4 NUMERATOR AND DENOMINATOR Monitoria Intensiva MQHIV 2021 for the selected
+   * location and reporting period (endDateRevision)
+   *
+   * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
+   */
+  public CohortDefinition getMICat13Part4(Integer level, String type) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("MI 13.3, 13.12 AND 13.18 Numerator AND Denominator");
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+
+    cd.addSearch(
+        "MI13DEN",
+        EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13P4(true, level), MAPPING2));
+
+    cd.addSearch(
+        "MI13NUM",
+        EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13P4(false, level), MAPPING2));
+
+    if ("DEN".equals(type)) {
+      cd.setCompositionString("MI13DEN");
+    } else if ("NUM".equals(type)) {
+      cd.setCompositionString("MI13NUM");
+    }
     return cd;
   }
 }
