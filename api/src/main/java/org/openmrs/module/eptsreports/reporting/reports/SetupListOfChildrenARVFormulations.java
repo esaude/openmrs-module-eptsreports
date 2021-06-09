@@ -37,12 +37,12 @@ public class SetupListOfChildrenARVFormulations extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "LISTA DE CRIANCAS COM FORMULACOES DE ARV";
+    return "LISTA DE CRIANÇAS COM FORMULAÇÕES DE ARV";
   }
 
   @Override
   public String getDescription() {
-    return "LISTA DE CRIANCAS COM FORMULACOES DE ARV";
+    return "LISTA DE CRIANÇAS COM FORMULAÇÕES DE ARV";
   }
 
   @Override
@@ -77,7 +77,11 @@ public class SetupListOfChildrenARVFormulations extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "FORMULACOES_ARV.xls", "FR", getExcelDesignUuid(), null);
+              reportDefinition,
+              "FORMULACOES_ARV.xls",
+              "CRIANÇAS COM FORMULAÇÕES DE ARV",
+              getExcelDesignUuid(),
+              null);
       Properties props = new Properties();
       props.put("repeatingSections", "sheet:1,row:7,dataset:FR");
 
