@@ -70,6 +70,8 @@ public class TxRttDataset extends BaseDataSet {
         FORTY_FIVE_TO_FORTY_NINE,
         ABOVE_FIFTY);
 
+    definition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
+
     definition.addDimension(
         this.getColumnName(AgeRange.UNKNOWN, Gender.MALE),
         EptsReportUtils.map(
@@ -140,7 +142,7 @@ public class TxRttDataset extends BaseDataSet {
         "R-MSM",
         "Homosexual",
         EptsReportUtils.map(patientOnRttIndicator, mappings),
-        "homosexual=homosexual");
+        "gender=M|homosexual=homosexual");
 
     definition.addColumn(
         "R-PWID",
@@ -158,7 +160,7 @@ public class TxRttDataset extends BaseDataSet {
         "R-FSW",
         "Sex Worker",
         EptsReportUtils.map(patientOnRttIndicator, mappings),
-        "sex-worker=sex-worker");
+        "gender=F|sex-worker=sex-worker");
 
     definition.addColumn(
         "PLHIVLESS12MONTH",

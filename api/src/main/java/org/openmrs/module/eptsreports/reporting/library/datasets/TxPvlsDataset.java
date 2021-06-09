@@ -341,13 +341,13 @@ public class TxPvlsDataset extends BaseDataSet {
         "DRMSM",
         "Homosexual",
         EptsReportUtils.map(rotineDenominator, mappings),
-        "homosexual=homosexual");
+        "gender=M|homosexual=homosexual");
 
     dataSetDefinition.addColumn(
         "DTMSM",
         "Homosexual",
         EptsReportUtils.map(targetDenominator, mappings),
-        "homosexual=homosexual");
+        "gender=M|homosexual=homosexual");
 
     dataSetDefinition.addColumn(
         "DRPWID",
@@ -377,13 +377,13 @@ public class TxPvlsDataset extends BaseDataSet {
         "DRFSW",
         "Sex Worker",
         EptsReportUtils.map(rotineDenominator, mappings),
-        "sex-worker=sex-worker");
+        "gender=F|sex-worker=sex-worker");
 
     dataSetDefinition.addColumn(
         "DTFSW",
         "Sex Worker",
         EptsReportUtils.map(targetDenominator, mappings),
-        "sex-worker=sex-worker");
+        "gender=F|sex-worker=sex-worker");
 
     // Key population collumn Numerator
 
@@ -419,25 +419,25 @@ public class TxPvlsDataset extends BaseDataSet {
         "NRMSM",
         "Homosexual",
         EptsReportUtils.map(rotineNumerator, mappings),
-        "homosexual=homosexual");
+        "gender=M|homosexual=homosexual");
 
     dataSetDefinition.addColumn(
         "NTMSM",
         "Homosexual",
         EptsReportUtils.map(targetNumerator, mappings),
-        "homosexual=homosexual");
+        "gender=M|homosexual=homosexual");
 
     dataSetDefinition.addColumn(
         "NRFSW",
         "Sex Worker",
         EptsReportUtils.map(rotineNumerator, mappings),
-        "sex-worker=sex-worker");
+        "gender=F|sex-worker=sex-worker");
 
     dataSetDefinition.addColumn(
         "NTFSW",
         "Sex Worker",
         EptsReportUtils.map(targetNumerator, mappings),
-        "sex-worker=sex-worker");
+        "gender=F|sex-worker=sex-worker");
 
     dataSetDefinition.addColumn(
         "NRPRI",
