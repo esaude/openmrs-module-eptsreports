@@ -294,7 +294,7 @@ public interface ListOfChildrenARVFormulationsQueries {
             + "IF(@num_drugs > 2, SUBSTRING_INDEX(SUBSTRING_INDEX(drugname, ',', 3), ',', -1), '') AS D3,  "
             + "IF(@num_drugs > 3, SUBSTRING_INDEX(SUBSTRING_INDEX(drugname, ',', 4), ',', -1), '') AS D4,  "
             + "drug.person_id, drug.encounter_datetime  from (  "
-            + "select formulacao.person_id as person_id, e.encounter_datetime encounter_datetime, group_concat(drug1.name ORDER BY formulacao.value_drug  ASC) drugname from encounter e  "
+            + "select formulacao.person_id as person_id, e.encounter_datetime encounter_datetime, group_concat(drug1.name ORDER BY formulacao.value_drug  DESC) drugname from encounter e  "
             + "join obs grupo on grupo.encounter_id=e.encounter_id  "
             + "join obs formulacao on formulacao.encounter_id=e.encounter_id  "
             + "inner join drug drug1 on formulacao.value_drug=drug1.drug_id  "
