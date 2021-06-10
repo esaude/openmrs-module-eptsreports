@@ -592,7 +592,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 intensiveMonitoringCohortQueries.getMIC11DEN(5),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
-        "ageBasedOnArt54=3-14"); // porque isto inclui intervalos
+        "ageBasedOnArt54=2-14"); // porque isto inclui intervalos
     // 11.6
     dataSetDefinition.addColumn(
         "MI11DEN6",
@@ -602,7 +602,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 intensiveMonitoringCohortQueries.getMIC11DEN(6),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
-        "ageInMonths54<9m");
+        "ageInMonths54=<9m");
     // 11.7
     dataSetDefinition.addColumn(
         "MI11DEN7",
@@ -624,7 +624,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 intensiveMonitoringCohortQueries.getMIC11NUM(1),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
-        "ageBasedOnArt135=adultsArt");
+        "ageBasedOnArt54=adultsArt");
     // 11.2
     dataSetDefinition.addColumn(
         "MI11NUM2",
@@ -634,7 +634,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 intensiveMonitoringCohortQueries.getMIC11NUM(2),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
-        "ageBasedOnArt246=adultsArt");
+        "ageBasedOnArt43=adultsArt");
     // 11.3
     dataSetDefinition.addColumn(
         "MI11NUM3",
@@ -664,7 +664,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 intensiveMonitoringCohortQueries.getMIC11NUM(5),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "ageBasedOnArt54=2-14");
     // 11.6
     dataSetDefinition.addColumn(
         "MI11NUM6",
@@ -674,7 +674,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 intensiveMonitoringCohortQueries.getMIC11NUM(6),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "ageInMonths54=<9m");
     // 11.7
     dataSetDefinition.addColumn(
         "MI11NUM7",
@@ -809,6 +809,63 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             customCohortIndicator(
                 intensiveMonitoringCohortQueries.getCat12P1DenNum(10, "NUM"),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+    /* Category 15*/
+    // Den 15
+    dataSetDefinition.addColumn(
+        "MI15DEN1",
+        "MI CAT 15 DEN 1",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat15P1DenNum(true, 1),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+    dataSetDefinition.addColumn(
+        "MI15DEN2",
+        "MI CAT 15 DEN 2",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat15P1DenNum(true, 2),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+    dataSetDefinition.addColumn(
+        "MI15DEN3",
+        "MI CAT 15 DEN 3",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat15P1DenNum(true, 3),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+    // NUM 15
+    dataSetDefinition.addColumn(
+        "MI15NUM1",
+        "MI CAT 15 NUM 1",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat15P1DenNum(false, 1),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+    dataSetDefinition.addColumn(
+        "MI15NUM2",
+        "MI CAT 15 NUM 2",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat15P1DenNum(false, 2),
+                "revisionEndDate=${revisionEndDate},location=${location}"),
+            "revisionEndDate=${revisionEndDate},location=${location}"),
+        "");
+    dataSetDefinition.addColumn(
+        "MI15NUM3",
+        "MI CAT 15 NUM 3",
+        EptsReportUtils.map(
+            customCohortIndicator(
+                intensiveMonitoringCohortQueries.getCat15P1DenNum(false, 3),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
