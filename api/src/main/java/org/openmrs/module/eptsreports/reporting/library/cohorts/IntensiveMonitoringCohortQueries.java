@@ -255,7 +255,7 @@ public class IntensiveMonitoringCohortQueries {
         "MI13DEN2",
         EptsReportUtils.map(
             qualityImprovement2020CohortQueries.getMQC13P3DEN(indicator),
-            "startDate=${revisionEndDate-10m+1d},endDate=${revisionEndDate-9m},location=${location}"));
+            "startDate=${revisionEndDate-10m+1d},endDate=${revisionEndDate-9m},revisionEndDate=${revisionEndDate},location=${location}"));
     cd.setCompositionString("MI13DEN2");
     return cd;
   }
@@ -275,7 +275,7 @@ public class IntensiveMonitoringCohortQueries {
         "MI13NUM2",
         EptsReportUtils.map(
             qualityImprovement2020CohortQueries.getMQC13P3NUM(indicator),
-            "startDate=${revisionEndDate-10m+1d},endDate=${revisionEndDate-9m},location=${location}"));
+            "startDate=${revisionEndDate-10m+1d},endDate=${revisionEndDate-9m},revisionEndDate=${revisionEndDate},location=${location}"));
     cd.setCompositionString("MI13NUM2");
     return cd;
   }
