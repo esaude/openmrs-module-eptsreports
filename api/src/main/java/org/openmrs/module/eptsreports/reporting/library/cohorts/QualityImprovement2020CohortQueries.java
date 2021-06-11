@@ -2268,7 +2268,7 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.addSearch(
           "age",
           EptsReportUtils.map(
-              getAgeOnObsDatetime(3, 14),
+              getAgeOnObsDatetime(2, 14),
               "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     }
 
@@ -4274,7 +4274,7 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.addSearch(
           "age",
           EptsReportUtils.map(
-              commonCohortQueries.getMOHPatientsAgeOnLastClinicalConsultationDate(3, 14),
+              commonCohortQueries.getMOHPatientsAgeOnLastClinicalConsultationDate(2, 14),
               "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
     }
 
@@ -4452,7 +4452,7 @@ public class QualityImprovement2020CohortQueries {
       cd.addSearch(
           "age",
           EptsReportUtils.map(
-              getAgeOnObsDatetime(3, 14),
+              getAgeOnObsDatetime(2, 14),
               "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     }
 
@@ -4863,7 +4863,7 @@ public class QualityImprovement2020CohortQueries {
             + "         AND e.location_id = :location  "
             + "         AND DATE(e.encounter_datetime) = DATE(list.encounter_datetime)  "
             + "         AND o.concept_id = ${856}  "
-            + "         AND o.value_numeric > 1000) vl ON p.patient_id = vl.patient_id   "
+            + "         AND o.value_numeric >= 1000) vl ON p.patient_id = vl.patient_id   "
             + "          INNER JOIN   "
             + "      (SELECT    "
             + "          p.patient_id, e.encounter_datetime AS primeira   "
@@ -4958,7 +4958,7 @@ public class QualityImprovement2020CohortQueries {
             + "                AND e.encounter_type = ${6}  "
             + "                AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
             + "                AND o.concept_id = ${856}  "
-            + "                AND o.value_numeric > 1000  "
+            + "                AND o.value_numeric >= 1000  "
             + "        GROUP BY p.patient_id) vl ON vl.patient_id = p.patient_id  "
             + "    WHERE  "
             + "        p.voided = 0 AND e.voided = 0  "
@@ -5018,7 +5018,7 @@ public class QualityImprovement2020CohortQueries {
             "(B1 and B2)  and NOT (B4 or B5 or E or F) and Age > 14**");
       } else if (line == 12) {
         compositionCohortDefinition.setName(
-            "(B1 and B2)  and NOT (B4 or B5 or E or F) and Age > 2 and Age <= 15*");
+            "(B1 and B2)  and NOT (B4 or B5 or E or F) and Age >= 2 and Age <= 15*");
       } else if (line == 18) {
         compositionCohortDefinition.setName("(B1 and B4)  and NOT (B5 or E or F)");
       }
