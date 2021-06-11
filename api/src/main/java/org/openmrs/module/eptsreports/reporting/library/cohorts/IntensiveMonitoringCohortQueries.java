@@ -1,11 +1,16 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.metadata.TbMetadata;
+import org.openmrs.module.eptsreports.reporting.library.queries.QualityImprovement2020Queries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -21,6 +26,12 @@ public class IntensiveMonitoringCohortQueries {
 
   private HivMetadata hivMetadata;
 
+  private CommonCohortQueries commonCohortQueries;
+
+  private CommonMetadata commonMetadata;
+
+  private TbMetadata tbMetadata;
+
   private final String MAPPING2 =
       "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},location=${location}";
 
@@ -30,67 +41,820 @@ public class IntensiveMonitoringCohortQueries {
   @Autowired
   public IntensiveMonitoringCohortQueries(
       QualityImprovement2020CohortQueries qualityImprovement2020CohortQueries,
-      HivMetadata hivMetadata) {
+      HivMetadata hivMetadata,
+      CommonCohortQueries commonCohortQueries,
+      CommonMetadata commonMetadata,
+      TbMetadata tbMetadata) {
     this.qualityImprovement2020CohortQueries = qualityImprovement2020CohortQueries;
     this.hivMetadata = hivMetadata;
+    this.commonCohortQueries = commonCohortQueries;
+    this.commonMetadata = commonMetadata;
+    this.tbMetadata = tbMetadata;
   }
 
   /**
-   * Get CAT 7.1, 7.3, 7.5 Monitoria Intensiva MQHIV 2021 for the selected location and reporting
-   * period Section 7.1 (endDateRevision)
+   * Get CAT 7.1, to 7.3 and 7.5 deno Monitoria Intensiva MQHIV 2021 for the selected location and
+   * reporting period Section 7.1 (endDateRevision)
    *
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
-  public CohortDefinition getCat7DenMOHIV202171Definition(Integer level, String type) {
+  public CohortDefinition getCat7DenMI2021Part135Definition(Integer den) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("MI 7.1, 7.3, 7.5 numerator and denominator");
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+
+    if (den == 1 || den == 3) {
+      cd.setName("MI 1 OR 3 A AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
+    } else if (den == 5) {
+      cd.setName("(MI 5 A AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
+    }
+    CohortDefinition startedART = qualityImprovement2020CohortQueries.getMOHArtStartDate();
+
+    CohortDefinition b41 = qualityImprovement2020CohortQueries.getB4And1();
+    CohortDefinition b42 = qualityImprovement2020CohortQueries.getB4And2();
+
+    CohortDefinition tbActive =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getActiveTBConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition tbSymptoms =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getHasTbSymptomsConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition tbTreatment =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTBTreatmentPlanConcept(),
+            Arrays.asList(
+                tbMetadata.getStartDrugsConcept(),
+                hivMetadata.getContinueRegimenConcept(),
+                hivMetadata.getCompletedConcept()),
+            null,
+            null);
+
+    CohortDefinition tbProphilaxy =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getIsoniazidUsageConcept(),
+            Collections.singletonList(hivMetadata.getStartDrugsConcept()),
+            null,
+            null);
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getMOHPregnantORBreastfeeding(
+            commonMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition breastfeeding =
+        commonCohortQueries.getMOHPregnantORBreastfeeding(
+            commonMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition transferredIn =
+        QualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
+
+    CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
+
+    CohortDefinition tbDiagOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBDiagActive();
+
+    CohortDefinition tbSymptomsOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBSymtoms();
+
+    CohortDefinition tbTreatmentOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBTreatment();
+
     cd.addSearch(
-        "MI71DEN",
+        "A",
         EptsReportUtils.map(
-            qualityImprovement2020CohortQueries.getMQ7A(level),
+            startedART,
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
     cd.addSearch(
-        "MI71NUM",
+        "B1",
         EptsReportUtils.map(
-            qualityImprovement2020CohortQueries.getMQ7B(level),
+            tbActive,
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
-    if ("DEN".equals(type)) {
-      cd.setCompositionString("MI71DEN");
-    } else if ("NUM".equals(type)) {
-      cd.setCompositionString("MI71NUM");
+
+    cd.addSearch(
+        "B2",
+        EptsReportUtils.map(
+            tbSymptoms,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "B3",
+        EptsReportUtils.map(
+            tbTreatment,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "B4",
+        EptsReportUtils.map(
+            tbProphilaxy,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(
+            pregnant,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            breastfeeding,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "E",
+        EptsReportUtils.map(
+            transferredIn,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "F",
+        EptsReportUtils.map(
+            transferOut,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "H",
+        EptsReportUtils.map(
+            tbDiagOnPeriod,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "I",
+        EptsReportUtils.map(
+            tbSymptomsOnPeriod,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "J",
+        EptsReportUtils.map(
+            tbTreatmentOnPeriod,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "B41",
+        EptsReportUtils.map(
+            b41,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "B42",
+        EptsReportUtils.map(
+            b42,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    if (den == 1 || den == 3) {
+      cd.setCompositionString("A AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
+    } else if (den == 5) {
+      cd.setCompositionString("(A AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
     }
     return cd;
   }
 
   /**
-   * Get CAT 7.2, 7.4, 7.6 Monitoria Intensiva MQHIV 2021 for the selected location and reporting
-   * period Section 7.1 (endDateRevision)
+   * Get CAT 7.2, to 7.4 and 7.6 deno Monitoria Intensiva MQHIV 2021 for the selected location and
+   * reporting period Section 7.1 (endDateRevision)
    *
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
-  public CohortDefinition getCat7DenMOHIV202172Definition(Integer level, String type) {
+  public CohortDefinition getCat7DenMI2021Part246Definition(Integer den) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("MI 7.2, 7.4, 7.6 numerator and denominator");
+    cd.setName("MI 7.2, 7.4, 7.6 denominator");
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+
+    if (den == 2 || den == 4) {
+      cd.setName(
+          "MI 2 OR 4 (A AND B4) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F OR H OR I OR J)");
+    } else if (den == 6) {
+      cd.setName("MI 6 (A AND B4 AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F OR H OR I OR J)");
+    }
+    CohortDefinition startedART = qualityImprovement2020CohortQueries.getMOHArtStartDate();
+
+    CohortDefinition b41 = qualityImprovement2020CohortQueries.getB4And1();
+    CohortDefinition b42 = qualityImprovement2020CohortQueries.getB4And2();
+
+    CohortDefinition tbActive =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getActiveTBConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition tbSymptoms =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getHasTbSymptomsConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition tbTreatment =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTBTreatmentPlanConcept(),
+            Arrays.asList(
+                tbMetadata.getStartDrugsConcept(),
+                hivMetadata.getContinueRegimenConcept(),
+                hivMetadata.getCompletedConcept()),
+            null,
+            null);
+
+    CohortDefinition tbProphilaxy =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getIsoniazidUsageConcept(),
+            Collections.singletonList(hivMetadata.getStartDrugsConcept()),
+            null,
+            null);
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getMOHPregnantORBreastfeeding(
+            commonMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition breastfeeding =
+        commonCohortQueries.getMOHPregnantORBreastfeeding(
+            commonMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition transferredIn =
+        QualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
+
+    CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
+
+    CohortDefinition tbDiagOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBDiagActive();
+
+    CohortDefinition tbSymptomsOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBSymtoms();
+
+    CohortDefinition tbTreatmentOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBTreatment();
+
     cd.addSearch(
-        "MI72DEN",
+        "A",
         EptsReportUtils.map(
-            qualityImprovement2020CohortQueries.getMQ7A(level),
+            startedART,
             "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
     cd.addSearch(
-        "MI72NUM",
+        "B1",
         EptsReportUtils.map(
-            qualityImprovement2020CohortQueries.getMQ7B(level),
+            tbActive,
             "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
-    if ("DEN".equals(type)) {
-      cd.setCompositionString("MI72DEN");
-    } else if ("NUM".equals(type)) {
-      cd.setCompositionString("MI72NUM");
+
+    cd.addSearch(
+        "B2",
+        EptsReportUtils.map(
+            tbSymptoms,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    cd.addSearch(
+        "B3",
+        EptsReportUtils.map(
+            tbTreatment,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    cd.addSearch(
+        "B4",
+        EptsReportUtils.map(
+            tbProphilaxy,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(
+            pregnant,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            breastfeeding,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    cd.addSearch(
+        "E",
+        EptsReportUtils.map(
+            transferredIn,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    cd.addSearch(
+        "F",
+        EptsReportUtils.map(
+            transferOut,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "H",
+        EptsReportUtils.map(
+            tbDiagOnPeriod,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    cd.addSearch(
+        "I",
+        EptsReportUtils.map(
+            tbSymptomsOnPeriod,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    cd.addSearch(
+        "J",
+        EptsReportUtils.map(
+            tbTreatmentOnPeriod,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    cd.addSearch(
+        "B41",
+        EptsReportUtils.map(
+            b41,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    cd.addSearch(
+        "B42",
+        EptsReportUtils.map(
+            b42,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    if (den == 2 || den == 4) {
+      cd.setCompositionString(
+          "(A AND (B41 OR B42)) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F OR H OR I OR J)");
+    } else if (den == 6) {
+      cd.setCompositionString(
+          "(A AND (B41 OR B42) AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F OR H OR I OR J)");
     }
     return cd;
+  }
+
+  /**
+   * Get CAT 7.1, to 7.3 and 7.5 numerator Monitoria Intensiva MQHIV 2021 for the selected location
+   * and reporting period Section 7 (endDateRevision)
+   *
+   * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
+   */
+  public CohortDefinition getCat7NumMI2021Part135Definition(Integer num) {
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+
+    if (num == 1 || num == 3) {
+      compositionCohortDefinition.setName(
+          "MI NUM 1 OR 3 (A AND B4) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
+    } else if (num == 5) {
+      compositionCohortDefinition.setName(
+          "MI NUM 5(A AND C AND B4) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
+    }
+    compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+
+    CohortDefinition startedART = qualityImprovement2020CohortQueries.getMOHArtStartDate();
+
+    CohortDefinition tbActive =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getActiveTBConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition tbSymptoms =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getHasTbSymptomsConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition tbTreatment =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTBTreatmentPlanConcept(),
+            Arrays.asList(
+                tbMetadata.getStartDrugsConcept(),
+                hivMetadata.getContinueRegimenConcept(),
+                hivMetadata.getCompletedConcept()),
+            null,
+            null);
+
+    CohortDefinition tbProphilaxy =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getIsoniazidUsageConcept(),
+            Collections.singletonList(hivMetadata.getStartDrugs()),
+            null,
+            null);
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getMOHPregnantORBreastfeeding(
+            commonMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition breastfeeding =
+        commonCohortQueries.getMOHPregnantORBreastfeeding(
+            commonMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition transferredIn =
+        QualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
+
+    CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
+
+    CohortDefinition tbProphylaxyOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithProphylaxyDuringRevisionPeriod();
+
+    CohortDefinition tbDiagOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBDiagActive();
+
+    CohortDefinition tbSymptomsOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBSymtoms();
+
+    CohortDefinition tbTreatmentOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBTreatment();
+
+    CohortDefinition b41 = qualityImprovement2020CohortQueries.getB4And1();
+
+    CohortDefinition b42 = qualityImprovement2020CohortQueries.getB4And2();
+
+    compositionCohortDefinition.addSearch(
+        "A",
+        EptsReportUtils.map(
+            startedART,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B1",
+        EptsReportUtils.map(
+            tbActive,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B2",
+        EptsReportUtils.map(
+            tbSymptoms,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B3",
+        EptsReportUtils.map(
+            tbTreatment,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B4",
+        EptsReportUtils.map(
+            tbProphilaxy,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "C",
+        EptsReportUtils.map(
+            pregnant,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "D",
+        EptsReportUtils.map(
+            breastfeeding,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "E",
+        EptsReportUtils.map(
+            transferredIn,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "F",
+        EptsReportUtils.map(
+            transferOut,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "G",
+        EptsReportUtils.map(
+            tbProphylaxyOnPeriod,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "H",
+        EptsReportUtils.map(
+            tbDiagOnPeriod,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "I",
+        EptsReportUtils.map(
+            tbSymptomsOnPeriod,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "J",
+        EptsReportUtils.map(
+            tbTreatmentOnPeriod,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B41",
+        EptsReportUtils.map(
+            b41,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B42",
+        EptsReportUtils.map(
+            b42,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "GNEW",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getGNew(),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    if (num == 1 || num == 3) {
+      compositionCohortDefinition.setCompositionString(
+          "(A AND  (B41 OR B42)) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
+    } else if (num == 5) {
+      compositionCohortDefinition.setCompositionString(
+          "(A AND C AND (B41 OR B42) ) AND NOT (B1 OR B2 OR B3 OR D OR E OR F)");
+    }
+    return compositionCohortDefinition;
+  }
+
+  /**
+   * Get CAT 7.2, to 7.4 and 7.6 numerator Monitoria Intensiva MQHIV 2021 for the selected location
+   * and reporting period Section 7 (endDateRevision)
+   *
+   * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
+   */
+  public CohortDefinition getCat7NumMI2021Part246Definition(Integer num) {
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+
+    if (num == 2 || num == 4) {
+      compositionCohortDefinition.setName(
+          "MI NUM 2 OR 4(A AND B4 AND G) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F )");
+    } else if (num == 6) {
+      compositionCohortDefinition.setName(
+          "MI NUM 6 (A AND B4 AND C AND G) AND NOT (B1 OR B2 OR B3 OR D OR E OR F OR H OR I OR J)");
+    }
+    compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+
+    CohortDefinition startedART = qualityImprovement2020CohortQueries.getMOHArtStartDate();
+
+    CohortDefinition tbActive =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getActiveTBConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition tbSymptoms =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getHasTbSymptomsConcept(),
+            Collections.singletonList(hivMetadata.getYesConcept()),
+            null,
+            null);
+
+    CohortDefinition tbTreatment =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            tbMetadata.getTBTreatmentPlanConcept(),
+            Arrays.asList(
+                tbMetadata.getStartDrugsConcept(),
+                hivMetadata.getContinueRegimenConcept(),
+                hivMetadata.getCompletedConcept()),
+            null,
+            null);
+
+    CohortDefinition tbProphilaxy =
+        commonCohortQueries.getMohMQPatientsOnCondition(
+            false,
+            false,
+            "once",
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getIsoniazidUsageConcept(),
+            Collections.singletonList(hivMetadata.getStartDrugs()),
+            null,
+            null);
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getMOHPregnantORBreastfeeding(
+            commonMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition breastfeeding =
+        commonCohortQueries.getMOHPregnantORBreastfeeding(
+            commonMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition transferredIn =
+        QualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
+
+    CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
+
+    CohortDefinition tbProphylaxyOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithProphylaxyDuringRevisionPeriod();
+
+    CohortDefinition tbDiagOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBDiagActive();
+
+    CohortDefinition tbSymptomsOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBSymtoms();
+
+    CohortDefinition tbTreatmentOnPeriod =
+        qualityImprovement2020CohortQueries.getPatientsWithTBTreatment();
+
+    CohortDefinition b41 = qualityImprovement2020CohortQueries.getB4And1();
+
+    CohortDefinition b42 = qualityImprovement2020CohortQueries.getB4And2();
+
+    compositionCohortDefinition.addSearch(
+        "A",
+        EptsReportUtils.map(
+            startedART,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B1",
+        EptsReportUtils.map(
+            tbActive,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B2",
+        EptsReportUtils.map(
+            tbSymptoms,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B3",
+        EptsReportUtils.map(
+            tbTreatment,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B4",
+        EptsReportUtils.map(
+            tbProphilaxy,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "C",
+        EptsReportUtils.map(
+            pregnant,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "D",
+        EptsReportUtils.map(
+            breastfeeding,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "E",
+        EptsReportUtils.map(
+            transferredIn,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "F",
+        EptsReportUtils.map(
+            transferOut,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "G",
+        EptsReportUtils.map(
+            tbProphylaxyOnPeriod,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "H",
+        EptsReportUtils.map(
+            tbDiagOnPeriod,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "I",
+        EptsReportUtils.map(
+            tbSymptomsOnPeriod,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "J",
+        EptsReportUtils.map(
+            tbTreatmentOnPeriod,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B41",
+        EptsReportUtils.map(
+            b41,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B42",
+        EptsReportUtils.map(
+            b42,
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "GNEW",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getGNew(),
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    if (num == 2 || num == 4) {
+      compositionCohortDefinition.setCompositionString(
+          "(A AND (B41 OR B42) AND GNEW) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F OR H OR I OR J)");
+    } else if (num == 6) {
+      compositionCohortDefinition.setCompositionString(
+          "(A AND (B41 OR B42) AND C AND GNEW) AND NOT (B1 OR B2 OR B3 OR D OR E OR F OR H OR I OR J)");
+    }
+    return compositionCohortDefinition;
   }
 
   /**
