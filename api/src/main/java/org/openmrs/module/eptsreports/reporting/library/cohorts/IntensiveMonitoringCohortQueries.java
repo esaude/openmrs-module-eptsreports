@@ -222,10 +222,10 @@ public class IntensiveMonitoringCohortQueries {
     String MAPPING = "";
     if (level == 1 || level == 5 || level == 9)
       MAPPING =
-          "startDate=${revisionEndDate-3m+1d},endDate=${revisionEndDate-2m},location=${location}";
+          "startDate=${revisionEndDate-3m+1d},endDate=${revisionEndDate-2m},revisionEndDate=${revisionEndDate},location=${location}";
     else
       MAPPING =
-          "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},location=${location}";
+          "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}";
     cd.addSearch(
         "MI12P1DEN",
         EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ12DEN(level), MAPPING));
