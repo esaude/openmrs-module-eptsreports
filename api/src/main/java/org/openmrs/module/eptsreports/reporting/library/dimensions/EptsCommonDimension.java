@@ -381,9 +381,9 @@ public class EptsCommonDimension {
     dim.setName("Patients having age in months");
     dim.addParameter(new Parameter("effectiveDate", "End Date", Date.class));
     dim.addCohortDefinition(
-        "<9m",
+        "9m-",
         EptsReportUtils.map(
-            genericCohortQueries.getAgeInMonths(0, 8), "effectiveDate=${effectiveDate}"));
+            genericCohortQueries.getAgeInMonths(0, 9), "effectiveDate=${effectiveDate}"));
     return dim;
   }
   /**

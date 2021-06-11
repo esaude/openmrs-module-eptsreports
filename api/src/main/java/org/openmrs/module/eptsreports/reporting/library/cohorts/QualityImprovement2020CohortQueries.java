@@ -3346,7 +3346,7 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getArtStatus().getConceptId());
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition i = getMQC11NI();
-    CohortDefinition babies = genericCohortQueries.getAgeInMonths(0, 8);
+    CohortDefinition babies = genericCohortQueries.getAgeInMonths(0, 9);
 
     compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
     compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
