@@ -168,7 +168,7 @@ public class IntensiveMonitoringCohortQueries {
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     String mapp =
-        "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}";
+        "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}";
     cd.addSearch(
         "MI13DEN",
         EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13(true, level), mapp));
