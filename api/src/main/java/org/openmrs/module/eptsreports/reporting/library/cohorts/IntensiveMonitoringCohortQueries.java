@@ -1315,7 +1315,7 @@ public class IntensiveMonitoringCohortQueries {
             + "            AND e.encounter_datetime BETWEEN :startDate AND :endDate GROUP BY p.patient_id "
             + "            )  "
             + " as last_consultation on last_consultation.patient_id = juncao.patient_id "
-            + " WHERE juncao.encounter_date < DATE_SUB(last_consultation.last_consultation_date, INTERVAL 12 MONTH)) as lastVLResult "
+            + " WHERE juncao.encounter_date < DATE_SUB(last_consultation.last_consultation_date, INTERVAL 18 MONTH)) as lastVLResult "
             + " ON lastVLResult.patient_id=p.patient_id "
             + " WHERE "
             + " o.concept_id=${856} AND o.value_numeric is not null AND e.encounter_type=${6} AND  "
@@ -1351,6 +1351,7 @@ public class IntensiveMonitoringCohortQueries {
     CohortDefinition j = getMI15J();
     CohortDefinition k = getMI15K();
     CohortDefinition l = getMI15L();
+    CohortDefinition p = getMI15P();
     CohortDefinition major2 = getAgeOnLastConsultationMoreThan2Years();
     String MAPPINGA =
         "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}";
@@ -1372,6 +1373,7 @@ public class IntensiveMonitoringCohortQueries {
     cd.addSearch("J", EptsReportUtils.map(j, MAPPINGA));
     cd.addSearch("K", EptsReportUtils.map(k, MAPPINGA));
     cd.addSearch("L", EptsReportUtils.map(l, MAPPINGA));
+    cd.addSearch("P", EptsReportUtils.map(p, MAPPINGA));
     cd.addSearch("AGE2", EptsReportUtils.map(major2, MAPPINGA));
 
     if (isDenominator) {
@@ -1382,11 +1384,11 @@ public class IntensiveMonitoringCohortQueries {
       }
       if (level == 2) {
         cd.setName("Denominator: " + name2);
-        cd.setCompositionString("A AND J AND H ");
+        cd.setCompositionString("A AND J AND H AND AGE2");
       }
       if (level == 3) {
         cd.setName("Denominator: " + name3);
-        cd.setCompositionString("A AND J AND B2 ");
+        cd.setCompositionString("A AND J AND B2 AND NOT P AND AGE2");
       }
       return cd;
     }
@@ -1397,11 +1399,11 @@ public class IntensiveMonitoringCohortQueries {
     }
     if (level == 2) {
       cd.setName("Numerator: " + name2);
-      cd.setCompositionString("A AND J AND H AND L");
+      cd.setCompositionString("A AND J AND H AND L AND AGE2");
     }
     if (level == 3) {
       cd.setName("Numerator: " + name3);
-      cd.setCompositionString("A AND J AND B2 AND I");
+      cd.setCompositionString("A AND J AND B2 AND NOT P AND I AND AGE2");
     }
     return cd;
   }
@@ -1436,10 +1438,49 @@ public class IntensiveMonitoringCohortQueries {
             + "                GROUP BY p.patient_id) "
             + "        AS last_clinical ON last_clinical.patient_id = p.person_id "
             + "WHERE p.voided = 0 "
-            + "    AND  TIMESTAMPDIFF(YEAR,p.birthdate,last_clinical.encounter_datetime) > 2 ";
+            + "    AND  TIMESTAMPDIFF(YEAR,p.birthdate,last_clinical.encounter_datetime) >= 2 ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     String str = stringSubstitutor.replace(sql);
+    cd.setQuery(str);
+    return cd;
+  }
+
+  /**
+   * P- Select all patients with concept “PEDIDO DE INVESTIGACOES LABORATORIAIS” (Concept Id 23722) and value coded “HIV CARGA VIRAL”
+   (Concept Id 856) registered in Ficha Clinica (encounter type 6) during the last 3 months from the “Last Consultation Date” 
+   (encounter_datetime from A), i.e, at least one “Pedido de Carga Viral” encounter_datetime >= “Last Consultation Date”-3months 
+    and < “Last Consultation Date”.  
+   */
+  public CohortDefinition getMI15P() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients with Pedido de Carga Viral");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    cd.setName("Patients From Ficha Clinica");
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+
+    String query =
+        " SELECT p.patient_id FROM patient p INNER JOIN encounter e "
+            + " on p.patient_id = e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id "
+            + " INNER JOIN (SELECT pp.patient_id, MAX(ee.encounter_datetime) AS last_consultation_date"
+            + " FROM patient pp INNER JOIN encounter ee ON ee.patient_id = pp.patient_id"
+            + " WHERE pp.voided = 0 AND ee.voided = 0 AND ee.location_id = :location AND ee.encounter_type = ${6}"
+            + " AND ee.encounter_datetime BETWEEN :startDate AND :endDate"
+            + " GROUP BY pp.patient_id) last_consultation ON p.patient_id = last_consultation.patient_id"
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.location_id = :location AND e.encounter_type = ${6}"
+            + " AND o.concept_id = ${23722} AND o.value_coded = ${856} "
+            + " AND e.encounter_datetime >= DATE_SUB(last_consultation.last_consultation_date, INTERVAL 3 MONTH)"
+            + " AND e.encounter_datetime < last_consultation.last_consultation_date"
+            + " GROUP BY p.patient_id";
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    String str = stringSubstitutor.replace(query);
     cd.setQuery(str);
     return cd;
   }
