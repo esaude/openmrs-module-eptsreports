@@ -57,7 +57,7 @@ public class MQAgeDimensions {
     dimension.addCohortDefinition(
         "2-14",
         EptsReportUtils.map(
-            this.findPatientsWithLastClinicalConsultationDenominatorB1AgeCalculation(3, 14),
+            this.findPatientsWithLastClinicalConsultationDenominatorB1AgeCalculation(2, 14),
             mappings));
 
     return dimension;
