@@ -13,6 +13,18 @@ public interface MICategory15QueriesInterface {
             + "group by p.patient_id "
             + ")maxEnc";
 
+    public static final String
+        findPatientsWithClinicalConsultationDuringRevisionPeriodAndAgeGreaterOrEqualTwoYears =
+            "Select maxEnc.patient_id from ( "
+                + "Select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
+                + "inner join encounter e on p.patient_id=e.patient_id "
+                + "where p.voided=0 and e.voided=0 and e.encounter_type=6 and "
+                + "e.encounter_datetime >=:startInclusionDate and e.encounter_datetime<=:endInclusionDate  and e.location_id=:location "
+                + "group by p.patient_id "
+                + ")maxEnc "
+                + "INNER JOIN person pe ON maxEnc.patient_id=pe.person_id "
+                + "and (TIMESTAMPDIFF(year,pe.birthdate,maxEnc.encounter_datetime)) >=2 AND pe.birthdate IS NOT NULL and pe.voided = 0 ";
+
     public static final String findPatientsWhoArePregnantSpecificForCategory15MI =
         " SELECT p.patient_id FROM person pe "
             + " INNER JOIN patient p ON pe.person_id = p.patient_id "
@@ -58,7 +70,7 @@ public interface MICategory15QueriesInterface {
                 + "group by p.patient_id "
                 + ") maxEnc ) consulta on consulta.patient_id = art.patient_id "
                 + "INNER JOIN person pe ON art.patient_id=pe.person_id "
-                + "and (TIMESTAMPDIFF(year,pe.birthdate,consulta.encounter_datetime)) >2 AND pe.birthdate IS NOT NULL and pe.voided = 0 "
+                + "and (TIMESTAMPDIFF(year,pe.birthdate,consulta.encounter_datetime)) >=2 AND pe.birthdate IS NOT NULL and pe.voided = 0 "
                 + "where (TIMESTAMPDIFF(MONTH,art.art_start_date,consulta.encounter_datetime)) >3 "
                 + ") final ";
 
@@ -593,7 +605,7 @@ public interface MICategory15QueriesInterface {
                 + " inner join obs o on e.encounter_id=o.encounter_id "
                 + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and ((o.concept_id = 856 and o.value_numeric < 1000) OR (o.concept_id = 1305 and o.value_coded is not null)) and e.location_id = :location "
                 + " group by p.patient_id "
-                + " ) ultimaCVAlta on ultimaCVAlta.patient_id = maxEnc.patient_id and ultimaCVAlta.data_carga < (maxEnc.encounter_datetime - INTERVAL 12 MONTH) "
+                + " ) ultimaCVAlta on ultimaCVAlta.patient_id = maxEnc.patient_id and ultimaCVAlta.data_carga < (maxEnc.encounter_datetime - INTERVAL 18 MONTH) "
                 + " )final "
                 + " where patient_id in "
                 + " (Select p.patient_id "
@@ -804,5 +816,24 @@ public interface MICategory15QueriesInterface {
             + "where max_dts.max_datadts=obs.obs_datetime and obs.concept_id=23888 and obs.voided=0 and obs.value_coded=1267 and obs.location_id=:location and e.encounter_type=6 and e.voided=0 ) "
             + ") ds on ds.patient_id = maxEnc.patient_id and ds.data_levantamento < maxEnc.encounter_datetime "
             + ") dsFinal ";
+
+    public static final String
+        findAllPatientsWhoHaveLaboratoryInvestigationsRequestsAndViralChargeInLastConsultationDuringLastThreeMonths =
+            "Select patient_id from ( "
+                + "Select maxEnc.patient_id,maxEnc.encounter_datetime, obsCV.obs_datetime from ( "
+                + "Select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
+                + "inner join encounter e on p.patient_id=e.patient_id "
+                + "where p.voided=0 and e.voided=0 and e.encounter_type=6 and "
+                + "e.encounter_datetime >=:startInclusionDate and e.encounter_datetime<=:endInclusionDate and e.location_id=:location "
+                + "group by p.patient_id "
+                + ") maxEnc "
+                + "inner join encounter  e on e.patient_id=maxEnc.patient_id "
+                + "inner join obs obsCV on obsCV.encounter_id=e.encounter_id "
+                + "where obsCV.concept_id=23722 and obsCV.value_coded = 856 and obsCV.voided=0 and e.voided=0 "
+                + " and e.encounter_type  = 6 and e.location_id = :location "
+                + "and e.encounter_datetime >= (maxEnc.encounter_datetime - INTERVAL 3 MONTH) AND  e.encounter_datetime < maxEnc.encounter_datetime "
+                + "group by maxEnc.patient_id "
+                + ") final "
+                + "group by final.patient_id ";
   }
 }
