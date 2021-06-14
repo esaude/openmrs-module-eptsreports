@@ -962,13 +962,13 @@ public class IntensiveMonitoringCohortQueries {
           "MI11DEN",
           EptsReportUtils.map(
               qualityImprovement2020CohortQueries.getMQC11DEN(indicatorFlag),
-              "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},location=${location}"));
+              "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}"));
     } else if (indicatorFlag == 2 || indicatorFlag == 4 || indicatorFlag == 7) {
       cd.addSearch(
           "MI11DEN",
           EptsReportUtils.map(
               qualityImprovement2020CohortQueries.getMQC11DEN(indicatorFlag),
-              "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},location=${location}"));
+              "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
     }
     cd.setCompositionString("MI11DEN");
     return cd;
@@ -1237,7 +1237,7 @@ public class IntensiveMonitoringCohortQueries {
     String MAPPING =
         "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}";
     String MAPPING1 =
-        "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},location=${location}";
+        "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}";
     if (indicatorFlag == 1) {
       cd.addSearch(
           "MI11NUM",
@@ -2211,10 +2211,11 @@ public class IntensiveMonitoringCohortQueries {
   }
 
   /**
-   * P- Select all patients with concept “PEDIDO DE INVESTIGACOES LABORATORIAIS” (Concept Id 23722) and value coded “HIV CARGA VIRAL”
-   (Concept Id 856) registered in Ficha Clinica (encounter type 6) during the last 3 months from the “Last Consultation Date” 
-   (encounter_datetime from A), i.e, at least one “Pedido de Carga Viral” encounter_datetime >= “Last Consultation Date”-3months 
-    and < “Last Consultation Date”.  
+   * P- Select all patients with concept “PEDIDO DE INVESTIGACOES LABORATORIAIS” (Concept Id 23722)
+   * and value coded “HIV CARGA VIRAL” (Concept Id 856) registered in Ficha Clinica (encounter type
+   * 6) during the last 3 months from the “Last Consultation Date” (encounter_datetime from A), i.e,
+   * at least one “Pedido de Carga Viral” encounter_datetime >= “Last Consultation Date”-3months
+   * and < “Last Consultation Date”.
    */
   public CohortDefinition getMI15P() {
 
