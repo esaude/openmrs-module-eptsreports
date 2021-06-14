@@ -488,6 +488,32 @@ public class MIAgeDimentions {
     return definition;
   }
 
+  @DocumentedDefinition(
+      value =
+          "findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominatorAgeRange")
+  public CohortDefinition
+      findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominatorAgeRange(
+          int startAge, int endAge) {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("patientsPregnantEnrolledOnART");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQQueriesInterface.QUERY
+            .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominatorAgeRange;
+
+    String finalQuery = String.format(query, startAge, endAge);
+
+    definition.setQuery(finalQuery);
+
+    return definition;
+  }
+
   public CohortDefinitionDimension
       findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodP3B2NEWCalculeteAgeBiggerThan() {
     final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
@@ -515,6 +541,14 @@ public class MIAgeDimentions {
             this
                 .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominatorLessThan(
                     15),
+            mappings));
+
+    dimension.addCohortDefinition(
+        "2-14-10MONTHS",
+        EptsReportUtils.map(
+            this
+                .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominatorAgeRange(
+                    2, 14),
             mappings));
 
     return dimension;

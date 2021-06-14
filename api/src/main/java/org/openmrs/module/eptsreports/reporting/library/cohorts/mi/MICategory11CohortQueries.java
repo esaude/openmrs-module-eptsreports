@@ -54,14 +54,14 @@ public class MICategory11CohortQueries {
         EptsReportUtils.map(
             this.mQCohortQueries
                 .findPatientsWhoHasCVBiggerThan1000AndMarkedAsPregnantInTheSameClinicalConsultation(),
-                mappingsMIB1));
+            mappingsMIB1));
 
     definition.addSearch(
         "B5",
         EptsReportUtils.map(
             this.mQCohortQueries
                 .findPatientsWhoHasCVBiggerThan1000AndMarkedAsBreastFeedingInTheSameClinicalConsultation(),
-                mappingsMIB1));
+            mappingsMIB1));
 
     definition.addSearch(
         "TRANSFERED-IN",
