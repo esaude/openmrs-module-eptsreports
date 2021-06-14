@@ -29,7 +29,7 @@ public class MIDataSet extends BaseDataSet {
     final CohortIndicatorDataSetDefinition dataSetDefinition =
         new CohortIndicatorDataSetDefinition();
 
-    dataSetDefinition.setName("MQ Data Set");
+    dataSetDefinition.setName("MI Data Set");
     dataSetDefinition.setParameters(getParameters());
 
     final String mappings =
