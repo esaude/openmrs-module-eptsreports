@@ -3,7 +3,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.midatasets;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -40,12 +39,12 @@ public class MIDataSet extends BaseDataSet {
     this.miCategory7Dataset.constructTMiDatset(dataSetDefinition, mappings);
     this.miCategory11DataSet.constructTMiDatset(dataSetDefinition, mappings);
     this.miCategory12Dataset.constructTMiDatset(dataSetDefinition, mappings);
-    this. miCategory13P1_1DataSet.constructTMiDatset(dataSetDefinition, mappings);
+    this.miCategory13P1_1DataSet.constructTMiDatset(dataSetDefinition, mappings);
     this.miCategory13P1_2Dataset.constructTMiDatset(dataSetDefinition, mappings);
     this.miCategory13P2Dataset.constructTMiDatset(dataSetDefinition, mappings);
     this.miCategory13P3Dataset.constructTMiDatset(dataSetDefinition, mappings);
     this.miCategory13P4Dataset.constructTMiDatset(dataSetDefinition, mappings);
-    this. miCategory15Dataset.constructTMiDatset(dataSetDefinition, mappings);
+    this.miCategory15Dataset.constructTMiDatset(dataSetDefinition, mappings);
 
     return dataSetDefinition;
   }
