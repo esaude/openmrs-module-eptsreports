@@ -198,11 +198,9 @@ public class MICategory11P2CohortQueries {
     definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     definition.addParameter(new Parameter("location", "location", Date.class));
 
-    final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappingsMIB1 =
-        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-4m+1d},endInclusionDate=${endRevisionDate-3m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappings =
         "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
@@ -215,13 +213,13 @@ public class MICategory11P2CohortQueries {
     definition.addSearch(
         "PREGNANT-B4",
         EptsReportUtils.map(
-            mQCohortQueries.findPatientWithCVOver1000CopiesAndPregnatCategory11B4(), mappingsMI));
+            mQCohortQueries.findPatientWithCVOver1000CopiesAndPregnatCategory11B4(), mappingsMIB1));
 
     definition.addSearch(
         "BREASTFEEDING-B5",
         EptsReportUtils.map(
             mQCohortQueries.findPatientWithCVOver1000CopiesAndBreastfeedingCategory11B5(),
-            mappingsMI));
+            mappingsMIB1));
 
     definition.addSearch(
         "TRANSFERED-IN",
