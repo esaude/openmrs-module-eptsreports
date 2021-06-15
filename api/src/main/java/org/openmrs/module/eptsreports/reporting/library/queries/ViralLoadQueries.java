@@ -177,10 +177,11 @@ public class ViralLoadQueries {
    * into age required
    */
   public static String getPatientAgeBasedOnFirstViralLoadDate(
-      int conceptId, int encounterType, int minAge, int maxAge) {
+      int conceptId, int encounterType, int masterCardEncounterType, int minAge, int maxAge) {
     Map<String, Integer> map = new HashMap<>();
     map.put("viralLoadConcept", conceptId);
     map.put("encounterType", encounterType);
+    map.put("masterCardEncounterType", masterCardEncounterType);
     map.put("minAge", minAge);
     map.put("maxAge", maxAge);
     String query =
@@ -209,7 +210,7 @@ public class ViralLoadQueries {
             + " AND        o.voided=0 "
             + " AND        e.location_id=:location "
             + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + " AND e.encounter_type=${encounterType} "
+            + " AND e.encounter_type in (${encounterType}, ${masterCardEncounterType}) "
             + " AND o.concept_id=${viralLoadConcept} "
             + " AND o.value_numeric > 1000 ) al "
             + " GROUP BY patient_id) ex "

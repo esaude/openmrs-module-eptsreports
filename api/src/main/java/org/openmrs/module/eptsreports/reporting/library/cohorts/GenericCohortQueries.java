@@ -699,6 +699,7 @@ public class GenericCohortQueries {
         ViralLoadQueries.getPatientAgeBasedOnFirstViralLoadDate(
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             minAge,
             maxAge));
   }
