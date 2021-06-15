@@ -71,9 +71,6 @@ public class IntensiveMonitoringCohortQueries {
     }
     CohortDefinition startedART = qualityImprovement2020CohortQueries.getMOHArtStartDate();
 
-    CohortDefinition b41 = qualityImprovement2020CohortQueries.getB4And1();
-    CohortDefinition b42 = qualityImprovement2020CohortQueries.getB4And2();
-
     CohortDefinition tbActive =
         commonCohortQueries.getMohMQPatientsOnCondition(
             false,
@@ -110,17 +107,6 @@ public class IntensiveMonitoringCohortQueries {
             null,
             null);
 
-    CohortDefinition tbProphilaxy =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            false,
-            "once",
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getIsoniazidUsageConcept(),
-            Collections.singletonList(hivMetadata.getStartDrugsConcept()),
-            null,
-            null);
-
     CohortDefinition pregnant =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
             commonMetadata.getPregnantConcept().getConceptId(),
@@ -140,15 +126,6 @@ public class IntensiveMonitoringCohortQueries {
             hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
-
-    CohortDefinition tbDiagOnPeriod =
-        qualityImprovement2020CohortQueries.getPatientsWithTBDiagActive();
-
-    CohortDefinition tbSymptomsOnPeriod =
-        qualityImprovement2020CohortQueries.getPatientsWithTBSymtoms();
-
-    CohortDefinition tbTreatmentOnPeriod =
-        qualityImprovement2020CohortQueries.getPatientsWithTBTreatment();
 
     cd.addSearch(
         "A",
@@ -175,64 +152,28 @@ public class IntensiveMonitoringCohortQueries {
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
 
     cd.addSearch(
-        "B4",
-        EptsReportUtils.map(
-            tbProphilaxy,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
-
-    cd.addSearch(
         "C",
         EptsReportUtils.map(
             pregnant,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "D",
         EptsReportUtils.map(
             breastfeeding,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "E",
         EptsReportUtils.map(
             transferredIn,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "F",
         EptsReportUtils.map(
             transferOut,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    cd.addSearch(
-        "H",
-        EptsReportUtils.map(
-            tbDiagOnPeriod,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
-
-    cd.addSearch(
-        "I",
-        EptsReportUtils.map(
-            tbSymptomsOnPeriod,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
-
-    cd.addSearch(
-        "J",
-        EptsReportUtils.map(
-            tbTreatmentOnPeriod,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
-
-    cd.addSearch(
-        "B41",
-        EptsReportUtils.map(
-            b41,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
-
-    cd.addSearch(
-        "B42",
-        EptsReportUtils.map(
-            b42,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
     if (den == 1 || den == 3) {
       cd.setCompositionString("A AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F)");
@@ -301,17 +242,6 @@ public class IntensiveMonitoringCohortQueries {
             null,
             null);
 
-    CohortDefinition tbProphilaxy =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            false,
-            "once",
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getIsoniazidUsageConcept(),
-            Collections.singletonList(hivMetadata.getStartDrugsConcept()),
-            null,
-            null);
-
     CohortDefinition pregnant =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
             commonMetadata.getPregnantConcept().getConceptId(),
@@ -366,52 +296,46 @@ public class IntensiveMonitoringCohortQueries {
             "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
 
     cd.addSearch(
-        "B4",
-        EptsReportUtils.map(
-            tbProphilaxy,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
-
-    cd.addSearch(
         "C",
         EptsReportUtils.map(
             pregnant,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "D",
         EptsReportUtils.map(
             breastfeeding,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "E",
         EptsReportUtils.map(
             transferredIn,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "F",
         EptsReportUtils.map(
             transferOut,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},revisionEndDate=${revisionEndDate},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "H",
         EptsReportUtils.map(
             tbDiagOnPeriod,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "I",
         EptsReportUtils.map(
             tbSymptomsOnPeriod,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "J",
         EptsReportUtils.map(
             tbTreatmentOnPeriod,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "B41",
@@ -493,17 +417,6 @@ public class IntensiveMonitoringCohortQueries {
             null,
             null);
 
-    CohortDefinition tbProphilaxy =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            false,
-            "once",
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            hivMetadata.getIsoniazidUsageConcept(),
-            Collections.singletonList(hivMetadata.getStartDrugs()),
-            null,
-            null);
-
     CohortDefinition pregnant =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
             commonMetadata.getPregnantConcept().getConceptId(),
@@ -523,18 +436,6 @@ public class IntensiveMonitoringCohortQueries {
             hivMetadata.getArtStatus().getConceptId());
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
-
-    CohortDefinition tbProphylaxyOnPeriod =
-        qualityImprovement2020CohortQueries.getPatientsWithProphylaxyDuringRevisionPeriod();
-
-    CohortDefinition tbDiagOnPeriod =
-        qualityImprovement2020CohortQueries.getPatientsWithTBDiagActive();
-
-    CohortDefinition tbSymptomsOnPeriod =
-        qualityImprovement2020CohortQueries.getPatientsWithTBSymtoms();
-
-    CohortDefinition tbTreatmentOnPeriod =
-        qualityImprovement2020CohortQueries.getPatientsWithTBTreatment();
 
     CohortDefinition b41 = qualityImprovement2020CohortQueries.getB4And1();
 
@@ -565,58 +466,28 @@ public class IntensiveMonitoringCohortQueries {
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-        "B4",
-        EptsReportUtils.map(
-            tbProphilaxy,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
-
-    compositionCohortDefinition.addSearch(
         "C",
         EptsReportUtils.map(
             pregnant,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "D",
         EptsReportUtils.map(
             breastfeeding,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "E",
         EptsReportUtils.map(
             transferredIn,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "F",
         EptsReportUtils.map(
             transferOut,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    compositionCohortDefinition.addSearch(
-        "G",
-        EptsReportUtils.map(
-            tbProphylaxyOnPeriod,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    compositionCohortDefinition.addSearch(
-        "H",
-        EptsReportUtils.map(
-            tbDiagOnPeriod,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
-
-    compositionCohortDefinition.addSearch(
-        "I",
-        EptsReportUtils.map(
-            tbSymptomsOnPeriod,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
-
-    compositionCohortDefinition.addSearch(
-        "J",
-        EptsReportUtils.map(
-            tbTreatmentOnPeriod,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "B41",
@@ -735,9 +606,6 @@ public class IntensiveMonitoringCohortQueries {
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
-    CohortDefinition tbProphylaxyOnPeriod =
-        qualityImprovement2020CohortQueries.getPatientsWithProphylaxyDuringRevisionPeriod();
-
     CohortDefinition tbDiagOnPeriod =
         qualityImprovement2020CohortQueries.getPatientsWithTBDiagActive();
 
@@ -785,49 +653,43 @@ public class IntensiveMonitoringCohortQueries {
         "C",
         EptsReportUtils.map(
             pregnant,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "D",
         EptsReportUtils.map(
             breastfeeding,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "E",
         EptsReportUtils.map(
             transferredIn,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "F",
         EptsReportUtils.map(
             transferOut,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},revisionEndDate=${revisionEndDate},location=${location}"));
-
-    compositionCohortDefinition.addSearch(
-        "G",
-        EptsReportUtils.map(
-            tbProphylaxyOnPeriod,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},revisionEndDate=${revisionEndDate},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "H",
         EptsReportUtils.map(
             tbDiagOnPeriod,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "I",
         EptsReportUtils.map(
             tbSymptomsOnPeriod,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "J",
         EptsReportUtils.map(
             tbTreatmentOnPeriod,
-            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
+            "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "B41",
