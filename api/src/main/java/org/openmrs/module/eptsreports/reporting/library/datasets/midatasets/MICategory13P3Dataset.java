@@ -154,7 +154,7 @@ public class MICategory13P3Dataset extends MQAbstractDataSet {
                 "CAT13_PART_3_13_14_DENOMINATOR",
                 mappings),
             mappings),
-        "ageOnB2NEW=<15-10MONTHS");
+        "ageOnB2NEW=2-14-10MONTHS");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_14_NUMERATOR",
@@ -167,6 +167,6 @@ public class MICategory13P3Dataset extends MQAbstractDataSet {
                 "CAT13_PART_3_13_14_NUMERATOR",
                 mappings),
             mappings),
-        "ageOnB2NEW=<15-10MONTHS");
+        "ageOnB2NEW=2-14-10MONTHS");
   }
 }

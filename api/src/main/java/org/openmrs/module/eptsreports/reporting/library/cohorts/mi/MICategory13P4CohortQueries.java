@@ -34,7 +34,7 @@ public class MICategory13P4CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-5m+1d},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "B1",
@@ -47,14 +47,14 @@ public class MICategory13P4CohortQueries {
             this.mQCohortQueries.findPatientWithCVOver1000CopiesCategory11B2(), mappings));
 
     definition.addSearch(
-        "PREGNANT",
+        "PREGNANT-B4",
         EptsReportUtils.map(
             this.mQCohortQueries
                 .findPatientsWhoHasCVBiggerThan1000AndMarkedAsPregnantInTheSameClinicalConsultation(),
             mappings));
 
     definition.addSearch(
-        "BREASTFEEDING",
+        "BREASTFEEDING-B5",
         EptsReportUtils.map(
             this.mQCohortQueries
                 .findPatientsWhoHasCVBiggerThan1000AndMarkedAsBreastFeedingInTheSameClinicalConsultation(),
@@ -72,7 +72,7 @@ public class MICategory13P4CohortQueries {
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(B1 AND B2) NOT (PREGNANT OR BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)");
+        "(B1 AND B2) NOT (PREGNANT-B4 OR BREASTFEEDING-B5 OR TRANSFERED-IN OR TRANSFERED-OUT)");
 
     return definition;
   }
@@ -185,7 +185,7 @@ public class MICategory13P4CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-5m+1d},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "DENOMINADOR-CAT11-2",
@@ -208,6 +208,7 @@ public class MICategory13P4CohortQueries {
             mappings));
 
     definition.setCompositionString("(DENOMINADOR-CAT11-2 AND H-CAT11-2 AND H-CAT-13-3)");
+
     return definition;
   }
 
@@ -226,7 +227,10 @@ public class MICategory13P4CohortQueries {
     definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     definition.addParameter(new Parameter("location", "location", Date.class));
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "DENOMINADOR",
@@ -238,15 +242,16 @@ public class MICategory13P4CohortQueries {
         EptsReportUtils.map(
             this.mqCohortQueries
                 .findPatientsOnThe1stLineOfRTWithCVOver1000CopiesWhoHad3ConsecutiveMonthlyAPSSConsultationsCategory11Numerator(),
-            mappings));
+            mappingsMI));
 
     definition.addSearch(
         "H",
         EptsReportUtils.map(
             this.mqCohortQueries.findPatientsWhoHaveRequestedCV120DaysAfterCVResultByQueryH(),
-            mappings));
+            mappingsMI));
 
     definition.setCompositionString("(DENOMINADOR AND H-CAT11-2 AND H)");
+
     return definition;
   }
 }

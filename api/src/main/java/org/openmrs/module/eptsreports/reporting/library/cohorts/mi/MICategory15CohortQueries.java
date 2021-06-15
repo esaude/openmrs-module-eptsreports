@@ -423,28 +423,33 @@ public class MICategory15CohortQueries {
             mappingsMI));
 
     definition.addSearch(
-        "J",
+        "K",
         EptsReportUtils.map(
             this.findPatientsWhoHasRegisteredAsIniciarInAtLeastOneMDS(), mappingsMI));
 
-    definition.setCompositionString("(DENOMINATOR-15-1 AND J)");
+    definition.setCompositionString("(DENOMINATOR-15-1 AND K)");
 
     return definition;
   }
 
-  @DocumentedDefinition(value = "findPatientsWithClinicalConsultationDuringRevisionPeriod")
-  public CohortDefinition findPatientsWithClinicalConsultationDuringRevisionPeriod() {
+  @DocumentedDefinition(
+      value =
+          "findPatientsWithClinicalConsultationDuringRevisionPeriodAndAgeGreaterOrEqualTwoYears")
+  public CohortDefinition
+      findPatientsWithClinicalConsultationDuringRevisionPeriodAndAgeGreaterOrEqualTwoYears() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("findPatientsWithClinicalConsultationDuringRevisionPeriod");
+    definition.setName(
+        "findPatientsWithClinicalConsultationDuringRevisionPeriodAndAgeGreaterOrEqualTwoYears");
     definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
     definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        MICategory15QueriesInterface.QUERY.findPatientsWithClinicalConsultationDuringRevisionPeriod;
+        MICategory15QueriesInterface.QUERY
+            .findPatientsWithClinicalConsultationDuringRevisionPeriodAndAgeGreaterOrEqualTwoYears;
 
     definition.setQuery(query);
 
@@ -472,7 +477,9 @@ public class MICategory15CohortQueries {
     definition.addSearch(
         "A",
         EptsReportUtils.map(
-            this.findPatientsWithClinicalConsultationDuringRevisionPeriod(), mappings));
+            this
+                .findPatientsWithClinicalConsultationDuringRevisionPeriodAndAgeGreaterOrEqualTwoYears(),
+            mappings));
 
     definition.addSearch(
         "J", EptsReportUtils.map(this.findPatientsWhoAreActiveOnArtAndInAtleastOneDSD(), mappings));
@@ -606,6 +613,30 @@ public class MICategory15CohortQueries {
 
   @DocumentedDefinition(
       value =
+          "findAllPatientsWhoHaveLaboratoryInvestigationsRequestsAndViralChargeInLastConsultationDuringLastThreeMonths")
+  public CohortDefinition
+      findAllPatientsWhoHaveLaboratoryInvestigationsRequestsAndViralChargeInLastConsultationDuringLastThreeMonths() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName(
+        "findAllPatientsWhoHaveLaboratoryInvestigationsRequestsAndViralChargeInLastConsultationDuringLastThreeMonths");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MICategory15QueriesInterface.QUERY
+            .findAllPatientsWhoHaveLaboratoryInvestigationsRequestsAndViralChargeInLastConsultationDuringLastThreeMonths;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(
+      value =
           "findPatientsRegisteredInMDSForStablePatientsWithClinicalConsultationInTheRevisionPeriodInARTMoreThan21Months_Denominator_15_3")
   public CohortDefinition
       findPatientsRegisteredInMDSForStablePatientsWithClinicalConsultationInTheRevisionPeriodInARTMoreThan21Months_Denominator_15_3() {
@@ -625,7 +656,9 @@ public class MICategory15CohortQueries {
     definition.addSearch(
         "A",
         EptsReportUtils.map(
-            this.findPatientsWithClinicalConsultationDuringRevisionPeriod(), mappings));
+            this
+                .findPatientsWithClinicalConsultationDuringRevisionPeriodAndAgeGreaterOrEqualTwoYears(),
+            mappings));
 
     definition.addSearch(
         "J", EptsReportUtils.map(this.findPatientsWhoAreActiveOnArtAndInAtleastOneDSD(), mappings));
@@ -636,7 +669,14 @@ public class MICategory15CohortQueries {
             this.findPatientsWithClinicalConsultationAndARTStartDateGreaterThanTwentyOneMonths(),
             mappings));
 
-    definition.setCompositionString("(A AND J AND B2)");
+    definition.addSearch(
+        "P",
+        EptsReportUtils.map(
+            this
+                .findAllPatientsWhoHaveLaboratoryInvestigationsRequestsAndViralChargeInLastConsultationDuringLastThreeMonths(),
+            mappings));
+
+    definition.setCompositionString("(A AND J AND B2) NOT P");
 
     return definition;
   }
