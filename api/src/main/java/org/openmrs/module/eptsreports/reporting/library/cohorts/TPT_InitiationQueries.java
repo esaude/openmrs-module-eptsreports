@@ -1237,7 +1237,7 @@ public class TPT_InitiationQueries {
     valuesMap.put("1", hivCareProgram);
 
     String query =
-        "  SELECT (SELECT name FROM location WHERE location_id = :location) AS location, COUNT(TPT.person_id) AS total, CONCAT(:startDate,' Até ',:endDate) AS period "
+        "  SELECT (SELECT name FROM location WHERE location_id = :location) AS location, COUNT(TPT.person_id) AS total, CONCAT(DATE_FORMAT(:startDate, '%d-%m-%Y'),' Até ',DATE_FORMAT(:endDate, '%d-%m-%Y')) AS period "
             + "  FROM ("
             + "  SELECT p.person_id"
             + "           FROM person p "

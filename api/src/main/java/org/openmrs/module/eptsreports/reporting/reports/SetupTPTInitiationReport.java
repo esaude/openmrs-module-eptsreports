@@ -13,8 +13,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Deprecated
+@Component
 public class SetupTPTInitiationReport extends EptsDataExportManager {
 
   private TPTInitiationDataset tptInitiationDataset;
