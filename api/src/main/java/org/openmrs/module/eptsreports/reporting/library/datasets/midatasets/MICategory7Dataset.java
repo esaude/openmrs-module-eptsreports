@@ -97,7 +97,7 @@ public class MICategory7Dataset extends MQAbstractDataSet {
                 "CAT7AdultoTPIDENOMINATOR",
                 mappings),
             mappings),
-        "ageMiNewART=LESS_7_MONTHS_15+");
+        "ageMiNewART=LESS_8_MONTHS_15+");
 
     dataSetDefinition.addColumn(
         "CAT7AdultoTPINUMERATOR",
@@ -109,7 +109,7 @@ public class MICategory7Dataset extends MQAbstractDataSet {
                 "CAT7AdultoTPINUMERATOR",
                 mappings),
             mappings),
-        "ageMiNewART=LESS_7_MONTHS_15+");
+        "ageMiNewART=LESS_8_MONTHS_15+");
 
     dataSetDefinition.addColumn(
         "CAT7ChildrenTPIDENOMINATOR",
@@ -121,7 +121,7 @@ public class MICategory7Dataset extends MQAbstractDataSet {
                 "CAT7ChildrenTPIDENOMINATOR",
                 mappings),
             mappings),
-        "ageMiNewART=LESS_7_MONTHS_15-");
+        "ageMiNewART=LESS_8_MONTHS_15-");
 
     dataSetDefinition.addColumn(
         "CAT7ChildrenTPINUMERATOR",
@@ -133,7 +133,7 @@ public class MICategory7Dataset extends MQAbstractDataSet {
                 "CAT7ChildrenTPINUMERATOR",
                 mappings),
             mappings),
-        "ageMiNewART=LESS_7_MONTHS_15-");
+        "ageMiNewART=LESS_8_MONTHS_15-");
 
     dataSetDefinition.addColumn(
         "CAT7PragnantTPIDENOMINATOR",

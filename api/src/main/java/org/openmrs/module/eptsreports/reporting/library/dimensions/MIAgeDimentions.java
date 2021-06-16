@@ -31,7 +31,10 @@ public class MIAgeDimentions {
         "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappingsMILessSevenMonths =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate-7m+1d},location=${location}";
+        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+
+    final String mappingsMILess8Months =
+        "startInclusionDate=${endRevisionDate-8m+1d},endInclusionDate=${endRevisionDate-7m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappingsMILessFiveMonths =
         "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
@@ -254,6 +257,57 @@ public class MIAgeDimentions {
         EptsReportUtils.map(
             mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRengeUsingMonth(0, 18),
             mappingsMILessTreeMonths));
+
+    /*   Dimension Age for new enrrolment on ART less than 8 months
+     */
+
+    dimension.addCohortDefinition(
+        "LESS_8_MONTHS_15+",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAdult(15),
+            mappingsMILess8Months));
+
+    dimension.addCohortDefinition(
+        "LESS_8_MONTHS_15-",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTChildren(15),
+            mappingsMILess8Months));
+
+    dimension.addCohortDefinition(
+        "LESS_8_MONTHS_2-14",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(2, 14),
+            mappingsMILess8Months));
+
+    dimension.addCohortDefinition(
+        "LESS_8_MONTHS_0-4",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(0, 4),
+            mappingsMILess8Months));
+
+    dimension.addCohortDefinition(
+        "LESS_8_MONTHS_5-9",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(5, 9),
+            mappingsMILess8Months));
+
+    dimension.addCohortDefinition(
+        "LESS_8_MONTHS_3-14",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(3, 14),
+            mappingsMILess8Months));
+
+    dimension.addCohortDefinition(
+        "LESS_8_MONTHS_LESS_9MONTHS",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRengeUsingMonth(0, 9),
+            mappingsMILess8Months));
+
+    dimension.addCohortDefinition(
+        "LESS_8_MONTHS_0-18M",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRengeUsingMonth(0, 18),
+            mappingsMILess8Months));
 
     return dimension;
   }

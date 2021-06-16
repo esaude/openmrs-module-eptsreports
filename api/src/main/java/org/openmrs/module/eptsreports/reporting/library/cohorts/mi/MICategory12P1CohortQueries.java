@@ -148,7 +148,7 @@ public class MICategory12P1CohortQueries {
                 .findPatientsWhoStartedARTInTheInclusionPeriodAndReturnedForClinicalConsultation33DaysAfterAtartingARTCategory12(),
             mappingsMI));
 
-    definition.setCompositionString("DENOMINATOR");
+    definition.setCompositionString("DENOMINATOR AND RET33DAYS-H");
 
     return definition;
   }
