@@ -1406,7 +1406,7 @@ public class IntensiveMonitoringCohortQueries {
             + "       AND ee.encounter_type = ${6} "
             + "       AND oo.concept_id = ${856} "
             + "       AND oo.value_numeric >= 1000 "
-            + "       AND ee.encounter_datetime <= (SELECT "
+            + "       AND ee.encounter_datetime < (SELECT "
             + "           Max(e.encounter_datetime) AS last_consultation_date "
             + "                                     FROM   encounter e "
             + "                                     WHERE  e.voided = 0 "
@@ -1617,7 +1617,7 @@ public class IntensiveMonitoringCohortQueries {
             + "       AND ee.encounter_type = ${6} "
             + "       AND oo.concept_id = ${1695} "
             + "       AND oo.value_numeric <= 200 "
-            + "       AND ee.encounter_datetime <= (SELECT "
+            + "       AND ee.encounter_datetime < (SELECT "
             + "           Max(e.encounter_datetime) AS last_consultation_date "
             + "                                     FROM   encounter e "
             + "                                     WHERE  e.voided = 0 "
@@ -1693,7 +1693,7 @@ public class IntensiveMonitoringCohortQueries {
             + "                   AND o.value_coded = ${1256} ) "
             + "              OR ( o.concept_id = ${23731} "
             + "                   AND o.value_coded = ${1256} ) ) "
-            + "       AND e.encounter_datetime < last_consultation.encounter_datetime";
+            + "       AND e.encounter_datetime = last_consultation.encounter_datetime";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -1761,7 +1761,7 @@ public class IntensiveMonitoringCohortQueries {
             + "                   AND o.value_coded = ${1267} ) "
             + "              OR ( o.concept_id = ${23731} "
             + "                   AND o.value_coded = ${1267} ) ) "
-            + "       AND e.encounter_datetime < last_consultation.encounter_datetime";
+            + "       AND e.encounter_datetime = last_consultation.encounter_datetime";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -1927,7 +1927,7 @@ public class IntensiveMonitoringCohortQueries {
             + "         FROM patient p "
             + "                  INNER JOIN encounter e on p.patient_id = e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id "
             + "         WHERE p.voided = 0 AND e.voided = 0 AND e.location_id =:location AND e.encounter_type = ${6} "
-            + "         AND o.concept_id=${856} "
+            + "         AND o.concept_id=${856} AND o.value_numeric < 1000 "
             + "         UNION "
             + "         SELECT p.patient_id, o.value_datetime AS encounter_date "
             + "         FROM patient p "
