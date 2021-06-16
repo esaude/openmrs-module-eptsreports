@@ -31,7 +31,7 @@ public interface EC2DuplicateQueries {
             + "	inner join person_name on (person_name.person_id = patient.patient_id and person_name.voided =0)		 															"
             + "	left join location on (location.location_id =patient_identifier.location_id and location.retired =0) 																"
             + "	left join patient_program on (patient_program.patient_id = patient.patient_id and patient_program.program_id =2 and patient_program.voided =0) 						"
-            + "group by patient_identifier.patient_identifier_id order by patient.patient_id  																						";
+            + "group by patient_identifier.patient_identifier_id order by patient.patient_id, patient_identifier.date_created desc  																						";
 
     public static String getEc2Total =
         "                                                 								"

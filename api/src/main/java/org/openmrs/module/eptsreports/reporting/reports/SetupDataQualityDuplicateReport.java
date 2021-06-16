@@ -50,7 +50,7 @@ public class SetupDataQualityDuplicateReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "RELATÓRIO DE DADOS PARA POTENCIAIS DUPLICAÇÕES";
+    return "RELATÓRIO DE QUALIDADE DE DADOS PARA POTENCIAIS DUPLICAÇÕES";
   }
 
   @Override
