@@ -80,7 +80,7 @@ public class MICategory7CohortQueries {
         "TB-TREATMENT-TPI-CAT7-J",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientHaveTBTREATMENTAndTPIDuringPeriodCategory7AsJ(),
-            mappings));
+            mappingsMI));
 
     definition.addSearch(
         "TRANSFERED-IN",
