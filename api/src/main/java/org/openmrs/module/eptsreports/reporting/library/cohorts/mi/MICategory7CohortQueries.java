@@ -68,13 +68,13 @@ public class MICategory7CohortQueries {
         "TB-ACTIVE-TPI-CAT7-H",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientHaveTBACTIVEAndTPIDuringPeriodCategory7AsH(),
-            mappings));
+            mappingsMI));
 
     definition.addSearch(
         "TB-TBSCREENING-TPI-CAT7-I",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientHaveTBSCREENINGAndTPIDuringPeriodCategory7AsI(),
-            mappings));
+            mappingsMI));
 
     definition.addSearch(
         "TB-TREATMENT-TPI-CAT7-J",
