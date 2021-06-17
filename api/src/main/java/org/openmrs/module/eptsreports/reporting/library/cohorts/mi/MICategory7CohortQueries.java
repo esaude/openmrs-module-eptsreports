@@ -32,7 +32,7 @@ public class MICategory7CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate-7m+1d},location=${location}";
+        "startInclusionDate=${endRevisionDate-8m+1d},endInclusionDate=${endRevisionDate-7m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappings =
         "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
@@ -68,19 +68,19 @@ public class MICategory7CohortQueries {
         "TB-ACTIVE-TPI-CAT7-H",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientHaveTBACTIVEAndTPIDuringPeriodCategory7AsH(),
-            mappings));
+            mappingsMI));
 
     definition.addSearch(
         "TB-TBSCREENING-TPI-CAT7-I",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientHaveTBSCREENINGAndTPIDuringPeriodCategory7AsI(),
-            mappings));
+            mappingsMI));
 
     definition.addSearch(
         "TB-TREATMENT-TPI-CAT7-J",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientHaveTBTREATMENTAndTPIDuringPeriodCategory7AsJ(),
-            mappings));
+            mappingsMI));
 
     definition.addSearch(
         "TRANSFERED-IN",
@@ -126,7 +126,7 @@ public class MICategory7CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate-7m+1d},location=${location}";
+        "startInclusionDate=${endRevisionDate-8m+1d},endInclusionDate=${endRevisionDate-7m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappings =
         "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
@@ -164,7 +164,7 @@ public class MICategory7CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate-7m+1d},location=${location}";
+        "startInclusionDate=${endRevisionDate-8m+1d},endInclusionDate=${endRevisionDate-7m},endRevisionDate=${endRevisionDate-8m+1d},location=${location}";
 
     final String mappings =
         "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
@@ -254,7 +254,7 @@ public class MICategory7CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate-7m+1d},location=${location}";
+        "startInclusionDate=${endRevisionDate-8m+1d},endInclusionDate=${endRevisionDate-7m},endRevisionDate=${endRevisionDate-8m+1d},location=${location}";
 
     final String mappings =
         "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";

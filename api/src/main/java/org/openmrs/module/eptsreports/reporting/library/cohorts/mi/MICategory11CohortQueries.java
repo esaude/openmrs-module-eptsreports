@@ -34,13 +34,10 @@ public class MICategory11CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
-
-    final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappingsMIB1 =
-        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-4m+1d},endInclusionDate=${endRevisionDate-3m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "B1",
@@ -50,21 +47,21 @@ public class MICategory11CohortQueries {
     definition.addSearch(
         "B2",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientWithCVOver1000CopiesCategory11B2(), mappingsMI));
+            this.mQCohortQueries.findPatientWithCVOver1000CopiesCategory11B2(), mappingsMIB1));
 
     definition.addSearch(
         "B4",
         EptsReportUtils.map(
             this.mQCohortQueries
                 .findPatientsWhoHasCVBiggerThan1000AndMarkedAsPregnantInTheSameClinicalConsultation(),
-            mappingsMI));
+            mappingsMIB1));
 
     definition.addSearch(
         "B5",
         EptsReportUtils.map(
             this.mQCohortQueries
                 .findPatientsWhoHasCVBiggerThan1000AndMarkedAsBreastFeedingInTheSameClinicalConsultation(),
-            mappingsMI));
+            mappingsMIB1));
 
     definition.addSearch(
         "TRANSFERED-IN",
@@ -100,7 +97,7 @@ public class MICategory11CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappingsMI =
         "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
@@ -141,14 +138,14 @@ public class MICategory11CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "DENOMINATOR",
         EptsReportUtils.map(
             this.mQGenericCohortQueries
                 .findPatientOnARTdExcludingPregantAndBreastfeedingAndTransferredInTransferredOutMICategory11(),
-            ""));
+            mappings));
 
     definition.addSearch(
         "I-APSS-PP",
@@ -179,10 +176,10 @@ public class MICategory11CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-4m+1d},endInclusionDate=${endRevisionDate-3m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "DENOMINADOR",
