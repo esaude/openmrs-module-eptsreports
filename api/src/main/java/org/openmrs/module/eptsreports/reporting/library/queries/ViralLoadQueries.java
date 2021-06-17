@@ -179,43 +179,50 @@ public class ViralLoadQueries {
   public static String getPatientAgeBasedOnFirstViralLoadDate(
       int conceptId, int encounterType, int masterCardEncounterType, int minAge, int maxAge) {
     Map<String, Integer> map = new HashMap<>();
-    map.put("viralLoadConcept", conceptId);
-    map.put("encounterType", encounterType);
-    map.put("masterCardEncounterType", masterCardEncounterType);
+    map.put("856", conceptId);
+    map.put("6", encounterType);
+    map.put("53", masterCardEncounterType);
     map.put("minAge", minAge);
     map.put("maxAge", maxAge);
     String query =
         "SELECT patient_id "
-            + " FROM   ( "
-            + " SELECT     pat.patient_id, "
-            + " Timestampdiff(year, pn.birthdate, encounter_datetime) AS age "
-            + " FROM       patient pat "
-            + " INNER JOIN person pn "
-            + " ON         pat.patient_id=pn.person_id "
-            + " INNER JOIN "
-            + " ( "
-            + " SELECT   patient_id, "
-            + " Min(encounter_datetime) AS encounter_datetime "
-            + " FROM     ( "
-            + " SELECT     p.patient_id, "
-            + " e.encounter_datetime "
-            + " FROM       patient p "
-            + " INNER JOIN encounter e "
-            + " ON         p.patient_id=e.patient_id "
-            + " INNER JOIN obs o "
-            + " ON         e.encounter_id=o.encounter_id "
-            + " WHERE      o.value_numeric IS NOT NULL "
-            + " AND        p.voided=0 "
-            + " AND        e.voided=0 "
-            + " AND        o.voided=0 "
-            + " AND        e.location_id=:location "
-            + " AND e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + " AND e.encounter_type in (${encounterType}, ${masterCardEncounterType}) "
-            + " AND o.concept_id=${viralLoadConcept} "
-            + " AND o.value_numeric > 1000 ) al "
-            + " GROUP BY patient_id) ex "
-            + " ON pat.patient_id=ex.patient_id ) fin "
-            + " WHERE  age BETWEEN ${minAge} AND ${maxAge} ";
+            + "FROM   ( "
+            + "         SELECT     pat.patient_id, Timestampdiff(year, pn.birthdate, encounter_datetime) AS age "
+            + "         FROM       patient pat "
+            + "            INNER JOIN person pn ON pat.patient_id=pn.person_id "
+            + "            INNER JOIN "
+            + "            ( "
+            + "                SELECT   p.patient_id, Min(e.encounter_datetime) AS encounter_datetime "
+            + "                FROM  patient p "
+            + "                    INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "                    INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "                WHERE   o.value_numeric IS NOT NULL "
+            + "                    AND p.voided = 0 "
+            + "                    AND e.voided = 0 "
+            + "                    AND o.voided = 0 "
+            + "                    AND e.location_id = :location "
+            + "                    AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "                    AND e.encounter_type = ${6} "
+            + "                    AND o.concept_id = ${856} "
+            + "                    AND o.value_numeric >= 1000 "
+            + "                GROUP BY patient_id "
+            + "                UNION "
+            + "                SELECT   p.patient_id, Min(o.obs_datetime) AS encounter_datetime "
+            + "                FROM  patient p "
+            + "                    INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "                    INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "                WHERE   o.value_numeric IS NOT NULL "
+            + "                    AND   p.voided = 0 "
+            + "                    AND   e.voided = 0 "
+            + "                    AND   o.voided = 0 "
+            + "                    AND   e.location_id = :location "
+            + "                    AND o.obs_datetime BETWEEN :startDate AND :endDate "
+            + "                    AND e.encounter_type = ${53} "
+            + "                    AND o.concept_id = ${856} "
+            + "                    AND o.value_numeric >= 1000 "
+            + "             GROUP BY patient_id "
+            + "         ) ex ON pat.patient_id=ex.patient_id ) fin "
+            + "WHERE  age BETWEEN ${minAge} AND ${maxAge} ";
     StringSubstitutor sb = new StringSubstitutor(map);
     return sb.replace(query);
   }

@@ -990,24 +990,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             MQ12DEN11,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
-    /* not specified in the newer version of the spec...
-        CohortIndicator MQ12DEN12 =
-            eptsGeneralIndicator.getIndicator(
-                "MQ12DEN12",
-                EptsReportUtils.map(
-                    qualityImprovement2020CohortQueries.,
-                    "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
-        MQ12DEN12.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
-        dataSetDefinition.addColumn(
-            "MQ12DEN12",
-            "Mulheres grávidas HIV+ 1ª linha que iniciaram o TARV há 12 meses atrás",
-            EptsReportUtils.map(
-                MQ12DEN12,
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-            "");
-    */
     // Category 12 numerator - P2 Indicators
     CohortIndicator MQ12NUM3 =
         eptsGeneralIndicator.getIndicator(
@@ -1093,24 +1076,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             MQ12NUM11,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
-    /*
-        CohortIndicator MQ12NUM12 =
-            eptsGeneralIndicator.getIndicator(
-                "MQ12NUM12",
-                EptsReportUtils.map(
-                    qualityImprovement2020CohortQueries.getMQ12NumeratorP2(12),
-                    "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
-        MQ12NUM12.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-
-        dataSetDefinition.addColumn(
-            "MQ12NUM12",
-            "# de mulheres grávidas HIV+ 1ª linha que iniciaram o TARV há 12 meses atrás",
-            EptsReportUtils.map(
-                MQ12NUM12,
-                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-            "");
-    */
     // Category 12 numerator indicators
     CohortIndicator MQ12NUM1 =
         eptsGeneralIndicator.getIndicator(
