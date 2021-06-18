@@ -9,7 +9,9 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.QualityImprovementCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets.MQDataSet;
+import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -60,6 +62,12 @@ public class SetupQualityImprovementReport extends EptsDataExportManager {
     reportDefinition.setParameters(getParameters());
     reportDefinition.addDataSetDefinition(
         "MQ", Mapped.mapStraightThrough(mqDataSet.constructTMqDatset()));
+    reportDefinition.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
+            "endDate=${endRevisionDate},location=${location}"));
+
     return reportDefinition;
   }
 
