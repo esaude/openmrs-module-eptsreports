@@ -59,7 +59,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                 "CXCA_SCRN: Number of individual HIV-positive women on ART who received a screening test for cervical cancer",
                 EptsReportUtils.map(this.cxCaSCRNCohortQueries.getTotalNumerator(), mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     dataSetDefinition.addColumn(
         "CXFRT",
@@ -70,7 +70,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                 EptsReportUtils.map(
                     this.cxCaSCRNCohortQueries.getTotalNumeratorFirstScreening(), mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -122,7 +122,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                         .getTotalNumeratorRescreenedAfterPreviousNegativeTotal(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -177,7 +177,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                         .getTotalNumeratorfindpatientwithScreeningTypeVisitAsPostTreatmentFollowUpTotal(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -234,7 +234,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                         .getTotalNumeratorRescreenedAfterPreviousPositiveTotal(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -291,7 +291,7 @@ public class CxCaSCRNDataSet extends BaseDataSet {
                     this.CxCxSRNPositiveCohortQueries.findpatientwithCxCaPositiveTotal(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -371,7 +371,8 @@ public class CxCaSCRNDataSet extends BaseDataSet {
     ColumnParameters a8 = new ColumnParameters("50+", "50+ female", "gender=F|age=50+", "08");
     ColumnParameters unknownF =
         new ColumnParameters("unknownF", "Unknown age", "gender=F|age=UK", "09");
-    ColumnParameters a9 = new ColumnParameters("subTotal", "subTotal", "", "10");
+
+    ColumnParameters a9 = new ColumnParameters("subTotal", "subTotal", "gender=F|age=15+", "10");
 
     return Arrays.asList(a1, a2, a3, a4, a5, a6, a7, a8, unknownF, a9);
   }
