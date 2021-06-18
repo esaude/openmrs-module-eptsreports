@@ -1,19 +1,18 @@
-package org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets;
+package org.openmrs.module.eptsreports.reporting.library.datasets.midatasets;
 
-import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCategory11CohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCategory13P4CohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mi.MICategory13P4CohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets.MQAbstractDataSet;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MQCategory13P4DataSet extends MQAbstractDataSet {
+public class MICategory13P4Dataset extends MQAbstractDataSet {
 
-  @Autowired private MQCategory13P4CohortQueries mQCategory13P4CohortQueries;
-  @Autowired private MQCategory11CohortQueries mQCategory11CohortQueries;
+  @Autowired private MICategory13P4CohortQueries miCategory13P4CohortQueries;
 
-  public void constructTMqDatset(
+  public void constructTMiDatset(
       CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
 
     dataSetDefinition.addColumn(
@@ -22,12 +21,12 @@ public class MQCategory13P4DataSet extends MQAbstractDataSet {
             + "mês após terem recebido  o último resultado de CV acima de 1000 e terem  3 sessões consecutivas de APSS/PP (AMA) Denominador ",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.mQCategory11CohortQueries
+                this.miCategory13P4CohortQueries
                     .findPatietsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11Denominator(),
                 "CAT13P4AdultDENUMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=15+");
+        "ageOnEndInclusionDate=15+5MONTHS");
 
     dataSetDefinition.addColumn(
         "CAT13P4AdultNUMINATOR",
@@ -35,12 +34,12 @@ public class MQCategory13P4DataSet extends MQAbstractDataSet {
             + "após terem recebido  o último resultado de CV acima de 1000 e terem  3 sessões consecutivas de APSS/PP (AMA) Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.mQCategory13P4CohortQueries
+                this.miCategory13P4CohortQueries
                     .findPatientsWhoReceivedResultMoreThan1000CVCategory13P4Numerator(),
                 "CAT13P4AdultNUMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=15+");
+        "ageOnEndInclusionDate=15+5MONTHS");
 
     dataSetDefinition.addColumn(
         "CAT13P4ChildrenDENUMINATOR",
@@ -48,12 +47,12 @@ public class MQCategory13P4DataSet extends MQAbstractDataSet {
             + "após terem recebido  o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP (AMA) Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.mQCategory11CohortQueries
+                this.miCategory13P4CohortQueries
                     .findPatietsOnARTStartedExcludingPregantAndBreastfeedingAndTransferredInTRANSFEREDOUTWITH1000CVCategory11Denominator(),
                 "CAT13P4ChildrenDENUMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=2-14");
+        "ageOnEndInclusionDate=2-14-5MONTHS");
 
     dataSetDefinition.addColumn(
         "CAT13P4ChildrenNUMINATOR",
@@ -61,12 +60,12 @@ public class MQCategory13P4DataSet extends MQAbstractDataSet {
             + "após terem recebido  o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP (AMA) Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.mQCategory13P4CohortQueries
+                this.miCategory13P4CohortQueries
                     .findPatientsWhoReceivedResultMoreThan1000CVCategory13P4Numerator(),
                 "CAT13P4ChildrenNUMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=2-14");
+        "ageOnEndInclusionDate=2-14-5MONTHS");
 
     dataSetDefinition.addColumn(
         "CAT13P4PregnantDENUMINATOR",
@@ -74,7 +73,7 @@ public class MQCategory13P4DataSet extends MQAbstractDataSet {
             + "mês após terem recebido  o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP (AMA) Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.mQCategory13P4CohortQueries
+                this.miCategory13P4CohortQueries
                     .findPregnantWhoHaveRequestedCVCategory13P4Denumerator(),
                 "CAT13P4PregnantDENUMINATOR",
                 mappings),
@@ -87,7 +86,7 @@ public class MQCategory13P4DataSet extends MQAbstractDataSet {
             + "mês após terem recebido  o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP (AMA)",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.mQCategory13P4CohortQueries
+                this.miCategory13P4CohortQueries
                     .findPatientsWhoPregnantReceivedResultMoreThan1000CVCategory13P4Numerator(),
                 "CAT13P4PregnantNUMINATOR",
                 mappings),

@@ -1,6 +1,7 @@
-package org.openmrs.module.eptsreports.reporting.library.cohorts.mq;
+package org.openmrs.module.eptsreports.reporting.library.cohorts.mi;
 
 import java.util.Date;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -10,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MQCategory13P2CohortQueries {
+public class MICategory12P2CohortQueries {
 
   @Autowired private MQCohortQueries mQCohortQueries;
 
@@ -27,15 +28,15 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "START-ART",
+        "START-ART-A",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.addSearch(
-        "PREGNANT",
+        "PREGNANT-C",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
@@ -56,7 +57,7 @@ public class MQCategory13P2CohortQueries {
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "(START-ART AND PREGNANT) NOT (BREASTFEEDING OR TRANSFERED-OUT OR TRANSFERED-IN)");
+        "(START-ART-A AND PREGNANT-C) NOT (BREASTFEEDING OR TRANSFERED-OUT OR TRANSFERED-IN)");
     return definition;
   }
 
@@ -76,7 +77,7 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-1m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "B2",
@@ -122,15 +123,15 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
-        "START-ART",
+        "START-ART-A",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
 
     definition.addSearch(
-        "PREGNANT",
+        "PREGNANT-C",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
 
@@ -171,7 +172,7 @@ public class MQCategory13P2CohortQueries {
         EptsReportUtils.map(this.mQCohortQueries.findPatientsWhoTransferedOutRF07(), mappings));
 
     definition.setCompositionString(
-        "((START-ART AND PREGNANT AND B3) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)) OR (B2 AND B4) ");
+        "((START-ART-A AND PREGNANT-C AND B3) NOT (BREASTFEEDING OR TRANSFERED-IN OR TRANSFERED-OUT)) OR (B2 AND B4) ");
 
     return definition;
   }
@@ -190,7 +191,7 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "START-ART",
@@ -246,8 +247,11 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("endRevisionDate", "Data Fim Revisão", Date.class));
     definition.addParameter(new Parameter("location", "location", Date.class));
 
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
+
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "B2",
@@ -260,7 +264,7 @@ public class MQCategory13P2CohortQueries {
         EptsReportUtils.map(
             this.mQCohortQueries
                 .findPatientsWhoAreRequestForLaboratoryInvestigationAndPregnantInclusionPeriodCAT13DenumeratorP2ByB4(),
-            mappings));
+            mappingsMI));
 
     /*definition.addSearch(
         "BREASTFEEDING",
@@ -298,7 +302,7 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "START-ART",

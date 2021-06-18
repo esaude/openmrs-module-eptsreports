@@ -107,32 +107,46 @@ public interface GenericMQQueryIntarface {
 
     public static final String findPAtientWithCVOver1000CopiesBiggerThanParam(int startAge) {
       final String sql =
-          "select carga_viral.patient_id from ( "
-              + "Select p.patient_id, max(o.obs_datetime) data_carga from patient p "
-              + "inner join encounter e on p.patient_id = e.patient_id "
-              + "inner join obs o on e.encounter_id=o.encounter_id "
-              + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
-              + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000 "
-              + "group by p.patient_id "
-              + ") carga_viral "
-              + "inner join person on person_id = carga_viral.patient_id "
-              + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) > %s  AND birthdate IS NOT NULL and voided = 0  ";
+          " select carga_viral.patient_id from ( "
+              + " Select p.patient_id, min(e.encounter_datetime) data_carga from patient p "
+              + " inner join encounter e on p.patient_id = e.patient_id "
+              + " inner join obs o on e.encounter_id=o.encounter_id "
+              + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
+              + " DATE(e.encounter_datetime) between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric >= 1000 "
+              + " group by p.patient_id "
+              + " UNION "
+              + " Select p.patient_id, min(o.obs_datetime) data_carga from patient p "
+              + " inner join encounter e on p.patient_id = e.patient_id "
+              + " inner join obs o on e.encounter_id=o.encounter_id "
+              + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 53 and  o.concept_id = 856 and "
+              + " DATE(o.obs_datetime) between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric >= 1000 "
+              + " group by p.patient_id "
+              + " ) carga_viral "
+              + " inner join person on person_id = carga_viral.patient_id "
+              + " WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) >= %s  AND birthdate IS NOT NULL and voided = 0 ";
 
       return String.format(sql, startAge);
     }
 
     public static final String findPAtientWithCVOver1000CopiesLessThanParam(int startAge) {
       final String sql =
-          "select carga_viral.patient_id from ( "
-              + "Select p.patient_id, max(o.obs_datetime) data_carga from patient p "
-              + "inner join encounter e on p.patient_id = e.patient_id "
-              + "inner join obs o on e.encounter_id=o.encounter_id "
-              + "where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
-              + "o.obs_datetime between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric > 1000 "
-              + "group by p.patient_id "
-              + ") carga_viral "
-              + "inner join person on person_id = carga_viral.patient_id "
-              + "WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) < %s AND birthdate IS NOT NULL and voided = 0  ";
+          " select carga_viral.patient_id from ( "
+              + " Select p.patient_id, min(e.encounter_datetime) data_carga from patient p "
+              + " inner join encounter e on p.patient_id = e.patient_id "
+              + " inner join obs o on e.encounter_id=o.encounter_id "
+              + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
+              + " DATE(e.encounter_datetime) between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric >= 1000 "
+              + " group by p.patient_id "
+              + " UNION "
+              + " Select p.patient_id, min(o.obs_datetime) data_carga from patient p "
+              + " inner join encounter e on p.patient_id = e.patient_id "
+              + " inner join obs o on e.encounter_id=o.encounter_id "
+              + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 53 and  o.concept_id = 856 and "
+              + " DATE(o.obs_datetime) between :startInclusionDate and :endInclusionDate and e.location_id = :location and o.value_numeric >= 1000 "
+              + " group by p.patient_id "
+              + " ) carga_viral "
+              + " inner join person on person_id = carga_viral.patient_id "
+              + " WHERE (TIMESTAMPDIFF(year, birthdate, carga_viral.data_carga)) < %s  AND birthdate IS NOT NULL and voided = 0 ";
       ;
 
       return String.format(sql, startAge);

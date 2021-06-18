@@ -58,7 +58,7 @@ public interface MQCategory13P4QueriesInterface {
             + " inner join encounter e on p.patient_id = e.patient_id "
             + " inner join obs o on e.encounter_id=o.encounter_id "
             + " where p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and "
-            + " o.obs_datetime between :startInclusionDate AND :endInclusionDate  and e.location_id = :location and o.value_numeric > 1000 "
+            + " o.obs_datetime between :startInclusionDate AND :endInclusionDate  and e.location_id = :location and o.value_numeric >= 1000 "
             + " group by p.patient_id ) B2 "
             + " inner join encounter e ON e.patient_id = B2.patient_id and e.voided = 0 and e.location_id = :location and e.encounter_type = 6 "
             + " inner join obs o ON o.encounter_id = e.encounter_id and o.voided = 0 and o.concept_id = 23722 and o.value_coded = 856 "
