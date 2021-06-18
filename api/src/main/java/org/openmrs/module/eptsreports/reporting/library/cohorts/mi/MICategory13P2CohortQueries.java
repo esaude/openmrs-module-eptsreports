@@ -1,6 +1,7 @@
-package org.openmrs.module.eptsreports.reporting.library.cohorts.mq;
+package org.openmrs.module.eptsreports.reporting.library.cohorts.mi;
 
 import java.util.Date;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -10,7 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class MQCategory13P2CohortQueries {
+public class MICategory13P2CohortQueries {
 
   @Autowired private MQCohortQueries mQCohortQueries;
 
@@ -27,7 +28,7 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "START-ART",
@@ -76,7 +77,7 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "B2",
@@ -122,7 +123,7 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "START-ART",
@@ -190,24 +191,27 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
+
+    final String mappingsMI =
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "START-ART",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappings));
+            this.mQCohortQueries.findPatientsWhoAreNewlyEnrolledOnARTRF05(), mappingsMI));
 
     definition.addSearch(
         "PREGNANT",
         EptsReportUtils.map(
-            this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappings));
+            this.mQCohortQueries.findPatientsWhoArePregnantInclusionDateRF08(), mappingsMI));
 
     definition.addSearch(
         "H",
         EptsReportUtils.map(
             this.mQCohortQueries
                 .findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodCAT13DenumeratorP2ByB3(),
-            mappings));
+            mappingsMI));
 
     definition.addSearch(
         "BREASTFEEDING",
@@ -247,7 +251,7 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "B2",
@@ -298,7 +302,7 @@ public class MQCategory13P2CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${startInclusionDate},endInclusionDate=${endInclusionDate},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-2m+1d},endInclusionDate=${endRevisionDate-1m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "START-ART",

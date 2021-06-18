@@ -87,6 +87,25 @@ public class MQCategory13P3CohortQueries {
     return definition;
   }
 
+  @DocumentedDefinition(value = "findAllPatientWhoAreDeadByEndOfRevisonPeriod")
+  public CohortDefinition findAllPatientWhoAreDeadByEndOfRevisonPeriod() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("findAllPatientWhoAreDeadByEndOfRevisonPeriod");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13P3QueriesInterface.QUERY.findAllPatientWhoAreDeadByEndOfRevisonPeriod;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
   @DocumentedDefinition(
       value =
           "findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominator")
@@ -219,6 +238,91 @@ public class MQCategory13P3CohortQueries {
     return definition;
   }
 
+  /**
+   * J - Select all patients from Ficha Resumo (encounter type 53) with “HIV Carga viral”(Concept id
+   * 856, value_numeric not null) and obs_datetime between “Patient ART Start Date” (the oldest date
+   * from A)+6months and “Patient ART Start Date” (the oldest date from query A)+9months.
+   */
+  @DocumentedDefinition(
+      value =
+          "findAllPatientsWhoHaveClinicalConsultationWithViralChargeBetweenSixAndNineMonthsAfterARTStartDateCategory13_3_J_Numerator")
+  public CohortDefinition
+      findAllPatientsWhoHaveClinicalConsultationWithViralChargeBetweenSixAndNineMonthsAfterARTStartDateCategory13_3_J_Numerator() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("Category13_3_I");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13P3QueriesInterface.QUERY
+            .findAllPatientsWhoHaveClinicalConsultationWithViralChargeBetweenSixAndNineMonthsAfterARTStartDateCategory13_3_J_Numerator;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  /**
+   * K - Select all patients from Ficha Resumo (encounter type 53) with “HIV Carga viral”(Concept id
+   * 856, value_numeric not null) and obs_datetimebetween “ALTERNATIVA A LINHA - 1a LINHA Date” (the
+   * most recent date from B1)+6months and “ALTERNATIVA A LINHA - 1a LINHA Date” (the most recent
+   * date from B1)+9months.
+   */
+  @DocumentedDefinition(
+      value =
+          "findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenAlternativeFirstLineDateCategory13_3_K_Numerator")
+  public CohortDefinition
+      findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenAlternativeFirstLineDateCategory13_3_K_Numerator() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("Category13_3_I");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13P3QueriesInterface.QUERY
+            .findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenAlternativeFirstLineDateCategory13_3_K_Numerator;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  /**
+   * L - Select all patients from Ficha Resumo (encounter type 53) with “HIV Carga viral”(Concept id
+   * 856, value_numeric not null) and obs_datetime between “Segunda Linha Date” (the most recent
+   * date from B2New)+6months and “Segunda Linha Date” (the most recent date from B2New)+9months.
+   */
+  @DocumentedDefinition(
+      value =
+          "findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenSecondTherapheuticLineDateCategory13_3_L_Numerator")
+  public CohortDefinition
+      findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenSecondTherapheuticLineDateCategory13_3_L_Numerator() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+
+    definition.setName("Category13_3_I");
+    definition.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("endRevisionDate", "End Revision Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        MQCategory13P3QueriesInterface.QUERY
+            .findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenSecondTherapheuticLineDateCategory13_3_L_Numerator;
+
+    definition.setQuery(query);
+
+    return definition;
+  }
+
   // Implementação de DENOMINADORES Categoria13.3
   // ------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -282,8 +386,11 @@ public class MQCategory13P3CohortQueries {
                 .findPatientsWhoHasTherapeuthicLineDiferentThanFirstLineFromConsultationClinicalCategory13_3_B1E_Denominator(),
             mappings));
 
+    definition.addSearch(
+        "DEAD", EptsReportUtils.map(this.findAllPatientWhoAreDeadByEndOfRevisonPeriod(), mappings));
+
     definition.setCompositionString(
-        "((START-ART NOT PREGNANT NOT BREASTFEEDING) OR (BI1 NOT B1E)) NOT (TRANSFERED-IN OR TRANSFERED-OUT)");
+        "((START-ART NOT PREGNANT NOT BREASTFEEDING) OR (BI1 NOT B1E)) NOT (TRANSFERED-IN OR TRANSFERED-OUT OR DEAD)");
 
     return definition;
   }
@@ -328,7 +435,10 @@ public class MQCategory13P3CohortQueries {
                 .findAllPatientsWhoHaveTherapheuticLineSecondLineDuringInclusionPeriodCategory13P3B2NEWDenominator(),
             mappings));
 
-    definition.setCompositionString("B2 NOT (TRANSFERED-IN OR TRANSFERED-OUT)");
+    definition.addSearch(
+        "DEAD", EptsReportUtils.map(this.findAllPatientWhoAreDeadByEndOfRevisonPeriod(), mappings));
+
+    definition.setCompositionString("B2 NOT (TRANSFERED-IN OR TRANSFERED-OUT OR DEAD)");
 
     return definition;
   }
@@ -393,6 +503,23 @@ public class MQCategory13P3CohortQueries {
             this.findPatientsFromClinicalConsultationWhoHaveViralChargeCategory13_3_H(), mappings));
 
     definition.addSearch(
+        "J",
+        EptsReportUtils.map(
+            this
+                .findAllPatientsWhoHaveClinicalConsultationWithViralChargeBetweenSixAndNineMonthsAfterARTStartDateCategory13_3_J_Numerator(),
+            mappings));
+
+    definition.addSearch(
+        "K",
+        EptsReportUtils.map(
+            this
+                .findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenAlternativeFirstLineDateCategory13_3_K_Numerator(),
+            mappings));
+
+    definition.addSearch(
+        "DD", EptsReportUtils.map(this.findAllPatientWhoAreDeadByEndOfRevisonPeriod(), mappings));
+
+    definition.addSearch(
         "BI1",
         EptsReportUtils.map(
             this.findPatientsWhoAreInAlternativeLineFirstLineCategory13_3_BI1_Denominator(),
@@ -406,7 +533,7 @@ public class MQCategory13P3CohortQueries {
             mappings));
 
     definition.setCompositionString(
-        "(((START-ART AND G) NOT PREGNANT NOT BREASTFEEDING) OR ((BI1 NOT B1E) AND H)) NOT (TRANSFERED-IN OR TRANSFERED-OUT)");
+        "(((START-ART AND (G OR J)) NOT PREGNANT NOT BREASTFEEDING NOT DD) OR ((BI1 NOT B1E) AND (H OR K ))) NOT (TRANSFERED-IN OR TRANSFERED-OUT OR DD)");
 
     return definition;
   }
@@ -447,7 +574,14 @@ public class MQCategory13P3CohortQueries {
                 .findPatientsFromClinicalConsultationWhoHaveViralChargeSecondLineDateCategory13_3_I(),
             mappings));
 
-    definition.setCompositionString("DENOMINATOR-B2 AND I");
+    definition.addSearch(
+        "L",
+        EptsReportUtils.map(
+            this
+                .findAllPatientsWhoHaveClinicalConsultationAndEncounterDateTimeBetweenSecondTherapheuticLineDateCategory13_3_L_Numerator(),
+            mappings));
+
+    definition.setCompositionString("DENOMINATOR-B2 AND (I OR L)");
 
     return definition;
   }
