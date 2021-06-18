@@ -53,7 +53,7 @@ public class MQCategory13P4DataSet extends MQAbstractDataSet {
                 "CAT13P4ChildrenDENUMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=3-14");
+        "ageOnEndInclusionDate=2-14");
 
     dataSetDefinition.addColumn(
         "CAT13P4ChildrenNUMINATOR",
@@ -66,7 +66,7 @@ public class MQCategory13P4DataSet extends MQAbstractDataSet {
                 "CAT13P4ChildrenNUMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=3-14");
+        "ageOnEndInclusionDate=2-14");
 
     dataSetDefinition.addColumn(
         "CAT13P4PregnantDENUMINATOR",

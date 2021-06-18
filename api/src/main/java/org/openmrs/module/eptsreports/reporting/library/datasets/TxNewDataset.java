@@ -97,6 +97,8 @@ public class TxNewDataset extends BaseDataSet {
         FORTY_FIVE_TO_FORTY_NINE,
         ABOVE_FIFTY);
 
+    dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
+
     dataSetDefinition.addDimension(
         this.getColumnName(AgeRange.UNKNOWN, Gender.MALE),
         EptsReportUtils.map(
@@ -162,7 +164,7 @@ public class TxNewDataset extends BaseDataSet {
         "N-MSM",
         "Homosexual",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "homosexual=homosexual");
+        "gender=M|homosexual=homosexual");
 
     dataSetDefinition.addColumn(
         "N-PWID",
@@ -180,7 +182,7 @@ public class TxNewDataset extends BaseDataSet {
         "N-FSW",
         "Sex Worker",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "sex-worker=sex-worker");
+        "gender=F|sex-worker=sex-worker");
 
     return dataSetDefinition;
   }

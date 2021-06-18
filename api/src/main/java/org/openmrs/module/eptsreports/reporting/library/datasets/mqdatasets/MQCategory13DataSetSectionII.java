@@ -16,7 +16,7 @@ public class MQCategory13DataSetSectionII extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT13CV15PLUSDENOMINATOR_SECTION1_2",
-        "13.4: Adultos (15/+anos) na  2a linha de TARV elegíveis a CV  com registo de pedido de CV feito pelo clínico Denominador",
+        "13.4: Adultos (15/+anos) na 2a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCategory13Section2CohortQueries.findDenominatorCategory13SectionIIB(),
@@ -27,7 +27,7 @@ public class MQCategory13DataSetSectionII extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT13CV24DENOMINATOR_SECTION1_2",
-        "13.13: Crianças (2-14) na  2ª linha de TARV elegíveis ao pedido de CV  e com registo de pedido de CV feito pelo clínico Denominador",
+        "13.13: Crianças na 2a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCategory13Section2CohortQueries.findDenominatorCategory13SectionIIB(),
@@ -38,7 +38,7 @@ public class MQCategory13DataSetSectionII extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT13CV15PLUSNUMERATOR_SECTION1_2",
-        "13.4: Adultos (15/+anos) na 2a linha de TARV elegíveis a CV com registo de pedido de CV feito pelo clínico Numerador",
+        "13.4: Adultos (15/+anos) na 2a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCategory13Section2CohortQueries.findFinalNumeratorCategory13SectionIIC(),
@@ -49,7 +49,7 @@ public class MQCategory13DataSetSectionII extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT13CV24NUMERATOR_SECTION1_2",
-        "13.13: Crianças na 2ª linha de TARV elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico Numerator",
+        "13.13: Crianças na 2a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV Numerator",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.mqCategory13Section2CohortQueries.findFinalNumeratorCategory13SectionIIC(),

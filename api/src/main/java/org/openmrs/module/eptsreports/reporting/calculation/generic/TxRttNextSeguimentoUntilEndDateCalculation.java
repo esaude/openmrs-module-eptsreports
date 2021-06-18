@@ -6,7 +6,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang3.time.DateUtils;
-import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -35,7 +34,7 @@ public class TxRttNextSeguimentoUntilEndDateCalculation extends BaseFghCalculati
     TxRttNextSeguimentoUntilEndDateProcessor nextSeguimentoProcessor =
         Context.getRegisteredComponents(TxRttNextSeguimentoUntilEndDateProcessor.class).get(0);
 
-    ListMap<Integer, Obs> patientsByObs =
+    ListMap<Integer, Date[]> patientsByObs =
         nextSeguimentoProcessor.getResutls(new ArrayList<>(lastSeguimentoResult.keySet()), context);
 
     for (Integer patientId : lastSeguimentoResult.keySet()) {
@@ -45,7 +44,7 @@ public class TxRttNextSeguimentoUntilEndDateCalculation extends BaseFghCalculati
       Date lastDateSeguimento =
           (Date) (calculationResult != null ? calculationResult.getValue() : null);
 
-      List<Obs> allObsSeguimento = patientsByObs.get(patientId);
+      List<Date[]> allObsSeguimento = patientsByObs.get(patientId);
 
       this.setMaxValueDateTime(patientId, lastDateSeguimento, allObsSeguimento, resultMap);
     }
@@ -55,7 +54,7 @@ public class TxRttNextSeguimentoUntilEndDateCalculation extends BaseFghCalculati
   private void setMaxValueDateTime(
       Integer pId,
       Date lastDateSeguimento,
-      List<Obs> allObsSeguimento,
+      List<Date[]> allObsSeguimento,
       CalculationResultMap resultMap) {
 
     Date finalComparisonDate = DateUtil.getDateTime(Integer.MAX_VALUE, 1, 1);
@@ -63,12 +62,14 @@ public class TxRttNextSeguimentoUntilEndDateCalculation extends BaseFghCalculati
 
     if (lastDateSeguimento != null) {
       if (allObsSeguimento != null) {
-        for (Obs obs : allObsSeguimento) {
-          if (obs != null && obs.getObsDatetime() != null) {
-            if (obs.getObsDatetime().compareTo(lastDateSeguimento) == 0) {
-              Date valueDatetime = obs.getValueDatetime();
-              if (valueDatetime != null && valueDatetime.compareTo(maxDate) > 0) {
-                maxDate = valueDatetime;
+        for (Date[] dates : allObsSeguimento) {
+          Date proposedLastConsultationDate = dates[0];
+          if (proposedLastConsultationDate != null) {
+            if (proposedLastConsultationDate.compareTo(lastDateSeguimento) == 0) {
+              Date nextscheduledConsultationDate = dates[1];
+              if (nextscheduledConsultationDate != null
+                  && nextscheduledConsultationDate.compareTo(maxDate) > 0) {
+                maxDate = nextscheduledConsultationDate;
               }
             }
           }
