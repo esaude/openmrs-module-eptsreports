@@ -17,7 +17,7 @@ public class MICategory15DataSet extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15NUMERADOR_15_1",
-        "15.1 % de pacientes elegíveis a MDS, que foram inscritos em MDS",
+        "15.1 % de pacientes elegíveis a MDS, que foram inscritos em MDS - NUMERADOR",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.miCategory15CohortQueries
@@ -29,7 +29,7 @@ public class MICategory15DataSet extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15DENOMINADOR_15_1",
-        "15.1 % de pacientes elegíveis a MDS, que foram inscritos em MDS",
+        "15.1 % de pacientes elegíveis a MDS, que foram inscritos em MDS - DENOMINADOR",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.miCategory15CohortQueries
@@ -41,7 +41,7 @@ public class MICategory15DataSet extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15NUMERADOR_15_2",
-        "15.2 % de inscritos em MDS que receberam CV acima de 1000 cópias que foram suspensos de MDS",
+        "15.2 % de inscritos em MDS que receberam CV acima de 1000 cópias que foram suspensos de MDS - NUMERADOR",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.miCategory15CohortQueries
@@ -53,7 +53,7 @@ public class MICategory15DataSet extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15DENOMINADOR_15_2",
-        "15.2 % de inscritos em MDS que receberam CV acima de 1000 cópias que foram suspensos de MDS",
+        "15.2 % de inscritos em MDS que receberam CV acima de 1000 cópias que foram suspensos de MDS - DENOMINADOR",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.miCategory15CohortQueries
@@ -65,7 +65,7 @@ public class MICategory15DataSet extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15NUMERADOR_15_3",
-        "15.3 % de pacientes inscritos em MDS em TARV há mais de 21 meses, que conhecem o seu resultado de CV de seguimento",
+        "15.3 % de pacientes inscritos em MDS em TARV há mais de 21 meses, que conhecem o seu resultado de CV de seguimento - NUMERADOR",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.miCategory15CohortQueries
@@ -77,7 +77,7 @@ public class MICategory15DataSet extends MQAbstractDataSet {
 
     dataSetDefinition.addColumn(
         "CAT15DENOMINADOR_15_3",
-        "15.3 % de pacientes inscritos em MDS em TARV há mais de 21 meses, que conhecem o seu resultado de CV de seguimento",
+        "15.3 % de pacientes inscritos em MDS em TARV há mais de 21 meses, que conhecem o seu resultado de CV de seguimento - DENOMINADOR",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
                 this.miCategory15CohortQueries
