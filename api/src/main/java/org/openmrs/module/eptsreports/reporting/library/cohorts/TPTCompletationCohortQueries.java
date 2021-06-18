@@ -680,7 +680,8 @@ public class TPTCompletationCohortQueries {
   @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery4")
   private CohortDefinition findPatientsWhoCompletedINHTherapyQuery4() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("Finding Patients Who completed INH Therapy - query 4");
+    definition.setName(
+        "Finding Patients Who completed INH Therapy - >=3 FILT with INH Mensal, >=1 FILT with DT-INH ");
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
     definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query4);
@@ -690,7 +691,7 @@ public class TPTCompletationCohortQueries {
   @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery5")
   private CohortDefinition findPatientsWhoCompletedINHTherapyQuery5() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("Finding Patients Who completed INH Therapy - query 5");
+    definition.setName("Finding Patients Who completed INH Therapy - ...");
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
     definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query5);
