@@ -35,6 +35,8 @@ public class IntensiveMonitoringCohortQueries {
   private final String MAPPING2 =
       "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},location=${location}";
 
+  private final String MAPPING3 =
+      "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}";
   private final String MAPPING =
       "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}";
 
@@ -1182,7 +1184,7 @@ public class IntensiveMonitoringCohortQueries {
 
     cd.addSearch(
         "MI13DEN",
-        EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13P4(true, level), MAPPING2));
+        EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13P4(true, level), MAPPING3));
 
     cd.addSearch(
         "MI13NUM",
