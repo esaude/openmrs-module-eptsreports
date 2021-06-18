@@ -647,7 +647,8 @@ public class TPTCompletationCohortQueries {
   @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery1")
   private CohortDefinition findPatientsWhoCompletedINHTherapyQuery1() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("Finding Patients Who completed INH Therapy - query 1");
+    definition.setName(
+        "Finding Patients Who completed INH Therapy between 173 days and 365 days from the INH Start Date");
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
     definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query1);
@@ -657,7 +658,8 @@ public class TPTCompletationCohortQueries {
   @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery2")
   private CohortDefinition findPatientsWhoCompletedINHTherapyQuery2() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("Finding Patients Who completed INH Therapy - query 2");
+    definition.setName(
+        "Finding Patients Who completed INH Therapy - (Profilaxia INH=I,C and NO DT-INH)) ");
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
     definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query2);
@@ -667,7 +669,8 @@ public class TPTCompletationCohortQueries {
   @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery3")
   private CohortDefinition findPatientsWhoCompletedINHTherapyQuery3() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("Finding Patients Who completed INH Therapy - query 3");
+    definition.setName(
+        "Finding Patients Who completed INH Therapy - Regime TPT(Isoniazida or Isoniazida + Piridoxina, DM = Mensal)");
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
     definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query3);
