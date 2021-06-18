@@ -74,7 +74,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
           createXlsReportDesign(
               reportDefinition,
               "MI.xls",
-              "Intensive Monitoring Report",
+              "Relatorio de Monitoria Intensiva",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();

@@ -164,7 +164,7 @@ public class MICategory7CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-8m+1d},endInclusionDate=${endRevisionDate-7m},endRevisionDate=${endRevisionDate-8m+1d},location=${location}";
+        "startInclusionDate=${endRevisionDate-8m+1d},endInclusionDate=${endRevisionDate-7m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappings =
         "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
@@ -216,19 +216,19 @@ public class MICategory7CohortQueries {
         "TB-ACTIVE-TPI-CAT7-H",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientHaveTBACTIVEAndTPIDuringPeriodCategory7AsH(),
-            mappings));
+            mappingsMI));
 
     definition.addSearch(
         "TB-TBSCREENING-TPI-CAT7-I",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientHaveTBSCREENINGAndTPIDuringPeriodCategory7AsI(),
-            mappings));
+            mappingsMI));
 
     definition.addSearch(
         "TB-TREATMENT-TPI-CAT7-J",
         EptsReportUtils.map(
             this.mQCohortQueries.findPatientHaveTBTREATMENTAndTPIDuringPeriodCategory7AsJ(),
-            mappings));
+            mappingsMI));
 
     definition.setCompositionString(
         "(PREGNANT AND START-TPI-B4 AND START-ART-A) NOT (TB-ACTIVE-CAT7-B1 OR TB-SCREENING-CAT7-B2 OR TB-TREATMENT-CAT7-B3 OR TRANSFERED-IN OR TRANSFERED-OUT OR TB-ACTIVE-TPI-CAT7-H OR TB-TBSCREENING-TPI-CAT7-I OR TB-TREATMENT-TPI-CAT7-J)");
@@ -254,7 +254,7 @@ public class MICategory7CohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappingsMI =
-        "startInclusionDate=${endRevisionDate-8m+1d},endInclusionDate=${endRevisionDate-7m},endRevisionDate=${endRevisionDate-8m+1d},location=${location}";
+        "startInclusionDate=${endRevisionDate-8m+1d},endInclusionDate=${endRevisionDate-7m},endRevisionDate=${endRevisionDate},location=${location}";
 
     final String mappings =
         "startInclusionDate=${endRevisionDate},endInclusionDate=${endRevisionDate},endRevisionDate=${endRevisionDate},location=${location}";
