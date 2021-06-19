@@ -60,6 +60,20 @@ public class QualityImprovement2020CohortQueries {
       "startDate=${revisionEndDate-14m},endDate=${revisionEndDate-11m},location=${location}";
   private final String MAPPING3 =
       "startDate=${startDate},endDate=${revisionEndDate},location=${location}";
+  private final String MAPPING4 =
+      "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},location=${location}";
+  private final String MAPPING5 =
+      "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate},revisionEndDate=${revisionEndDate},location=${location}";
+  private final String MAPPING6 =
+      "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate},location=${location}";
+  private final String MAPPING7 =
+      "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate},location=${location}";
+  private final String MAPPING8 =
+      "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},location=${location}";
+  private final String MAPPING9 =
+      "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate},revisionEndDate=${revisionEndDate},location=${location}";
+  private final String MAPPING10 =
+      "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},revisionEndDate=${revisionEndDate},location=${location}";
 
   @Autowired
   public QualityImprovement2020CohortQueries(
@@ -1896,7 +1910,7 @@ public class QualityImprovement2020CohortQueries {
    * @return CohortDefinition
    * @params indicatorFlag A to G For inicator 11.1 to 11.7 respectively
    */
-  public CohortDefinition getMQC11DEN(int indicatorFlag) {
+  public CohortDefinition getMQC11DEN(int indicatorFlag, String reportSource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName(
@@ -1951,27 +1965,59 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
 
-    compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
+    if (reportSource.equals("MQ")) {
+      compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
+      compositionCohortDefinition.addSearch(
+          "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING1));
 
-    compositionCohortDefinition.addSearch(
-        "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING1));
+      compositionCohortDefinition.addSearch(
+          "B2", EptsReportUtils.map(patientsFromFichaClinicaCargaViral, MAPPING1));
 
-    compositionCohortDefinition.addSearch(
-        "B2", EptsReportUtils.map(patientsFromFichaClinicaCargaViral, MAPPING1));
+      compositionCohortDefinition.addSearch(
+          "B4", EptsReportUtils.map(pregnantWithCargaViralHigherThan1000, MAPPING1));
 
-    compositionCohortDefinition.addSearch(
-        "B4", EptsReportUtils.map(pregnantWithCargaViralHigherThan1000, MAPPING1));
+      compositionCohortDefinition.addSearch(
+          "B5", EptsReportUtils.map(breastfeedingWithCargaViralHigherThan1000, MAPPING1));
 
-    compositionCohortDefinition.addSearch(
-        "B5", EptsReportUtils.map(breastfeedingWithCargaViralHigherThan1000, MAPPING1));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+      compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
+    } else if (reportSource.equals("MI")) {
 
-    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+      if (indicatorFlag == 1) {
+        compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING5));
+      }
+      if (indicatorFlag == 1 || indicatorFlag == 3 || indicatorFlag == 5 || indicatorFlag == 6) {
+        compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING4));
+        compositionCohortDefinition.addSearch("C", EptsReportUtils.map(pregnant, MAPPING6));
+        compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING6));
+        compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING6));
+      } else {
+        compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
+      }
+      if (indicatorFlag == 2 || indicatorFlag == 4 || indicatorFlag == 7) {
+        compositionCohortDefinition.addSearch(
+            "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING8));
 
-    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+        compositionCohortDefinition.addSearch(
+            "B2", EptsReportUtils.map(patientsFromFichaClinicaCargaViral, MAPPING8));
 
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
+        compositionCohortDefinition.addSearch(
+            "B4", EptsReportUtils.map(pregnantWithCargaViralHigherThan1000, MAPPING8));
 
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
+        compositionCohortDefinition.addSearch(
+            "B5", EptsReportUtils.map(breastfeedingWithCargaViralHigherThan1000, MAPPING8));
+
+        compositionCohortDefinition.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+        compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+        compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING7));
+        compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING9));
+      }
+      if (indicatorFlag == 3 || indicatorFlag == 5 || indicatorFlag == 6) {
+        compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING5));
+      }
+    }
 
     if (indicatorFlag == 1 || indicatorFlag == 5 || indicatorFlag == 6) {
       compositionCohortDefinition.setCompositionString("A AND NOT (C OR D OR E OR F)");
@@ -3037,7 +3083,7 @@ public class QualityImprovement2020CohortQueries {
    * in the Template) as following: <code>
    * A and NOT C and NOT D and NOT E and NOT F  AND G and Age > 14*</code>
    */
-  public CohortDefinition getMQC11NumAnotCnotDnotEnotFandGAdultss() {
+  public CohortDefinition getMQC11NumAnotCnotDnotEnotFandGAdultss(String reportResource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName("Category 11 : Numeraror 11.1 ");
@@ -3071,12 +3117,21 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition g = getMQC11NG();
 
-    compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
-    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
-    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
-    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING1));
+    if (reportResource.equals("MQ")) {
+      compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
+      compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
+      compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING1));
+    } else if (reportResource.equals("MI")) {
+      compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING4));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING6));
+      compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING6));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING6));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING5));
+      compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING10));
+    }
 
     compositionCohortDefinition.setCompositionString(
         "A AND NOT C AND NOT D AND NOT E AND NOT F  AND G");
@@ -3090,7 +3145,7 @@ public class QualityImprovement2020CohortQueries {
    * D in the Template) as following: <code>
    * B1 and B2 and NOT C and NOT B5 and NOT E and NOT F AND H and  Age > 14*</code>
    */
-  public CohortDefinition getMQC11NumB1nB2notCnotDnotEnotEnotFnHandAdultss() {
+  public CohortDefinition getMQC11NumB1nB2notCnotDnotEnotEnotFnHandAdultss(String reportSource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName("Category 11 : Numeraror 11.2 ");
@@ -3131,13 +3186,23 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition h = getMQC11NH();
 
-    compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING1));
-    compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING1));
-    compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING));
-    compositionCohortDefinition.addSearch("B5", EptsReportUtils.map(b5, MAPPING));
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
-    compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING));
+    if (reportSource.equals("MQ")) {
+      compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING1));
+      compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING1));
+      compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING));
+      compositionCohortDefinition.addSearch("B5", EptsReportUtils.map(b5, MAPPING));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
+      compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING));
+    } else if (reportSource.equals("MI")) {
+      compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING8));
+      compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING8));
+      compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING8));
+      compositionCohortDefinition.addSearch("B5", EptsReportUtils.map(b5, MAPPING8));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING7));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING9));
+      compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING8));
+    }
 
     compositionCohortDefinition.setCompositionString(
         "B1 AND B2 AND NOT B5 AND NOT E AND NOT F AND NOT B4 AND H");
@@ -3150,7 +3215,7 @@ public class QualityImprovement2020CohortQueries {
    * nos primeiros 3 meses após início do TARV (Line 58 in the template) Numerador (Column D in the
    * Template) as following: <code> A  and  C and NOT D and NOT E and NOT F  AND G </code>
    */
-  public CohortDefinition getMQC11NumAnB3nCnotDnotEnotEnotFnG() {
+  public CohortDefinition getMQC11NumAnB3nCnotDnotEnotEnotFnG(String reportSource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName("Category 11 : Numeraror 11.3");
@@ -3184,12 +3249,21 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition g = getMQC11NG();
 
-    compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
-    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
-    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
-    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING1));
+    if (reportSource.equals("MQ")) {
+      compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
+      compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
+      compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING1));
+    } else if (reportSource.equals("MI")) {
+      compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING4));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING6));
+      compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING6));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING6));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING5));
+      compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING10));
+    }
 
     compositionCohortDefinition.setCompositionString("A AND C AND NOT D AND NOT E AND NOT F AND G");
 
@@ -3202,7 +3276,7 @@ public class QualityImprovement2020CohortQueries {
    * D in the Template) as following: <code>
    *  B1 and B2 and B5 and NOT E and NOT F AND H </code>
    */
-  public CohortDefinition getMQC11NumB1nB2nB3nCnotDnotEnotEnotFnH() {
+  public CohortDefinition getMQC11NumB1nB2nB3nCnotDnotEnotEnotFnH(String reportSource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName("Category 11 : Numeraror  11.4");
@@ -3247,13 +3321,42 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition h = getMQC11NH();
 
-    compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING1));
-    compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING1));
-    compositionCohortDefinition.addSearch("B5", EptsReportUtils.map(b5, MAPPING));
-    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
-    compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING));
+    if (reportSource.equals("MQ")) {
+      compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING1));
+      compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING1));
+      compositionCohortDefinition.addSearch("B5", EptsReportUtils.map(b5, MAPPING));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
+      compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING));
+    } else if (reportSource.equals("MI")) {
+      compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING8));
+      compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING8));
+      compositionCohortDefinition.addSearch("B5", EptsReportUtils.map(b5, MAPPING8));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING7));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING9));
+      compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING8));
+
+      /*
+      compositionCohortDefinition.addSearch(
+            "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING8));
+
+        compositionCohortDefinition.addSearch(
+            "B2", EptsReportUtils.map(patientsFromFichaClinicaCargaViral, MAPPING8));
+
+        compositionCohortDefinition.addSearch(
+            "B4", EptsReportUtils.map(pregnantWithCargaViralHigherThan1000, MAPPING8));
+
+        compositionCohortDefinition.addSearch(
+            "B5", EptsReportUtils.map(breastfeedingWithCargaViralHigherThan1000, MAPPING8));
+
+        compositionCohortDefinition.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
+        compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
+        compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING7));
+        compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING9));
+        */
+    }
 
     compositionCohortDefinition.setCompositionString(
         "B1 AND NOT B5 AND B4 AND NOT E AND NOT F AND H");
@@ -3267,7 +3370,7 @@ public class QualityImprovement2020CohortQueries {
    * the Template) as following: <code>
    * A and NOT C and NOT D and NOT E and NOT F  AND G and Age BETWEEN 2 AND 14*</code>
    */
-  public CohortDefinition getMQC11NumAnotCnotDnotEnotFnotGnChildren() {
+  public CohortDefinition getMQC11NumAnotCnotDnotEnotFnotGnChildren(String reportSource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName("Category 11 : Numeraror 11.5");
@@ -3298,12 +3401,21 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition g = getMQC11NG();
     CohortDefinition children = genericCohortQueries.getAgeOnMOHArtStartDate(2, 14, true);
 
-    compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
-    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
-    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
-    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING1));
+    if (reportSource.equals("MQ")) {
+      compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
+      compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
+      compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING1));
+    } else if (reportSource.equals("MI")) {
+      compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING4));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING6));
+      compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING6));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING6));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING5));
+      compositionCohortDefinition.addSearch("G", EptsReportUtils.map(g, MAPPING10));
+    }
 
     compositionCohortDefinition.setCompositionString(
         "A AND NOT C AND NOT D AND NOT E AND NOT F AND G");
@@ -3316,7 +3428,7 @@ public class QualityImprovement2020CohortQueries {
    * Template) as following: <code>
    *  A and NOT C and NOT D and NOT E and NOT F AND I  AND Age  <= 9 MONTHS</code>
    */
-  public CohortDefinition getMQC11NumAnotCnotDnotEnotFnotIlessThan9Month() {
+  public CohortDefinition getMQC11NumAnotCnotDnotEnotFnotIlessThan9Month(String reportSource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName("Category 11 : Numeraror 11.6");
@@ -3348,15 +3460,30 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition i = getMQC11NI();
     CohortDefinition babies = genericCohortQueries.getAgeInMonths(0, 9);
 
-    compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
-    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
-    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
-    compositionCohortDefinition.addSearch(
-        "I",
-        EptsReportUtils.map(
-            i, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    if (reportSource.equals("MQ")) {
+      compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING));
+      compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
+      compositionCohortDefinition.addSearch(
+          "I",
+          EptsReportUtils.map(
+              i, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    } else if (reportSource.equals("MI")) {
+      compositionCohortDefinition.addSearch("A", EptsReportUtils.map(a, MAPPING4));
+      compositionCohortDefinition.addSearch("C", EptsReportUtils.map(c, MAPPING6));
+      compositionCohortDefinition.addSearch("D", EptsReportUtils.map(d, MAPPING6));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING6));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING5));
+      compositionCohortDefinition.addSearch(
+          "I",
+          EptsReportUtils.map(
+              i,
+              "onOrAfter=${revisionEndDate-5m+1d},onOrBefore=${revisionEndDate-4m},location=${location}"));
+    }
+
     compositionCohortDefinition.addSearch(
         "BABIES", EptsReportUtils.map(babies, "effectiveDate=${effectiveDate}"));
 
@@ -3372,7 +3499,7 @@ public class QualityImprovement2020CohortQueries {
    * Numerador (Column D in the Template) as following: <code>
    *  B1 and B2 and  NOT C and NOT B5 and NOT E and NOT F  And H and  Age < 15**</code>
    */
-  public CohortDefinition getMQC11NumB1nB2notCnotDnotEnotFnHChildren() {
+  public CohortDefinition getMQC11NumB1nB2notCnotDnotEnotFnHChildren(String reportSource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName("Category 11 : Numeraror 11.7");
@@ -3414,13 +3541,23 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
     CohortDefinition h = getMQC11NH();
 
-    compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING1));
-    compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING1));
-    compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING));
-    compositionCohortDefinition.addSearch("B5", EptsReportUtils.map(b5, MAPPING));
-    compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
-    compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
-    compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING));
+    if (reportSource.equals("MQ")) {
+      compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING1));
+      compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING1));
+      compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING));
+      compositionCohortDefinition.addSearch("B5", EptsReportUtils.map(b5, MAPPING));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING1));
+      compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING));
+    } else if (reportSource.equals("MI")) {
+      compositionCohortDefinition.addSearch("B1", EptsReportUtils.map(b1, MAPPING8));
+      compositionCohortDefinition.addSearch("B2", EptsReportUtils.map(b2, MAPPING8));
+      compositionCohortDefinition.addSearch("B4", EptsReportUtils.map(b4, MAPPING8));
+      compositionCohortDefinition.addSearch("B5", EptsReportUtils.map(b5, MAPPING8));
+      compositionCohortDefinition.addSearch("E", EptsReportUtils.map(e, MAPPING7));
+      compositionCohortDefinition.addSearch("F", EptsReportUtils.map(f, MAPPING9));
+      compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING8));
+    }
 
     compositionCohortDefinition.setCompositionString(
         "B1 AND B2 AND NOT B5 AND NOT E AND NOT F AND NOT B4 AND H");
