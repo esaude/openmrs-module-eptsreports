@@ -1310,7 +1310,7 @@ public class IntensiveMonitoringCohortQueries {
             + " INNER JOIN obs o ON o.encounter_id=e.encounter_id "
             + " WHERE p.voided = 0 AND e.voided=0 AND e.location_id=:location "
             + " AND e.encounter_type= ${6} AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
-            + " AND o.concept_id = ${6332} AND o.value_coded= ${1065} "
+            + " AND o.concept_id = ${6332} AND o.value_coded= ${1065} AND o.voided=0 "
             + " GROUP BY p.patient_id ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
@@ -1456,7 +1456,7 @@ public class IntensiveMonitoringCohortQueries {
             + " INNER JOIN obs o ON o.encounter_id=e.encounter_id "
             + " WHERE p.voided = 0 AND e.voided=0 AND e.location_id=:location "
             + " AND e.encounter_type= ${6} AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
-            + " AND o.concept_id = ${1982} AND o.value_coded= ${1065} "
+            + " AND o.concept_id = ${1982} AND o.value_coded= ${1065} AND o.voided=0 "
             + " GROUP BY p.patient_id ";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -2014,7 +2014,8 @@ public class IntensiveMonitoringCohortQueries {
 
       if (level == 1) {
         cd.setName("Denominator: " + name1);
-        cd.setCompositionString("A AND B1 AND E AND NOT (C OR D OR F OR G OR J) AND AGE2 ");
+        // cd.setCompositionString("A AND B1 AND E AND NOT (C OR D OR F OR G OR J) AND AGE2 ");
+        cd.setCompositionString("D");
       }
       if (level == 2) {
         cd.setName("Denominator: " + name2);
