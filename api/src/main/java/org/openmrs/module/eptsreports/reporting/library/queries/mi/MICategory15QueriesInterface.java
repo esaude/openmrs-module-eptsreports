@@ -206,10 +206,10 @@ public interface MICategory15QueriesInterface {
 
     public static final String
         findPatientsWithTheLastCargaViralGreaterOrEqualThan1000RegisteredInTheLastClinicalConsultation =
-            " select patient_id from (select maxEnc.patient_id, ultimaCVAlta.data_carga, encounter_datetime from (Select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
+            "  select patient_id from (select maxEnc.patient_id, ultimaCVAlta.data_carga, encounter_datetime from (Select p.patient_id,max(e.encounter_datetime) encounter_datetime from patient p "
                 + "inner join encounter e on p.patient_id=e.patient_id "
                 + "where p.voided=0 and e.voided=0 and e.encounter_type=6 and "
-                + "e.encounter_datetime >=:startInclusionDate and e.encounter_datetime<=:endInclusionDate  and e.location_id=:location "
+                + "e.encounter_datetime between :startInclusionDate and :endInclusionDate  and e.location_id=:location "
                 + "group by p.patient_id "
                 + ")maxEnc "
                 + "  inner join "
@@ -218,6 +218,7 @@ public interface MICategory15QueriesInterface {
                 + " inner join encounter e on p.patient_id = e.patient_id "
                 + " inner join obs o on e.encounter_id=o.encounter_id "
                 + " where 	p.voided = 0 and e.voided = 0 and o.voided = 0 and e.encounter_type = 6 and  o.concept_id = 856 and e.location_id = :location and o.value_numeric >= 1000 "
+                + " and e.encounter_datetime <= :endInclusionDate "
                 + " group by p.patient_id "
                 + " ) ultimaCVAlta on ultimaCVAlta.patient_id = maxEnc.patient_id and ultimaCVAlta.data_carga = maxEnc.encounter_datetime "
                 + " )final ";
