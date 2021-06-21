@@ -2014,8 +2014,7 @@ public class IntensiveMonitoringCohortQueries {
 
       if (level == 1) {
         cd.setName("Denominator: " + name1);
-        // cd.setCompositionString("A AND B1 AND E AND NOT (C OR D OR F OR G OR J) AND AGE2 ");
-        cd.setCompositionString("D");
+        cd.setCompositionString("A AND B1 AND E AND NOT (C OR D OR F OR G OR J) AND AGE2 ");
       }
       if (level == 2) {
         cd.setName("Denominator: " + name2);
