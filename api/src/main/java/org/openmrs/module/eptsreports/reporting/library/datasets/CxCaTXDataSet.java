@@ -56,7 +56,7 @@ public class CxCaTXDataSet extends BaseDataSet {
                         .getPatientsWhoReceivedTreatmentTypeDuringReportingPeriodTotalDenominator(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     /*    First Screen
      */
@@ -71,7 +71,7 @@ public class CxCaTXDataSet extends BaseDataSet {
                         .getPatientsWhoeReceivedTreatmentTypeDuringReportingPeriodFirstScreean(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -128,7 +128,7 @@ public class CxCaTXDataSet extends BaseDataSet {
                         .getPatientsWhoeReceivedTreatmentTypeDuringReportingPeriodRescreenedAfterPreviousNegative(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -186,7 +186,7 @@ public class CxCaTXDataSet extends BaseDataSet {
                         .getPatientsWhoeReceivedTreatmentTypeDuringReportingPeriodPostTreatmentFollowUp(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -243,7 +243,7 @@ public class CxCaTXDataSet extends BaseDataSet {
                         .getPatientsWhoeReceivedTreatmentTypeDuringReportingPeriodRescreenedAfterPreviousPositive(),
                     mappings)),
             mappings),
-        "gender=F");
+        "gender=F|age=15+");
 
     addRow(
         dataSetDefinition,
@@ -312,7 +312,7 @@ public class CxCaTXDataSet extends BaseDataSet {
     ColumnParameters a8 = new ColumnParameters("50+", "50+ female", "gender=F|age=50+", "08");
     ColumnParameters unknownF =
         new ColumnParameters("unknownF", "Unknown age", "gender=F|age=UK", "09");
-    ColumnParameters a9 = new ColumnParameters("subTotal", "subTotal", "", "10");
+    ColumnParameters a9 = new ColumnParameters("subTotal", "subTotal", "gender=F|age=15+", "10");
 
     return Arrays.asList(a1, a2, a3, a4, a5, a6, a7, a8, unknownF, a9);
   }

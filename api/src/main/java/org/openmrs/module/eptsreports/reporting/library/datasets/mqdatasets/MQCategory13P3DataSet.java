@@ -153,7 +153,7 @@ public class MQCategory13P3DataSet extends MQAbstractDataSet {
                 "CAT13_PART_3_13_14_DENOMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=3-14");
+        "ageOnEndInclusionDate=2-14");
 
     dataSetDefinition.addColumn(
         "CAT13_PART_3_13_14_NUMERATOR",
@@ -166,6 +166,6 @@ public class MQCategory13P3DataSet extends MQAbstractDataSet {
                 "CAT13_PART_3_13_14_NUMERATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=3-14");
+        "ageOnEndInclusionDate=2-14");
   }
 }

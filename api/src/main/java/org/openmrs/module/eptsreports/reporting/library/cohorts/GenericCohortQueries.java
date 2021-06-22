@@ -101,6 +101,9 @@ public class GenericCohortQueries {
     sql.setName(name);
     sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("endRevisionDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("endInclusionDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("startInclusionDate", "Start Date", Date.class));
     sql.addParameter(new Parameter("location", "Facility", Location.class));
     sql.setQuery(query);
     return sql;

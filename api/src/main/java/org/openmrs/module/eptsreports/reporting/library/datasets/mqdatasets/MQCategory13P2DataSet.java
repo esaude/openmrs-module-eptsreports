@@ -24,7 +24,7 @@ public class MQCategory13P2DataSet extends MQAbstractDataSet {
                 "CAT13P2PregnantWithCVInTARVDENOMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR",
@@ -37,7 +37,7 @@ public class MQCategory13P2DataSet extends MQAbstractDataSet {
                 "CAT13P2PregnantWithCVInFirstConsultationTARVDENOMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR",
@@ -49,7 +49,7 @@ public class MQCategory13P2DataSet extends MQAbstractDataSet {
                 "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVDENOMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVInTARVNUMINATOR",
@@ -61,7 +61,7 @@ public class MQCategory13P2DataSet extends MQAbstractDataSet {
                 "CAT13P2PregnantWithCVInTARVNUMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR",
@@ -73,7 +73,7 @@ public class MQCategory13P2DataSet extends MQAbstractDataSet {
                 "CAT13P2PregnantWithCVInFirstConsultationTARVNUMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=15+");
+        "");
 
     dataSetDefinition.addColumn(
         "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR",
@@ -85,6 +85,6 @@ public class MQCategory13P2DataSet extends MQAbstractDataSet {
                 "CAT13P2PregnantWithCVIn33DaysAfterInclusionDateTARVNUMINATOR",
                 mappings),
             mappings),
-        "ageOnEndInclusionDate=15+");
+        "");
   }
 }

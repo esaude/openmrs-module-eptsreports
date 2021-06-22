@@ -27,5 +27,33 @@ public interface TxRttQueries {
             + " inner join obs o on e.encounter_id=o.encounter_id "
             + " where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and o.concept_id=23866 and o.value_datetime is not null "
             + " and o.value_datetime<:startDate and e.location_id=:location and e.patient_id in(:patientIds) group by p.patient_id ) last_consulta_levantamento group by patient_id ";
+
+    public static final String findNextScheduledFilaEncountersByPatientsIdAndLocation =
+        "						"
+            + " select encounter.patient_id, encounter.encounter_datetime, obs.value_datetime  					"
+            + " from encounter 																					"
+            + "    join obs on obs.encounter_id = encounter.encounter_id 										"
+            + "  where encounter.voided = 0 and obs.voided = 0 													"
+            + "  	and encounter.encounter_type = 18 															"
+            + "  	and obs.concept_id =5096  																	"
+            + " 	and encounter.location_id = :location 														"
+            + "  	and obs.value_datetime is not null 															"
+            + "  	and encounter.encounter_datetime <= :endDate 															"
+            + "  	and encounter.patient_id in (:patientIds)  													"
+            + "  	order by obs.obs_datetime desc  												";
+
+    public static final String findNextScheduledConsultationEncountersByPatientsIdAndLocation =
+        "			    "
+            + " select encounter.patient_id, encounter.encounter_datetime, obs.value_datetime  				    "
+            + " from encounter 																					"
+            + "    join obs on obs.encounter_id = encounter.encounter_id 										"
+            + "  where encounter.voided = 0 and obs.voided = 0 													"
+            + "  	and encounter.encounter_type in (6,9) 														"
+            + "  	and obs.concept_id =1410  																	"
+            + " 	and encounter.location_id = :location 														"
+            + "  	and obs.value_datetime is not null 															"
+            + "  	and encounter.encounter_datetime <= :endDate 															"
+            + "  	and encounter.patient_id in (:patientIds)  													"
+            + "  	order by obs.obs_datetime desc  												";
   }
 }

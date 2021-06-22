@@ -193,7 +193,7 @@ public class TxCurrDataset extends BaseDataSet {
         "C-MSM",
         "Homosexual",
         EptsReportUtils.map(txCurrIndicator, mappings),
-        "homosexual=homosexual");
+        "gender=M|homosexual=homosexual");
 
     dataSetDefinition.addColumn(
         "C-PWID",
@@ -211,7 +211,7 @@ public class TxCurrDataset extends BaseDataSet {
         "C-FSW",
         "Sex Worker",
         EptsReportUtils.map(txCurrIndicator, mappings),
-        "sex-worker=sex-worker");
+        "gender=F|sex-worker=sex-worker");
 
     return dataSetDefinition;
   }
