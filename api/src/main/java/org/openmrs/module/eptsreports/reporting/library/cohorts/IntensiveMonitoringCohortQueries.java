@@ -352,7 +352,7 @@ public class IntensiveMonitoringCohortQueries {
             "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
 
     if (den == 2 || den == 4) {
-      cd.setCompositionString("(B1 OR B2 OR B3 OR C OR D OR E OR F OR H OR I OR J)");
+      cd.setCompositionString( "(A AND (B41 OR B42)) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F OR H OR I OR J)");
     } else if (den == 6) {
       cd.setCompositionString(
           "(A AND (B41 OR B42) AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F OR H OR I OR J)");
