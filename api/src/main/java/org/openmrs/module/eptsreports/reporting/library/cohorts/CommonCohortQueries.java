@@ -593,7 +593,6 @@ public class CommonCohortQueries {
     map.put("treatmentValueCoded", StringUtils.join(answerIds, ","));
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
 
     return sqlCohortDefinition;

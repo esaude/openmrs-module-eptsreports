@@ -796,12 +796,17 @@ public class IntensiveMonitoringCohortQueries {
     cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     String mapp =
         "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}";
-    cd.addSearch(
-        "MI13DEN",
-        EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13(true, level), mapp));
-    cd.addSearch(
-        "MI13NUM",
-        EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13(false, level), mapp));
+    if (level == 1 && type.equals("DEN")) {
+      cd.addSearch("MI13DEN", EptsReportUtils.map(this.getMI13DEN1(), mapp));
+    } else {
+      cd.addSearch(
+          "MI13DEN",
+          EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13(true, level), mapp));
+      cd.addSearch(
+          "MI13NUM",
+          EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13(false, level), mapp));
+    }
+
     if ("DEN".equals(type)) {
       cd.setCompositionString("MI13DEN");
     } else if ("NUM".equals(type)) {
@@ -2118,5 +2123,118 @@ public class IntensiveMonitoringCohortQueries {
     String str = stringSubstitutor.replace(query);
     cd.setQuery(str);
     return cd;
+  }
+
+  public CohortDefinition getMI13DEN1() {
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+    compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    compositionCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+    compositionCohortDefinition.setName("MI CAT 13.1 Denominator");
+
+    CohortDefinition lastClinical = commonCohortQueries.getMOHPatientsLastClinicalConsultation();
+
+    CohortDefinition pregnant =
+        commonCohortQueries.getNewMQPregnantORBreastfeeding(
+            hivMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition brestfeeding =
+        commonCohortQueries.getNewMQPregnantORBreastfeeding(
+            hivMetadata.getBreastfeeding().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId());
+
+    CohortDefinition b2New =
+        commonCohortQueries.getPatientsWithFirstTherapeuticLineOnLastClinicalEncounterB2NEW();
+
+    CohortDefinition changeRegimen6Months =
+        commonCohortQueries.getMOHPatientsOnTreatmentFor6Months(
+            true,
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getRegimenAlternativeToFirstLineConcept(),
+            Arrays.asList(
+                commonMetadata.getAlternativeFirstLineConcept(),
+                commonMetadata.getRegimeChangeConcept(),
+                hivMetadata.getNoConcept()));
+
+    CohortDefinition B3E =
+        commonCohortQueries.getMOHPatientsToExcludeFromTreatmentIn6Months(
+            true,
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getMasterCardEncounterType(),
+            commonMetadata.getRegimenAlternativeToFirstLineConcept(),
+            Arrays.asList(
+                commonMetadata.getAlternativeFirstLineConcept(),
+                commonMetadata.getRegimeChangeConcept(),
+                hivMetadata.getNoConcept()),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getTherapeuticLineConcept(),
+            Collections.singletonList(hivMetadata.getFirstLineConcept()));
+
+    CohortDefinition B4E =
+        commonCohortQueries.getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
+            true, false, 12);
+
+    CohortDefinition B5E =
+        commonCohortQueries.getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
+            false, true, -3);
+
+    compositionCohortDefinition.addSearch(
+        "age",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPatientsAgeOnLastClinicalConsultationDate(15, null),
+            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B1",
+        EptsReportUtils.map(
+            lastClinical,
+            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B2NEW",
+        EptsReportUtils.map(
+            b2New,
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "C",
+        EptsReportUtils.map(
+            pregnant, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "D",
+        EptsReportUtils.map(
+            brestfeeding,
+            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B3",
+        EptsReportUtils.map(
+            changeRegimen6Months,
+            "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B3E",
+        EptsReportUtils.map(
+            B3E, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B4E",
+        EptsReportUtils.map(
+            B4E, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "B5E",
+        EptsReportUtils.map(
+            B5E, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    compositionCohortDefinition.setCompositionString(
+        "(B1 AND (B2NEW OR (B3 AND NOT B3E)) AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND age");
+
+    return compositionCohortDefinition;
   }
 }
