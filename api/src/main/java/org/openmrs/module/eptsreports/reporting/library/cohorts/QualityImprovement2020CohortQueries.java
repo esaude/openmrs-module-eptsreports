@@ -2361,7 +2361,8 @@ public class QualityImprovement2020CohortQueries {
   public CohortDefinition getPatientsFromFichaClinicaDenominatorB(String key) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Patients From Ficha Clinica");
+    sqlCohortDefinition.setName(
+        "All patients from Ficha Clinica who have THE LAST “LINHA TERAPEUTICA” or with “Carga Viral");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
@@ -2432,7 +2433,7 @@ public class QualityImprovement2020CohortQueries {
   public CohortDefinition getPatientsFromFichaClinicaDenominatorB1EOrB2E(boolean b1e) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Patients From Ficha Clinica");
+    sqlCohortDefinition.setName("Patients From Ficha Clinica Denominator B1E Or B2E");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
@@ -2502,7 +2503,8 @@ public class QualityImprovement2020CohortQueries {
   public CohortDefinition getB2_13() {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Patients From Ficha Clinica");
+    sqlCohortDefinition.setName(
+        "All patients from Ficha Clinica with “Carga Viral” registered with numeric value > 1000 during the Inclusion period");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
@@ -2561,7 +2563,8 @@ public class QualityImprovement2020CohortQueries {
   public CohortDefinition getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1() {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Patients From Ficha Clinica");
+    sqlCohortDefinition.setName(
+        "Patients From Ficha Clinica With Last Therapeutic Line Set As First Line");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
@@ -2615,7 +2618,8 @@ public class QualityImprovement2020CohortQueries {
   public CohortDefinition getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsSecondLine_B2() {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Patients From Ficha Clinica");
+    sqlCohortDefinition.setName(
+        "Patients From Ficha Clinica With Last Therapeutic Line Set As Second Line B2");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));

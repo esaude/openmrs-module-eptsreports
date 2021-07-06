@@ -352,7 +352,8 @@ public class IntensiveMonitoringCohortQueries {
             "startDate=${revisionEndDate-8m+1d},endDate=${revisionEndDate-7m},location=${location}"));
 
     if (den == 2 || den == 4) {
-      cd.setCompositionString( "(A AND (B41 OR B42)) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F OR H OR I OR J)");
+      cd.setCompositionString(
+          "(A AND (B41 OR B42)) AND NOT (B1 OR B2 OR B3 OR C OR D OR E OR F OR H OR I OR J)");
     } else if (den == 6) {
       cd.setCompositionString(
           "(A AND (B41 OR B42) AND C) AND NOT (B1 OR B2 OR B3 OR D OR E OR F OR H OR I OR J)");
@@ -1215,7 +1216,7 @@ public class IntensiveMonitoringCohortQueries {
    */
   public CohortDefinition getMI15A() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName("All patients with Last Clinical Consultation ");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1250,7 +1251,7 @@ public class IntensiveMonitoringCohortQueries {
    */
   public CohortDefinition getMI15B2() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("B2 Patients From Ficha Clinica");
+    cd.setName("B2 - All patients with the earliest “Data de Início TARV”");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1299,7 +1300,7 @@ public class IntensiveMonitoringCohortQueries {
    */
   public CohortDefinition getMI15D() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName("All female patients registered as “Breastfeeding”");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1340,7 +1341,7 @@ public class IntensiveMonitoringCohortQueries {
   public CohortDefinition getMI15B1() {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName("B1 - All patients with the earliest “Data de Início TARV”");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1395,7 +1396,7 @@ public class IntensiveMonitoringCohortQueries {
   public CohortDefinition getMI15G() {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName("G - All patients with the last Viral Load Result");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1445,7 +1446,7 @@ public class IntensiveMonitoringCohortQueries {
    */
   public CohortDefinition getMI15C() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName("All female patients registered as “Pregnant”");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1483,7 +1484,7 @@ public class IntensiveMonitoringCohortQueries {
    */
   public CohortDefinition getMI15H() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName("Select all patients with Viral Load result");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1541,7 +1542,8 @@ public class IntensiveMonitoringCohortQueries {
   public CohortDefinition getMI15J() {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName(
+        "J - All patients with at least one of the following models registered in Ficha Clinica");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1606,7 +1608,7 @@ public class IntensiveMonitoringCohortQueries {
    */
   public CohortDefinition getMI15F() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName("All patients with the last CD4 result");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1656,7 +1658,8 @@ public class IntensiveMonitoringCohortQueries {
   public CohortDefinition getMI15K() {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName(
+        "K - All patients with at least one of the following models registered in Ficha Clinica");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1724,7 +1727,8 @@ public class IntensiveMonitoringCohortQueries {
   public CohortDefinition getMI15L() {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName(
+        "L - All patients with at least one of the following models registered in Ficha Clinica");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1805,7 +1809,7 @@ public class IntensiveMonitoringCohortQueries {
   public CohortDefinition getMI15E(int upper, int lower) {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName("E - All patients with the following Clinical Consultations or ARV Drugs Pick Ups");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
@@ -1921,12 +1925,11 @@ public class IntensiveMonitoringCohortQueries {
   public CohortDefinition getMI15I() {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName("I - All patients with the last Viral Load Result");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
-    cd.setName("Patients From Ficha Clinica");
     Map<String, Integer> map = new HashMap<>();
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
@@ -2100,7 +2103,7 @@ public class IntensiveMonitoringCohortQueries {
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
-    cd.setName("Patients From Ficha Clinica");
+    cd.setName("All patients with concept “PEDIDO DE INVESTIGACOES LABORATORIAIS”");
     Map<String, Integer> map = new HashMap<>();
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());

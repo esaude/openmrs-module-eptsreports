@@ -216,7 +216,7 @@ public class CommonCohortQueries {
       }
     }
     String query = "";
-    if (occurType == "last") {
+    if (occurType.equals("last")) {
 
       query +=
           "SELECT p.person_id FROM person p "
@@ -225,7 +225,7 @@ public class CommonCohortQueries {
               + " INNER JOIN (SELECT p.person_id, MAX(e.encounter_datetime) AS encounter_datetime"
               + " FROM person p INNER JOIN encounter e ";
 
-    } else if (occurType == "first") {
+    } else if (occurType.equals("first")) {
       query +=
           "SELECT p.person_id FROM person p "
               + " INNER JOIN  encounter e ON e.patient_id = p.person_id "
@@ -233,7 +233,7 @@ public class CommonCohortQueries {
               + " INNER JOIN (SELECT p.person_id, MIN(e.encounter_datetime) AS encounter_datetime"
               + " FROM person p INNER JOIN encounter e ";
 
-    } else if (occurType == "once") {
+    } else if (occurType.equals("once")) {
       query += "SELECT p.person_id FROM person p INNER JOIN encounter e ";
     }
 
@@ -244,7 +244,7 @@ public class CommonCohortQueries {
     if (transfIn) {
       query += "INNER JOIN obs o2 " + "ON e.encounter_id = o2.encounter_id ";
     }
-    if (occurType == "last" || occurType == "first") {
+    if (occurType.equals("last") || occurType.equals("first")) {
       query +=
           "WHERE e.location_id = :location AND e.encounter_type = ${encounterType} "
               + "AND o.concept_id = ${question}  ";
@@ -265,7 +265,7 @@ public class CommonCohortQueries {
         "AND o.obs_datetime >= :startDate AND o.obs_datetime <= :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0 ";
 
-    if (occurType == "last" || occurType == "first") {
+    if (occurType.equals("last") || occurType.equals("first")) {
       query +=
           "GROUP BY p.person_id) list ON p.person_id = list.person_id "
               + " WHERE  e.encounter_datetime = list.encounter_datetime "
@@ -310,7 +310,7 @@ public class CommonCohortQueries {
   public CohortDefinition getTranferredOutPatients() {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Patients From Ficha Clinica");
+    sqlCohortDefinition.setName("All patients registered in encounter “Ficha Resumo-MasterCard”");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
