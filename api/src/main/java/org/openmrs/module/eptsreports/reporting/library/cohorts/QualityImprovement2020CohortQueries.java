@@ -1131,17 +1131,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition startedART = getMOHArtStartDate();
 
-    CohortDefinition nutritionalClass =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            false,
-            "first",
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            commonMetadata.getClassificationOfMalnutritionConcept(),
-            Arrays.asList(
-                hivMetadata.getChronicMalnutritionConcept(), hivMetadata.getMalnutritionConcept()),
-            null,
-            null);
+    CohortDefinition nutritionalClass = getNutritionalBCat5();
 
     CohortDefinition pregnant =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
@@ -1180,6 +1170,59 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.setCompositionString("(A AND B) AND NOT (C OR D OR E) AND F");
     }
     return compositionCohortDefinition;
+  }
+
+  /**
+   * B - Filter all patients with nutritional state equal to “DAM” or “DAG” registered on a clinical
+   * consultation during the period:
+   *
+   * <p>All patients registered in Ficha Clinica (encounter type=6) with “CLASSIFICAÇÃO DE
+   * DESNUTRIÇÃO” (concept_id = 6336) and value_coded equal to “DAG” (concept_id = 1844) or equal to
+   * “DAM” (concept_id = 68) during the encounter_datetime >= startDateRevision and
+   * <=endDateRevision
+   *
+   * @return SqlCohortDefinition
+   */
+  public SqlCohortDefinition getNutritionalBCat5() {
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName(" All patients that started ART during inclusion period ");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("1844", hivMetadata.getChronicMalnutritionConcept().getConceptId());
+    map.put("68", hivMetadata.getMalnutritionConcept().getConceptId());
+    map.put("6336", commonMetadata.getClassificationOfMalnutritionConcept().getConceptId());
+
+    String query =
+        " SELECT p.patient_id "
+            + "FROM   patient p "
+            + "           INNER JOIN(SELECT p.patient_id, "
+            + "                             Min(e.encounter_datetime) AS min_nutritional "
+            + "                      FROM   patient p "
+            + "                                 INNER JOIN encounter e "
+            + "                                            ON e.patient_id = p.patient_id "
+            + "                                 INNER JOIN obs o "
+            + "                                            ON o.encounter_id = e.encounter_id "
+            + "                      WHERE  p.voided = 0 "
+            + "                        AND e.voided = 0 "
+            + "                        AND o.voided = 0 "
+            + "                        AND e.encounter_type = ${6} "
+            + "                        AND o.concept_id = ${6336} "
+            + "                        AND o.value_coded IN (${1844},${68}) "
+            + "                        AND e.location_id = :location "
+            + "                        AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "                      GROUP  BY p.patient_id) AS list "
+            + "                     ON list.patient_id = p.patient_id";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
   }
 
   /**
@@ -1228,17 +1271,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition startedART = getMOHArtStartDate();
 
-    CohortDefinition nutritionalClass =
-        commonCohortQueries.getMohMQPatientsOnCondition(
-            false,
-            false,
-            "first",
-            hivMetadata.getAdultoSeguimentoEncounterType(),
-            commonMetadata.getClassificationOfMalnutritionConcept(),
-            Arrays.asList(
-                hivMetadata.getChronicMalnutritionConcept(), hivMetadata.getMalnutritionConcept()),
-            null,
-            null);
+    CohortDefinition nutritionalClass = getNutritionalBCat5();
 
     CohortDefinition pregnant =
         commonCohortQueries.getMOHPregnantORBreastfeeding(
