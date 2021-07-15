@@ -37,3 +37,7 @@ api/.scalastyle
 api/src/test/java/org/openmrs/module/eptsreports/LiveTests.java
 omod/maven-eclipse.xml
 omod/.externalToolBuilders/Maven_Ant_Builder.launch
+
+api/src/main/resources/.~List_Children_on_ART_and_Formulations.xls
+
+api/src/main/resources/.fuse_hidden00004ea100000001

@@ -137,6 +137,7 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.dateOfHIVDiagnosis");
     return getConcept(uuid);
   }
+
   /**
    * <b>concept_id = 1190</b>
    *
@@ -3651,6 +3652,7 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.returnDateOnThirdAttemptConceptUuid");
     return getConcept(uuid);
   }
+
   /**
    * <b>concept_id = 23996</b>
    *
@@ -4061,6 +4063,325 @@ public class HivMetadata extends ProgramsMetadata {
   public Concept getconizationConcept() {
     String uuid =
         Context.getAdministrationService().getGlobalProperty("eptsreports.conizationConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 1087</b>
+   *
+   * <p><b>Name:</b>PREVIOUS ANTIRETROVIRAL DRUGS USED FOR TREATMENT concept
+   *
+   * <p><b>Description:Question on encounter forms: Is the patient currently taking, or has the
+   * patient ever taken, any of the following retroviral medications? Reason for use? This
+   * particular concept stores a history of previous use of the associated antiretroviral
+   * medications for HIV treatment. </b>
+   *
+   * @return
+   */
+  public Concept getPreviousARVUsedForTreatmentConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.previousARVUsedForTreatmentConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 5089</b>
+   *
+   * <p><b>Name:</b>WEIGHT (KG) concept
+   *
+   * <p><b>Patient's weight in kilograms.</b>
+   *
+   * @return
+   */
+  public Concept getWeightConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.weightConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 1410</b>
+   *
+   * <p><b>Name:</b>RETURN VISIT DATE concept
+   *
+   * <p><b>Patient is to return on this date</b>
+   *
+   * @return
+   */
+  public Concept getReturnVisitDateConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.returnVisitDateConceptConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165256</b>
+   *
+   * <p><b>Name:</b>ART drug Formulation
+   *
+   * @return
+   */
+  public Concept getArtDrugFormulationConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.artDrugFormulation");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165252</b>
+   *
+   * <p><b>Name:</b> Drug and Quantity
+   *
+   * @return
+   */
+  public Concept getDrugAndQuantityConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.drugAndQuantity");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 23784</b>
+   *
+   * <p><b>Name:</b>TDF+3TC+DTG concept
+   *
+   * @return
+   */
+  public Concept getTDFand3TCandDTGCConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.TDFand3TCandDTGConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 21167</b>
+   *
+   * <p><b>Name:</b>LOPINAVIR + RITONAVIR concept
+   *
+   * @return
+   */
+  public Concept getLopinavirAndRitonavirConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lopinavirAndRitonavirConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 21159</b>
+   *
+   * <p><b>Name:</b>ABACAVIR (ABC)+LAMIVUDINA (3TC) concept
+   *
+   * @return
+   */
+  public Concept getAbacavirAndLamivudinaConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.abacavirAndLamivudinaConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 630</b>
+   *
+   * <p><b>Name:</b>ZIDOVUDINE AND LAMIVUDINE concept
+   *
+   * @return
+   */
+  public Concept getZidovudineAndLamivudineConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.zidovudineAndLamivudineConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 21179</b>
+   *
+   * <p><b>Name:</b>TENOFOVIR/LAMIVUDINA concept
+   *
+   * @return
+   */
+  public Concept getTenofovirOrLamivudinaConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.tenofovirOrLamivudinaConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 21161</b>
+   *
+   * <p><b>Name:</b>RALTEGRAVIR concept
+   *
+   * @return
+   */
+  public Concept getRaltegravirConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.raltegravirConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =165245 </b>
+   *
+   * <p><b>Name:</b>PATIENT KNOWLEDGE OF EFFECT OF HIV concept
+   *
+   * @return
+   */
+  public Concept getPatientKnowledgeOfEffectOfHIVConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.patientKnowledgeOfEffectOfHIVConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =165244 </b>
+   *
+   * <p><b>Name:</b>PATERNAL DATA concept
+   *
+   * @return
+   */
+  public Concept getPaternalDataConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.paternalDataConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =631 </b>
+   *
+   * <p><b>Name:</b>NEVIRAPINE concept
+   *
+   * @return
+   */
+  public Concept getNevirapineConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.nevirapineConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =797 </b>
+   *
+   * <p><b>Name:</b>ZIDOVUDINE concept
+   *
+   * @return
+   */
+  public Concept getZidovudineConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.zidovudineConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =814 </b>
+   *
+   * <p><b>Name:</b>ABACAVIR concept
+   *
+   * @return
+   */
+  public Concept getAbacavirConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.abacavirConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =21184 </b>
+   *
+   * <p><b>Name:</b>EFAVIRENZ (EFV) concept
+   *
+   * @return
+   */
+  public Concept getEfavirenzConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.efavirenzConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =21178 </b>
+   *
+   * <p><b>Name:</b>LAMIVUDINA(3TC) concept
+   *
+   * @return
+   */
+  public Concept getLamivudinaConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.lamivudinaConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =21175 </b>
+   *
+   * <p><b>Name:</b>TENOFOVIR (TDF) concept
+   *
+   * @return
+   */
+  public Concept getTenofovirConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.tenofovirConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =6324 </b>
+   *
+   * <p><b>Name:</b>TDF+3TC+EFV concept
+   *
+   * @return
+   */
+  public Concept getTdfAnd3tcAndEfvConceptUuid() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.tdfAnd3tcAndEfvConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =1651 </b>
+   *
+   * <p><b>Name:</b>AZT+3TC+NVP concept
+   *
+   * @return
+   */
+  public Concept getAztAnd3tcAndNvpConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.aztAnd3tcAndNvpConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =6116 </b>
+   *
+   * <p><b>Name:</b>AZT+3TC+ABC concept
+   *
+   * @return
+   */
+  public Concept getAztAnd3tcAndAbcConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.aztAnd3tcAndAbcConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =165215 </b>
+   *
+   * <p><b>Name:</b>TDF/FTC concept/
+   *
+   * @return
+   */
+  public Concept getTdfAndFtcConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.tdfAndFtcConceptUuid");
     return getConcept(uuid);
   }
 }
