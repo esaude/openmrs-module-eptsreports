@@ -89,7 +89,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         "Category 3 Numerator",
         EptsReportUtils.map(
             MQC3N1, "startDate=${startDate},endDate=${endDate},location=${location}"),
-        getDisagregateAdultsAndChildrenSColumn());
+        getDisagsForAdultsAndChildrenBasedOnArtStartDateColumn());
 
     // Category 4 denominator indicators
 

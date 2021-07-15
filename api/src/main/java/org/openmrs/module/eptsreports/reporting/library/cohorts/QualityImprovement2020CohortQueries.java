@@ -244,13 +244,15 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    compositionCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     compositionCohortDefinition.addSearch(
         "CAT3DEN", EptsReportUtils.map(this.getMQC3D1(), MAPPING));
 
-    compositionCohortDefinition.addSearch("C", EptsReportUtils.map(this.getCFromMQC3N1(), MAPPING));
-    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(this.getDFromMQC3N1(), MAPPING));
+    compositionCohortDefinition.addSearch(
+        "C", EptsReportUtils.map(this.getCFromMQC3N1(), "location=${location}"));
+    compositionCohortDefinition.addSearch(
+        "D", EptsReportUtils.map(this.getDFromMQC3N1(), "location=${location},endDate=${endDate}"));
 
     compositionCohortDefinition.setCompositionString("CAT3DEN AND (C OR D)");
 
@@ -262,21 +264,14 @@ public class QualityImprovement2020CohortQueries {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName(
-        "Melhoria de Qualidade Category 3 Numerator C part compposition");
+        "Melhoria de Qualidade Category 3 Numerator C part composition");
 
-    compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
 
     compositionCohortDefinition.addSearch(
         "C", EptsReportUtils.map(getCqueryFromCat3(), "location=${location}"));
-    compositionCohortDefinition.addSearch(
-        "ADULTS",
-        EptsReportUtils.map(
-            this.ageCohortQueries.createXtoYAgeCohort("adults", 15, 200),
-            "effectiveDate=${endDate}"));
 
-    compositionCohortDefinition.setCompositionString("C AND ADULTS");
+    compositionCohortDefinition.setCompositionString("C");
 
     return compositionCohortDefinition;
   }
@@ -286,27 +281,21 @@ public class QualityImprovement2020CohortQueries {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
 
     compositionCohortDefinition.setName(
-        "Melhoria de Qualidade Category 3 Numerator C part compposition");
-
-    compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
+        "Melhoria de Qualidade Category 3 Numerator C part composition");
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    compositionCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    compositionCohortDefinition.addSearch("D", EptsReportUtils.map(getDqueryFromCat3(), MAPPING));
     compositionCohortDefinition.addSearch(
-        "CHILDREN",
-        EptsReportUtils.map(
-            this.ageCohortQueries.createXtoYAgeCohort("children", 0, 14),
-            "effectiveDate=${endDate}"));
+        "D", EptsReportUtils.map(getDqueryFromCat3(), "endDate=${endDate},location=${location}"));
 
-    compositionCohortDefinition.setCompositionString("D AND CHILDREN");
+    compositionCohortDefinition.setCompositionString("D");
 
     return compositionCohortDefinition;
   }
 
   private CohortDefinition getCqueryFromCat3() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
@@ -343,10 +332,8 @@ public class QualityImprovement2020CohortQueries {
             + "                ) diagnostico ON diagnostico.patient_id = p.patient_id  "
             + "                 "
             + " WHERE p.voided = 0 "
-            + "    AND  first_consultation.encounterdatetime >= diagnostico.data_diagnostico  "
-            + "    AND first_consultation.encounterdatetime  "
-            + "        BETWEEN  diagnostico.data_diagnostico  AND   "
-            + "                        DATE_ADD(diagnostico.data_diagnostico, INTERVAL 7 DAY) ";
+            + "    AND  first_consultation.encounterdatetime BETWEEN diagnostico.data_diagnostico "
+            + "     AND DATE_ADD(diagnostico.data_diagnostico, INTERVAL 7 DAY) ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
@@ -356,75 +343,30 @@ public class QualityImprovement2020CohortQueries {
 
   public CohortDefinition getDqueryFromCat3() {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
-    map.put(
-        "adultoSeguimentoEncounterType",
-        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put(
-        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
-    map.put("typeTestHIVConcept", hivMetadata.getTypeTestHIVConcept().getConceptId());
-    map.put(
-        "presumptiveDiagnosisInChildrenConcep",
-        hivMetadata.getPresumptiveDiagnosisInChildrenConcep().getConceptId());
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("22772", hivMetadata.getTypeTestHIVConcept().getConceptId());
+    map.put("23807", hivMetadata.getPresumptiveDiagnosisInChildrenConcep().getConceptId());
 
     String query =
-        "      SELECT    "
-            + "        final_diag_pres.patient_id   "
-            + "    FROM   "
-            + "        (SELECT    "
-            + "            p.patient_id,   "
-            + "                MIN(e.encounter_datetime) AS first_consultation   "
-            + "        FROM   "
-            + "            patient p   "
-            + "        INNER JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "        INNER JOIN (SELECT p.patient_id, MIN(diag_pres.data_diagnostico) as data_diagnostico   "
-            + "        FROM patient p    "
-            + "        INNER JOIN   "
-            + "                (SELECT    "
-            + "            p_presuntivo.patient_id,   "
-            + "                MIN(o_presuntivo.obs_datetime) AS data_diagnostico   "
-            + "        FROM   "
-            + "            patient p_presuntivo   "
-            + "        INNER JOIN encounter e_presuntivo ON e_presuntivo.patient_id = p_presuntivo.patient_id   "
-            + "        INNER JOIN obs o_presuntivo ON o_presuntivo.encounter_id = e_presuntivo.encounter_id   "
-            + "        WHERE   "
-            + "            p_presuntivo.voided = 0   "
-            + "                AND e_presuntivo.voided = 0   "
-            + "                AND o_presuntivo.voided = 0   "
-            + "                AND e_presuntivo.location_id = :location   "
-            + "                AND e_presuntivo.encounter_type = ${masterCardEncounterType}   "
-            + "                AND o_presuntivo.concept_id = ${presumptiveDiagnosisInChildrenConcep}   "
-            + "        GROUP BY p_presuntivo.patient_id   "
-            + "        UNION   "
-            + "        SELECT    "
-            + "            p_diagnostico.patient_id,   "
-            + "                MIN(o_diagnostico.obs_datetime) AS data_diagnostico   "
-            + "        FROM   "
-            + "            patient p_diagnostico   "
-            + "        INNER JOIN encounter e_diagnostico ON e_diagnostico.patient_id = p_diagnostico.patient_id   "
-            + "        INNER JOIN obs o_diagnostico ON o_diagnostico.encounter_id = e_diagnostico.encounter_id   "
-            + "        WHERE   "
-            + "            p_diagnostico.voided = 0   "
-            + "                AND e_diagnostico.voided = 0   "
-            + "                AND o_diagnostico.voided = 0   "
-            + "                AND e_diagnostico.location_id = :location   "
-            + "                AND e_diagnostico.encounter_type = ${masterCardEncounterType}   "
-            + "                AND o_diagnostico.concept_id = ${typeTestHIVConcept}    "
-            + "                GROUP BY p_diagnostico.patient_id   "
-            + "        ) AS diag_pres ON diag_pres.patient_id = p.patient_id   "
-            + "        GROUP BY p.patient_id) AS oldest ON oldest.patient_id = p.patient_id   "
-            + "        WHERE   "
-            + "            p.voided = 0 AND e.voided = 0   "
-            + "                AND e.location_id = :location   "
-            + "                AND e.encounter_type = ${adultoSeguimentoEncounterType}   "
-            + "                AND e.encounter_datetime >= oldest.data_diagnostico   "
-            + "                AND DATEDIFF(e.encounter_datetime,oldest.data_diagnostico) >= 0   "
-            + "                AND DATEDIFF(e.encounter_datetime,oldest.data_diagnostico) <= 7   "
-            + "      GROUP BY p.patient_id) AS final_diag_pres;";
+        "SELECT enc_6.patient_id AS patient_id FROM( "
+            + "  SELECT pa.patient_id AS patient_id, MIN(ee.encounter_datetime) AS encounter_date FROM patient pa  "
+            + "  INNER JOIN encounter ee ON ee.patient_id=pa.patient_id "
+            + "  WHERE ee.encounter_type = ${6} "
+            + "  AND ee.location_id= :location AND ee.encounter_datetime <=:endDate "
+            + " GROUP BY pa.patient_id) enc_6 "
+            + " INNER JOIN "
+            + "  (SELECT p.patient_id AS patient_id, MIN(o.obs_datetime) AS obs_datetime FROM patient p "
+            + "  INNER JOIN encounter e ON e.patient_id=p.patient_id "
+            + "  INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "  WHERE e.encounter_type = ${53} AND o.concept_id IN ( ${23807}, ${22772}) "
+            + "  AND e.location_id= :location GROUP BY p.patient_id) en_53 "
+            + "  ON en_53.patient_id=enc_6.patient_id "
+            + "  WHERE enc_6.encounter_date BETWEEN en_53.obs_datetime AND DATE_ADD(en_53.obs_datetime, INTERVAL 7 DAY)";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
