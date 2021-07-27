@@ -307,7 +307,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de adultos (15/+anos) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(1, "DEN"),
+                intensiveMonitoringCohortQueries.getCat13Den(1, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -317,7 +317,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de crianças (0-4 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(6, "DEN"),
+                intensiveMonitoringCohortQueries.getCat13Den(6, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -327,7 +327,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de crianças (5-9 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(7, "DEN"),
+                intensiveMonitoringCohortQueries.getCat13Den(7, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -337,7 +337,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de crianças (10-14 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(8, "DEN"),
+                intensiveMonitoringCohortQueries.getCat13Den(8, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -347,7 +347,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de adultos (15/+anos) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(1, "NUM"),
+                intensiveMonitoringCohortQueries.getCat13Den(1, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -357,7 +357,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de crianças (0-4 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(6, "NUM"),
+                intensiveMonitoringCohortQueries.getCat13Den(6, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -367,7 +367,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de crianças (5-9 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(7, "NUM"),
+                intensiveMonitoringCohortQueries.getCat13Den(7, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -377,7 +377,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de crianças (10-14 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(8, "NUM"),
+                intensiveMonitoringCohortQueries.getCat13Den(8, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -510,7 +510,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "# de adultos (15/+ anos) na 2a linha de TARV elegíveis a CV.",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(4, "DEN"),
+                intensiveMonitoringCohortQueries.getCat13Den(4, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -520,7 +520,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "# de crianças (>2anos) na 2a linha de TARV elegíveis ao pedido de CV.",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(13, "DEN"),
+                intensiveMonitoringCohortQueries.getCat13Den(13, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -530,7 +530,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "# de adultos (15/+ anos) na 2a linha de TARV elegíveis a CV.",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(4, "NUM"),
+                intensiveMonitoringCohortQueries.getCat13Den(4, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -540,7 +540,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "# de crianças (>2anos) na 2a linha de TARV elegíveis ao pedido de CV.",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat13Den(13, "NUM"),
+                intensiveMonitoringCohortQueries.getCat13Den(13, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -702,7 +702,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI DEN 12.1",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(1, "DEN"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(1, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt32=adultsArt");
@@ -712,7 +712,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI DEN 12.2",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(2, "DEN"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(2, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt54=adultsArt");
@@ -722,7 +722,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI DEN 12.5",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(5, "DEN"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(5, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt32=childrenArt");
@@ -732,7 +732,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI DEN 12.6",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(6, "DEN"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(6, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt54=childrenArt");
@@ -742,7 +742,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI DEN 12.9",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(9, "DEN"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(9, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -752,7 +752,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI DEN 12.10",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(10, "DEN"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(10, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -764,7 +764,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI NUM 12.1",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(1, "NUM"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(1, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt32=adultsArt");
@@ -774,7 +774,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI NUM 12.2",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(2, "NUM"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(2, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt54=adultsArt");
@@ -784,7 +784,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI NUM 12.5",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(5, "NUM"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(5, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt32=childrenArt");
@@ -794,7 +794,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI NUM 12.6",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(6, "NUM"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(6, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "ageBasedOnArt54=childrenArt");
@@ -804,7 +804,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI NUM 12.9",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(9, "NUM"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(9, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -814,7 +814,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "MI NUM 12.10",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getCat12P1DenNum(10, "NUM"),
+                intensiveMonitoringCohortQueries.getCat12P1DenNum(10, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -882,7 +882,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "# de adultos na 1a linha de TARV que receberam um resultado de CV acima de 1000 cópias no período de inclusão",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getMICat13Part4(3, "DEN"),
+                intensiveMonitoringCohortQueries.getMICat13Part4(3, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "miAge=MqAdults");
@@ -893,7 +893,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "# de crianças (>2 anos de idade) na 1a linha de TARV que receberam um resultado de CV acima de 1000 cópias no período de inclusão",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getMICat13Part4(12, "DEN"),
+                intensiveMonitoringCohortQueries.getMICat13Part4(12, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -904,7 +904,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "# de MG na 1a linha de TARV que receberam um resultado de CV acima de 1000 cópias no período de inclusão",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getMICat13Part4(18, "DEN"),
+                intensiveMonitoringCohortQueries.getMICat13Part4(18, false),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
@@ -915,7 +915,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de Adultos (15/+anos) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 e terem  3 sessões consecutivas de APSS/PP",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getMICat13Part4(3, "NUM"),
+                intensiveMonitoringCohortQueries.getMICat13Part4(3, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "miAge=MqAdults");
@@ -926,7 +926,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de crianças (>2 anos de idade) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getMICat13Part4(12, "NUM"),
+                intensiveMonitoringCohortQueries.getMICat13Part4(12, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "age=2-14");
@@ -937,7 +937,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "% de MG na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 cópia e terem 3 sessões consecutivas de APSS/PP",
         EptsReportUtils.map(
             customCohortIndicator(
-                intensiveMonitoringCohortQueries.getMICat13Part4(18, "NUM"),
+                intensiveMonitoringCohortQueries.getMICat13Part4(18, true),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");

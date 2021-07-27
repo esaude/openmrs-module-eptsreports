@@ -37,4 +37,9 @@ public final class EptsReportConstants {
     }
     return defaultStateIds;
   }
+
+  public static enum MIMQ {
+    MI,
+    MQ
+  }
 }
