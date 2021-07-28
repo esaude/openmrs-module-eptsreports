@@ -384,7 +384,7 @@ public class GenericCohortQueries {
     sqlCohortDefinition.setName("Age on MOH ART start date");
     sqlCohortDefinition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
     Map<String, Integer> map = new HashMap<>();
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("1190", hivMetadata.getARVStartDateConcept().getConceptId());

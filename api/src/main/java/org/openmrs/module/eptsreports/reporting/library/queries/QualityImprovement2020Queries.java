@@ -1,14 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
-import org.openmrs.Concept;
-import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
@@ -40,7 +35,7 @@ public class QualityImprovement2020Queries {
         "Patients that returned for another clinical consultation or ARV pickup between 25 and 33 days after ART start date(Oldest date From A)");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
@@ -159,7 +154,7 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
@@ -282,7 +277,7 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
@@ -338,7 +333,7 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
@@ -392,7 +387,7 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
@@ -442,161 +437,6 @@ public class QualityImprovement2020Queries {
   }
 
   /**
-   * <b>MQ15DEN B1 </b> - Filter all patients From Ficha Clinica (​ encounter type 6​</b><br>
-   *
-   * <ul>
-   *   <li>Gaac (GA) (​ Concept Id 23724​ ) = “FIM” (​ value_coded = concept Id 1267​ ) and
-   *       encounter_datetime > encounter_datetime (from A1) and <= ​ endDateRevision or
-   *   <li>DISPENSA TRIMESTRAL (DT) (​ Concept Id 23730​ ) = “FIM” (​ value_coded = concept Id 1267​
-   *       ) and encounter_datetime > encounter_datetime (from A2) and <= ​ endDateRevision or
-   *   <li>“TIPO DE DISPENSA” (​ Concept Id ​ 23739) with value_coded different than “DISPENSA
-   *       TRIMESTRAL” (​ Concept Id ​ 23720) and encounter_datetime > encounter_datetime (from A3)
-   *       and <= ​ endDateRevision
-   * </ul>
-   *
-   * @return SqlCohortDefinition
-   */
-  public static SqlCohortDefinition getMQ15DenB1(
-      int adultoSeguimentoEncounterType,
-      int startDrugs,
-      int completedConcept,
-      int quarterlyConcept,
-      int gaac,
-      int quarterlyDispensation,
-      int typeOfDispensationConcept) {
-
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("M&Q Category 15 B1)");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlCohortDefinition.addParameter(
-        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
-
-    Map<String, Integer> map = new HashMap<>();
-    map.put("6", adultoSeguimentoEncounterType);
-    map.put("1256", startDrugs);
-    map.put("1267", completedConcept);
-    map.put("23720", quarterlyConcept);
-    map.put("23724", gaac);
-    map.put("23730", quarterlyDispensation);
-    map.put("23739", typeOfDispensationConcept);
-
-    String query =
-        "SELECT patient_id "
-            + "FROM   (SELECT ended_gaac.patient_id "
-            + "        FROM   (SELECT p.patient_id, e.encounter_datetime "
-            + "                FROM   patient p "
-            + "                       INNER JOIN encounter e "
-            + "                               ON p.patient_id = e.patient_id "
-            + "                       INNER JOIN obs o "
-            + "                               ON e.encounter_id = o.encounter_id "
-            + "                       INNER JOIN (SELECT p.patient_id, e.encounter_datetime "
-            + "                                   FROM   patient p "
-            + "                                          INNER JOIN encounter e "
-            + "                                                  ON p.patient_id = e.patient_id "
-            + "                                          INNER JOIN obs o "
-            + "                                                  ON e.encounter_id = o.encounter_id "
-            + "                                   WHERE  p.voided = 0 "
-            + "                                          AND e.voided = 0 "
-            + "                                          AND o.voided = 0 "
-            + "                                          AND e.location_id = :location "
-            + "                                          AND e.encounter_type = ${6} "
-            + "                                          AND o.concept_id = ${23724} "
-            + "                                          AND o.value_coded = ${1256} "
-            + "                                          AND e.encounter_datetime BETWEEN Date_sub(:revisionEndDate, INTERVAL 14 month) "
-            + "                                          AND Date_sub(:revisionEndDate, INTERVAL 11 month) "
-            + "                                   GROUP  BY p.patient_id) started_gaac "
-            + "                               ON p.patient_id = started_gaac.patient_id "
-            + "                WHERE  p.voided = 0 "
-            + "                       AND e.voided = 0 "
-            + "                       AND o.voided = 0 "
-            + "                       AND e.location_id = :location "
-            + "                       AND e.encounter_type = ${6} "
-            + "                       AND o.concept_id = ${23724} "
-            + "                       AND o.value_coded = ${1267} "
-            + "                       AND e.encounter_datetime > started_gaac.encounter_datetime "
-            + "                       AND e.encounter_datetime <= :revisionEndDate "
-            + "                GROUP  BY p.patient_id) ended_gaac "
-            + "        UNION "
-            + "        SELECT ended_dt.patient_id "
-            + "        FROM   (SELECT p.patient_id, e.encounter_datetime "
-            + "                FROM   patient p "
-            + "                       INNER JOIN encounter e "
-            + "                               ON p.patient_id = e.patient_id "
-            + "                       INNER JOIN obs o "
-            + "                               ON e.encounter_id = o.encounter_id "
-            + "                       INNER JOIN (SELECT p.patient_id, e.encounter_datetime "
-            + "                                   FROM   patient p "
-            + "                                          INNER JOIN encounter e "
-            + "                                                  ON p.patient_id = e.patient_id "
-            + "                                          INNER JOIN obs o "
-            + "                                                  ON e.encounter_id = o.encounter_id "
-            + "                                   WHERE  p.voided = 0 "
-            + "                                          AND e.voided = 0 "
-            + "                                          AND o.voided = 0 "
-            + "                                          AND e.location_id = :location "
-            + "                                          AND e.encounter_type = ${6} "
-            + "                                          AND o.concept_id = ${23730} "
-            + "                                          AND o.value_coded = ${1256} "
-            + "                                          AND e.encounter_datetime BETWEEN Date_sub(:revisionEndDate, INTERVAL 14 month) "
-            + "                                          AND Date_sub(:revisionEndDate, INTERVAL 11 month) "
-            + "                                   GROUP  BY p.patient_id) started_dt "
-            + "                               ON p.patient_id = started_dt.patient_id "
-            + "                WHERE  p.voided = 0 "
-            + "                       AND e.voided = 0 "
-            + "                       AND o.voided = 0 "
-            + "                       AND e.location_id = :location "
-            + "                       AND e.encounter_type = ${6} "
-            + "                       AND o.concept_id = ${23730} "
-            + "                       AND o.value_coded = ${1267} "
-            + "                       AND e.encounter_datetime > started_dt.encounter_datetime "
-            + "                       AND e.encounter_datetime <= :revisionEndDate "
-            + "                GROUP  BY p.patient_id) ended_dt "
-            + "        UNION "
-            + "        SELECT not_dt.patient_id "
-            + "        FROM   (SELECT p.patient_id, "
-            + "                       e.encounter_datetime "
-            + "                FROM   patient p "
-            + "                       INNER JOIN encounter e "
-            + "                               ON p.patient_id = e.patient_id "
-            + "                       INNER JOIN obs o "
-            + "                               ON e.encounter_id = o.encounter_id "
-            + "                       INNER JOIN (SELECT p.patient_id, Max(e.encounter_datetime) encounter_datetime "
-            + "                                   FROM   patient p "
-            + "                                          INNER JOIN encounter e "
-            + "                                                  ON p.patient_id = e.patient_id "
-            + "                                          INNER JOIN obs o "
-            + "                                                  ON e.encounter_id = o.encounter_id "
-            + "                                   WHERE  p.voided = 0 "
-            + "                                          AND e.voided = 0 "
-            + "                                          AND o.voided = 0 "
-            + "                                          AND e.location_id = :location "
-            + "                                          AND e.encounter_type = ${6} "
-            + "                                          AND o.concept_id = ${23739} "
-            + "                                          AND o.value_coded = ${23720} "
-            + "                                          AND e.encounter_datetime BETWEEN Date_sub(:revisionEndDate, INTERVAL 14 month) "
-            + "                                          AND Date_sub(:revisionEndDate, INTERVAL 11 month) "
-            + "                                   GROUP  BY p.patient_id) a3 "
-            + "                       ON p.patient_id = a3.patient_id "
-            + "                WHERE  p.voided = 0 "
-            + "                       AND e.voided = 0 "
-            + "                       AND o.voided = 0 "
-            + "                       AND e.location_id = :location "
-            + "                       AND e.encounter_type = ${6} "
-            + "                       AND o.concept_id = ${23739} "
-            + "                       AND o.value_coded <> ${23720} "
-            + "                       AND e.encounter_datetime <= :revisionEndDate "
-            + "                GROUP  BY p.patient_id) not_dt) b1 ";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
-    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
-
-    return sqlCohortDefinition;
-  }
-
-  /**
    * <b>MQ15NUM H </b></b><br>
    *
    * <ul>
@@ -624,7 +464,7 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
@@ -732,7 +572,7 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
@@ -870,7 +710,7 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
@@ -1039,7 +879,7 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(
-        new Parameter("revisionEndDate", "revisionEndDate", Location.class));
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -1084,144 +924,6 @@ public class QualityImprovement2020Queries {
   }
 
   /**
-   * <<<<<<< HEAD <b>Technical Specs</b>
-   *
-   * <blockquote>
-   *
-   * B1- Select all patients who have the LAST “LINHA TERAPEUTICA” (Concept Id 21151) recorded in
-   * Ficha Clinica (encounter type 6, encounter_datetime) with value coded “PRIMEIRA LINHA” (concept
-   * id 21150) during the inclusion period (startDateInclusion and endDateInclusion)
-   *
-   * </blockquote>
-   *
-   * @return {@link CohortDefinition}
-   */
-  public static CohortDefinition getMQ13DenB1(
-      EncounterType treatmentEncounter,
-      Concept treatmentConcept,
-      List<Concept> treatmentValueCoded) {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Patients on treatment for 6 months from last clinical visit");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Date.class));
-
-    List<Integer> answerIds = new ArrayList<>();
-
-    for (Concept concept : treatmentValueCoded) {
-      answerIds.add(concept.getConceptId());
-    }
-
-    String query =
-        " SELECT p.patient_id "
-            + " FROM patient p "
-            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + " INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-            + " INNER JOIN (SELECT p.patient_id, MAX(e.encounter_datetime) last_visit "
-            + "               FROM patient p "
-            + "               INNER JOIN encounter e ON e.patient_id = p.patient_id  "
-            + "               WHERE  p.voided = 0 AND e.voided = 0 "
-            + "                   AND e.encounter_type = ${treatmentEncounter} "
-            + "                   AND e.location_id = :location "
-            + "                   AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
-            + "               GROUP BY p.patient_id) last_linha_terapeutica ON last_linha_terapeutica.patient_id = e.patient_id "
-            + "               WHERE p.voided = 0 AND e.voided = 0  AND o.voided = 0 "
-            + "                   AND e.encounter_type = ${treatmentEncounter} "
-            + "                   AND e.location_id = :location "
-            + "                   AND e.encounter_datetime >= :startDate AND e.encounter_datetime <= :endDate "
-            + "                   AND e.encounter_datetime = last_linha_terapeutica.last_visit "
-            + "                   AND o.concept_id = ${treatmentConcept} "
-            + "                   AND o.value_coded = ${treatmentValueCoded}";
-
-    Map<String, String> map = new HashMap<>();
-    map.put("treatmentEncounter", String.valueOf(treatmentEncounter.getEncounterTypeId()));
-    map.put("treatmentConcept", String.valueOf(treatmentConcept.getConceptId()));
-    map.put("treatmentValueCoded", StringUtils.join(answerIds, ","));
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
-    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
-
-    return sqlCohortDefinition;
-  }
-
-  /**
-   * <<<<<<< HEAD <b>Technical Specs</b>
-   *
-   * <blockquote>
-   *
-   * B4 - Select all patients from Ficha Clinica (encounter type 6) with “Carga Viral” (Concept id
-   * 856) registered with numeric value > 1000 during the Inclusion period (startDateInclusion and
-   * endDateInclusion) and filter all female patients registered with concept “GESTANTE”(Concept Id
-   * 1982) with value coded ‘SIM’ (Concept Id 1065) on the same encounter. (Note: consider the
-   * oldest encounter in case of more than one encounter “Carga Viral” with numeric value > 1000)
-   *
-   * </blockquote>
-   *
-   * @return {@link CohortDefinition}
-   */
-  public static CohortDefinition getMQ11DenB4(
-      int adultoSeguimentoEncounterType,
-      int hivViralLoadConcept,
-      int yesConcept,
-      int pregnantConcept) {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Cat11 B4");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlCohortDefinition.addParameter(
-        new Parameter("revisionEndDate", "revisionEndDate", Location.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
-
-    Map<String, Integer> map = new HashMap<>();
-    map.put("6", adultoSeguimentoEncounterType);
-    map.put("856", hivViralLoadConcept);
-    map.put("1065", yesConcept);
-    map.put("1982", pregnantConcept);
-
-    String query =
-        " SELECT p.patient_id "
-            + " FROM patient p "
-            + " INNER JOIN ( "
-            + "             SELECT p.patient_id, MIN(e.encounter_datetime) as first_carga_viral  "
-            + "             FROM patient p  "
-            + "             INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-            + "             INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-            + "             WHERE  p.voided = 0   "
-            + "                    AND e.voided = 0   "
-            + "                    AND o.voided = 0  "
-            + "                    AND e.encounter_type = ${6}    "
-            + "                    AND o.concept_id = ${856}   "
-            + "                    AND o.value_numeric > 1000  "
-            + "                    AND e.encounter_datetime BETWEEN :startDate AND :endDate   "
-            + "                    AND e.location_id = :location   "
-            + "             GROUP  BY p.patient_id    "
-            + "           ) AS lab ON lab.patient_id = p.patient_id  "
-            + " INNER JOIN (  "
-            + "             SELECT p.patient_id, e.encounter_datetime AS gestante  "
-            + "             FROM patient p   "
-            + "             INNER JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "             INNER JOIN obs o ON e.encounter_id = o.encounter_id   "
-            + "             WHERE   p.voided = 0   "
-            + "                     AND e.voided = 0   "
-            + "                     AND o.voided = 0   "
-            + "                     AND e.encounter_type = ${6}    "
-            + "                     AND o.concept_id = ${1982}    "
-            + "                     AND o.value_coded = ${1065}    "
-            + "                     AND e.encounter_datetime BETWEEN :startDate AND :endDate   "
-            + "                     AND e.location_id = :location    "
-            + "           ) AS mulher ON mulher.patient_id = p.patient_id  "
-            + " WHERE p.voided = 0  "
-            + "       AND lab.first_carga_viral = mulher.gestante";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
-    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
-
-    return sqlCohortDefinition;
-  }
-
-  /**
    * B4 - Select all patients from Ficha Clinica (encounter type 6 or 53) with “Carga Viral”
    * (Concept id 856) registered with numeric value > 1000 during the Inclusion period
    * (startDateInclusion and endDateInclusion) and filter all female patients registered with
@@ -1244,7 +946,7 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(
-        new Parameter("revisionEndDate", "revisionEndDate", Location.class));
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -1346,84 +1048,6 @@ public class QualityImprovement2020Queries {
   }
 
   /**
-   * <<<<<<< HEAD <b>Technical Specs</b>
-   *
-   * <blockquote>
-   *
-   * B5 - Select all patients from Ficha Clinica (encounter type 6) with “Carga Viral” (Concept id
-   * 856) registered with numeric value > 1000 during the Inclusion period (startDateInclusion and
-   * endDateInclusion) and filter all female patients registered with concept “LACTANTE”(Concept Id
-   * 6332) with value coded ‘SIM’ (Concept Id 1065) on the same encounter. (Note: consider the
-   * oldest encounter in case of more than one encounter “Carga Viral” with numeric value > 1000)
-   *
-   * </blockquote>
-   *
-   * @return {@link CohortDefinition}
-   */
-  public static CohortDefinition getMQ11DenB5(
-      int adultoSeguimentoEncounterType,
-      int hivViralLoadConcept,
-      int yesConcept,
-      int breastfeedingConcept) {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Cat11 B5");
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlCohortDefinition.addParameter(
-        new Parameter("revisionEndDate", "revisionEndDate", Location.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
-
-    Map<String, Integer> map = new HashMap<>();
-    map.put("6", adultoSeguimentoEncounterType);
-    map.put("856", hivViralLoadConcept);
-    map.put("1065", yesConcept);
-    map.put("6332", breastfeedingConcept);
-
-    String query =
-        " SELECT p.patient_id "
-            + " FROM patient p "
-            + " INNER JOIN ( "
-            + "             SELECT p.patient_id, MIN(e.encounter_datetime) as first_carga_viral  "
-            + "             FROM patient p  "
-            + "             INNER JOIN encounter e ON p.patient_id = e.patient_id  "
-            + "             INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-            + "             WHERE  p.voided = 0   "
-            + "                    AND e.voided = 0   "
-            + "                    AND o.voided = 0  "
-            + "                    AND e.encounter_type = ${6}    "
-            + "                    AND o.concept_id = ${856}   "
-            + "                    AND o.value_numeric > 1000  "
-            + "                    AND e.encounter_datetime BETWEEN :startDate AND :endDate   "
-            + "                    AND e.location_id = :location   "
-            + "             GROUP  BY p.patient_id    "
-            + "           ) AS lab ON lab.patient_id = p.patient_id  "
-            + " INNER JOIN (  "
-            + "             SELECT p.patient_id, e.encounter_datetime AS lactante  "
-            + "             FROM patient p   "
-            + "             INNER JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "             INNER JOIN obs o ON e.encounter_id = o.encounter_id   "
-            + "             INNER JOIN person per ON per.person_id= p.patient_id  "
-            + "             WHERE   p.voided = 0   "
-            + "                     AND e.voided = 0   "
-            + "                     AND o.voided = 0   "
-            + "                     AND e.encounter_type = ${6}    "
-            + "                     AND o.concept_id = ${6332}     "
-            + "                     AND o.value_coded = ${1065}    "
-            + "                     AND e.encounter_datetime BETWEEN :startDate AND :endDate   "
-            + "                     AND e.location_id = :location    "
-            + "                     AND per.gender = 'F'      "
-            + "           ) AS mulher ON mulher.patient_id = p.patient_id  "
-            + " WHERE p.voided = 0  "
-            + "       AND lab.first_carga_viral = mulher.lactante";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-
-    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
-
-    return sqlCohortDefinition;
-  }
-
-  /**
    * B5 - Select all patients from Ficha Clinica (encounter type 6 or 53) with “Carga Viral”
    * (Concept id 856) registered with numeric value > 1000 during the Inclusion period
    * (startDateInclusion and endDateInclusion) and filter all female patients registered with
@@ -1446,7 +1070,7 @@ public class QualityImprovement2020Queries {
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(
-        new Parameter("revisionEndDate", "revisionEndDate", Location.class));
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
