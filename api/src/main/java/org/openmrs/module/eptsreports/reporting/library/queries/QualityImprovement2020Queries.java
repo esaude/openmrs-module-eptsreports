@@ -263,12 +263,7 @@ public class QualityImprovement2020Queries {
    * @return SqlCohortDefinition
    */
   public static SqlCohortDefinition getMQ15DenA1(
-      int adultoSeguimentoEncounterType,
-      int startDrugs,
-      int quarterlyConcept,
-      int gaac,
-      int quarterlyDispensation,
-      int typeOfDispensationConcept) {
+      int adultoSeguimentoEncounterType, int startDrugs, int gaac, int quarterlyDispensation) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
@@ -282,10 +277,8 @@ public class QualityImprovement2020Queries {
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
     map.put("1256", startDrugs);
-    map.put("23720", quarterlyConcept);
     map.put("23724", gaac);
     map.put("23730", quarterlyDispensation);
-    map.put("23739", typeOfDispensationConcept);
 
     String query =
         "SELECT patient_id "

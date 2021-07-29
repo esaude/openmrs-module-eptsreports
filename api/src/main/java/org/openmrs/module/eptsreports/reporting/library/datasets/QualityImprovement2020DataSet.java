@@ -2440,12 +2440,6 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
     return dataSetDefinition;
   }
 
-  private List<ColumnParameters> getDisagregateAdultsAndChildrenSColumn() {
-    ColumnParameters ADULTOS = new ColumnParameters("ADULTOS", "Adultos", "age=15+", "ADULTOS");
-    ColumnParameters CRIANCAS = new ColumnParameters("CRIANCAS", "Criancas", "age=<15", "CRIANCAS");
-    return Arrays.asList(ADULTOS, CRIANCAS);
-  }
-
   @Override
   public List<Parameter> getParameters() {
     return Arrays.asList(
