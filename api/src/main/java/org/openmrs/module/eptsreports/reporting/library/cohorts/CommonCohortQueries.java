@@ -175,17 +175,46 @@ public class CommonCohortQueries {
   }
 
   /**
-   * <b>Description: 18 and 19 -</b> MOH MQ Females on Condition
    *
-   * <p><b>Technical Specs</b>
+   * <li>Filter all patients with the last clinical consultation(encounter type 6) with “Diagnótico
+   *     TB activo” (concept id 23761) and value coded “SIM”(concept id 1065) and Encounter_datetime
+   *     between startDateInclusion and endDateRevision
+   * <li>Filter all patients with a clinical consultation(encounter type 6) during the Inclusion
+   *     period with the following conditions:
    *
-   * <blockquote>
+   *     <ul>
+   *       “TEM SINTOMAS DE TB” (concept_id 23758) value coded “SIM” (concept_id 1065) and
+   *       Encounter_datetime between startDateInclusion and endDateInclusion
+   * </ul>
    *
-   * Get all female patients in: Pregnant or Breastfeeding
+   * <li>Filter all patients with a clinical consultation(encounter type 6) during the Inclusion
+   *     period with the following conditions:
    *
-   * </blockquote>
+   *     <ul>
+   *       “TRATAMENTO DE TUBERCULOSE”(concept_id 1268) value coded “Inicio” or “Continua” or
+   *       obs_datetime between startDateInclusion and endDateInclusion
+   * </ul>
    *
+   * <li>Filter all patients with a clinical consultation(encounter type 6) during the Inclusion
+   *     period with the following conditions:
+   *
+   *     <ul>
+   *       “PROFILAXIA COM ISONIAZIDA”(concept_id 6122) value coded “Inicio” (concept_id 1256)
+   *       Encounter_datetime between startDateInclusion and endDateInclusion
+   * </ul>
+   *
+   * @param female female
+   * @param transfIn transferred in
+   * @param occurType the occurrence type
+   * @param encounterType the encounter type
+   * @param question the first question concept
+   * @param answers the first value coded
+   * @param question2 the second question concept
+   * @param answers2 the second value coded
    * @return {@link CohortDefinition}
+   *     <li><strong>Should</strong> Returns empty if there is no patient who meets the conditions
+   *     <li><strong>Should</strong> fetch for patients according to what is entered in the
+   *         parameters
    */
   public CohortDefinition getMohMQPatientsOnCondition(
       Boolean female,
@@ -306,6 +335,8 @@ public class CommonCohortQueries {
    * </blockquote>
    *
    * @return {@link CohortDefinition}
+   *     <li><strong>Should</strong> Returns empty if there is no patient who meets the conditions
+   *     <li><strong>Should</strong> fetch all patients transfer out other facility
    */
   public CohortDefinition getTranferredOutPatients() {
 
@@ -469,6 +500,11 @@ public class CommonCohortQueries {
    *
    * </blockquote>
    *
+   * @param masterCard masterCard flag
+   * @param lastClinicalEncounter The Clinical Consultation encounter type 6
+   * @param treatmentEncounter The masterCard encounter type 53
+   * @param treatmentConcept “PRIMEIRA LINHA” concept id 21150
+   * @param treatmentValueCoded The concept list
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getMOHPatientsOnTreatmentFor6Months(
@@ -723,6 +759,14 @@ public class CommonCohortQueries {
    *
    * </blockquote>
    *
+   * @param masterCard masterCard flag
+   * @param treatmentEncounter The masterCard Encounter Type 53
+   * @param treatmentConcept “PRIMEIRA LINHA” Concept Id 21150
+   * @param treatmentValueCoded The Concept List
+   * @param clinicalEncounter The Clinical Consultation Encounter Type 6
+   * @param exclusionEncounter The Clinical Consultation Encounter Type 6
+   * @param exclusionConcept “LINHA TERAPEUTICA” Concept Id 21151
+   * @param exclusionValueCoded The Concept List
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getMOHPatientsToExcludeFromTreatmentIn6Months(
@@ -855,6 +899,8 @@ public class CommonCohortQueries {
    *
    * </blockquote>
    *
+   * @param minAge minimum age of a patient based on MOH Last Clinical Consultation
+   * @param maxAge maximum age of a patient based on MOH Last Clinical Consultation
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getMOHPatientsAgeOnLastClinicalConsultationDate(
@@ -929,6 +975,9 @@ public class CommonCohortQueries {
    *
    * </blockquote>
    *
+   * @param b4e Boolean parameter, true for b4e and false for b5e
+   * @param b5e Boolean parameter, true for b5e and false for b4e
+   * @param period The period in months
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
@@ -1019,9 +1068,12 @@ public class CommonCohortQueries {
    *     in Ficha Resumo (encounter type=53) with “Lactante”(concept_id 6332) value coded equal to
    *     “Yes” (concept_id 1065) and sex=Female
    *
-   * @param question
-   * @param answer
+   * @param question The question Concept Id
+   * @param answer The value coded Concept Id
    * @return {@link CohortDefinition}
+   *     <li><strong>Should</strong> Returns empty if there is no patient who meets the conditions
+   *     <li><strong>Should</strong> fetch all patients with B2 criteria with given concept id and
+   *         value coded
    */
   public CohortDefinition getMOHPregnantORBreastfeeding(int question, int answer) {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
@@ -1069,8 +1121,8 @@ public class CommonCohortQueries {
    *     occurred during the revision period (encounter_datetime >= startDateInclusion and <=
    *     endDateRevision)
    *
-   * @param question
-   * @param answer
+   * @param question The question Concept Id
+   * @param answer The value coded Concept Id
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getNewMQPregnantORBreastfeeding(int question, int answer) {

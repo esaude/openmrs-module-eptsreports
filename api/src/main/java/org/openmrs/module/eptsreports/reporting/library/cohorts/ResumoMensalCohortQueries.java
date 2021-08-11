@@ -2630,6 +2630,7 @@ public class ResumoMensalCohortQueries {
    *   <li>B8: {@link ResumoMensalCohortQueries#getPatientsWhoDied(Boolean)}
    * </ol>
    *
+   * @param isMOH
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getActivePatientsInARTByEndOfCurrentMonth(boolean isMOH) {

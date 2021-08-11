@@ -17,7 +17,7 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.springframework.stereotype.Component;
 
 /**
- * - FIRST consultation (Encounter_datetime (from encounter type 35)) > “ART Start Date” (oldest
+ * - FIRST consultation (Encounter_datetime (from encounter type 35)) >= “ART Start Date” (oldest
  * date from A)+20days and <= “ART Start Date” (oldest date from A)+33days
  */
 @Component

@@ -398,6 +398,7 @@ public class TxPvlsCohortQueries {
   /**
    * <b>Description</b>Get patients who are breastfeeding or pregnant controlled by parameter
    *
+   * @param state state
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(

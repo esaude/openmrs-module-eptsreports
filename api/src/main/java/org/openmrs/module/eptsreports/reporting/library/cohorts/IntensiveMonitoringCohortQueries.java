@@ -59,6 +59,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 7.1, to 7.3 and 7.5 deno Monitoria Intensiva MQHIV 2021 for the selected location and
    * reporting period Section 7.1 (endDateRevision)
    *
+   * @param den indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getCat7DenMI2021Part135Definition(Integer den) {
@@ -190,6 +191,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 7.2, to 7.4 and 7.6 deno Monitoria Intensiva MQHIV 2021 for the selected location and
    * reporting period Section 7.1 (endDateRevision)
    *
+   * @param den indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getCat7DenMI2021Part246Definition(Integer den) {
@@ -366,6 +368,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 7.1, to 7.3 and 7.5 numerator Monitoria Intensiva MQHIV 2021 for the selected location
    * and reporting period Section 7 (endDateRevision)
    *
+   * @param num indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getCat7NumMI2021Part135Definition(Integer num) {
@@ -524,6 +527,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 7.2, to 7.4 and 7.6 numerator Monitoria Intensiva MQHIV 2021 for the selected location
    * and reporting period Section 7 (endDateRevision)
    *
+   * @param num indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getCat7NumMI2021Part246Definition(Integer num) {
@@ -727,6 +731,8 @@ public class IntensiveMonitoringCohortQueries {
    * Monitoria Intensiva MQHIV 2021 for the selected location and reporting period Section
    * (endDateRevision)
    *
+   * @param level indicator number
+   * @param type indicator
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMICat13Part2(Integer level, String type) {
@@ -786,9 +792,12 @@ public class IntensiveMonitoringCohortQueries {
     return cd;
   }
 
-  /* Get CAT 13.1, 13.4, 13.6, 13.7, 13.8, 13.13 Monitoria Intensiva MQHIV 2021 for the selected
+  /**
+   * Get CAT 13.1, 13.4, 13.6, 13.7, 13.8, 13.13 Monitoria Intensiva MQHIV 2021 for the selected
    * location and reporting period Section (endDateRevision)
    *
+   * @param level indicator number
+   * @param type indicator flag
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getCat13Den(Integer level, Boolean type) {
@@ -820,6 +829,9 @@ public class IntensiveMonitoringCohortQueries {
   /**
    * Get the indicators (denominators) from CATEGORY 11 from report named “Monitoria Intensiva de
    * HIV-2021” for the selected location and reporting month (endDateRevision)
+   *
+   * @param indicatorFlag indicator number
+   * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMIC11DEN(int indicatorFlag) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -849,9 +861,12 @@ public class IntensiveMonitoringCohortQueries {
     cd.setCompositionString("MI11DEN");
     return cd;
   }
-  /* Get CAT 12.1, 12.2, 12.5, 12.6, 12.9, 12.10 Monitoria Intensiva MQHIV 2021 for the selected
+  /**
+   * Get CAT 12.1, 12.2, 12.5, 12.6, 12.9, 12.10 Monitoria Intensiva MQHIV 2021 for the selected
    * location and reporting period (endDateRevision)
    *
+   * @param level indicator number
+   * @param type indicator flag
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getCat12P1DenNum(Integer level, Boolean type) {
@@ -884,6 +899,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.2 Denominator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13DEN2(Integer indicator) {
@@ -904,6 +920,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.2 Numerator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13NUM2(Integer indicator) {
@@ -924,6 +941,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.5 Denominator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13DEN5(Integer indicator) {
@@ -944,6 +962,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.5 Numerator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13NUM5(Integer indicator) {
@@ -964,6 +983,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.9 Denominator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13DEN9(Integer indicator) {
@@ -984,6 +1004,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.9 Numerator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13NUM9(Integer indicator) {
@@ -1004,6 +1025,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.10 Denominator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13DEN10(Integer indicator) {
@@ -1024,6 +1046,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.10 Numerator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13NUM10(Integer indicator) {
@@ -1044,6 +1067,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.11 Denominator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13DEN11(Integer indicator) {
@@ -1064,6 +1088,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.11 Numerator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13NUM11(Integer indicator) {
@@ -1084,6 +1109,7 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.14 Denominator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13DEN14(Integer indicator) {
@@ -1104,6 +1130,9 @@ public class IntensiveMonitoringCohortQueries {
   /**
    * Get the indicators (numerators) from CATEGORY 11 from report named “Monitoria Intensiva de
    * HIV-2021” for the selected location and reporting month (endDateRevision)
+   *
+   * @param indicatorFlag indicator number
+   * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMIC11NUM(int indicatorFlag) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
@@ -1168,10 +1197,11 @@ public class IntensiveMonitoringCohortQueries {
 
     return cd;
   }
-  /*
+  /**
    * Get CAT 13 Monitoria Intensiva MQHIV 2021 for the selected location and reporting period
    * Section 13.14 Numerator (endDateRevision)
    *
+   * @param indicator indicator number
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI13NUM14(Integer indicator) {
@@ -1193,6 +1223,8 @@ public class IntensiveMonitoringCohortQueries {
    * Get CAT 13 P4 NUMERATOR AND DENOMINATOR Monitoria Intensiva MQHIV 2021 for the selected
    * location and reporting period (endDateRevision)
    *
+   * @param level indicator number
+   * @param type indicator flag
    * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMICat13Part4(Integer level, Boolean type) {
@@ -1221,6 +1253,8 @@ public class IntensiveMonitoringCohortQueries {
    * A - Select all patients with Last Clinical Consultation (encounter type 6, encounter_datetime)
    * occurred during the inclusion period (encounter_datetime>= startDateInclusion and <=
    * endDateInclusion
+   *
+   * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI15A() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1304,7 +1338,7 @@ public class IntensiveMonitoringCohortQueries {
    * concept_id 1065) in Ficha Clínica (encounter type 6, encounter_datetime) occurred during the
    * following period (encounter_datetime >= startDate and <= endDate)
    *
-   * @return
+   * @return @{@link org.openmrs.module.reporting.cohort.definition.CohortDefinition}
    */
   public CohortDefinition getMI15D() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1450,7 +1484,7 @@ public class IntensiveMonitoringCohortQueries {
    * concept_id 1065) in Ficha Clínica (encounter type 6, encounter_datetime) occurred during the
    * following period (encounter_datetime >= startDate and <= endDate)
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition getMI15C() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1545,7 +1579,9 @@ public class IntensiveMonitoringCohortQueries {
    * (value_coded, concept id 1256) or “Continua” (value_coded, concept id 1257) Last record of FR
    * (concept id 23729) and the response is “ Iniciar” (value_coded, concept id 1256) or “Continua”
    * (value_coded, concept id 1257) Last record of DC (concept id 23731) and the response is
-   * “Iniciar” (value_coded, concept id 1256) or “Continua” (value_coded, concept id 1257)
+   * “Iniciar” (value_coded, concept id 1256) or “Continua” (value_coded, concept id 1257)*
+   *
+   * @return CohortDefinition
    */
   public CohortDefinition getMI15J() {
 
@@ -1613,6 +1649,8 @@ public class IntensiveMonitoringCohortQueries {
    * F - Select all patients with the last CD4 result (concept id 1695) and the result is <= 200
    * (value_numeric) registered on Ficha Clinica (encounter type 6) before “Last Consultation Date”
    * (encounter_datetime from A).
+   *
+   * @return CohortDefinition
    */
   public CohortDefinition getMI15F() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -1662,6 +1700,8 @@ public class IntensiveMonitoringCohortQueries {
    * “Iniciar” (value_coded, concept id 1256) DS (concept id 23888) = “Iniciar” (value_coded,
    * concept id 1256) FR (concept id 23729) = “Iniciar” (value_coded, concept id 1256) DC (concept
    * id 23731) = “Iniciar” (value_coded, concept id 1256)
+   *
+   * @return CohortDefinition
    */
   public CohortDefinition getMI15K() {
 
@@ -1731,6 +1771,8 @@ public class IntensiveMonitoringCohortQueries {
    * “Fim” (value_coded, concept id 1267) DS (concept id 23888) = “Fim” (value_coded, concept id
    * 1267) FR (concept id 23729) = “Fim” (value_coded, concept id 1267) DC (concept id 23731) =
    * “Fim” (value_coded, concept id 1267)
+   *
+   * @return CohortDefinition
    */
   public CohortDefinition getMI15L() {
 
@@ -1812,6 +1854,8 @@ public class IntensiveMonitoringCohortQueries {
    *       (encounter_datetime from A) minus 61 days
    * </ul>
    *
+   * @param upper The upper limit in days
+   * @param lower The lower limit in days
    * @return CohortDefinition
    */
   public CohortDefinition getMI15E(int upper, int lower) {
@@ -1892,7 +1936,7 @@ public class IntensiveMonitoringCohortQueries {
    * Consultation” (encounter_datetime from A) minus 90 days and “Last Clinical Consultation”
    * (encounter_datetime from A) minus 61 days
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition getMI15EComplete() {
 
@@ -1929,6 +1973,8 @@ public class IntensiveMonitoringCohortQueries {
    * with at least one Viral Load Result (concept id 856, value_numeric not NULL) registered on
    * Ficha Clinica (encounter type 6, encounter_datetime) between “Last VL Result <1000”+ 12 months
    * and “Last VL Result <1000” + 18 months
+   *
+   * @return CohortDefinition
    */
   public CohortDefinition getMI15I() {
 
@@ -1978,6 +2024,23 @@ public class IntensiveMonitoringCohortQueries {
     return cd;
   }
 
+  /**
+   * <b>MI15DenNum: Melhoria de Qualidade Category 15 Denominador e Numerator</b><br>
+   * <br>
+   * <i> DENOMINADOR 1: A and B1 and E and NOT (C or D or F or G or J) and Age >= 2 </i> <br>
+   * <i> NUMERATOR 1: A and B1 and E and NOT (C or D or F or G or J) and K and Age >= 2 </i> <br>
+   * <br>
+   * <i> DENOMINADOR 2: A and J and H and Age >= 2 </i> <i> NUMERATOR 2: A and J and H and L and Age
+   * >= 2 </i><br>
+   * <br>
+   * <i> DENOMINADOR 3: A and J and B2 and NOT P and Age >= 2 </i> <i> NUMERATOR 3: A and J and B2
+   * and NOT P and I and Age >= 2 </i><br>
+   * <br>
+   *
+   * @param isDenominator indicator flag
+   * @param level indicator number
+   * @return CohortDefinition
+   */
   public CohortDefinition getCat15P1DenNum(boolean isDenominator, int level) {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
@@ -2062,7 +2125,7 @@ public class IntensiveMonitoringCohortQueries {
    * Age should be calculated on “Last Consultation Date” (Check A for the algorithm to define this
    * date).
    *
-   * @return
+   * @return CohortDefinition
    */
   public CohortDefinition getAgeOnLastConsultationMoreThan2Years() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
@@ -2102,6 +2165,8 @@ public class IntensiveMonitoringCohortQueries {
    * 6) during the last 3 months from the “Last Consultation Date” (encounter_datetime from A), i.e,
    * at least one “Pedido de Carga Viral” encounter_datetime >= “Last Consultation Date”-3months and
    * < “Last Consultation Date”.
+   *
+   * @return CohortDefinition
    */
   public CohortDefinition getMI15P() {
 
@@ -2136,6 +2201,11 @@ public class IntensiveMonitoringCohortQueries {
     return cd;
   }
 
+  /**
+   * Get CAT 13.1 Denominator
+   *
+   * @return CohortDefinition
+   */
   public CohortDefinition getMI13DEN1() {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
