@@ -16,7 +16,7 @@ public class ListPatientsEligibleViralLoadCohortQueries {
   public CohortDefinition findPatientsEligibleToViralLoad() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("findPatientsEligibleTPT");
+    definition.setName("findPatientsEligibleToViralLoad");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));

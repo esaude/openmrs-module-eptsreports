@@ -44,7 +44,7 @@ public class SetupListPatientsEligibleViralLoad extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "LISTA DE PACIENTES ELEGIVEIS A CARGA VIRAL";
+    return "LISTA DE PACIENTES ELEGÍVEIS PARA COLHEITA DA AMOSTRA PARA CARGA VIRAL";
   }
 
   @Override
@@ -58,17 +58,17 @@ public class SetupListPatientsEligibleViralLoad extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.setParameters(this.getParameters());
+    rd.setParameters(getParameters());
     rd.addDataSetDefinition(
         "VIRALELIG",
         Mapped.mapStraightThrough(
             listOfPatientsEligileToViralLoadDataSet.constructDataset(getParameters())));
 
-    /*
-     * rd.addDataSetDefinition( "VIRALTOTAL", Mapped.mapStraightThrough(
-     * this.listOfPatientsEligileToViralLoadDataSet.getTotalEligibleViralLoadDataset
-     * ()));
-     */
+    rd.addDataSetDefinition(
+        "VIRALTOTAL",
+        Mapped.mapStraightThrough(
+            this.listOfPatientsEligileToViralLoadDataSet.getTotalEligibleViralLoadDataset()));
+
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(

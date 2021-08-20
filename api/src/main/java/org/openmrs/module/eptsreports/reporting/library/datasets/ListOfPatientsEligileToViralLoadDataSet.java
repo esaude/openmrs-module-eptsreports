@@ -36,13 +36,13 @@ public class ListOfPatientsEligileToViralLoadDataSet extends BaseDataSet {
         new CohortIndicatorDataSetDefinition();
 
     dataSetDefinition.setName("Patients Eligible Viral Load Total");
-    dataSetDefinition.addParameters(this.getParameters());
+    dataSetDefinition.addParameters(getParameters());
 
-    final String mappings = "startDate=${startDate}, endDate=${endDate},location=${location}";
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     final CohortDefinition vlEligibleTotal =
         this.listPatientsEligibleViralLoadCohortQueries.findPatientsEligibleToViralLoad();
     dataSetDefinition.addColumn(
-        "TOTALELIGIBLEVIRALLOAD",
+        "TOTALVL",
         "Total de Pacientes Elegiveis a Carga Viral",
         EptsReportUtils.map(
             this.eptsGeneralIndicator.getIndicator(
