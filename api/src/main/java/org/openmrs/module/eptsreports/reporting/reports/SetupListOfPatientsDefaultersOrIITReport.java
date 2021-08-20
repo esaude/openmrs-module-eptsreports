@@ -41,12 +41,12 @@ public class SetupListOfPatientsDefaultersOrIITReport extends EptsDataExportMana
 
   @Override
   public String getName() {
-    return "List of Patients Defaulters or IIT TEMPLATE";
+    return "List of Patients Defaulters or IIT ";
   }
 
   @Override
   public String getDescription() {
-    return "This report provides list of patients defaulters or IIT TEMPLATE";
+    return "This report provides list of patients defaulters or IIT ";
   }
 
   @Override
@@ -79,12 +79,12 @@ public class SetupListOfPatientsDefaultersOrIITReport extends EptsDataExportMana
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Template_List_Patients_Defaulters_IIT_TARV_v1.2.xls",
-              "Template List Patients Defaulters IIT TARV Report",
+              "Template_List_Patients_Defaulters_IIT_TARV_v1.3.1.xls",
+              "List Patients Defaulters IIT TARV Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
-      props.put("repeatingSections", "sheet:1,row:7,dataset:FATL");
+      props.put("repeatingSections", "sheet:1,row:8,dataset:FATL");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
@@ -97,8 +97,9 @@ public class SetupListOfPatientsDefaultersOrIITReport extends EptsDataExportMana
   @Override
   public List<Parameter> getParameters() {
     return Arrays.asList(
-        new Parameter("startDate", "Start date", Date.class),
         new Parameter("endDate", "End date", Date.class),
+        new Parameter("minDays", "Minimum Days of Absence", Integer.class),
+        new Parameter("maxDays", "Maximum days of Absence", Integer.class),
         new Parameter("location", "Location", Location.class));
   }
 }
