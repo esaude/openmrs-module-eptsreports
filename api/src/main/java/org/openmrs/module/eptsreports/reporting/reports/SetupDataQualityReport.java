@@ -339,6 +339,7 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     List<Parameter> parameters = new ArrayList<Parameter>();
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
+
     parameters.add(
         new Parameter(
             "location", "reporting.parameter.locationList", Location.class, List.class, null));
