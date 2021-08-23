@@ -47,9 +47,10 @@ public class Ec12Queries {
             + programId
             + " LEFT JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
             + " INNER JOIN location l ON pg.location_id = l.location_id "
-            + " WHERE pe.birthdate IS NOT NULL AND ps.end_date is null AND "
+            + " WHERE pe.birthdate IS NOT NULL AND "
             + " YEAR(pe.birthdate) < "
-            + year;
+            + year
+            + " AND ps.end_date is null ";
 
     return query;
   }
