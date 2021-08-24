@@ -1,32 +1,239 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import java.util.Arrays;
+import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.KeyPopCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.KeyPopulationDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
 public class KeyPopDataSet extends BaseDataSet {
 
-  @Autowired private EptsCommonDimension eptsCommonDimension;
-
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
-  
+
   @Autowired private KeyPopCohortQueries keyPopCohortQueries;
 
-  final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+  @Autowired private KeyPopulationDimension keyPopulationDimension;
+
+  @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
+
+  @Autowired private EptsCommonDimension eptsCommonDimension;
+
+  @Autowired
+  @Qualifier("commonAgeDimensionCohort")
+  private AgeDimensionCohortInterface ageDimensionCohort;
 
   public DataSetDefinition constructDataset() {
 
     final CohortIndicatorDataSetDefinition dataSetDefinition =
         new CohortIndicatorDataSetDefinition();
 
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
     dataSetDefinition.setName("TX_NEW Data Set");
     dataSetDefinition.addParameters(this.getParameters());
+    dataSetDefinition.addDimension(
+        "age",
+        EptsReportUtils.map(
+            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+
+    dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
+
+    addKeyPopDementions(dataSetDefinition, mappings);
+
+    // create cohort definition
+
+    final CohortDefinition patientEnrolledInART =
+        this.keyPopCohortQueries.findPatientsWhoAreNewlyEnrolledOnArtKeyPop();
+
+    final CohortDefinition patientCurrentlyEnrolledOnArt =
+        this.keyPopCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtIncludingTransferedIn();
+
+    final CohortDefinition patientCurrentlyEnrolledOnArtHaveVLRequest =
+        this.resumoMensalCohortQueries
+            .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithRequestForVLE1();
+
+    final CohortDefinition patientCurrentlyEnrolledOnArtHaveVLResult =
+        this.resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2();
+
+    final CohortDefinition patientWhoAreNewOnART12MonthsCohort =
+        this.keyPopCohortQueries.findPatientsWhoAreNewlyEnrolledOnArtKeyPopPreviousPeriod();
+
+    final CohortDefinition patientWhoAreCurrentlyOnART12MonthsCohort =
+        this.keyPopCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtPreviousPeriod();
+
+    // create cohort indicator
+    final CohortIndicator patientEnrolledInHIVStartedARTIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientNewlyEnrolledInHIVIndicator",
+            EptsReportUtils.map(patientEnrolledInART, mappings));
+
+    final CohortIndicator patientCurrentlyEnrolledOnArtIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientNewlyEnrolledInHIVIndicator",
+            EptsReportUtils.map(patientCurrentlyEnrolledOnArt, mappings));
+
+    final CohortIndicator patientCurrentlyEnrolledOnArtHaveVLRequestIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientNewlyEnrolledInHIVIndicator",
+            EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLRequest, mappings));
+
+    final CohortIndicator patientCurrentlyEnrolledOnArtHaveVLResultIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientNewlyEnrolledInHIVIndicator",
+            EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLResult, mappings));
+
+    final CohortIndicator patientWhoAreNewOnART12MonthsCohortIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientNewlyEnrolledInHIVIndicator",
+            EptsReportUtils.map(patientWhoAreNewOnART12MonthsCohort, mappings));
+
+    final CohortIndicator patientWhoAreCurrentlyOnART12MonthsCohortIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientNewlyEnrolledInHIVIndicator",
+            EptsReportUtils.map(patientWhoAreCurrentlyOnART12MonthsCohort, mappings));
+
+    dataSetDefinition.addColumn(
+        "I1T",
+        "I1T: New on ART",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        "");
+
+    addRow(
+        dataSetDefinition,
+        "KPI1",
+        "Número adultos que iniciaram TARV durante o trimestre",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        getKeyPopColumns());
+
+    dataSetDefinition.addColumn(
+        "I2T",
+        "I2T:Número adultos actualmente em TARV no fim do trimestre",
+        EptsReportUtils.map(patientCurrentlyEnrolledOnArtIndicator, mappings),
+        "");
+
+    addRow(
+        dataSetDefinition,
+        "KPI2",
+        "Número adultos actualmente em TARV no fim do trimestre",
+        EptsReportUtils.map(patientCurrentlyEnrolledOnArtIndicator, mappings),
+        getKeyPopColumns());
+
+    dataSetDefinition.addColumn(
+        "I3T",
+        "I3T:Dos activos em TARV no fim do trimestre, subgrupo que recebeu um teste de Carga Viral "
+            + "(CV)  durante o trimestre (Notificação anual!)",
+        EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLRequestIndicator, mappings),
+        "");
+
+    addRow(
+        dataSetDefinition,
+        "KPI3",
+        "Dos activos em TARV no fim do trimestre, subgrupo que recebeu um teste de Carga Viral "
+            + "(CV)  durante o trimestre (Notificação anual!)",
+        EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLRequestIndicator, mappings),
+        getKeyPopColumns());
+
+    dataSetDefinition.addColumn(
+        "I4T",
+        "I4T:Dos activos TARV no fim do trimestre, subgrupo que recebeu resultado de "
+            + "CV com supressão virológica durante o trimestre  (<1000 cópias/mL) (Notificação anual!)",
+        EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLRequestIndicator, mappings),
+        "");
+
+    addRow(
+        dataSetDefinition,
+        "KPI4",
+        "KPI3:Dos activos TARV no fim do trimestre, subgrupo que recebeu resultado de "
+            + "CV com supressão virológica durante o trimestre  (<1000 cópias/mL) (Notificação anual!)",
+        EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLResultIndicator, mappings),
+        getKeyPopColumns());
+
+    dataSetDefinition.addColumn(
+        "I5T",
+        "I5T:Número de adultos na coorte 12 meses - inicio de TARV",
+        EptsReportUtils.map(patientWhoAreNewOnART12MonthsCohortIndicator, mappings),
+        "");
+
+    addRow(
+        dataSetDefinition,
+        "KPI5",
+        "KPI5:Número de adultos na coorte 12 meses - inicio de TARV ",
+        EptsReportUtils.map(patientWhoAreNewOnART12MonthsCohortIndicator, mappings),
+        getKeyPopColumns());
+
+    dataSetDefinition.addColumn(
+        "I6T",
+        "I5T:Número de adultos na coorte 12 meses - Activos em TARV ",
+        EptsReportUtils.map(patientWhoAreCurrentlyOnART12MonthsCohortIndicator, mappings),
+        "");
+
+    addRow(
+        dataSetDefinition,
+        "KPI6",
+        "KPI6:Número de adultos na coorte 12 meses - Activos em TARV ",
+        EptsReportUtils.map(patientWhoAreCurrentlyOnART12MonthsCohortIndicator, mappings),
+        getKeyPopColumns());
 
     return dataSetDefinition;
+  }
+
+  private void addKeyPopDementions(
+      final CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
+    dataSetDefinition.addDimension(
+        "homosexual",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreHomosexual(), mappings));
+
+    dataSetDefinition.addDimension(
+        "drug-user",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoUseDrugs(), mappings));
+
+    dataSetDefinition.addDimension(
+        "prisioner",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreInPrison(), mappings));
+
+    dataSetDefinition.addDimension(
+        "sex-worker",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreSexWorker(), mappings));
+  }
+
+  private List<ColumnParameters> getKeyPopColumns() {
+
+    ColumnParameters k1 =
+        new ColumnParameters("15-19", "15-19", "drug-user=drug-user|age=15-19", "01");
+    ColumnParameters k2 =
+        new ColumnParameters("20-24", "20-24", "drug-user=drug-user|age=20-24", "02");
+    ColumnParameters k3 = new ColumnParameters("25+", "25+", "drug-user=drug-user|age=25+", "03");
+
+    ColumnParameters k4 =
+        new ColumnParameters("15-19", "15-19", "homosexual=homosexual|age=15-19", "04");
+    ColumnParameters k5 =
+        new ColumnParameters("20-24", "20-24", "homosexual=homosexual|age=20-24", "05");
+    ColumnParameters k6 = new ColumnParameters("25+", "25+", "homosexual=homosexual|age=25+", "06");
+
+    ColumnParameters k7 =
+        new ColumnParameters("15-19", "15-19", "sex-worker=sex-worker|age=15-19", "07");
+    ColumnParameters k8 =
+        new ColumnParameters("20-24", "20-24", "sex-worker=sex-worker|age=20-24", "08");
+    ColumnParameters k9 = new ColumnParameters("25+", "25+", "sex-worker=sex-worker|age=25+", "09");
+
+    ColumnParameters k10 =
+        new ColumnParameters("15-19", "15-19", "prisioner=prisioner|age=15-19", "010");
+    ColumnParameters k11 =
+        new ColumnParameters("20-24", "20-24", "prisioner=prisioner|age=20-24", "011");
+    ColumnParameters k12 = new ColumnParameters("25+", "25+", "prisioner=prisioner|age=25+", "012");
+
+    return Arrays.asList(k1, k2, k3, k4, k5, k6, k7, k8, k9, k10, k11, k12);
   }
 }

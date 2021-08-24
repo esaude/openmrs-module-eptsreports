@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.KeyPopDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
@@ -39,12 +40,12 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "key-pop";
+    return "RELATORIO DE POPULACAO CHAVE";
   }
 
   @Override
   public String getDescription() {
-    return "key-pop";
+    return "RELATORIO DE POPULACAO CHAVE";
   }
 
   @Override
@@ -54,7 +55,7 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.setParameters(keyPopDataSet.getParameters());
-    rd.addDataSetDefinition("kp", Mapped.mapStraightThrough(keyPopDataSet.constructDataset()));
+    rd.addDataSetDefinition("KP", Mapped.mapStraightThrough(keyPopDataSet.constructDataset()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -70,7 +71,7 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "Key_POP.xls", "Key_POP ", getExcelDesignUuid(), null);
+              reportDefinition, "KEY_POPPULATION.xls", "RELATORIO DE POPULACAO CHAVE ", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
