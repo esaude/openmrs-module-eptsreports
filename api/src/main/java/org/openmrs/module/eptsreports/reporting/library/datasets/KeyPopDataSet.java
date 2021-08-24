@@ -175,7 +175,7 @@ public class KeyPopDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "I6T",
-        "I5T:Número de adultos na coorte 12 meses - Activos em TARV ",
+        "I6T:Número de adultos na coorte 12 meses - Activos em TARV ",
         EptsReportUtils.map(patientWhoAreCurrentlyOnART12MonthsCohortIndicator, mappings),
         "");
 
