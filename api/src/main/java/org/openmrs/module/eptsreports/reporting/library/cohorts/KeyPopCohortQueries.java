@@ -33,7 +33,7 @@ public class KeyPopCohortQueries {
         "START-ART",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
-                "", KeyPopQueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnArtKeyPop),
+                "START-ART", KeyPopQueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnArtKeyPop),
             mappings));
 
     definition.addSearch(
