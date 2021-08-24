@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.KeyPopDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
@@ -71,7 +70,11 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "KEY_POPPULATION.xls", "RELATORIO DE POPULACAO CHAVE ", getExcelDesignUuid(), null);
+              reportDefinition,
+              "KEY_POPPULATION.xls",
+              "RELATORIO DE POPULACAO CHAVE ",
+              getExcelDesignUuid(),
+              null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
