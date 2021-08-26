@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
+
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.queries.KeyPopQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
@@ -260,6 +261,8 @@ public class KeyPopCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     final String mappings = "startDate=${startDate-7m},endDate=${endDate-4m},location=${location}";
+    final String mappingsEndDate = "startDate=${startDate},endDate=${endDate},location=${location}";
+
 
     definition.addSearch(
         "START-ART",
@@ -276,7 +279,7 @@ public class KeyPopCohortQueries {
                 "TRANSFERED-IN",
                 KeyPopQueriesInterface.QUERY
                     .findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
-            mappings));
+            mappingsEndDate));
 
     definition.addSearch(
         "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
@@ -285,7 +288,7 @@ public class KeyPopCohortQueries {
                 "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
                 KeyPopQueriesInterface.QUERY
                     .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
-            mappings));
+            mappingsEndDate));
 
     definition.setCompositionString(
         "START-ART NOT (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD)");
