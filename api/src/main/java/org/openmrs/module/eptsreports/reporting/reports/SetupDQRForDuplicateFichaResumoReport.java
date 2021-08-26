@@ -22,9 +22,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupDQRForDuplicateFichaResumoReport extends EptsDataExportManager {
 
-  @Autowired protected GenericCohortQueries genericCohortQueries;
-  @Autowired DQRForDuplicateFichaResumoDataSet dqrForDuplicateFichaResumoDataSet;
-  @Autowired SummaryDQRForDuplicateFichaResumoDataSet summaryDQRForDuplicateFichaResumoDataSet;
+  private GenericCohortQueries genericCohortQueries;
+  private DQRForDuplicateFichaResumoDataSet dqrForDuplicateFichaResumoDataSet;
+  private SummaryDQRForDuplicateFichaResumoDataSet summaryDQRForDuplicateFichaResumoDataSet;
+
+  @Autowired
+  public SetupDQRForDuplicateFichaResumoReport(
+      GenericCohortQueries genericCohortQueries,
+      DQRForDuplicateFichaResumoDataSet dqrForDuplicateFichaResumoDataSet,
+      SummaryDQRForDuplicateFichaResumoDataSet summaryDQRForDuplicateFichaResumoDataSet) {
+    this.genericCohortQueries = genericCohortQueries;
+    this.dqrForDuplicateFichaResumoDataSet = dqrForDuplicateFichaResumoDataSet;
+    this.summaryDQRForDuplicateFichaResumoDataSet = summaryDQRForDuplicateFichaResumoDataSet;
+  }
 
   @Override
   public String getExcelDesignUuid() {
