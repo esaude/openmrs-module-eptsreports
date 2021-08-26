@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.KeyPopDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.mkdatasets.KeyPopDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -54,7 +54,8 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.setParameters(keyPopDataSet.getParameters());
-    rd.addDataSetDefinition("KP", Mapped.mapStraightThrough(keyPopDataSet.constructDataset()));
+    rd.addDataSetDefinition(
+        "KP", Mapped.mapStraightThrough(keyPopDataSet.constructTKeyPopDatset()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(

@@ -1,12 +1,10 @@
-package org.openmrs.module.eptsreports.reporting.library.datasets;
+package org.openmrs.module.eptsreports.reporting.library.datasets.mkdatasets;
 
 import java.util.Arrays;
 import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.KeyPopCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.KeyPopulationDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -18,39 +16,20 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class KeyPopDataSet extends BaseDataSet {
+public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
   @Autowired private KeyPopCohortQueries keyPopCohortQueries;
 
-  @Autowired private KeyPopulationDimension keyPopulationDimension;
-
   @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
-
-  @Autowired private EptsCommonDimension eptsCommonDimension;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
 
-  public DataSetDefinition constructDataset() {
-
-    final CohortIndicatorDataSetDefinition dataSetDefinition =
-        new CohortIndicatorDataSetDefinition();
-
-    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
-    dataSetDefinition.setName("TX_NEW Data Set");
-    dataSetDefinition.addParameters(this.getParameters());
-    dataSetDefinition.addDimension(
-        "age",
-        EptsReportUtils.map(
-            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
-
-    dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
-
-    addKeyPopDementions(dataSetDefinition, mappings);
+  public DataSetDefinition constructDataset(
+      CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
 
     // create cohort definition
 
@@ -187,25 +166,6 @@ public class KeyPopDataSet extends BaseDataSet {
         getKeyPopColumns());
 
     return dataSetDefinition;
-  }
-
-  private void addKeyPopDementions(
-      final CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
-    dataSetDefinition.addDimension(
-        "homosexual",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreHomosexual(), mappings));
-
-    dataSetDefinition.addDimension(
-        "drug-user",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoUseDrugs(), mappings));
-
-    dataSetDefinition.addDimension(
-        "prisioner",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreInPrison(), mappings));
-
-    dataSetDefinition.addDimension(
-        "sex-worker",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreSexWorker(), mappings));
   }
 
   private List<ColumnParameters> getKeyPopColumns() {

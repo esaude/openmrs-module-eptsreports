@@ -33,7 +33,8 @@ public class KeyPopCohortQueries {
         "START-ART",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
-                "START-ART", KeyPopQueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnArtKeyPop),
+                "START-ART",
+                KeyPopQueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnArtKeyPop),
             mappings));
 
     definition.addSearch(
@@ -245,6 +246,49 @@ public class KeyPopCohortQueries {
 
     definition.setCompositionString(
         "(START-ART OR TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD) NOT (TRANSFERED-OUT OR SUSPEND OR ABANDONED OR DIED)");
+
+    return definition;
+  }
+
+  public CohortDefinition findPatientsWhoAreNewlyEnrolledOnArtKeyPop6MonthsCoorte() {
+
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("TX NEW KEY POP");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate-7m},endDate=${endDate-4m},location=${location}";
+
+    definition.addSearch(
+        "START-ART",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "START-ART",
+                KeyPopQueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnArtKeyPop),
+            mappings));
+
+    definition.addSearch(
+        "TRANSFERED-IN",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "TRANSFERED-IN",
+                KeyPopQueriesInterface.QUERY
+                    .findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
+            mappings));
+
+    definition.addSearch(
+        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
+                KeyPopQueriesInterface.QUERY
+                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
+            mappings));
+
+    definition.setCompositionString(
+        "START-ART NOT (TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD)");
 
     return definition;
   }
