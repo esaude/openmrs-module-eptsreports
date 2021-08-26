@@ -58,17 +58,16 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     pdd.addColumn("nid", getNID(identifierType.getPatientIdentifierTypeId()), "");
     pdd.addColumn("name", nameDef, "");
     pdd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter("dd-MMM-yyyy"));
-    pdd.addColumn("EDOB", estimatedDOB(), "", null);
+    pdd.addColumn("estimated_birth_date", estimatedDOB(), "", null);
     pdd.addColumn("sex", new GenderDataDefinition(), "", new GenderConverter());
     pdd.addColumn("age", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("First Entry Date", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("Last updated", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("ART program enrollment date", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn(
-        "Master card - Ficha resumo Encounter date", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("Master card Opening date", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("Pre-ART Start Date on Mastercard", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("ART Start Date on Master Card", getAge(), "endDate=${endDate}", null);
+    pdd.addColumn("first_entry_date", getAge(), "endDate=${endDate}", null);
+    pdd.addColumn("date_last_updated", getAge(), "endDate=${endDate}", null);
+    pdd.addColumn("art_program_enrollment_date", getAge(), "endDate=${endDate}", null);
+    pdd.addColumn("ficha_resumo_encounter_date", getAge(), "endDate=${endDate}", null);
+    pdd.addColumn("master_card_opening_date", getAge(), "endDate=${endDate}", null);
+    pdd.addColumn("pre_art_start_date_on_mastercard", getAge(), "endDate=${endDate}", null);
+    pdd.addColumn("art_start_date_on_master_card", getAge(), "endDate=${endDate}", null);
 
     return pdd;
   }
