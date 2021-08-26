@@ -38,7 +38,7 @@ public class SetupDQRForDuplicateFichaResumoReport extends EptsDataExportManager
 
   @Override
   public String getName() {
-    return "DQR for Duplicate Ficha Resumo";
+    return "Data Quality Report to Identify Duplicate Ficha Resumo";
   }
 
   @Override
@@ -58,10 +58,12 @@ public class SetupDQRForDuplicateFichaResumoReport extends EptsDataExportManager
             genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
 
     rd.addDataSetDefinition(
-        "EC1", Mapped.mapStraightThrough(dqrForDuplicateFichaResumoDataSet.constructDataSet()));
+        "EC1",
+        Mapped.mapStraightThrough(dqrForDuplicateFichaResumoDataSet.constructPatientDataSet()));
     rd.addDataSetDefinition(
-        "SEC1",
-        Mapped.mapStraightThrough(summaryDQRForDuplicateFichaResumoDataSet.constructDataSet()));
+        "EC1T",
+        Mapped.mapStraightThrough(
+            summaryDQRForDuplicateFichaResumoDataSet.constructIndicatorDataset()));
     return rd;
   }
 

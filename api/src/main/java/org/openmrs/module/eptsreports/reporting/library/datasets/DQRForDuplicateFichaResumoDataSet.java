@@ -16,7 +16,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
 
-  public DataSetDefinition constructDataSet() {
+  public DataSetDefinition constructPatientDataSet() {
     PatientDataSetDefinition pdd = new PatientDataSetDefinition();
 
     pdd.setName("EC1");
