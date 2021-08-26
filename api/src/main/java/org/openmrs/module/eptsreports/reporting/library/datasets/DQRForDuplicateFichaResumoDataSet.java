@@ -66,20 +66,29 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     pdd.addColumn("first_entry_date", firstEntryDate(), "", new GeneralDateConverter());
     pdd.addColumn("date_last_updated", dateLastUpdated(), "", new GeneralDateConverter());
     pdd.addColumn(
-        "art_program_enrollment_date", getAge(), "endDate=${endDate}", new GeneralDateConverter());
+        "art_program_enrollment_date",
+        getArtProgramEnrollmentDate(),
+        "endDate=${endDate},location=${location}",
+        new GeneralDateConverter());
     pdd.addColumn(
-        "ficha_resumo_encounter_date", getAge(), "endDate=${endDate}", new GeneralDateConverter());
+        "ficha_resumo_encounter_date",
+        getFichaResumoEncounterDate(),
+        "endDate=${endDate},location=${location}",
+        new GeneralDateConverter());
     pdd.addColumn(
-        "master_card_opening_date", getAge(), "endDate=${endDate}", new GeneralDateConverter());
+        "master_card_opening_date",
+        getMasterCardOpeningDate(),
+        "endDate=${endDate},location=${location}",
+        new GeneralDateConverter());
     pdd.addColumn(
         "pre_art_start_date_on_mastercard",
-        getAge(),
-        "endDate=${endDate}",
+        getPreArtStartDateOnMastercard(),
+        "endDate=${endDate},location=${location}",
         new GeneralDateConverter());
     pdd.addColumn(
         "art_start_date_on_master_card",
-        getAge(),
-        "endDate=${endDate}",
+        getArtStartDateOnMastercard(),
+        "endDate=${endDate},location=${location}",
         new GeneralDateConverter());
 
     return pdd;
@@ -156,6 +165,101 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     Map<String, Integer> valuesMap = new HashMap<>();
 
     String sql = " SELECT p.patient_id,p.date_changed  FROM patient p  " + " WHERE p.voided=0 ";
+
+    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
+
+    spdd.setQuery(substitutor.replace(sql));
+    return spdd;
+  }
+
+  private DataDefinition getArtProgramEnrollmentDate() {
+    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
+    spdd.addParameter(new Parameter("location", "Location", Location.class));
+    spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
+    spdd.setName("art_program_enrollment_date");
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+
+    String sql =
+        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
+            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
+            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 ";
+
+    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
+
+    spdd.setQuery(substitutor.replace(sql));
+    return spdd;
+  }
+
+  private DataDefinition getFichaResumoEncounterDate() {
+    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
+    spdd.addParameter(new Parameter("location", "Location", Location.class));
+    spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
+    spdd.setName("ficha_resumo_encounter_date");
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+
+    String sql =
+        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
+            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
+            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 ";
+
+    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
+
+    spdd.setQuery(substitutor.replace(sql));
+    return spdd;
+  }
+
+  private DataDefinition getMasterCardOpeningDate() {
+    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
+    spdd.addParameter(new Parameter("location", "Location", Location.class));
+    spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
+    spdd.setName("master_card_opening_date");
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+
+    String sql =
+        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
+            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
+            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 ";
+
+    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
+
+    spdd.setQuery(substitutor.replace(sql));
+    return spdd;
+  }
+
+  private DataDefinition getPreArtStartDateOnMastercard() {
+    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
+    spdd.addParameter(new Parameter("location", "Location", Location.class));
+    spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
+    spdd.setName("pre_art_start_date_on_mastercard");
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+
+    String sql =
+        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
+            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
+            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 ";
+
+    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
+
+    spdd.setQuery(substitutor.replace(sql));
+    return spdd;
+  }
+
+  private DataDefinition getArtStartDateOnMastercard() {
+    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
+    spdd.addParameter(new Parameter("location", "Location", Location.class));
+    spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
+    spdd.setName("art_start_date_on_master_card");
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+
+    String sql =
+        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
+            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
+            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 ";
 
     StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
 

@@ -9,7 +9,7 @@ public class EstimatedBirthdateConverter implements DataConverter {
     if (obj == null) {
       return "";
     }
-    return (Integer) obj == 1 ? "Yes".toString() : "No".toString();
+    return (Boolean) obj.equals(Boolean.TRUE) ? "Yes".toString() : "No".toString();
   }
 
   @Override
