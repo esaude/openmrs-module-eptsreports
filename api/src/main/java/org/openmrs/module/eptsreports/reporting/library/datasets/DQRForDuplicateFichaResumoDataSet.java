@@ -8,7 +8,9 @@ import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.data.converter.EstimatedBirthdateConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.GenderConverter;
+import org.openmrs.module.eptsreports.reporting.data.converter.GeneralDateConverter;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.DqrDuplicateFichaResumoCohorts;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
@@ -57,17 +59,28 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     pdd.addColumn("id", new PersonIdDataDefinition(), "");
     pdd.addColumn("nid", getNID(identifierType.getPatientIdentifierTypeId()), "");
     pdd.addColumn("name", nameDef, "");
-    pdd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter("dd-MMM-yyyy"));
-    pdd.addColumn("estimated_birth_date", estimatedDOB(), "", null);
+    pdd.addColumn("DOB", new BirthdateDataDefinition(), "", new BirthdateConverter("dd-MM-yyyy"));
+    pdd.addColumn("estimated_birth_date", estimatedDOB(), "", new EstimatedBirthdateConverter());
     pdd.addColumn("sex", new GenderDataDefinition(), "", new GenderConverter());
     pdd.addColumn("age", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("first_entry_date", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("date_last_updated", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("art_program_enrollment_date", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("ficha_resumo_encounter_date", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("master_card_opening_date", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("pre_art_start_date_on_mastercard", getAge(), "endDate=${endDate}", null);
-    pdd.addColumn("art_start_date_on_master_card", getAge(), "endDate=${endDate}", null);
+    pdd.addColumn("first_entry_date", firstEntryDate(), "", new GeneralDateConverter());
+    pdd.addColumn("date_last_updated", dateLastUpdated(), "", new GeneralDateConverter());
+    pdd.addColumn(
+        "art_program_enrollment_date", getAge(), "endDate=${endDate}", new GeneralDateConverter());
+    pdd.addColumn(
+        "ficha_resumo_encounter_date", getAge(), "endDate=${endDate}", new GeneralDateConverter());
+    pdd.addColumn(
+        "master_card_opening_date", getAge(), "endDate=${endDate}", new GeneralDateConverter());
+    pdd.addColumn(
+        "pre_art_start_date_on_mastercard",
+        getAge(),
+        "endDate=${endDate}",
+        new GeneralDateConverter());
+    pdd.addColumn(
+        "art_start_date_on_master_card",
+        getAge(),
+        "endDate=${endDate}",
+        new GeneralDateConverter());
 
     return pdd;
   }
@@ -115,6 +128,34 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     String sql =
         " SELECT p.patient_id,pe.birthdate_estimated  FROM patient p INNER JOIN person pe ON p.patient_id=pe.person_id "
             + " WHERE p.voided=0 AND pe.voided=0 ";
+
+    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
+
+    spdd.setQuery(substitutor.replace(sql));
+    return spdd;
+  }
+
+  private DataDefinition firstEntryDate() {
+    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
+    spdd.setName("first_entry_date");
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+
+    String sql = " SELECT p.patient_id,p.date_created  FROM patient p  " + " WHERE p.voided=0 ";
+
+    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
+
+    spdd.setQuery(substitutor.replace(sql));
+    return spdd;
+  }
+
+  private DataDefinition dateLastUpdated() {
+    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
+    spdd.setName("date_last_updated");
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+
+    String sql = " SELECT p.patient_id,p.date_changed  FROM patient p  " + " WHERE p.voided=0 ";
 
     StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
 
