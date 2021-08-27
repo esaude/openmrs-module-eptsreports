@@ -67,7 +67,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     pdd.addColumn("date_last_updated", dateLastUpdated(), "", new GeneralDateConverter());
     pdd.addColumn(
         "art_program_enrollment_date",
-        getArtProgramEnrollmentDate(),
+        getArtProgramEnrollmentDate(hivMetadata.getARTProgram().getProgramId()),
         "endDate=${endDate},location=${location}",
         new GeneralDateConverter());
     pdd.addColumn(
@@ -172,7 +172,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     return spdd;
   }
 
-  private DataDefinition getArtProgramEnrollmentDate() {
+  private DataDefinition getArtProgramEnrollmentDate(int artProgram) {
     SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
     spdd.addParameter(new Parameter("location", "Location", Location.class));
     spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
@@ -181,9 +181,10 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     Map<String, Integer> valuesMap = new HashMap<>();
 
     String sql =
-        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
-            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
-            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 ";
+        " SELECT p.patient_id,pp.date_enrolled FROM patient p INNER JOIN patient_program pp ON p.patient_id=pp.patient_id "
+            + " INNER JOIN program prg ON pp.program_id=prg.program_id "
+            + " WHERE p.voided=0 AND pp.voided=0 AND prg.retired=0 AND pp.location_id = :location AND pp.date_enrolled <= :endDate AND prg.program_id="
+            + artProgram;
 
     StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
 
