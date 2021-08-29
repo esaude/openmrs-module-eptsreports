@@ -209,7 +209,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     String sql =
         "SELECT tbl.patient_id, tbl.encounter_date FROM "
             + " (SELECT p.patient_id,MAX(e.encounter_datetime) AS encounter_date  FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type_id "
+            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type "
             + " WHERE p.voided=0 AND e.voided=0 AND et.retired=0 AND e.encounter_datetime <=:endDate AND et.encounter_type_id="
             + encounterType
             + " GROUP BY p.patient_id) tbl";
@@ -230,7 +230,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
 
     String sql =
         "SELECT p.patient_id,ob.value_datetime  FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type_id "
+            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type "
             + " INNER JOIN obs ob ON ob.encounter_id=e.encounter_id "
             + " WHERE p.voided=0 AND e.voided=0 AND et.retired=0 AND e.encounter_datetime <=:endDate "
             + " AND et.encounter_type_id="
@@ -254,7 +254,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
 
     String sql =
         "SELECT p.patient_id,ob.value_datetime  FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type_id "
+            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type "
             + " INNER JOIN obs ob ON ob.encounter_id=e.encounter_id "
             + " WHERE p.voided=0 AND e.voided=0 AND et.retired=0 AND e.encounter_datetime <=:endDate "
             + " AND et.encounter_type_id="
@@ -277,7 +277,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
 
     String sql =
         "SELECT p.patient_id,ob.value_datetime  FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type_id "
+            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type "
             + " INNER JOIN obs ob ON ob.encounter_id=e.encounter_id "
             + " WHERE p.voided=0 AND e.voided=0 AND et.retired=0 AND e.encounter_datetime <=:endDate "
             + " AND et.encounter_type_id="
