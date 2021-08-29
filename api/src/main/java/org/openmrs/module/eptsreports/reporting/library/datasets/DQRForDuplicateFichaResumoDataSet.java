@@ -72,22 +72,28 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
         new GeneralDateConverter());
     pdd.addColumn(
         "ficha_resumo_encounter_date",
-        getFichaResumoEncounterDate(),
+        getFichaResumoEncounterDate(hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
         "endDate=${endDate},location=${location}",
         new GeneralDateConverter());
     pdd.addColumn(
         "master_card_opening_date",
-        getMasterCardOpeningDate(),
+        getMasterCardOpeningDate(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId()),
         "endDate=${endDate},location=${location}",
         new GeneralDateConverter());
     pdd.addColumn(
         "pre_art_start_date_on_mastercard",
-        getPreArtStartDateOnMastercard(),
+        getPreArtStartDateOnMastercard(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getPreArtStartDate().getConceptId()),
         "endDate=${endDate},location=${location}",
         new GeneralDateConverter());
     pdd.addColumn(
         "art_start_date_on_master_card",
-        getArtStartDateOnMastercard(),
+        getArtStartDateOnMastercard(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getARVStartDateConcept().getConceptId()),
         "endDate=${endDate},location=${location}",
         new GeneralDateConverter());
 
@@ -192,7 +198,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     return spdd;
   }
 
-  private DataDefinition getFichaResumoEncounterDate() {
+  private DataDefinition getFichaResumoEncounterDate(int encounterType) {
     SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
     spdd.addParameter(new Parameter("location", "Location", Location.class));
     spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
@@ -201,9 +207,12 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     Map<String, Integer> valuesMap = new HashMap<>();
 
     String sql =
-        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
-            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
-            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 ";
+        "SELECT tbl.patient_id, tbl.encounter_date FROM "
+            + " (SELECT p.patient_id,MAX(e.encounter_datetime) AS encounter_date  FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND et.retired=0 AND e.encounter_datetime <=:endDate AND et.encounter_type_id="
+            + encounterType
+            + " GROUP BY p.patient_id) tbl";
 
     StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
 
@@ -211,7 +220,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     return spdd;
   }
 
-  private DataDefinition getMasterCardOpeningDate() {
+  private DataDefinition getMasterCardOpeningDate(int encounterType, int conceptId) {
     SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
     spdd.addParameter(new Parameter("location", "Location", Location.class));
     spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
@@ -220,9 +229,14 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     Map<String, Integer> valuesMap = new HashMap<>();
 
     String sql =
-        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
-            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
-            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 ";
+        "SELECT p.patient_id,ob.value_datetime  FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type_id "
+            + " INNER JOIN obs ob ON ob.encounter_id=e.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND et.retired=0 AND e.encounter_datetime <=:endDate "
+            + " AND et.encounter_type_id="
+            + encounterType
+            + " AND ob.concept_id="
+            + conceptId;
 
     StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
 
@@ -230,7 +244,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     return spdd;
   }
 
-  private DataDefinition getPreArtStartDateOnMastercard() {
+  private DataDefinition getPreArtStartDateOnMastercard(int encounterType, int conceptId) {
     SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
     spdd.addParameter(new Parameter("location", "Location", Location.class));
     spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
@@ -239,17 +253,21 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     Map<String, Integer> valuesMap = new HashMap<>();
 
     String sql =
-        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
-            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
-            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 ";
-
+        "SELECT p.patient_id,ob.value_datetime  FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type_id "
+            + " INNER JOIN obs ob ON ob.encounter_id=e.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND et.retired=0 AND e.encounter_datetime <=:endDate "
+            + " AND et.encounter_type_id="
+            + encounterType
+            + " AND ob.concept_id="
+            + conceptId;
     StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
 
     spdd.setQuery(substitutor.replace(sql));
     return spdd;
   }
 
-  private DataDefinition getArtStartDateOnMastercard() {
+  private DataDefinition getArtStartDateOnMastercard(int encounterType, int conceptId) {
     SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
     spdd.addParameter(new Parameter("location", "Location", Location.class));
     spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
@@ -258,9 +276,14 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     Map<String, Integer> valuesMap = new HashMap<>();
 
     String sql =
-        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
-            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
-            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 ";
+        "SELECT p.patient_id,ob.value_datetime  FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type_id "
+            + " INNER JOIN obs ob ON ob.encounter_id=e.encounter_id "
+            + " WHERE p.voided=0 AND e.voided=0 AND et.retired=0 AND e.encounter_datetime <=:endDate "
+            + " AND et.encounter_type_id="
+            + encounterType
+            + " AND ob.concept_id="
+            + conceptId;
 
     StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
 
