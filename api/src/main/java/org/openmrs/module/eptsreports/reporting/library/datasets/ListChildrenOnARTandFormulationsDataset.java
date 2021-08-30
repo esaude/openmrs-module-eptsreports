@@ -14,6 +14,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.formulations.ListOfC
 import org.openmrs.module.eptsreports.reporting.calculation.generic.InitialArtStartDateCalculation;
 import org.openmrs.module.eptsreports.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.ChildrenListConverter;
+import org.openmrs.module.eptsreports.reporting.data.converter.ConceptNameConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.GenderConverter;
 import org.openmrs.module.eptsreports.reporting.data.definition.CalculationDataDefinition;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
@@ -103,7 +104,7 @@ public class ListChildrenOnARTandFormulationsDataset extends BaseDataSet {
         "lastregimewithdrawal",
         getLastARVRegimen(),
         "endDate=${endDate},location=${location}",
-        null);
+        new ConceptNameConverter());
     // Formulations
 
     /** Query 9 Formulation 1 - Sheet 1: Column I */
@@ -150,7 +151,7 @@ public class ListChildrenOnARTandFormulationsDataset extends BaseDataSet {
         "lastregimeconsultation",
         this.getARVRegimenLastConsultationDate(),
         "endDate=${endDate},location=${location}",
-        null);
+        new ConceptNameConverter());
 
     /** Query 16 Weight on Last Consultation - Sheet 1: Column P */
     patientDataSetDefinition.addColumn(
@@ -352,7 +353,7 @@ public class ListChildrenOnARTandFormulationsDataset extends BaseDataSet {
     valuesMap.put("1088", hivMetadata.getRegimeConcept().getConceptId());
 
     String sql =
-        " SELECT p.patient_id, cn.name "
+        " SELECT p.patient_id, ob.value_coded "
             + " FROM patient p"
             + "   INNER JOIN "
             + "   ( SELECT p.patient_id, MAX(e.encounter_datetime) as encounter_datetime "
@@ -538,7 +539,7 @@ public class ListChildrenOnARTandFormulationsDataset extends BaseDataSet {
     valuesMap.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     valuesMap.put("1087", hivMetadata.getPreviousARVUsedForTreatmentConcept().getConceptId());
     String sql =
-        "  SELECT p.patient_id, cn.name "
+        "  SELECT p.patient_id, o.value_coded "
             + " FROM   patient p  "
             + "     INNER JOIN encounter e  "
             + "         ON p.patient_id = e.patient_id  "
