@@ -15,6 +15,8 @@ public class KeyPopDataSet extends BaseDataSet {
   @Autowired private KeyPopDataSetSection1 keyPopDataSetSection1;
   @Autowired private KeyPopDataSetSection2 keyPopDataSetSection2;
   @Autowired private KeyPopDataSetSection3 keyPopDataSetSection3;
+  @Autowired private KeyPopDataSetSection4 keyPopDataSetSection4;
+  @Autowired private KeyPopDataSetSection5 keyPopDataSetSection5;
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
   @Autowired
@@ -41,6 +43,8 @@ public class KeyPopDataSet extends BaseDataSet {
     keyPopDataSetSection1.constructDataset(dataSetDefinition, mappings);
     keyPopDataSetSection2.constructDataset(dataSetDefinition, mappings);
     keyPopDataSetSection3.constructDataset(dataSetDefinition, mappings);
+    keyPopDataSetSection4.constructDataset(dataSetDefinition, mappings);
+    keyPopDataSetSection5.constructDataset(dataSetDefinition, mappings);
 
     return dataSetDefinition;
   }
