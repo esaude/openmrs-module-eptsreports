@@ -67,6 +67,29 @@ public interface KeyPopQueriesInterface {
                 + "GROUP BY p.patient_id "
                 + ") tr GROUP BY tr.patient_id ";
 
+    public static final String findPatientsWithAProgramStateMarkedAsTransferedInInAPeriodStartDate =
+        "select minState.patient_id from  ("
+            + "SELECT p.patient_id, pg.patient_program_id, MIN(ps.start_date) as minStateDate  FROM patient p  "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "WHERE pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and location_id=:location  and ps.start_date <= :startDate "
+            + "GROUP BY pg.patient_program_id "
+            + ") minState "
+            + "inner join patient_state ps on ps.patient_program_id=minState.patient_program_id "
+            + "where ps.start_date=minState.minStateDate and ps.state=29 and ps.voided=0 ";
+
+    public static final String
+        findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardStartDate =
+            "SELECT tr.patient_id from  ("
+                + "SELECT p.patient_id, MIN(obsData.value_datetime) from patient p  "
+                + "INNER JOIN encounter e ON p.patient_id=e.patient_id  "
+                + "INNER JOIN obs obsTrans ON e.encounter_id=obsTrans.encounter_id AND obsTrans.voided=0 AND obsTrans.concept_id=1369 AND obsTrans.value_coded=1065 "
+                + "INNER JOIN obs obsTarv ON e.encounter_id=obsTarv.encounter_id AND obsTarv.voided=0 AND obsTarv.concept_id=6300 AND obsTarv.value_coded=6276 "
+                + "INNER JOIN obs obsData ON e.encounter_id=obsData.encounter_id AND obsData.voided=0 AND obsData.concept_id=23891 "
+                + "WHERE p.voided=0 AND e.voided=0 AND e.encounter_type=53 AND obsData.value_datetime <= :startDate AND e.location_id=:location "
+                + "GROUP BY p.patient_id "
+                + ") tr GROUP BY tr.patient_id ";
+
     public static final String findPatientsWhoWhereMarkedAsTransferedOutAEndDateRF7 =
         "select transferidopara.patient_id from ( "
             + "select patient_id,max(data_transferidopara) data_transferidopara from ( "
@@ -103,6 +126,43 @@ public interface KeyPopQueriesInterface {
             + "on transferidopara.patient_id=consultaOuARV.patient_id  "
             + "where consultaOuARV.encounter_datetime<=transferidopara.data_transferidopara  "
             + "and transferidopara.data_transferidopara<:endDate ";
+
+    public static final String findPatientsWhoWhereMarkedAsTransferedOutStartDate =
+        "select transferidopara.patient_id from ( "
+            + "select patient_id,max(data_transferidopara) data_transferidopara from ( "
+            + "select pg.patient_id,max(ps.start_date) data_transferidopara from  patient p  "
+            + "inner join patient_program pg on p.patient_id=pg.patient_id  "
+            + "inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + "where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=2 and ps.state=7 and  ps.start_date<:startDate group by p.patient_id  "
+            + "union  "
+            + "select p.patient_id,max(o.obs_datetime) data_transferidopara from patient p  "
+            + "inner join encounter e on p.patient_id=e.patient_id  "
+            + "inner join obs o on o.encounter_id=e.encounter_id  "
+            + "where e.voided=0 and p.voided=0 and o.obs_datetime <:startDate and e.location_id=:location and o.voided=0 "
+            + "and o.concept_id=6272 and o.value_coded=1706 and e.encounter_type=53  group by p.patient_id  "
+            + "union "
+            + "select p.patient_id,max(e.encounter_datetime) data_transferidopara from  patient p  "
+            + "inner join encounter e on p.patient_id=e.patient_id  "
+            + "inner join obs o on o.encounter_id=e.encounter_id where  e.voided=0 and p.voided=0 and e.encounter_datetime <:endDate and e.location_id=:location  "
+            + "and o.voided=0 and o.concept_id=6273 and o.value_coded=1706 and e.encounter_type=6 group by p.patient_id "
+            + " ) transferido group by patient_id  "
+            + " ) transferidopara  "
+            + "inner join (  "
+            + "select patient_id,max(encounter_datetime) encounter_datetime from(  "
+            + "select p.patient_id,max(e.encounter_datetime) encounter_datetime from  patient p  "
+            + "inner join encounter e on e.patient_id=p.patient_id "
+            + "where p.voided=0 and e.voided=0 and e.encounter_datetime <:startDate and e.location_id=:location and e.encounter_type in (18,6,9) group by p.patient_id  "
+            + "union  "
+            + "Select p.patient_id,max(value_datetime) encounter_datetime from  patient p  "
+            + "inner join encounter e on p.patient_id=e.patient_id  "
+            + "inner join obs o on e.encounter_id=o.encounter_id  "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and o.concept_id=23866 and o.value_datetime is not null "
+            + "and o.value_datetime<:startDate and e.location_id=:location  group by p.patient_id"
+            + ") consultaLev group by patient_id "
+            + ") consultaOuARV "
+            + "on transferidopara.patient_id=consultaOuARV.patient_id  "
+            + "where consultaOuARV.encounter_datetime<=transferidopara.data_transferidopara  "
+            + "and transferidopara.data_transferidopara<:startDate ";
 
     public static final String findPatientsWhoWhereMarkedSuspendEndDate =
         "select suspenso1.patient_id from ( "

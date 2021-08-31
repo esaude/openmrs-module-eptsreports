@@ -32,14 +32,40 @@ public class KeyPopDataSetSection2 extends KeyPopAbstractDataset {
 
     // create cohort definition
 
-    final CohortDefinition patientEnrolledInART6MonthsCoohort =
+    final CohortDefinition patientNewEnrolledInART6MonthsCoohort =
         this.keyPopCohortQueries.findPatientsWhoAreNewlyEnrolledOnArtKeyPop6MonthsCoorte();
+
+    final CohortDefinition patientActiveOnArt6MonthsCoohort =
+        this.keyPopCohortQueries.findPatientsWhoActiveOnArtKeyPop6MonthsCoorte();
+
+    final CohortDefinition patientActiveOnArt6MonthsCoohortWithVLResult =
+        this.keyPopCohortQueries.findPatientsWhoActiveOnArtKeyPop6MonthsCoorteWithViralLoadResult();
+
+    final CohortDefinition patientActiveOnArt6MonthsCoohortWithVLResultLessThan1000 =
+        this.keyPopCohortQueries
+            .findPatientsWhoActiveOnArtKeyPop6MonthsCoorteWithViralLoadResultLessThan1000();
 
     // create cohort indicator
     final CohortIndicator patientEnrolledInART6MonthsCoohortIndicator =
         this.eptsGeneralIndicator.getIndicator(
             "patientNewlyEnrolledInHIVIndicator",
-            EptsReportUtils.map(patientEnrolledInART6MonthsCoohort, mappings));
+            EptsReportUtils.map(patientNewEnrolledInART6MonthsCoohort, mappings));
+
+    final CohortIndicator patientActiveOnArt6MonthsCoohortIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientNewlyEnrolledInHIVIndicator",
+            EptsReportUtils.map(patientActiveOnArt6MonthsCoohort, mappings));
+
+    final CohortIndicator patientActiveOnArt6MonthsCoohortIndicatorWithVLResult =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientNewlyEnrolledInHIVIndicator",
+            EptsReportUtils.map(patientActiveOnArt6MonthsCoohortWithVLResult, mappings));
+
+    final CohortIndicator patientActiveOnArt6MonthsCoohortIndicatorWithVLResultLessThan1000 =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientNewlyEnrolledInHIVIndicator",
+            EptsReportUtils.map(
+                patientActiveOnArt6MonthsCoohortWithVLResultLessThan1000, mappings));
 
     dataSetDefinition.addColumn(
         "I7T",
@@ -52,6 +78,49 @@ public class KeyPopDataSetSection2 extends KeyPopAbstractDataset {
         "KPI7",
         "Número de População Chave (KP) no Grupo de PID, recém-iniciados em terapia antirretroviral há 6 meses – Coorte 6 meses",
         EptsReportUtils.map(patientEnrolledInART6MonthsCoohortIndicator, mappings),
+        getKeyPopColumns());
+
+    dataSetDefinition.addColumn(
+        "I8T",
+        "I8T:Número de População Chave (KP) no Grupo de PID, actualmente recebendo terapia antirretroviral (TARV) – Coorte 6 meses",
+        EptsReportUtils.map(patientActiveOnArt6MonthsCoohortIndicator, mappings),
+        "");
+
+    addRow(
+        dataSetDefinition,
+        "KPI8",
+        "Número de População Chave (KP) no Grupo de PID, actualmente recebendo terapia antirretroviral (TARV) – Coorte 6 meses",
+        EptsReportUtils.map(patientActiveOnArt6MonthsCoohortIndicator, mappings),
+        getKeyPopColumns());
+
+    dataSetDefinition.addColumn(
+        "I9T",
+        "I9T:Número adultos activos em TARV, no Grupo de PID, que receberam um resultado de Carga Viral – Coorte 6 meses (Notificação anual!)",
+        EptsReportUtils.map(patientActiveOnArt6MonthsCoohortIndicatorWithVLResult, mappings),
+        "");
+
+    addRow(
+        dataSetDefinition,
+        "KPI9",
+        "Número adultos activos em TARV, no Grupo de PID, que receberam um resultado de Carga Viral – Coorte 6 meses (Notificação anual!)",
+        EptsReportUtils.map(patientActiveOnArt6MonthsCoohortIndicatorWithVLResult, mappings),
+        getKeyPopColumns());
+
+    dataSetDefinition.addColumn(
+        "I10T",
+        "I10T:Número de adultos activos em TARV, no Grupo de PID, que receberam um "
+            + "resultado de Carga Viral com supressão viral (<1000 cópias/ml) – Coorte de 6 meses (Notificação anual!)",
+        EptsReportUtils.map(
+            patientActiveOnArt6MonthsCoohortIndicatorWithVLResultLessThan1000, mappings),
+        "");
+
+    addRow(
+        dataSetDefinition,
+        "KPI10",
+        "Número de adultos activos em TARV, no Grupo de PID, que receberam um "
+            + "resultado de Carga Viral com supressão viral (<1000 cópias/ml) – Coorte de 6 meses (Notificação anual!)",
+        EptsReportUtils.map(
+            patientActiveOnArt6MonthsCoohortIndicatorWithVLResultLessThan1000, mappings),
         getKeyPopColumns());
 
     return dataSetDefinition;
