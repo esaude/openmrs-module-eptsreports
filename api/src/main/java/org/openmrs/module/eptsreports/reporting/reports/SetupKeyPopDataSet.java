@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.kpdatasets.KeyPopDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
@@ -74,7 +73,7 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
           createXlsReportDesign(
               reportDefinition,
               "KEY_POPPULATION.xls",
-              "RELATORIO DE POPULACAO CHAVE ",
+              "Relatório Trimestral de População Chave",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
