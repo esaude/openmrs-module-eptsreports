@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class VLMICategory26Dataset extends MQAbstractDataSet {
 
-  @Autowired private ViralLoadLMICohortQueries vlMICategory13CohortQueries;
+  @Autowired private ViralLoadLMICohortQueries viralLoadLMICohortQueries;
 
   public void constructTMiDatset(
       CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
@@ -21,7 +21,7 @@ public class VLMICategory26Dataset extends MQAbstractDataSet {
             + " - Denominador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.vlMICategory13CohortQueries
+                this.viralLoadLMICohortQueries
                     .findPregnantWomenWithLowSecondHighViralLoadResultAfterAPSSSessionsVL_FR26_Denominator(),
                 "CAT26DENOMINATOR",
                 mappings),
@@ -34,7 +34,7 @@ public class VLMICategory26Dataset extends MQAbstractDataSet {
             + " - Numerador",
         EptsReportUtils.map(
             this.setIndicatorWithAllParameters(
-                this.vlMICategory13CohortQueries
+                this.viralLoadLMICohortQueries
                     .findPregnantWomenWithLowSecondHighViralLoadResultAfterAPSSSessionsVL_FR26_1_Numerator(),
                 "CAT26NUMERATOR",
                 mappings),
