@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.kpdatasets.KeyPopDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
@@ -24,12 +25,12 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
 
   @Override
   public String getExcelDesignUuid() {
-    return "61fea06a-472b-11e9-8b42-876961a47296";
+    return "d4caee44-0a99-11ec-a947-0f3e772993da";
   }
 
   @Override
   public String getUuid() {
-    return "6febad76-472b-11e9-a41e-db8c77c78800";
+    return "cac66234-0a99-11ec-94d2-f35432fbd6ea";
   }
 
   @Override
@@ -39,12 +40,12 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "RELATORIO DE POPULACAO CHAVE";
+    return "Relatório Trimestral de População Chave";
   }
 
   @Override
   public String getDescription() {
-    return "RELATORIO DE POPULACAO CHAVE";
+    return "Relatório Trimestral de População Chave";
   }
 
   @Override
