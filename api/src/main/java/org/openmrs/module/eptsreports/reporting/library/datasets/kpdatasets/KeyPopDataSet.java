@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.library.datasets.mkdatasets;
+package org.openmrs.module.eptsreports.reporting.library.datasets.kpdatasets;
 
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 public class KeyPopDataSet extends BaseDataSet {
   @Autowired private KeyPopDataSetSection1 keyPopDataSetSection1;
   @Autowired private KeyPopDataSetSection2 keyPopDataSetSection2;
+  @Autowired private KeyPopDataSetSection3 keyPopDataSetSection3;
   @Autowired private EptsCommonDimension eptsCommonDimension;
 
   @Autowired
@@ -39,6 +40,7 @@ public class KeyPopDataSet extends BaseDataSet {
 
     keyPopDataSetSection1.constructDataset(dataSetDefinition, mappings);
     keyPopDataSetSection2.constructDataset(dataSetDefinition, mappings);
+    keyPopDataSetSection3.constructDataset(dataSetDefinition, mappings);
 
     return dataSetDefinition;
   }

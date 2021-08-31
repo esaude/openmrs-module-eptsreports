@@ -263,7 +263,8 @@ public class KeyPopCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
 
-    final String mappings = "startDate=${startDate-7m},endDate=${endDate-4m},location=${location}";
+    final String mappings =
+        "startDate=${startDate-7m},endDate=${startDate-4m},location=${location}";
     final String mappingsEndDate = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     definition.addSearch(
@@ -322,10 +323,7 @@ public class KeyPopCohortQueries {
     definition.addSearch(
         "TX-NEW-6-MONTHS",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "START-ART",
-                KeyPopQueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnArtKeyPop),
-            mappings));
+            this.findPatientsWhoAreNewlyEnrolledOnArtKeyPop6MonthsCoorte(), mappingsEndDate));
 
     definition.addSearch(
         "TRANSFERED-IN",
@@ -408,7 +406,8 @@ public class KeyPopCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
 
-    final String mappings = "startDate=${startDate},endDate=${startDate},location=${location}";
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    final String mappingsToVL = "startDate=${startDate-7m},endDate=${endDate},location=${location}";
 
     definition.addSearch(
         "TX-CURR-COORTE-6-MONTHS",
@@ -423,7 +422,7 @@ public class KeyPopCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                     hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
                     hivMetadata.getHivViralLoadConcept().getConceptId())),
-            mappings));
+            mappingsToVL));
 
     definition.addSearch(
         "E1x",
@@ -434,7 +433,7 @@ public class KeyPopCohortQueries {
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                     hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
                     hivMetadata.getHivViralLoadConcept().getConceptId())),
-            mappings));
+            mappingsToVL));
 
     definition.setCompositionString("(TX-CURR-COORTE-6-MONTHS AND VL) NOT E1x");
 
@@ -450,7 +449,8 @@ public class KeyPopCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
 
-    final String mappings = "startDate=${startDate},endDate=${startDate},location=${location}";
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    final String mappingsToVL = "startDate=${startDate-7m},endDate=${endDate},location=${location}";
 
     definition.addSearch(
         "TX-CURR-COORTE-6-MONTHS",
@@ -465,7 +465,7 @@ public class KeyPopCohortQueries {
                     hivMetadata.getHivViralLoadConcept().getConceptId(),
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                     hivMetadata.getHivViralLoadQualitative().getConceptId())),
-            mappings));
+            mappingsToVL));
 
     definition.addSearch(
         "Ex3",
@@ -476,7 +476,7 @@ public class KeyPopCohortQueries {
                     hivMetadata.getHivViralLoadConcept().getConceptId(),
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
                     hivMetadata.getHivViralLoadQualitative().getConceptId())),
-            mappings));
+            mappingsToVL));
 
     definition.setCompositionString("(TX-CURR-COORTE-6-MONTHS AND VL) NOT Ex3");
 
