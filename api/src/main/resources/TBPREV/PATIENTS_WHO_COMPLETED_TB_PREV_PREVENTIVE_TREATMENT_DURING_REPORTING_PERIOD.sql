@@ -375,7 +375,7 @@ from
 	     	inner join encounter e on e.patient_id=inicio_tpi.patient_id  
 			inner join obs obsLevTPI on e.encounter_id=obsLevTPI.encounter_id           
 		where e.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (6,9) 
-			and e.encounter_datetime between inicio_tpi.data_inicio_tpi and (inicio_tpi.data_inicio_tpi + INTERVAL 7 MONTH)  
+			and e.encounter_datetime between (inicio_tpi.data_inicio_tpi + INTERVAL 1 DAY) and (inicio_tpi.data_inicio_tpi + INTERVAL 7 MONTH)  
 			and obsLevTPI.concept_id=6122 and obsLevTPI.value_coded in (1257,1065,1256) and e.location_id=:location  
 	        	group by inicio_tpi.patient_id having count(*)>=5    
 		union  
