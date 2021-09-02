@@ -66,14 +66,13 @@ public class SetupDQRForDuplicateFichaResumoReport extends EptsDataExportManager
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
-
-    rd.addDataSetDefinition(
-        "EC1",
-        Mapped.mapStraightThrough(dqrForDuplicateFichaResumoDataSet.constructPatientDataSet()));
     rd.addDataSetDefinition(
         "EC1T",
         Mapped.mapStraightThrough(
             summaryDQRForDuplicateFichaResumoDataSet.constructIndicatorDataset()));
+    rd.addDataSetDefinition(
+        "EC1",
+        Mapped.mapStraightThrough(dqrForDuplicateFichaResumoDataSet.constructPatientDataSet()));
     return rd;
   }
 
