@@ -8,7 +8,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TptListDataSet extends BaseDataSet {
+public class ListPatientsInitiatedTPTDataSet extends BaseDataSet {
 
   public DataSetDefinition eTptDataSetDefinition(List<Parameter> parameterList) {
     SqlDataSetDefinition dsd = new SqlDataSetDefinition();

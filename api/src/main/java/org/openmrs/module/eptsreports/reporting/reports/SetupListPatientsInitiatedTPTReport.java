@@ -5,8 +5,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TptListDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TptTotalDataseet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.ListPatientsInitiatedTPTDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.ListPatientsLnitiatedTPTTotalDataseet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
@@ -19,10 +19,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupTptReport extends EptsDataExportManager {
+public class SetupListPatientsInitiatedTPTReport extends EptsDataExportManager {
 
-  @Autowired private TptListDataSet tptListDataSet;
-  @Autowired private TptTotalDataseet tptTotalDataseet;
+  @Autowired private ListPatientsInitiatedTPTDataSet tptListDataSet;
+  @Autowired private ListPatientsLnitiatedTPTTotalDataseet tptTotalDataseet;
   @Autowired protected GenericCohortQueries genericCohortQueries;
   @Autowired private TxRttDataset txRttDataset;
 
