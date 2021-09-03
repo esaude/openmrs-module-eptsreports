@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.DQRForDuplicateFichaResumoDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.SummaryDQRForDuplicateFichaResumoDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -73,6 +76,7 @@ public class SetupDQRForDuplicateFichaResumoReport extends EptsDataExportManager
     rd.addDataSetDefinition(
         "EC1",
         Mapped.mapStraightThrough(dqrForDuplicateFichaResumoDataSet.constructPatientDataSet()));
+    rd.addDataSetDefinition("DT", mapStraightThrough(new LocationDataSetDefinition()));
     return rd;
   }
 

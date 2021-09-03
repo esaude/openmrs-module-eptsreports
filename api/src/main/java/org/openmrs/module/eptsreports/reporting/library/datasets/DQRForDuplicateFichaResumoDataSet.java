@@ -101,8 +101,6 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
         "endDate=${endDate},location=${location}",
         new GeneralDateConverter());
 
-    pdd.addColumn("report_time", reportDate(), "", null);
-
     return pdd;
   }
 
@@ -290,22 +288,6 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
             + encounterType
             + " AND ob.concept_id="
             + conceptId;
-
-    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
-
-    spdd.setQuery(substitutor.replace(sql));
-    return spdd;
-  }
-
-  private DataDefinition reportDate() {
-    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
-    spdd.setName("report_date");
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-
-    String sql =
-        " SELECT p.patient_id, DATE_FORMAT(current_timestamp(),%d/%m/%Y %H:%i')  FROM patient p  "
-            + " WHERE p.voided=0 ";
 
     StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
 
