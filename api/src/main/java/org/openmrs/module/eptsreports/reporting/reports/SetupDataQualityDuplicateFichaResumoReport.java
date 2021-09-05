@@ -58,7 +58,7 @@ public class SetupDataQualityDuplicateFichaResumoReport extends EptsDataExportMa
 
   @Override
   public String getDescription() {
-    return "This report provides a line listing of patient records who meet the defined edit check and allows the user to review the information so the duplicate entries in OpenMRS EPTS system can be corrected.";
+    return "Este relatório gera uma listagem de pacientes que atendem a determinadas verificações/validações dos dados existentes no sistema, e permite que os utilizadores confirmem as informações de modo a corrigir os registos duplicados no sistema OpenMRS EPTS.";
   }
 
   @Override
@@ -97,7 +97,7 @@ public class SetupDataQualityDuplicateFichaResumoReport extends EptsDataExportMa
           createXlsReportDesign(
               reportDefinition,
               "Data_Quality_Duplicates_Ficha_Resumo_Report.xls",
-              "Data Quality Report to Identify Duplicate Ficha Resumo",
+              "Relatório de Qualidade de Dados Para Identificar Fichas Resumo Duplicadas",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
