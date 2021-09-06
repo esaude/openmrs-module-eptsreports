@@ -513,6 +513,14 @@
 	</globalProperty>
 
 	<globalProperty>
+		<property>@MODULE_ID@.treatmentFollowUpUuid</property>
+		<defaultValue>93603742-1cae-4970-9077-e2b27e46bd7e</defaultValue>
+		<description>
+			UUID for the Seguimento de tratamento TPT concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.keyPopulationConceptUuid</property>
 		<defaultValue>c7c0b430-bbc1-4042-a365-ad78a13aef56</defaultValue>
 		<description>

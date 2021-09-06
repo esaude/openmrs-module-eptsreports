@@ -88,7 +88,9 @@ public class TPTInitiationDataset extends BaseDataSet {
             hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept().getConceptId(),
             hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId(),
-            hivMetadata.getHIVCareProgram().getProgramId()));
+            hivMetadata.getHIVCareProgram().getProgramId(),
+            hivMetadata.getRestartConcept().getConceptId(),
+            hivMetadata.getPatientTreatmentFollowUp().getConceptId()));
 
     return sdd;
   }
