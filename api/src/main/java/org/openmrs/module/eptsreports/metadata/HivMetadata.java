@@ -4384,4 +4384,32 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.tdfAndFtcConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id =6177 </b>
+   *
+   * <p><b>Name:</b>WE CAN CONTACT THE CONFIDANT IF YOU ARE UNABLE
+   *
+   * @return
+   */
+  public Concept getConfidentAcceptContact() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.confidentAcceptContactUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =23776 </b>
+   *
+   * <p><b>Name:</b>CONFIDENT CONSENT DATE
+   *
+   * @return
+   */
+  public Concept getConfidentConsentDate() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.confidentConsentDateUuid");
+    return getConcept(uuid);
+  }
 }

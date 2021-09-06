@@ -128,7 +128,7 @@ public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {
     return obsForPersonDataDefinition;
   }
 
-  private DataDefinition pregnantBreasfeediDefinition() {
+  public DataDefinition pregnantBreasfeediDefinition() {
     SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
     spdd.setName("Nome da definition");
     spdd.addParameter(new Parameter("location", "location", Location.class));

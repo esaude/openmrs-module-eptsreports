@@ -2994,7 +2994,22 @@
 		<description>
 		   Drug and Quantity
 		</description>
-	 </globalProperty>
+	 </globalProperty>	  
+  <globalProperty>
+		<property>eptsreports.confidentAcceptContactUuid</property>
+		<defaultValue>bfb7acfa-8bd9-41b3-b3e1-d0add5be701b</defaultValue>
+		<description>
+			WE CAN CONTACT THE CONFIDANT IF YOU ARE UNABLE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>eptsreports.confidentConsentDateUuid</property>
+		<defaultValue>528a7bd8-4c98-4167-ab9e-22f505c52a89</defaultValue>
+		<description>
+			CONFIDENT CONSENT DATE concept
+		</description>
+	</globalProperty>
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

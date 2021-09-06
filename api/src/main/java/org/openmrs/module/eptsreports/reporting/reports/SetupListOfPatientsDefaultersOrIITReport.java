@@ -1,12 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.Properties;
+import java.util.*;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsDefaultersOrIITCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ListOfPatientsDefaultersOrIITTemplateDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TotalListOfPatientsDefaultersOrIITTemplateDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
@@ -22,7 +19,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupListOfPatientsDefaultersOrIITReport extends EptsDataExportManager {
 
-  @Autowired protected GenericCohortQueries genericCohortQueries;
+  @Autowired
+  protected ListOfPatientsDefaultersOrIITCohortQueries listOfPatientsDefaultersOrIITCohortQueries;
 
   @Autowired private ListOfPatientsDefaultersOrIITTemplateDataSet initListOfPatDefIITDataSet;
 
@@ -58,7 +56,8 @@ public class SetupListOfPatientsDefaultersOrIITReport extends EptsDataExportMana
     rd.addParameters(getParameters());
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+            listOfPatientsDefaultersOrIITCohortQueries.getBaseCohort(),
+            "endDate=${endDate},minDay=${minDay},maxDay=${maxDay},location=${location}"));
 
     rd.addDataSetDefinition(
         "FATS", Mapped.mapStraightThrough(iniTotalLListOfPatDefIITDataSet.constructDataSet()));
@@ -98,8 +97,8 @@ public class SetupListOfPatientsDefaultersOrIITReport extends EptsDataExportMana
   public List<Parameter> getParameters() {
     return Arrays.asList(
         new Parameter("endDate", "End date", Date.class),
-        new Parameter("minDays", "Minimum Days of Absence", Integer.class),
-        new Parameter("maxDays", "Maximum days of Absence", Integer.class),
+        new Parameter("minDay", "Minimum number of days", Integer.class),
+        new Parameter("maxDay", "Maximum number of days", Integer.class),
         new Parameter("location", "Location", Location.class));
   }
 }
