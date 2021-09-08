@@ -15,7 +15,6 @@ import org.openmrs.module.eptsreports.reporting.data.converter.CalculationResult
 import org.openmrs.module.eptsreports.reporting.data.converter.EncounterDatetimeConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.GenderConverter;
 import org.openmrs.module.eptsreports.reporting.data.definition.CalculationDataDefinition;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TPTEligiblePatientListCohortQueries;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -41,8 +40,12 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {
-  @Autowired private TPTEligiblePatientListCohortQueries tPTEligiblePatientListCohortQueries;
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
+
+  @Autowired
+  public TPTListOfPatientsEligibleDataSet(HivMetadata hivMetadata) {
+    this.hivMetadata = hivMetadata;
+  }
 
   public DataSetDefinition constructDataset() throws EvaluationException {
 
@@ -66,7 +69,7 @@ public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {
 
     pdd.addColumn("id", new PersonIdDataDefinition(), "");
     pdd.addColumn("name", nameDef, "");
-    pdd.addColumn("nid", identifierDef, "");
+    pdd.addColumn("nid", this.getNID(identifierType.getPatientIdentifierTypeId()), "");
     pdd.addColumn("gender", new GenderDataDefinition(), "", new GenderConverter());
     pdd.addColumn("age", new AgeDataDefinition(), "", null);
     pdd.addColumn(
@@ -126,6 +129,25 @@ public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {
     obsForPersonDataDefinition.setQuestion(Context.getConceptService().getConceptByUuid(uuid));
     obsForPersonDataDefinition.setWhich(TimeQualifier.LAST);
     return obsForPersonDataDefinition;
+  }
+
+
+  private DataDefinition getNID(int identifierType) {
+    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
+    spdd.setName("NID");
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+
+    String sql =
+        " SELECT p.patient_id,pi.identifier  FROM patient p INNER JOIN patient_identifier pi ON p.patient_id=pi.patient_id "
+            + " INNER JOIN patient_identifier_type pit ON pit.patient_identifier_type_id=pi.identifier_type "
+            + " WHERE p.voided=0 AND pi.voided=0 AND pit.retired=0 AND pit.patient_identifier_type_id ="
+            + identifierType;
+
+    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
+
+    spdd.setQuery(substitutor.replace(sql));
+    return spdd;
   }
 
   public DataDefinition pregnantBreasfeediDefinition() {

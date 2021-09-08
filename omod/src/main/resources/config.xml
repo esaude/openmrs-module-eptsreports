@@ -3002,6 +3002,17 @@
 		<description>
 		   Drug and Quantity
 		</description>
+
+	 </globalProperty>
+
+	 <globalProperty>
+		<property>eptsreports.treatmentFollowUpTPTConceptUuid</property>
+		<defaultValue>93603742-1cae-4970-9077-e2b27e46bd7e</defaultValue>
+		<description>
+		   UUID FOR Seguimento de tratamento TPT
+		</description>
+	 </globalProperty>
+
 	 </globalProperty>	  
   <globalProperty>
 		<property>eptsreports.confidentAcceptContactUuid</property>
@@ -3018,6 +3029,7 @@
 			CONFIDENT CONSENT DATE concept
 		</description>
 	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

@@ -567,4 +567,20 @@ public class TbMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.typeDispensationTPTConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 23987</b>
+   *
+   * <p><b>Name:</b> Seguimento de tratamento TPT
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getTreatmentFollowUpTPTConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.treatmentFollowUpTPTConceptUuid");
+    return getConcept(uuid);
+  }
 }
