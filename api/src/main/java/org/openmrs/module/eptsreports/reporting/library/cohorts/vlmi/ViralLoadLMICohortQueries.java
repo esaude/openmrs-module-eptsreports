@@ -327,7 +327,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "FIRST-LINE",
@@ -371,7 +371,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "DENOMINATOR-FR22",
@@ -416,7 +416,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "FIRST-LINE",
@@ -459,7 +459,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "FIRST-LINE-APSS",
@@ -488,7 +488,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "DENOMINATOR-VLFR23",
@@ -534,7 +534,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-9m+1d},endInclusionDate=${endRevisionDate-8m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-12m+1d},endInclusionDate=${endRevisionDate-11m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "VL-FR24-2",
@@ -580,7 +580,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-9m+1d},endInclusionDate=${endRevisionDate-8m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-12m+1d},endInclusionDate=${endRevisionDate-11m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "DENOMINATOR-VLFR24",
@@ -618,7 +618,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-9m+1d},endInclusionDate=${endRevisionDate-8m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-12m+1d},endInclusionDate=${endRevisionDate-11m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "VL-FR24-3",
@@ -661,7 +661,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-9m+1d},endInclusionDate=${endRevisionDate-8m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-12m+1d},endInclusionDate=${endRevisionDate-11m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "FIRST-LINE-ART",
@@ -706,7 +706,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "VL-FR25-2",
@@ -748,7 +748,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "VL-FR25",
@@ -790,7 +790,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "PREGNANT-NOT-BREASTFEEDING",
@@ -839,7 +839,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "VL-FR25",
@@ -871,7 +871,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-7m+1d},endInclusionDate=${endRevisionDate-6m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-5m+1d},endInclusionDate=${endRevisionDate-4m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "DENOMINATOR-VL-FR26",
@@ -918,7 +918,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-9m+1d},endInclusionDate=${endRevisionDate-8m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-12m+1d},endInclusionDate=${endRevisionDate-11m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "VL-FR27-2",
@@ -964,7 +964,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-9m+1d},endInclusionDate=${endRevisionDate-8m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-12m+1d},endInclusionDate=${endRevisionDate-11m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "VL-FR27",
@@ -1002,7 +1002,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-9m+1d},endInclusionDate=${endRevisionDate-8m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-12m+1d},endInclusionDate=${endRevisionDate-11m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "VL-FR27-3",
@@ -1045,7 +1045,7 @@ public class ViralLoadLMICohortQueries {
     definition.addParameter(new Parameter("location", "location", Date.class));
 
     final String mappings =
-        "startInclusionDate=${endRevisionDate-9m+1d},endInclusionDate=${endRevisionDate-8m},endRevisionDate=${endRevisionDate},location=${location}";
+        "startInclusionDate=${endRevisionDate-12m+1d},endInclusionDate=${endRevisionDate-11m},endRevisionDate=${endRevisionDate},location=${location}";
 
     definition.addSearch(
         "PREGNANT-NOT-BREASTFEEDING",
