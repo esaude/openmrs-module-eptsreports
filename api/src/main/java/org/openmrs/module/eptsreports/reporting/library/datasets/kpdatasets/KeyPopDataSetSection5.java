@@ -71,7 +71,7 @@ public class KeyPopDataSetSection5 extends KeyPopAbstractDataset {
         "I19T",
         "I19T:Número de População Chave (KP) no Grupo de REC, recém-iniciados em terapia antirretroviral há 6 meses – Coorte 6 meses",
         EptsReportUtils.map(patientEnrolledInART6MonthsCoohortIndicator, mappings),
-        "prisioner=prisioner");
+        "age=15+|prisioner=prisioner");
 
     addRow(
         dataSetDefinition,
@@ -84,7 +84,7 @@ public class KeyPopDataSetSection5 extends KeyPopAbstractDataset {
         "I20T",
         "I20T:Número de População Chave (KP) no Grupo de REC, actualmente recebendo terapia antirretroviral (TARV) – Coorte 6 meses",
         EptsReportUtils.map(patientActiveOnArt6MonthsCoohortIndicator, mappings),
-        "prisioner=prisioner");
+        "age=15+|prisioner=prisioner");
 
     addRow(
         dataSetDefinition,
@@ -97,7 +97,7 @@ public class KeyPopDataSetSection5 extends KeyPopAbstractDataset {
         "I21T",
         "I21T:Número adultos activos em TARV, no Grupo de REC, que receberam um resultado de Carga Viral – Coorte 6 meses (Notificação anual!)",
         EptsReportUtils.map(patientActiveOnArt6MonthsCoohortIndicatorWithVLResult, mappings),
-        "prisioner=prisioner");
+        "age=15+|prisioner=prisioner");
 
     addRow(
         dataSetDefinition,
@@ -112,7 +112,7 @@ public class KeyPopDataSetSection5 extends KeyPopAbstractDataset {
             + "resultado de Carga Viral com supressão viral (<1000 cópias/ml) – Coorte de 6 meses (Notificação anual!)",
         EptsReportUtils.map(
             patientActiveOnArt6MonthsCoohortIndicatorWithVLResultLessThan1000, mappings),
-        "prisioner=prisioner");
+        "age=15+|prisioner=prisioner");
 
     addRow(
         dataSetDefinition,

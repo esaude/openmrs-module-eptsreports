@@ -71,7 +71,7 @@ public class KeyPopDataSetSection3 extends KeyPopAbstractDataset {
         "I11T",
         "I7T:Número de População Chave (KP) no Grupo de HSH, recém-iniciados em terapia antirretroviral há 6 meses – Coorte 6 meses",
         EptsReportUtils.map(patientEnrolledInART6MonthsCoohortIndicator, mappings),
-        "homosexual=homosexual");
+        "age=15+|homosexual=homosexual");
 
     addRow(
         dataSetDefinition,
@@ -84,7 +84,7 @@ public class KeyPopDataSetSection3 extends KeyPopAbstractDataset {
         "I12T",
         "I12T:Número de População Chave (KP) no Grupo de HSH, actualmente recebendo terapia antirretroviral (TARV) – Coorte 6 meses",
         EptsReportUtils.map(patientActiveOnArt6MonthsCoohortIndicator, mappings),
-        "homosexual=homosexual");
+        "age=15+|homosexual=homosexual");
 
     addRow(
         dataSetDefinition,
@@ -97,7 +97,7 @@ public class KeyPopDataSetSection3 extends KeyPopAbstractDataset {
         "I13T",
         "I13T:Número adultos activos em TARV, no Grupo de HSH, que receberam um resultado de Carga Viral – Coorte 6 meses (Notificação anual!)",
         EptsReportUtils.map(patientActiveOnArt6MonthsCoohortIndicatorWithVLResult, mappings),
-        "homosexual=homosexual");
+        "age=15+|homosexual=homosexual");
 
     addRow(
         dataSetDefinition,
@@ -112,7 +112,7 @@ public class KeyPopDataSetSection3 extends KeyPopAbstractDataset {
             + "resultado de Carga Viral com supressão viral (<1000 cópias/ml) – Coorte de 6 meses (Notificação anual!)",
         EptsReportUtils.map(
             patientActiveOnArt6MonthsCoohortIndicatorWithVLResultLessThan1000, mappings),
-        "homosexual=homosexual");
+        "age=15+|homosexual=homosexual");
 
     addRow(
         dataSetDefinition,

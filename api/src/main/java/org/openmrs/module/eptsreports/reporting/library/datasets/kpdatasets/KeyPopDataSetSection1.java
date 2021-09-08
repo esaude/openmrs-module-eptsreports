@@ -87,7 +87,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "I1T",
         "I1T: New on ART",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "");
+        "age=15+");
 
     addRow(
         dataSetDefinition,
@@ -100,7 +100,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "I2T",
         "I2T:Número adultos actualmente em TARV no fim do trimestre",
         EptsReportUtils.map(patientCurrentlyEnrolledOnArtIndicator, mappings),
-        "");
+        "age=15+");
 
     addRow(
         dataSetDefinition,
@@ -114,7 +114,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "I3T:Dos activos em TARV no fim do trimestre, subgrupo que recebeu um teste de Carga Viral "
             + "(CV)  durante o trimestre (Notificação anual!)",
         EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLRequestIndicator, mappings),
-        "");
+        "age=15+");
 
     addRow(
         dataSetDefinition,
@@ -129,7 +129,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "I4T:Dos activos TARV no fim do trimestre, subgrupo que recebeu resultado de "
             + "CV com supressão virológica durante o trimestre  (<1000 cópias/mL) (Notificação anual!)",
         EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLRequestIndicator, mappings),
-        "");
+        "age=15+");
 
     addRow(
         dataSetDefinition,
@@ -143,7 +143,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "I5T",
         "I5T:Número de adultos na coorte 12 meses - inicio de TARV",
         EptsReportUtils.map(patientWhoAreNewOnART12MonthsCohortIndicator, mappings),
-        "");
+        "age=15+");
 
     addRow(
         dataSetDefinition,
@@ -156,7 +156,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "I6T",
         "I6T:Número de adultos na coorte 12 meses - Activos em TARV ",
         EptsReportUtils.map(patientWhoAreCurrentlyOnART12MonthsCohortIndicator, mappings),
-        "");
+        "age=15+");
 
     addRow(
         dataSetDefinition,

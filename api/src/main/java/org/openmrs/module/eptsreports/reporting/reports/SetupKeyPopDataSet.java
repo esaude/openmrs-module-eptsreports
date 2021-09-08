@@ -39,12 +39,12 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Relatório Trimestral de População Chave";
+    return "Relatorio de Populacao Chave - MISAU";
   }
 
   @Override
   public String getDescription() {
-    return "Relatório Trimestral de População Chave";
+    return "Relatorio de Populacao Chave - MISAU";
   }
 
   @Override
@@ -73,7 +73,7 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
           createXlsReportDesign(
               reportDefinition,
               "KEY_POPPULATION.xls",
-              "Relatório Trimestral de População Chave",
+              "Relatorio de Populacao Chave - MISAU",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();

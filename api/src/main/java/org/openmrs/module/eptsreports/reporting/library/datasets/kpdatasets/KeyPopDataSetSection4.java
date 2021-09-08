@@ -71,7 +71,7 @@ public class KeyPopDataSetSection4 extends KeyPopAbstractDataset {
         "I15T",
         "I7T:Número de População Chave (KP) no Grupo de MTS, recém-iniciados em terapia antirretroviral há 6 meses – Coorte 6 meses",
         EptsReportUtils.map(patientEnrolledInART6MonthsCoohortIndicator, mappings),
-        "sex-worker=sex-worker");
+        "age=15+|sex-worker=sex-worker");
 
     addRow(
         dataSetDefinition,
@@ -84,7 +84,7 @@ public class KeyPopDataSetSection4 extends KeyPopAbstractDataset {
         "I16T",
         "I16T:Número de População Chave (KP) no Grupo de MTS, actualmente recebendo terapia antirretroviral (TARV) – Coorte 6 meses",
         EptsReportUtils.map(patientActiveOnArt6MonthsCoohortIndicator, mappings),
-        "sex-worker=sex-worker");
+        "age=15+|sex-worker=sex-worker");
 
     addRow(
         dataSetDefinition,
@@ -97,7 +97,7 @@ public class KeyPopDataSetSection4 extends KeyPopAbstractDataset {
         "I17T",
         "I17T:Número adultos activos em TARV, no Grupo de MTS, que receberam um resultado de Carga Viral – Coorte 6 meses (Notificação anual!)",
         EptsReportUtils.map(patientActiveOnArt6MonthsCoohortIndicatorWithVLResult, mappings),
-        "sex-worker=sex-worker");
+        "age=15+|sex-worker=sex-worker");
 
     addRow(
         dataSetDefinition,
@@ -112,7 +112,7 @@ public class KeyPopDataSetSection4 extends KeyPopAbstractDataset {
             + "resultado de Carga Viral com supressão viral (<1000 cópias/ml) – Coorte de 6 meses (Notificação anual!)",
         EptsReportUtils.map(
             patientActiveOnArt6MonthsCoohortIndicatorWithVLResultLessThan1000, mappings),
-        "sex-worker=sex-worker");
+        "age=15+|sex-worker=sex-worker");
 
     addRow(
         dataSetDefinition,
