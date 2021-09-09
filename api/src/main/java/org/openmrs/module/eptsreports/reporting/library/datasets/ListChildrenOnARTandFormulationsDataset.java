@@ -342,7 +342,7 @@ public class ListChildrenOnARTandFormulationsDataset extends BaseDataSet {
    *
    * @return
    */
-  private DataDefinition getLastARVRegimen() {
+  public DataDefinition getLastARVRegimen() {
     SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
     spdd.setName("Last ARV Regimen (FILA)");
     spdd.addParameter(new Parameter("location", "location", Location.class));
