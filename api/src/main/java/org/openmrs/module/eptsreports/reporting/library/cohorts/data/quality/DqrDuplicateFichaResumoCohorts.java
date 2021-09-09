@@ -6,6 +6,8 @@ import org.openmrs.module.eptsreports.reporting.library.queries.data.quality.dup
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.query.encounter.definition.EncounterQuery;
+import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -25,5 +27,20 @@ public class DqrDuplicateFichaResumoCohorts {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.setQuery(Ec1Queries.getEc1FichaResumoDuplicates(encounterType));
     return cd;
+  }
+
+  /**
+   * Get duplicate encounters based on an encounter type
+   *
+   * @param encounterType
+   * @return EncounterQuery
+   */
+  public EncounterQuery getEncounterQuery(int encounterType) {
+    SqlEncounterQuery sqlEncounterQuery = new SqlEncounterQuery();
+    sqlEncounterQuery.setName("Get duplicate encounter query");
+    sqlEncounterQuery.addParameter(new Parameter("location", "Location", Location.class));
+    sqlEncounterQuery.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlEncounterQuery.setQuery(Ec1Queries.getDuplicateEncounters(encounterType));
+    return sqlEncounterQuery;
   }
 }

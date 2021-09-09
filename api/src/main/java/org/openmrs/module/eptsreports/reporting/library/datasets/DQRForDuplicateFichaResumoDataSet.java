@@ -23,7 +23,7 @@ import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
-import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.EncounterDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -42,13 +42,13 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
   }
 
   public DataSetDefinition constructPatientDataSet() {
-    PatientDataSetDefinition pdd = new PatientDataSetDefinition();
+    EncounterDataSetDefinition pdd = new EncounterDataSetDefinition();
 
     pdd.setName("EC1");
     pdd.addParameter(new Parameter("location", "Location", Location.class));
     pdd.addParameter(new Parameter("endDate", "End Date", Date.class));
     pdd.addRowFilter(
-        duplicateFichaResumoCohorts.getDuplicatePatientsForFichaResumo(
+        duplicateFichaResumoCohorts.getEncounterQuery(
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
         "endDate=${endDate},location=${location}");
 
