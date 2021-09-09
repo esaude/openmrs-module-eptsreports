@@ -2,22 +2,16 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.PatientIdentifierType;
+import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.data.converter.CalculationResultConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.GenderConverter;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsDefaultersOrIITCohortQueries;
-import org.openmrs.module.eptsreports.reporting.reports.SetupListOfPatientsDefaultersOrIITReport;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
-import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -33,8 +27,6 @@ public class ListOfPatientsDefaultersOrIITTemplateDataSet extends BaseDataSet {
 
   private ListOfPatientsDefaultersOrIITCohortQueries listOfPatientsDefaultersOrIITCohortQueries;
 
-  private SetupListOfPatientsDefaultersOrIITReport setupListOfPatientsDefaultersOrIITReport;
-
   private HivMetadata hivMetadata;
 
   @Autowired
@@ -42,12 +34,10 @@ public class ListOfPatientsDefaultersOrIITTemplateDataSet extends BaseDataSet {
       ListChildrenOnARTandFormulationsDataset listChildrenOnARTandFormulationsDataset,
       TPTListOfPatientsEligibleDataSet tptListOfPatientsEligibleDataSet,
       ListOfPatientsDefaultersOrIITCohortQueries listOfPatientsDefaultersOrIITCohortQueries,
-      SetupListOfPatientsDefaultersOrIITReport setupListOfPatientsDefaultersOrIITReport,
       HivMetadata hivMetadata) {
     this.listChildrenOnARTandFormulationsDataset = listChildrenOnARTandFormulationsDataset;
     this.tptListOfPatientsEligibleDataSet = tptListOfPatientsEligibleDataSet;
     this.listOfPatientsDefaultersOrIITCohortQueries = listOfPatientsDefaultersOrIITCohortQueries;
-    this.setupListOfPatientsDefaultersOrIITReport = setupListOfPatientsDefaultersOrIITReport;
     this.hivMetadata = hivMetadata;
   }
 
@@ -59,28 +49,18 @@ public class ListOfPatientsDefaultersOrIITTemplateDataSet extends BaseDataSet {
     pdd.addParameter(new Parameter("maxDay", "Maximum number of days", Integer.class));
     pdd.addParameter(new Parameter("location", "Location", Location.class));
     pdd.setName("FATL");
-    /*pdd.addRowFilter(
-    listOfPatientsDefaultersOrIITCohortQueries.getBaseCohort(),
-    "endDate=${endDate},location=${location},minDay=${minDay},maxDay=${maxDay}");*/
-    pdd.addParameters(getParameters());
-    PatientIdentifierType identifierType =
-        Context.getPatientService()
-            .getPatientIdentifierTypeByUuid("e2b966d0-1d5f-11e0-b929-000c29ad1d07");
-    DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
-    DataDefinition identifierDef =
-        new ConvertedPatientDataDefinition(
-            "identifier",
-            new PatientIdentifierDataDefinition(identifierType.getName(), identifierType),
-            identifierFormatter);
+
+    PersonAttributeType contactAttributeType =
+        Context.getPersonService()
+            .getPersonAttributeTypeByUuid("e2e3fd64-1d5f-11e0-b929-000c29ad1d07");
+    DataDefinition conctactDef =
+        new ConvertedPersonDataDefinition(
+            "contact",
+            new PersonAttributeDataDefinition(contactAttributeType.getName(), contactAttributeType),
+            null);
     DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
 
     pdd.addColumn("id", new PersonIdDataDefinition(), "");
-
-    pdd.addColumn(
-        "report_generation_date",
-        listOfPatientsDefaultersOrIITCohortQueries.getReportGenerationDate(),
-        "",
-        null);
 
     /** 1 - NID - Sheet 1: Column A */
     pdd.addColumn("nid", listChildrenOnARTandFormulationsDataset.getNID(), "");
@@ -144,11 +124,7 @@ public class ListOfPatientsDefaultersOrIITTemplateDataSet extends BaseDataSet {
         null);
 
     /** 11 Contacto – Sheet 1: Column K */
-    pdd.addColumn(
-        "contact",
-        listOfPatientsDefaultersOrIITCohortQueries.getContact(),
-        "location=${location}",
-        null);
+    pdd.addColumn("contact", conctactDef, "", null);
 
     /** 12 Address (Localidade) – Sheet 1: Column L */
     pdd.addColumn(

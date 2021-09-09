@@ -3013,7 +3013,7 @@
 		</description>
 	 </globalProperty>
 
-  	<globalProperty>
+  <globalProperty>
 		<property>eptsreports.confidentAcceptContactUuid</property>
 		<defaultValue>bfb7acfa-8bd9-41b3-b3e1-d0add5be701b</defaultValue>
 		<description>
