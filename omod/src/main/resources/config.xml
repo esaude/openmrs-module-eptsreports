@@ -2995,15 +2995,15 @@
 		<description>
 		   ART drug Formulation
 		</description>
-	 </globalProperty>
-	 <globalProperty>
+	</globalProperty>
+
+	<globalProperty>
 		<property>eptsreports.drugAndQuantity</property>
 		<defaultValue>5ad593a4-bea2-4eef-ac88-11654e79d9da</defaultValue>
 		<description>
 		   Drug and Quantity
 		</description>
-
-	 </globalProperty>
+	</globalProperty>
 
 	 <globalProperty>
 		<property>eptsreports.treatmentFollowUpTPTConceptUuid</property>
@@ -3013,8 +3013,7 @@
 		</description>
 	 </globalProperty>
 
-	 </globalProperty>	  
-  <globalProperty>
+  	<globalProperty>
 		<property>eptsreports.confidentAcceptContactUuid</property>
 		<defaultValue>bfb7acfa-8bd9-41b3-b3e1-d0add5be701b</defaultValue>
 		<description>
