@@ -86,7 +86,7 @@ public class SetupListPatientsDefaultersIIT extends EptsDataExportManager {
           createXlsReportDesign(
               reportDefinition,
               "List_Patients_Defaulters_IIT.xls",
-              "LISTA DE PACIENTES FALTOSOS OU ABANDONOS AO TARVT",
+              "LISTA DE PACIENTES FALTOSOS OU ABANDONOS AO TARV",
               getExcelDesignUuid(),
               null);
 
