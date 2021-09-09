@@ -132,6 +132,7 @@ public class KeyPopDataSetSection2 extends KeyPopAbstractDataset {
         new ColumnParameters("15-19", "15-19", "drug-user=drug-user|age=15-19", "01");
     ColumnParameters k2 =
         new ColumnParameters("20-24", "20-24", "drug-user=drug-user|age=20-24", "02");
+
     ColumnParameters k3 = new ColumnParameters("25+", "25+", "drug-user=drug-user|age=25+", "03");
 
     ColumnParameters k4 =
