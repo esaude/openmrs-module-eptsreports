@@ -82,9 +82,13 @@ public class SetupListPatientsInitiatedTPTReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "TPT.xls", "INICIO TPI", getExcelDesignUuid(), null);
+              reportDefinition,
+              "List_Patients_Initiated_TPT.xls",
+              "PACIENTES QUE INICIARAM TPT",
+              getExcelDesignUuid(),
+              null);
       Properties props = new Properties();
-      props.put("repeatingSections", "sheet:1,row:4,dataset:INICIOTPI");
+      props.put("repeatingSections", "sheet:1,row:5,dataset:INICIOTPI");
 
       props.put("sortWeight", "5000");
       props.put("sortWeight", "5000");
