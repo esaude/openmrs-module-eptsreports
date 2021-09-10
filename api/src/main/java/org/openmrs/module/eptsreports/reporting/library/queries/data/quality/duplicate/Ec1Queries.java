@@ -23,8 +23,10 @@ public class Ec1Queries {
    */
   public static String getDuplicateEncounters(int encounter_type) {
     String query =
-        "SELECT e.patient_id, COUNT(e.encounter_id) FROM encounter e "
-            + " WHERE e.encounter_type=%d AND e.location_id = :location AND e.encounter_datetime <= :endDate AND e.voided = 0 GROUP BY e.patient_id HAVING COUNT(e.encounter_id) > 1";
-    return String.format(query, encounter_type);
+        "SELECT encounter_id FROM encounter WHERE encounter_type=%d AND location_id = :location AND encounter_datetime <= :endDate AND voided=0 AND patient_id IN"
+            + " (SELECT tbl.patient_id FROM "
+            + "(SELECT p.patient_id, COUNT(e.encounter_id) AS number_of_ficha FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + " WHERE e.encounter_type=%d AND e.location_id = :location AND e.encounter_datetime <= :endDate AND p.voided = 0 AND e.voided = 0 GROUP BY p.patient_id HAVING COUNT(e.encounter_id) > 1) tbl) ";
+    return String.format(query, encounter_type, encounter_type);
   }
 }
