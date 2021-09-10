@@ -16,6 +16,7 @@ import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterIdDataDefinition;
+import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.*;
@@ -56,7 +57,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     DataDefinition nameDef =
         new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
     pdd.setParameters(getParameters());
-    pdd.addSortCriteria("id", SortCriteria.SortDirection.DESC);
+    pdd.addSortCriteria("id", SortCriteria.SortDirection.ASC);
 
     pdd.addColumn("id", new PersonIdDataDefinition(), "");
     pdd.addColumn("encounterId", new EncounterIdDataDefinition(), "");
@@ -75,9 +76,9 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
         new PatientProgramConverter());
     pdd.addColumn(
         "ficha_resumo_encounter_date",
-        getFichaResumoEncounterDate(hivMetadata.getMasterCardEncounterType().getEncounterTypeId()),
+        getFichaResumoEncounterDate(hivMetadata.getMasterCardEncounterType()),
         "location=${location}",
-        new GeneralDateConverter());
+        new EncounterResultConverter());
     pdd.addColumn(
         "master_card_opening_date",
         getMasterCardOpeningDate(
@@ -190,25 +191,13 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     return spdd;
   }
 
-  private DataDefinition getFichaResumoEncounterDate(int encounterType) {
-    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
+  private DataDefinition getFichaResumoEncounterDate(EncounterType encounterType) {
+    EncountersForPatientDataDefinition spdd = new EncountersForPatientDataDefinition();
     spdd.addParameter(new Parameter("location", "Location", Location.class));
     spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
     spdd.setName("ficha_resumo_encounter_date");
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-
-    String sql =
-        "SELECT tbl.patient_id, tbl.encounter_date FROM "
-            + " (SELECT p.patient_id,MAX(e.encounter_datetime) AS encounter_date  FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
-            + " INNER JOIN encounter_type et ON et.encounter_type_id=e.encounter_type "
-            + " WHERE p.voided=0 AND e.voided=0 AND et.retired=0 AND e.encounter_datetime <=:endDate AND et.encounter_type_id="
-            + encounterType
-            + " GROUP BY p.patient_id) tbl";
-
-    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
-
-    spdd.setQuery(substitutor.replace(sql));
+    spdd.setWhich(TimeQualifier.ANY);
+    spdd.addType(encounterType);
     return spdd;
   }
 
