@@ -15,8 +15,8 @@ import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
+import org.openmrs.module.reporting.data.encounter.definition.EncounterDatetimeDataDefinition;
 import org.openmrs.module.reporting.data.encounter.definition.EncounterIdDataDefinition;
-import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.ProgramEnrollmentsForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.*;
@@ -76,9 +76,9 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
         new PatientProgramConverter());
     pdd.addColumn(
         "ficha_resumo_encounter_date",
-        getFichaResumoEncounterDate(hivMetadata.getMasterCardEncounterType()),
-        "location=${location}",
-        new EncounterResultConverter());
+        new EncounterDatetimeDataDefinition(),
+        "",
+        new GeneralDateConverter());
     pdd.addColumn(
         "master_card_opening_date",
         getMasterCardOpeningDate(
@@ -188,16 +188,6 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
     spdd.setName("art_program_enrollment_date");
     spdd.setProgram(artProgram);
     spdd.setWhichEnrollment(TimeQualifier.FIRST);
-    return spdd;
-  }
-
-  private DataDefinition getFichaResumoEncounterDate(EncounterType encounterType) {
-    EncountersForPatientDataDefinition spdd = new EncountersForPatientDataDefinition();
-    spdd.addParameter(new Parameter("location", "Location", Location.class));
-    spdd.addParameter(new Parameter("endDate", "End Date", Location.class));
-    spdd.setName("ficha_resumo_encounter_date");
-    spdd.setWhich(TimeQualifier.ANY);
-    spdd.addType(encounterType);
     return spdd;
   }
 
