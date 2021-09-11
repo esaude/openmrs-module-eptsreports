@@ -58,6 +58,7 @@ public class DQRForDuplicateFichaResumoDataSet extends BaseDataSet {
         new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
     pdd.setParameters(getParameters());
     pdd.addSortCriteria("id", SortCriteria.SortDirection.ASC);
+    pdd.addSortCriteria("encounterId", SortCriteria.SortDirection.DESC);
 
     pdd.addColumn("id", new PersonIdDataDefinition(), "");
     pdd.addColumn("encounterId", new EncounterIdDataDefinition(), "");
