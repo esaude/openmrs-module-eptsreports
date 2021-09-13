@@ -60,15 +60,15 @@ public class SetupListPatientsDefaultersIIT extends EptsDataExportManager {
     rd.setParameters(this.getParameters());
 
     rd.addDataSetDefinition(
-        "DEFAULTERIIT",
-        Mapped.mapStraightThrough(
-            listPatientsDefaultersIITDataSet.constructDataset(this.getParameters())));
-
-    rd.addDataSetDefinition(
         "DEFAULTERIITTOTAL",
         Mapped.mapStraightThrough(
             this.listPatientsDefaultersIITDataSet.getTotalDefaultersIITDataset(
                 this.getParameters())));
+
+    rd.addDataSetDefinition(
+        "DEFAULTERIIT",
+        Mapped.mapStraightThrough(
+            listPatientsDefaultersIITDataSet.constructDataset(this.getParameters())));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(

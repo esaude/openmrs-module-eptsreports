@@ -3,10 +3,14 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.Location;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.calculation.rtt.ListDefaultarsIITValidationInputParametersCalculation;
+import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.library.queries.ListPatientsDefaultersIITQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -44,10 +48,38 @@ public class ListPatientsDefaultersIITDataSet extends BaseDataSet {
     dataSetDefinition.addColumn(
         "TOTALDEFAULTERSIIT",
         "Total de Pacientes abandonos e faltosos",
-        EptsReportUtils.map(setIndicator(this.findPatientsDefaultersIIT(), mappings), mappings),
+        EptsReportUtils.map(
+            setIndicator(this.getPatientesDefaultersWithValidParameters(), mappings), mappings),
         "");
 
     return dataSetDefinition;
+  }
+
+  @DocumentedDefinition(value = "PatientesDefaultersWithValidParameters")
+  private CohortDefinition getPatientesDefaultersWithValidParameters() {
+
+    final CompositionCohortDefinition compositionDefinition = new CompositionCohortDefinition();
+
+    compositionDefinition.setName("Patients Defaulters with valid Parameters");
+    compositionDefinition.addParameter(
+        new Parameter("minDelayDays", "minDelayDays", Integer.class));
+    compositionDefinition.addParameter(
+        new Parameter("maxDelayDays", "maxDelayDays", Integer.class));
+    compositionDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compositionDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings =
+        "minDelayDays=${minDelayDays},maxDelayDays=${maxDelayDays},endDate=${endDate},location=${location}";
+
+    compositionDefinition.addSearch(
+        "PATIENT-DEFAULTERS-IIT", EptsReportUtils.map(this.findPatientsDefaultersIIT(), mappings));
+
+    compositionDefinition.addSearch(
+        "VALID-PARAMETERS", EptsReportUtils.map(this.validateInputParameters(), mappings));
+
+    compositionDefinition.setCompositionString("PATIENT-DEFAULTERS-IIT OR VALID-PARAMETERS");
+
+    return compositionDefinition;
   }
 
   @DocumentedDefinition(value = "findPatientsDefaultersIIT")
@@ -61,6 +93,22 @@ public class ListPatientsDefaultersIITDataSet extends BaseDataSet {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(ListPatientsDefaultersIITQueries.QUERY.findPatientsDefaultersIIT);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "ListDefaultarsIITValidationInputParametersCalculation")
+  private CohortDefinition validateInputParameters() {
+    BaseFghCalculationCohortDefinition definition =
+        new BaseFghCalculationCohortDefinition(
+            "check valid input parameteres",
+            Context.getRegisteredComponents(
+                    ListDefaultarsIITValidationInputParametersCalculation.class)
+                .get(0));
+    definition.addParameter(new Parameter("minDelayDays", "minDelayDays", Integer.class));
+    definition.addParameter(new Parameter("maxDelayDays", "maxDelayDays", Integer.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
 
     return definition;
   }
