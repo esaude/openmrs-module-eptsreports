@@ -1,5 +1,3 @@
-
-
 select coorte12meses_final.patient_id as patient_id, 
             		coorte12meses_final.data_inicio as data_inicio, 
             		concat(ifnull(pn.given_name,''),' ',ifnull(pn.middle_name,''),' ',ifnull(pn.family_name,'')) as NomeCompleto, 
@@ -449,7 +447,7 @@ select coorte12meses_final.patient_id as patient_id,
             		and e.encounter_datetime between (inicio_inh.data_inicio_inh + INTERVAL 1 day) and (inicio_inh.data_inicio_inh + INTERVAL 7 MONTH) 				 
             		and e.location_id=:location 				 
             	group by inicio_inh.patient_id,inicio_inh.data_inicio_inh  
-            	having count(*)>=6  
+            	having count(*)>=5  
             	union  
             	select inicio_inh.patient_id  
             	from 					
@@ -634,7 +632,7 @@ select coorte12meses_final.patient_id as patient_id,
             	inner join encounter e on e.patient_id=inicio_3HP.patient_id                                                                                         
             	inner join obs o on o.encounter_id=e.encounter_id                                                                                                     
             	where e.voided=0 and o.voided=0 and e.encounter_type in (6,9) and o.concept_id=1719 and o.value_coded=23954                                           
-            			and e.encounter_datetime between inicio_3HP.data_inicio_3HP and (inicio_3HP.data_inicio_3HP + INTERVAL 4 month) and e.location_id= 398      
+            			and e.encounter_datetime between inicio_3HP.data_inicio_3HP and (inicio_3HP.data_inicio_3HP + INTERVAL 4 month) and e.location_id=:location      
             	group by inicio_3HP.patient_id,inicio_3HP.data_inicio_3HP  
             	having count(*)>=3  
               union  
@@ -761,7 +759,7 @@ select coorte12meses_final.patient_id as patient_id,
             			and e.encounter_type=60 and obs3hp.concept_id=23985 and obs3hp.value_coded in (23954,23984)  
             			and obsTipo.concept_id=23986 and obsTipo.value_coded=1098     
             			and e.encounter_datetime between inicio_3HP.data_inicio_3HP and (inicio_3HP.data_inicio_3HP + INTERVAL 4 month)  
-            			and e.location_id= 398     
+            			and e.location_id=:location     
             	group by inicio_3HP.patient_id,inicio_3HP.data_inicio_3HP  
             	having count(*)>=3 
             )TPT_ELIG_FR9 on TPT_ELIG_FR9.patient_id=coorte12meses_final.patient_id 
@@ -795,7 +793,7 @@ select coorte12meses_final.patient_id as patient_id,
                         AND e.encounter_type=53 
                         AND o.concept_id = 42 
                         AND o.value_coded=1065 
-                        AND e.location_id = 398 AND o.obs_datetime between (:endDate - INTERVAL 210 DAY) and :endDate 
+                        AND e.location_id=:location AND o.obs_datetime between (:endDate - INTERVAL 210 DAY) and :endDate 
             	union 
             	select 	p.patient_id 
             	from 	patient p 
@@ -813,7 +811,7 @@ select coorte12meses_final.patient_id as patient_id,
             			INNER JOIN obs o ON o.encounter_id = e.encounter_id 
                 WHERE 	p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.encounter_type IN (6,9) 
                         AND o.concept_id in (6257,23758) AND o.value_coded=1065 
-                        AND e.location_id = 398 AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate 
+                        AND e.location_id=:location AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate 
                UNION 
                 SELECT 	p.patient_id  
             	FROM 	patient p 
@@ -823,7 +821,7 @@ select coorte12meses_final.patient_id as patient_id,
                         AND e.encounter_type=6 
                         AND o.concept_id = 1766 
                         AND o.value_coded in (1763,1764,1762,1760,23760,1765,161) 
-                        AND e.location_id = 398 AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate  
+                        AND e.location_id=:location AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate  
             	UNION 
                 SELECT 	p.patient_id  
             	FROM 	patient p 
@@ -833,7 +831,7 @@ select coorte12meses_final.patient_id as patient_id,
                         AND e.encounter_type=6 
                         AND o.concept_id = 23722 
                         AND o.value_coded in (23723,23774,23951,307,12) 
-                        AND e.location_id = 398 AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate   
+                        AND e.location_id=:location AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate   
             	UNION	 
                 SELECT 	p.patient_id  
             	FROM 	patient p 
@@ -843,7 +841,7 @@ select coorte12meses_final.patient_id as patient_id,
                         AND e.encounter_type=6 
                         AND o.concept_id in (23723,23774,23951,307,12) 
                         AND o.value_coded in (703,664,23956,664,1138) 
-                        AND e.location_id = 398 AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate  
+                        AND e.location_id=:location AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate  
                UNION 
             	 SELECT 	p.patient_id  
             	FROM 	patient p 
@@ -852,7 +850,7 @@ select coorte12meses_final.patient_id as patient_id,
                 WHERE 	p.voided = 0 AND e.voided = 0 AND o.voided = 0 
                         AND e.encounter_type=13 
                         AND o.concept_id in (23723,165189,165191,165192,23774,23951,307,165185) 
-                        AND e.location_id = 398 AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate  
+                        AND e.location_id=:location AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate  
                UNION 
             	 SELECT p.patient_id  
             	FROM	 patient p 
@@ -862,7 +860,7 @@ select coorte12meses_final.patient_id as patient_id,
                         AND e.encounter_type IN (6,9) 
                             AND o.concept_id = 6277 
                             AND o.value_coded = 703 
-                            AND e.location_id = 398 AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate  
+                            AND e.location_id=:location AND e.encounter_datetime between (:endDate - INTERVAL 14 DAY) and :endDate  
                  UNION	 
             	select	p.patient_id					 
             	from 	patient p 
@@ -885,7 +883,7 @@ select coorte12meses_final.patient_id as patient_id,
             		from 
             		(	select 	p.patient_id  
             			from 	patient p inner join encounter e on e.patient_id=p.patient_id  
-            			where 	e.voided=0 and p.voided=0 and e.encounter_type in (5,7) and e.encounter_datetime<=:endDate and e.location_id = 398 
+            			where 	e.voided=0 and p.voided=0 and e.encounter_type in (5,7) and e.encounter_datetime<=:endDate and e.location_id=:location 
             			union 
             			select 	pg.patient_id 
             			from 	patient p inner join patient_program pg on p.patient_id=pg.patient_id 
@@ -1013,4 +1011,4 @@ select coorte12meses_final.patient_id as patient_id,
             		and  TPT_ELIG_FR8.patient_id is null  
             		and  TPT_ELIG_FR9.patient_id is null  
             		and  TPT_ELIG_FR10.patient_id is null  
-            		and  TPT_ELIG_FR12.patient_id is null group by patient_id  ;
+            		and  TPT_ELIG_FR12.patient_id is null group by patient_id  
