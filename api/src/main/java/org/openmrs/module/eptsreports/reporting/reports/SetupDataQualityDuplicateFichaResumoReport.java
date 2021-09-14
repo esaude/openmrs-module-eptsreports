@@ -15,7 +15,6 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
@@ -67,19 +66,19 @@ public class SetupDataQualityDuplicateFichaResumoReport extends EptsDataExportMa
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.addParameters(getDataParameters());
+    rd.addParameters(this.getDataParameters());
 
     rd.addDataSetDefinition(
         "SD",
         Mapped.mapStraightThrough(
             summaryDataQualityDuplicateFichaResumoDataset.constructSummaryDataQualityDatset(
-                getDataParameters())));
+                this.getDataParameters())));
 
     rd.addDataSetDefinition(
         "ECD1",
         Mapped.mapStraightThrough(
             eC1PatientListDuplicateFichaResumoDataset
-                .ec1PatientWithDuplicatedFichaResumoListDataset(getDataParameters())));
+                .ec1PatientWithDuplicatedFichaResumoListDataset(this.getDataParameters())));
 
     return rd;
   }
@@ -113,8 +112,6 @@ public class SetupDataQualityDuplicateFichaResumoReport extends EptsDataExportMa
   }
 
   private List<Parameter> getDataParameters() {
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
-    return parameters;
+    return Arrays.asList(new Parameter("location", "Unidade Sanitária", Location.class));
   }
 }
