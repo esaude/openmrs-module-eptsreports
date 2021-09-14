@@ -179,7 +179,7 @@
 		<description>
 			UUID for the FEVER AS LASTING MORE THAN 3 WEEKS
 		</description>
-	</globalProperty> 
+	</globalProperty>
 
 	<globalProperty>
 		<property>eptsreports.nightsWeatsLastingMoraThan3WeeksUuid</property>
@@ -679,8 +679,8 @@
 			UUID for the REASON PATIENT MISSED VISIT concept
 		</description>
 	</globalProperty>
-	
-    <globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.reasonForStoppedTakingArvDrugsDuringLast7Days</property>
 		<defaultValue>06ae2acc-ffcb-49da-9e3c-69bc1604282e</defaultValue>
 		<description>
@@ -688,14 +688,14 @@
 		</description>
 	</globalProperty>
 
-    <globalProperty>
+	<globalProperty>
 		<property>@MODULE_ID@.reasonForStoppedTakingArvDrugsDuringLastMonth</property>
 		<defaultValue>73e45941-601f-4fdd-9fe2-a730e3255f2f</defaultValue>
 		<description>
 			UUID for the REASON FOR STOPPED TAKING ARV DRUGS DURING LAST MONTH concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>@MODULE_ID@.mainReasonForDelayInTakingArv</property>
 		<defaultValue>87a25d19-761c-4a8c-9dbb-c4ee83eb1c04</defaultValue>
@@ -703,7 +703,7 @@
 			UUID for the Main Reason For Delay In Taking Arv concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>@MODULE_ID@.patientRecordHasWrongAddress</property>
 		<defaultValue>e1e087de-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -711,7 +711,7 @@
 			UUID for the Patient Record Has WrongAddress concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>@MODULE_ID@.patientMovedHouses</property>
 		<defaultValue>e1e08d6a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -719,15 +719,15 @@
 			UUID for the Patient Moved Houses concept
 		</description>
 	</globalProperty>
-	
-    <globalProperty>
+
+	<globalProperty>
 		<property>@MODULE_ID@.patientTookATrip</property>
 		<defaultValue>e1e07adc-1d5f-11e0-b929-000c29ad1d07</defaultValue>
 		<description>
 			UUID for the Patient Took a Trip concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>@MODULE_ID@.otherReasonsWhyPatientWasNotLocatedByActivist</property>
 		<defaultValue>e1e09526-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -735,7 +735,7 @@
 			UUID for the Other Reasons Why Patient Was Not Located By Activist concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>@MODULE_ID@.reportOfVisitSupport</property>
 		<defaultValue>e1e20be0-1d5f-11e0-b929-000c29ad1d07</defaultValue>
@@ -1574,7 +1574,7 @@
 			UUID for the Levantamento de ARV Master Card encounter type
 		</description>
 	</globalProperty>
-	
+
 	<!-- 51 - ENCOUNTER TYPE NOT YET IMPLEMENTED SO ENCOUNTER TYPE 13 - LABORATORY UUID BEING REUSED-->
 	<globalProperty>
 		<property>eptsreports.fsrEncounterType</property>
@@ -1712,7 +1712,7 @@
 			UUID for the Reason for requesting viral load concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- Concept id 6331 : B plus answer -->
 	<globalProperty>
 		<property>eptsreports.bPlusConceptUuid</property>
@@ -1730,7 +1730,7 @@
 			UUID for the REASON PATIENT NOT FOUND BY ACTIVIST (2and Visit) concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- Concept id 23945 -->
 	<globalProperty>
 		<property>eptsreports.reasonPatientNotFoundByActivist3rdVisitConceptUuid</property>
@@ -1785,7 +1785,7 @@
 		</description>
 	</globalProperty>
 
-		
+
 	<globalProperty>
 		<property>eptsreports.identificadorDefinidoLocalment01Uuid</property>
 		<defaultValue>c89c90eb-5b03-4899-ab9f-06fecd123511</defaultValue>
@@ -1833,7 +1833,7 @@
 			UUID for CYTOPENIA concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- 23749 -->
 	<globalProperty>
 		<property>eptsreports.nephrotoxicityConceptUuid</property>
@@ -1842,7 +1842,7 @@
 			UUID for the NEPHROTOXICITY concept
 		</description>
 	</globalProperty>
-	
+
 	<!-- 29 -->
 	<globalProperty>
 		<property>eptsreports.hepatitisConceptUuid</property>
@@ -1852,7 +1852,7 @@
 		</description>
 	</globalProperty>
 
-<!-- 23750 -->
+	<!-- 23750 -->
 	<globalProperty>
 		<property>eptsreports.stevensJonhsonSyndromeConceptUuid</property>
 		<defaultValue>d0d485d3-3082-4b1b-a450-6cad31eb56b3</defaultValue>
@@ -1861,7 +1861,7 @@
 		</description>
 	</globalProperty>
 
-<!-- 23751 -->
+	<!-- 23751 -->
 	<globalProperty>
 		<property>eptsreports.hypersensitivityToAbcOrRailConceptUuid</property>
 		<defaultValue>833aba0d-430a-4537-b202-94c32e9a1317</defaultValue>
@@ -1870,7 +1870,7 @@
 		</description>
 	</globalProperty>
 
-<!-- 23752 -->
+	<!-- 23752 -->
 	<globalProperty>
 		<property>eptsreports.hepaticSteatosisWithHyperlactataemiaConceptUuid</property>
 		<defaultValue>da3dea8e-9b35-4025-ad5e-cd9aad7707aa</defaultValue>
@@ -1894,7 +1894,7 @@
 			UUID for the UNDETECTABLE VIRAL LOAD concept
 		</description>
 	</globalProperty>
-		<!-- 23904 -->
+	<!-- 23904 -->
 	<globalProperty>
 		<property>eptsreports.lessThan839CopiesConceptUuid</property>
 		<defaultValue>7c8e0a9b-3606-4a72-b8cc-89566521fac2</defaultValue>
@@ -2071,7 +2071,7 @@
 		</description>
 	</globalProperty>
 
-<!-- 21151 -->
+	<!-- 21151 -->
 	<globalProperty>
 		<property>eptsreports.therapeuticLineConceptUuid</property>
 		<defaultValue>fdff0637-b36f-4dce-90c7-fe9f1ec586f0</defaultValue>
@@ -2222,7 +2222,6 @@
 	</globalProperty>
 
 
-
 	<!-- 23886 -->
 	<globalProperty>
 		<property>eptsreports.preARTCounselingConceptUuid</property>
@@ -2327,8 +2326,6 @@
 	</globalProperty>
 
 
-
-
 	<!-- 1030 -->
 	<globalProperty>
 		<property>eptsreports.hivPCRQualitativeConceptUuid</property>
@@ -2377,8 +2374,6 @@
 			TYPE OF HIV TEST
 		</description>
 	</globalProperty>
-
-
 
 
 	<!-- 1030 -->
@@ -2652,7 +2647,7 @@
 			UUID for ISONIAZID concept
 		</description>
 	</globalProperty>
-	
+
 	<globalProperty>
 		<property>eptsreports.isoniazidePiridoxinaConceptUuid</property>
 		<defaultValue>6214dbcc-23a3-4708-85d8-a5b1af61c55d</defaultValue>
@@ -2804,7 +2799,7 @@
 			Tipo de dispensa TPT  concept
 		</description>
 	</globalProperty>
-<globalProperty>
+	<globalProperty>
 		<property>eptsreports.regArvSecondLineUuid</property>
 		<defaultValue>79c143ea-eeeb-4cdb-bfd7-fed8f029c15b</defaultValue>
 		<description>
@@ -2996,7 +2991,6 @@
 		   ART drug Formulation
 		</description>
 	</globalProperty>
-
 	<globalProperty>
 		<property>eptsreports.drugAndQuantity</property>
 		<defaultValue>5ad593a4-bea2-4eef-ac88-11654e79d9da</defaultValue>

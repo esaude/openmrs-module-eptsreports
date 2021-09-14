@@ -368,6 +368,15 @@ public class TPTEligiblePatientListCohortQueries {
             mapping));
 
     compositionCohortDefinition.addSearch(
+        "TBTreatmentPart4",
+        EptsReportUtils.map(
+            getTBTreatmentPart4(
+                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+                hivMetadata.getStartDrugs().getConceptId(),
+                tbMetadata.getTBTreatmentPlanConcept().getConceptId()),
+            mapping));
+
+    compositionCohortDefinition.addSearch(
         "E1",
         EptsReportUtils.map(
             getE1(
@@ -408,7 +417,7 @@ public class TPTEligiblePatientListCohortQueries {
             mapping));
 
     compositionCohortDefinition.setCompositionString(
-        "txcurr AND NOT (A1 OR A2 OR A3 OR A4 OR A5 OR threeHPA1 OR threeHPA2 OR threeHPA3 OR IPTB1 OR IPTB2 OR IPTB3 OR IPTB4 OR IPTB5Part1 OR IPTB5Part2 OR IPTBPart3 OR IPTB6Part1 OR IPTB6Part2 OR IPTB6Part3 OR threeHPC1 OR threeHPC2 OR threeHPC3 OR TBTreatmentPart1 OR TBTreatmentPart2 OR TBTreatmentPart3 OR E1 OR F)");
+        "txcurr AND NOT (A1 OR A2 OR A3 OR A4 OR A5 OR threeHPA1 OR threeHPA2 OR threeHPA3 OR IPTB1 OR IPTB2 OR IPTB3 OR IPTB4 OR IPTB5Part1 OR IPTB5Part2 OR IPTBPart3 OR IPTB6Part1 OR IPTB6Part2 OR IPTB6Part3 OR threeHPC1 OR threeHPC2 OR threeHPC3 OR TBTreatmentPart1 OR TBTreatmentPart2 OR TBTreatmentPart3 OR TBTreatmentPart4 OR E1 OR F)");
     return compositionCohortDefinition;
   }
 
@@ -450,7 +459,8 @@ public class TPTEligiblePatientListCohortQueries {
             + " AND o.value_datetime IS NOT NULL"
             + " AND o.concept_id = ${6128}"
             + " AND e.location_id = :location"
-            + " AND o.value_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 210 DAY) AND :endDate";
+            + " AND o.value_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 210 DAY) AND :endDate"
+            + " GROUP BY p.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(map);
 
@@ -486,8 +496,8 @@ public class TPTEligiblePatientListCohortQueries {
 
     String query =
         " SELECT p.patient_id FROM patient p  "
-            + "          JOIN encounter e ON e.patient_id = p.patient_id "
-            + "          JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "          INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "          INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "          WHERE e.encounter_type = ${6} AND o.concept_id = ${6122} "
             + "          AND o.voided = 0 AND e.voided = 0  "
             + "          AND p.voided = 0 AND e.location_id = :location "
@@ -529,8 +539,8 @@ public class TPTEligiblePatientListCohortQueries {
 
     String query =
         "SELECT p.patient_id FROM patient p  "
-            + "          JOIN encounter e ON e.patient_id = p.patient_id "
-            + "          JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "          INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "          INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "          WHERE e.encounter_type IN (${6}, ${9}) AND o.concept_id = ${6128} "
             + "          AND o.voided = 0 AND e.voided = 0  "
             + "          AND p.voided = 0 AND e.location_id = :location "
@@ -1032,10 +1042,10 @@ public class TPTEligiblePatientListCohortQueries {
             + "             p.voided = 0 AND e.voided = 0"
             + "                 AND o.voided = 0"
             + "                 AND e.location_id = :location"
-            + "                 AND e.encounter_type = ${6}"
-            + "                 AND o.concept_id = ${6122}"
-            + "                 AND o.value_coded = ${1267}"
-            + "                 AND e.encounter_datetime BETWEEN DATE_ADD(CAST((SELECT "
+            + "                AND e.encounter_type = ${53}   "
+            + "                AND o.concept_id = ${6129}  "
+            + "                AND o.value_datetime IS NOT NULL"
+            + "                AND o.value_datetime BETWEEN DATE_ADD(CAST((SELECT "
             + "                             oo.value_datetime"
             + "                         FROM"
             + "                             encounter ee"
@@ -1083,10 +1093,10 @@ public class TPTEligiblePatientListCohortQueries {
             + "          p.voided = 0 AND e.voided = 0"
             + "              AND o.voided = 0"
             + "                 AND e.location_id = :location"
-            + "                  AND e.encounter_type = ${6}"
-            + "                 AND o.concept_id = ${6122}"
-            + "                 AND o.value_coded = ${1267}"
-            + "                 AND e.encounter_datetime BETWEEN DATE_ADD(CAST((SELECT "
+            + "                AND e.encounter_type = ${53}   "
+            + "                AND o.concept_id = ${6129}  "
+            + "                AND o.value_datetime IS NOT NULL"
+            + "                AND o.value_datetime BETWEEN DATE_ADD(CAST((SELECT "
             + "                             ee.encounter_datetime"
             + "                         FROM"
             + "                             encounter ee"
@@ -1134,10 +1144,10 @@ public class TPTEligiblePatientListCohortQueries {
             + "             p.voided = 0 AND e.voided = 0"
             + "                 AND o.voided = 0"
             + "                 AND e.location_id = :location"
-            + "                  AND e.encounter_type = ${6}"
-            + "                 AND o.concept_id = ${6122}"
-            + "                 AND o.value_coded = ${1267}"
-            + "                 AND e.encounter_datetime BETWEEN DATE_ADD(CAST((SELECT "
+            + "                AND e.encounter_type = ${53}   "
+            + "                AND o.concept_id = ${6129}  "
+            + "                AND o.value_datetime IS NOT NULL"
+            + "                AND o.value_datetime BETWEEN DATE_ADD(CAST((SELECT "
             + "                             ee.encounter_datetime"
             + "                         FROM"
             + "                             encounter ee"
@@ -1184,10 +1194,10 @@ public class TPTEligiblePatientListCohortQueries {
             + "             p.voided = 0 AND e.voided = 0"
             + "                 AND o.voided = 0"
             + "                 AND e.location_id = :location"
-            + "                 AND e.encounter_type = ${6}"
-            + "                 AND o.concept_id = ${6122}"
-            + "                 AND o.value_coded = ${1267}"
-            + "                 AND e.encounter_datetime BETWEEN DATE_ADD(CAST((SELECT "
+            + "                AND e.encounter_type = ${53}   "
+            + "                AND o.concept_id = ${6129}  "
+            + "                AND o.value_datetime IS NOT NULL"
+            + "                AND o.value_datetime BETWEEN DATE_ADD(CAST((SELECT "
             + "                             ee.encounter_datetime"
             + "                         FROM"
             + "                             encounter ee"
@@ -1590,7 +1600,7 @@ public class TPTEligiblePatientListCohortQueries {
             + "                                             oo.encounter_id ="
             + "                                             ee.encounter_id WHERE"
             + "               ee.encounter_type ="
-            + "               6"
+            + "               ${6}"
             + "                                                 AND oo.concept_id = ${6122}"
             + "                                                                          AND"
             + "                                             oo.voided = 0 AND ee.voided = 0 AND"
@@ -2753,7 +2763,7 @@ public class TPTEligiblePatientListCohortQueries {
             + "                           AND EXISTS (SELECT o.person_id  "
             + "                                       FROM   obs o    "
             + "                                       WHERE  o.encounter_id = ee.encounter_id "
-            + "                                              AND o.concept_id = ${23720} "
+            + "                                              AND o.concept_id = ${23986} "
             + "                                              AND o.value_coded IN ( ${23720} )) )    "
             + "                     AND ee.encounter_datetime BETWEEN "
             + "                         tabela.encounter_datetime AND "
@@ -2867,9 +2877,8 @@ public class TPTEligiblePatientListCohortQueries {
    *
    * <ul>
    *   <li>D: Select all patients with the following conditions: Have Ficha clinica (encounter type
-   *       6 or 9) with “TRATAMENTO DE TUBERCULOSE”(concept_id 1268) value coded “Inicio”
-   *       (concept_id IN 1256) or “Data início” (concept id 1113) or obs_datetime between (for
-   *       encounter type 6) EndDate - 7months (210 DAYs) and endDate
+   *       6 or 9) with “DATA DE INICIO DE TRATAMENTO DE TUBERCULOSE” (concept id 1113,
+   *       Value_datetime) between EndDate - 7months (210 days)
    * </ul>
    *
    * @return CohortDefinition
@@ -2894,22 +2903,22 @@ public class TPTEligiblePatientListCohortQueries {
     map.put("1113", tBDrugTreatmentStartDate);
 
     String query =
-        " SELECT p.patient_id   "
-            + "   FROM   patient p   "
-            + "          inner join encounter e  "
-            + "                  ON e.patient_id = p.patient_id  "
-            + "          inner join obs o    "
-            + "                  ON o.encounter_id = e.encounter_id  "
-            + "   WHERE  p.voided = 0    "
-            + "          AND o.voided = 0    "
-            + "          AND e.voided = 0    "
-            + "          AND e.location_id = :location "
-            + "          AND e.encounter_type IN ( ${6}, ${9} )    "
-            + "          AND ((o.concept_id = ${1268} "
-            + "          AND o.value_coded IN ( ${1256}, ${1113})) OR ( "
-            + "          o.obs_datetime BETWEEN Date_sub(:endDate, INTERVAL 210 DAY) AND "
-            + "                                     :endDate)) "
-            + "   GROUP  BY p.patient_id ";
+        "   SELECT p.patient_id                                                                 "
+            + "  FROM   patient p     "
+            + "         inner join encounter e    "
+            + "                 ON e.patient_id = p.patient_id    "
+            + "         inner join obs o      "
+            + "                 ON o.encounter_id = e.encounter_id    "
+            + "  WHERE  p.voided = 0      "
+            + "         AND o.voided = 0      "
+            + "         AND e.voided = 0  "
+            + "         AND e.location_id = :location   "
+            + "         AND e.encounter_type IN (${6},${9})     "
+            + "         AND o.concept_id = ${1113}   "
+            + "         AND o.value_datetime BETWEEN Date_sub(:endDate, INTERVAL 210 DAY) "
+            + "         AND :endDate  "
+            + "   AND e.encounter_datetime <= :endDate"
+            + "    GROUP by p.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(map);
 
@@ -3003,8 +3012,54 @@ public class TPTEligiblePatientListCohortQueries {
             + "          AND ps.patient_state_id = ${6269}  "
             + "          AND pp.location_id = :location    "
             + "          AND pp.date_enrolled >= Date_sub(:endDate, INTERVAL 210 DAY)    "
-            + "          AND pp.date_completed <= Date_sub(:endDate, INTERVAL 210 DAY)   "
+            + "          AND pp.date_completed <= :endDate "
             + "   GROUP  BY p.patient_id ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(sb.replace(query));
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>IMER1</b>:User Story TPT Eligible Patient List <br>
+   *
+   * <ul>
+   *   <li>D: Select all patients with the following conditions: Have Ficha (encounter type 6) with
+   *       “TRATAMENTO DE TUBERCULOSE”(concept_id 1268) with: value coded “Inicio” (concept_id IN
+   *       1256) and obs_datetime between (for encounter type 6) EndDate - 7months (210 days) and
+   *       endDate
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getTBTreatmentPart4(
+      int adultoSeguimentoEncounterType, int startDrugsConcept, int tBTreatmentPlanConcept) {
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName(" all patients with TRATAMENTO DE TUBERCULOSE D1");
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", adultoSeguimentoEncounterType);
+    map.put("1256", startDrugsConcept);
+    map.put("1268", tBTreatmentPlanConcept);
+
+    String query =
+        " SELECT p.patient_id   "
+            + "  FROM patient p "
+            + "           INNER JOIN encounter e on p.patient_id = e.patient_id "
+            + "           INNER JOIN obs o on e.encounter_id = o.encounter_id "
+            + "  WHERE p.voided = 0 "
+            + "    AND e.voided = 0 "
+            + "    AND o.voided = 0 "
+            + "    AND e.location_id = :location "
+            + "    AND e.encounter_type = ${6} "
+            + "    AND o.concept_id = ${1268} AND o.value_coded = ${1256} "
+            + "    AND o.obs_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 210 DAY) AND :endDate "
+            + "    AND e.encounter_datetime <= :endDate ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
 
@@ -3051,8 +3106,8 @@ public class TPTEligiblePatientListCohortQueries {
             + "       AND e.encounter_type = ${6}    "
             + "       AND o.concept_id = ${23761}    "
             + "       AND o.value_coded = ${1065}    "
-            + "       AND e.encounter_datetime BETWEEN :endDate "
-            + "       AND  Date_sub(:endDate, INTERVAL 210 DAY)   "
+            + "       AND e.encounter_datetime BETWEEN Date_sub(:endDate, INTERVAL 210 DAY) "
+            + "       AND  :endDate  "
             + "   GROUP  BY p.patient_id ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
