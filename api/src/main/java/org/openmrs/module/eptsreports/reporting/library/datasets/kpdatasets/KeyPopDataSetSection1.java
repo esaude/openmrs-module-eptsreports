@@ -40,11 +40,10 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         this.keyPopCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtIncludingTransferedIn();
 
     final CohortDefinition patientCurrentlyEnrolledOnArtHaveVLRequest =
-        this.resumoMensalCohortQueries
-            .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithRequestForVLE1();
+        this.resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2();
 
     final CohortDefinition patientCurrentlyEnrolledOnArtHaveVLResult =
-        this.resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2();
+        this.resumoMensalCohortQueries.findPatientWithVlResulLessThan1000E3();
 
     final CohortDefinition patientWhoAreNewOnART12MonthsCohort =
         this.keyPopCohortQueries.findPatientsWhoAreNewlyEnrolledOnArtKeyPopPreviousPeriod();
@@ -128,7 +127,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "I4T",
         "I4T:Dos activos TARV no fim do trimestre, subgrupo que recebeu resultado de "
             + "CV com supressão virológica durante o trimestre  (<1000 cópias/mL) (Notificação anual!)",
-        EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLRequestIndicator, mappings),
+        EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLResultIndicator, mappings),
         "age=15+");
 
     addRow(
