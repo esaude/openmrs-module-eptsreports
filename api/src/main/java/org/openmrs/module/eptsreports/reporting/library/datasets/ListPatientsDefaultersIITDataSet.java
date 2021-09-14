@@ -24,95 +24,107 @@ import org.springframework.stereotype.Component;
 @Component
 public class ListPatientsDefaultersIITDataSet extends BaseDataSet {
 
-	@Autowired
-	private EptsGeneralIndicator eptsGeneralIndicator;
+  @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
 
-	public DataSetDefinition constructDataset(List<Parameter> list) {
+  public DataSetDefinition constructDataset(List<Parameter> list) {
 
-		SqlDataSetDefinition dsd = new SqlDataSetDefinition();
-		dsd.setName("Find list of patients defaulters or IIT");
-		dsd.addParameters(list);
-		dsd.setSqlQuery(ListPatientsDefaultersIITQueries.QUERY.findPatientsDefaultersIITList);
-		return dsd;
-	}
+    SqlDataSetDefinition dsd = new SqlDataSetDefinition();
+    dsd.setName("Find list of patients defaulters or IIT");
+    dsd.addParameters(list);
+    dsd.setSqlQuery(ListPatientsDefaultersIITQueries.QUERY.findPatientsDefaultersIITList);
+    return dsd;
+  }
 
-	public DataSetDefinition getTotalDefaultersIITDataset(List<Parameter> list) {
-		final CohortIndicatorDataSetDefinition dataSetDefinition = new CohortIndicatorDataSetDefinition();
+  public DataSetDefinition getTotalDefaultersIITDataset(List<Parameter> list) {
+    final CohortIndicatorDataSetDefinition dataSetDefinition =
+        new CohortIndicatorDataSetDefinition();
 
-		dataSetDefinition.setName("Patients Defaulters IIT Total");
-		dataSetDefinition.addParameters(list);
+    dataSetDefinition.setName("Patients Defaulters IIT Total");
+    dataSetDefinition.addParameters(list);
 
-		final String mappings = "minDelayDays=${minDelayDays},maxDelayDays=${maxDelayDays},endDate=${endDate},location=${location}";
+    final String mappings =
+        "minDelayDays=${minDelayDays},maxDelayDays=${maxDelayDays},endDate=${endDate},location=${location}";
 
-		dataSetDefinition.addColumn("TOTALDEFAULTERSIIT", "Total de Pacientes abandonos e faltosos",
-				EptsReportUtils.map(setIndicator(this.getPatientesDefaultersWithValidParameters(), mappings), mappings),
-				"");
+    dataSetDefinition.addColumn(
+        "TOTALDEFAULTERSIIT",
+        "Total de Pacientes abandonos e faltosos",
+        EptsReportUtils.map(
+            setIndicator(this.getPatientesDefaultersWithValidParameters(), mappings), mappings),
+        "");
 
-		return dataSetDefinition;
-	}
+    return dataSetDefinition;
+  }
 
-	@DocumentedDefinition(value = "PatientesDefaultersWithValidParameters")
-	private CohortDefinition getPatientesDefaultersWithValidParameters() {
+  @DocumentedDefinition(value = "PatientesDefaultersWithValidParameters")
+  private CohortDefinition getPatientesDefaultersWithValidParameters() {
 
-		final CompositionCohortDefinition compositionDefinition = new CompositionCohortDefinition();
+    final CompositionCohortDefinition compositionDefinition = new CompositionCohortDefinition();
 
-		compositionDefinition.setName("get List of Patients Defaulters IIT");
-		compositionDefinition.addParameter(new Parameter("minDelayDays", "minDelayDays", Integer.class));
-		compositionDefinition.addParameter(new Parameter("maxDelayDays", "maxDelayDays", Integer.class));
-		compositionDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
-		compositionDefinition.addParameter(new Parameter("location", "location", Location.class));
+    compositionDefinition.setName("get List of Patients Defaulters IIT");
+    compositionDefinition.addParameter(
+        new Parameter("minDelayDays", "minDelayDays", Integer.class));
+    compositionDefinition.addParameter(
+        new Parameter("maxDelayDays", "maxDelayDays", Integer.class));
+    compositionDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compositionDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-		final String mappings = "minDelayDays=${minDelayDays},maxDelayDays=${maxDelayDays},endDate=${endDate},location=${location}";
+    final String mappings =
+        "minDelayDays=${minDelayDays},maxDelayDays=${maxDelayDays},endDate=${endDate},location=${location}";
 
-		compositionDefinition.addSearch("PATIENT-DEFAULTERS-IIT",
-				EptsReportUtils.map(this.findPatientsDefaultersIIT(), mappings));
+    compositionDefinition.addSearch(
+        "PATIENT-DEFAULTERS-IIT", EptsReportUtils.map(this.findPatientsDefaultersIIT(), mappings));
 
-		compositionDefinition.addSearch("VALID-PARAMETERS",
-				EptsReportUtils.map(this.validateInputParameters(), mappings));
+    compositionDefinition.addSearch(
+        "VALID-PARAMETERS", EptsReportUtils.map(this.validateInputParameters(), mappings));
 
-		compositionDefinition.setCompositionString("PATIENT-DEFAULTERS-IIT OR VALID-PARAMETERS");
+    compositionDefinition.setCompositionString("PATIENT-DEFAULTERS-IIT OR VALID-PARAMETERS");
 
-		return compositionDefinition;
-	}
+    return compositionDefinition;
+  }
 
-	@DocumentedDefinition(value = "findPatientsDefaultersIIT")
-	private CohortDefinition findPatientsDefaultersIIT() {
-		final SqlCohortDefinition definition = new SqlCohortDefinition();
+  @DocumentedDefinition(value = "findPatientsDefaultersIIT")
+  private CohortDefinition findPatientsDefaultersIIT() {
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-		definition.setName("findPatientsDefaultersIIT");
-		definition.addParameter(new Parameter("minDelayDays", "minDelayDays", Integer.class));
-		definition.addParameter(new Parameter("maxDelayDays", "maxDelayDays", Integer.class));
-		definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-		definition.addParameter(new Parameter("location", "location", Location.class));
+    definition.setName("findPatientsDefaultersIIT");
+    definition.addParameter(new Parameter("minDelayDays", "minDelayDays", Integer.class));
+    definition.addParameter(new Parameter("maxDelayDays", "maxDelayDays", Integer.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
 
-		definition.setQuery(ListPatientsDefaultersIITQueries.QUERY.findPatientsDefaultersIIT);
+    definition.setQuery(ListPatientsDefaultersIITQueries.QUERY.findPatientsDefaultersIIT);
 
-		return definition;
-	}
+    return definition;
+  }
 
-	@DocumentedDefinition(value = "ListDefaultarsIITValidationInputParametersCalculation")
-	private CohortDefinition validateInputParameters() {
-		BaseFghCalculationCohortDefinition definition = new BaseFghCalculationCohortDefinition(
-				"Validate input parameteres",
-				Context.getRegisteredComponents(ListDefaultarsIITValidationInputParametersCalculation.class).get(0));
-		definition.addParameter(new Parameter("minDelayDays", "minDelayDays", Integer.class));
-		definition.addParameter(new Parameter("maxDelayDays", "maxDelayDays", Integer.class));
-		definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-		definition.addParameter(new Parameter("location", "location", Location.class));
+  @DocumentedDefinition(value = "ListDefaultarsIITValidationInputParametersCalculation")
+  private CohortDefinition validateInputParameters() {
+    BaseFghCalculationCohortDefinition definition =
+        new BaseFghCalculationCohortDefinition(
+            "Validate input parameteres",
+            Context.getRegisteredComponents(
+                    ListDefaultarsIITValidationInputParametersCalculation.class)
+                .get(0));
+    definition.addParameter(new Parameter("minDelayDays", "minDelayDays", Integer.class));
+    definition.addParameter(new Parameter("maxDelayDays", "maxDelayDays", Integer.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
 
-		return definition;
-	}
+    return definition;
+  }
 
-	private CohortIndicator setIndicator(final CohortDefinition cohortDefinition, final String mappings) {
+  private CohortIndicator setIndicator(
+      final CohortDefinition cohortDefinition, final String mappings) {
 
-		final CohortIndicator indicator = this.eptsGeneralIndicator.getIndicator("totalDefaultersIIT",
-				EptsReportUtils.map(cohortDefinition, mappings));
+    final CohortIndicator indicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "totalDefaultersIIT", EptsReportUtils.map(cohortDefinition, mappings));
 
-		indicator.addParameter(new Parameter("minDelayDays", "minDelayDays", Integer.class));
-		indicator.addParameter(new Parameter("maxDelayDays", "maxDelayDays", Integer.class));
-		indicator.addParameter(new Parameter("endDate", "End Date", Date.class));
-		indicator.addParameter(new Parameter("location", "location", Date.class));
+    indicator.addParameter(new Parameter("minDelayDays", "minDelayDays", Integer.class));
+    indicator.addParameter(new Parameter("maxDelayDays", "maxDelayDays", Integer.class));
+    indicator.addParameter(new Parameter("endDate", "End Date", Date.class));
+    indicator.addParameter(new Parameter("location", "location", Date.class));
 
-		return indicator;
-	}
+    return indicator;
+  }
 }
