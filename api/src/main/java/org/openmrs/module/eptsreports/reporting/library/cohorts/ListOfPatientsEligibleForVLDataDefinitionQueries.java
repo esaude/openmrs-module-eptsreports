@@ -609,45 +609,6 @@ public class ListOfPatientsEligibleForVLDataDefinitionQueries {
     return sqlPatientDataDefinition;
   }
 
-  public SqlPatientDataDefinition getPatientsAndLastDrugPickUpOnFila() {
-
-    SqlPatientDataDefinition sqlPatientDataDefinition = new SqlPatientDataDefinition();
-    sqlPatientDataDefinition.setName("All patients with most recent Data de Levantamento");
-    sqlPatientDataDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlPatientDataDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
-    sqlPatientDataDefinition.addParameter(new Parameter("location", "location", Location.class));
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    valuesMap.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
-    valuesMap.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
-    valuesMap.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
-
-    String query =
-        " SELECT last_ficha.patient_id, last_ficha.max_date FROM( "
-            + " SELECT p.patient_id, MAX(e.encounter_datetime) encounter_date, MAX(obs_value.value_datetime) max_date  FROM patient p "
-            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "         INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-            + "         INNER JOIN obs obs_value ON obs_value.encounter_id = e.encounter_id  "
-            + "         AND o.person_id = obs_value.person_id "
-            + " WHERE e.encounter_type = ${52} "
-            + " AND o.concept_id = ${23865} "
-            + " AND o.value_coded = ${1065} "
-            + " AND obs_value.concept_id = ${23866} "
-            + " AND obs_value.value_datetime <= :startDate "
-            + " AND e.voided = 0 "
-            + " AND e.location_id = :location "
-            + " AND p.voided = 0 "
-            + " AND o.voided = 0 "
-            + " GROUP BY p.patient_id) AS last_ficha GROUP BY last_ficha.patient_id ";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
-
-    sqlPatientDataDefinition.setQuery(stringSubstitutor.replace(query));
-
-    return sqlPatientDataDefinition;
-  }
-
   /**
    * <b>Technical Specs</b>
    *

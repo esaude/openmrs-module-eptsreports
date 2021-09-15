@@ -70,7 +70,8 @@ public class ListOfPatientsEligibleForVLDataSet extends BaseDataSet {
     pdd.addColumn("nid", listChildrenOnARTandFormulationsDataset.getNID(), "");
 
     pdd.addColumn("name", nameDef, "");
-    pdd.addColumn("birthdate", new BirthdateDataDefinition(), "", new BirthdateConverter());
+    pdd.addColumn(
+        "birthdate", new BirthdateDataDefinition(), "", new BirthdateConverter("dd/MM/yyyy"));
 
     pdd.addColumn(
         "age", listChildrenOnARTandFormulationsDataset.getAge(), "endDate=${endDate}", null);
@@ -146,6 +147,8 @@ public class ListOfPatientsEligibleForVLDataSet extends BaseDataSet {
             .getPatientsAndNumberOfAPSSAndPPAfterHadVLGreaterThan1000(),
         "startDate=${startDate},location=${location}",
         null);
+
+    pdd.addColumn("pid", new PersonIdDataDefinition(), "");
 
     return pdd;
   }
