@@ -401,9 +401,9 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
 
             List<Obs> obsICList = getObsListFromResultMap(isoniazidStartContinueMap, patientId);
 
-            int evaluateINHOccurrences6 =
+            int evaluateINHOccurrences5 =
                 evaluateOccurrence(
-                    obsICList, cleanList, a2.getEncounter().getEncounterDatetime(), 6, 7);
+                    obsICList, cleanList, a2.getEncounter().getEncounterDatetime(), 5, 7);
 
             int evaluateINHOccurences2 =
                 evaluateOccurrence(
@@ -421,7 +421,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
                     3,
                     7);
 
-            if (evaluateINHOccurrences6 >= 6
+            if (evaluateINHOccurrences5 >= 5
                 || evaluateINHOccurences2 >= 2
                 || evaluateINHOccurrences3 >= 3) {
               b5Map.put(patientId, new BooleanResult(true, this));
@@ -459,8 +459,8 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
 
             List<Obs> obsICList = getObsListFromResultMap(isoniazidStartContinueMap, patientId);
 
-            int evaluateINHOccurrences6 =
-                evaluateOccurrence(obsICList, cleanList, a3.getValueDatetime(), 6, 7);
+            int evaluateINHOccurrences5 =
+                evaluateOccurrence(obsICList, cleanList, a3.getValueDatetime(), 5, 7);
 
             int evaluateINHOccurences2 =
                 evaluateOccurrence(
@@ -470,7 +470,7 @@ public class CompletedIsoniazidTPTCalculation extends AbstractPatientCalculation
                 evaluateOccurrence2(
                     obsICList, outrasPrescricoesINHObsList, a3.getValueDatetime(), 3, 7);
 
-            if (evaluateINHOccurrences6 >= 6
+            if (evaluateINHOccurrences5 >= 5
                 || evaluateINHOccurences2 >= 2
                 || evaluateINHOccurrences3 >= 3) {
               b5Map.put(patientId, new BooleanResult(true, this));
