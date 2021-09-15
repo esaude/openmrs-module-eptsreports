@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
@@ -8,6 +10,7 @@ import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.DQRForDuplicateFichaResumoDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.SummaryDQRForDuplicateFichaResumoDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -22,9 +25,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupDQRForDuplicateFichaResumoReport extends EptsDataExportManager {
 
-  @Autowired protected GenericCohortQueries genericCohortQueries;
-  @Autowired DQRForDuplicateFichaResumoDataSet dqrForDuplicateFichaResumoDataSet;
-  @Autowired SummaryDQRForDuplicateFichaResumoDataSet summaryDQRForDuplicateFichaResumoDataSet;
+  private GenericCohortQueries genericCohortQueries;
+  private DQRForDuplicateFichaResumoDataSet dqrForDuplicateFichaResumoDataSet;
+  private SummaryDQRForDuplicateFichaResumoDataSet summaryDQRForDuplicateFichaResumoDataSet;
+
+  @Autowired
+  public SetupDQRForDuplicateFichaResumoReport(
+      GenericCohortQueries genericCohortQueries,
+      DQRForDuplicateFichaResumoDataSet dqrForDuplicateFichaResumoDataSet,
+      SummaryDQRForDuplicateFichaResumoDataSet summaryDQRForDuplicateFichaResumoDataSet) {
+    this.genericCohortQueries = genericCohortQueries;
+    this.dqrForDuplicateFichaResumoDataSet = dqrForDuplicateFichaResumoDataSet;
+    this.summaryDQRForDuplicateFichaResumoDataSet = summaryDQRForDuplicateFichaResumoDataSet;
+  }
 
   @Override
   public String getExcelDesignUuid() {
@@ -38,7 +51,7 @@ public class SetupDQRForDuplicateFichaResumoReport extends EptsDataExportManager
 
   @Override
   public String getName() {
-    return "DQR for Duplicate Ficha Resumo";
+    return "Data Quality Report to Identify Duplicate Ficha Resumo";
   }
 
   @Override
@@ -56,12 +69,14 @@ public class SetupDQRForDuplicateFichaResumoReport extends EptsDataExportManager
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
-
     rd.addDataSetDefinition(
-        "EC1", Mapped.mapStraightThrough(dqrForDuplicateFichaResumoDataSet.constructDataSet()));
+        "EC1T",
+        Mapped.mapStraightThrough(
+            summaryDQRForDuplicateFichaResumoDataSet.constructIndicatorDataset()));
     rd.addDataSetDefinition(
-        "SEC1",
-        Mapped.mapStraightThrough(summaryDQRForDuplicateFichaResumoDataSet.constructDataSet()));
+        "EC1",
+        Mapped.mapStraightThrough(dqrForDuplicateFichaResumoDataSet.constructPatientDataSet()));
+    rd.addDataSetDefinition("DT", mapStraightThrough(new LocationDataSetDefinition()));
     return rd;
   }
 

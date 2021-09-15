@@ -28,7 +28,7 @@ public class LocationDataSetDefinition extends EvaluatableDataSetDefinition {
     SimpleDataSet dataSet = new SimpleDataSet(this, context);
     SqlQueryBuilder queryBuilder = new SqlQueryBuilder();
     String sqlQuery =
-        "SELECT name, state_province as stateProvince, county_district as countyDistrict "
+        "SELECT name, state_province as stateProvince, county_district as countyDistrict, current_timestamp() AS report_date "
             + "FROM location "
             + "WHERE location_id=:location";
     queryBuilder.append(sqlQuery);
