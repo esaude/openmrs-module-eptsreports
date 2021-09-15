@@ -151,6 +151,19 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
+      CalculationResultMap regimeTPT1stPickUpPreviousPeriodMap2 =
+          ePTSCalculationService.getObs(
+              hivMetadata.getPatientTreatmentFollowUp(),
+              tbMetadata.getRegimeTPTEncounterType(),
+              cohort,
+              location,
+              Arrays.asList(hivMetadata.getContinueRegimenConcept()),
+              TimeQualifier.FIRST,
+              onOrAfter,
+              onOrBefore,
+              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
+              context);
+
       CalculationResultMap exclisionRegimeTPT1stPickUpPreviousPeriodMap =
           ePTSCalculationService.getObs(
               c23985,
@@ -161,6 +174,100 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               TimeQualifier.ANY,
               DateUtils.addMonths(onOrAfter, -13),
               DateUtils.addMonths(onOrBefore, -6),
+              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
+              context);
+
+      // II new
+      CalculationResultMap anyIsoniazidaPiridoxina =
+          ePTSCalculationService.getObs(
+              tbMetadata.getRegimeTPTConcept(),
+              tbMetadata.getRegimeTPTEncounterType(),
+              cohort,
+              location,
+              Arrays.asList(
+                  tbMetadata.getIsoniazidConcept(), tbMetadata.getIsoniazidePiridoxinaConcept()),
+              TimeQualifier.ANY,
+              DateUtils.addMonths(onOrAfter, -6),
+              DateUtils.addMonths(onOrBefore, -6),
+              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
+              context);
+
+      CalculationResultMap anyIsoniazidaPiridoxina2 =
+          ePTSCalculationService.getObs(
+              hivMetadata.getPatientTreatmentFollowUp(),
+              tbMetadata.getRegimeTPTEncounterType(),
+              cohort,
+              location,
+              Arrays.asList(hivMetadata.getStartDrugs(), hivMetadata.getRestartConcept()),
+              TimeQualifier.ANY,
+              DateUtils.addMonths(onOrAfter, -6),
+              DateUtils.addMonths(onOrBefore, -6),
+              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
+              context);
+
+      CalculationResultMap firstINHDateMap2 =
+          ePTSCalculationService.getObs(
+              hivMetadata.getPatientTreatmentFollowUp(),
+              tbMetadata.getRegimeTPTEncounterType(),
+              cohort,
+              location,
+              Arrays.asList(hivMetadata.getContinueRegimenConcept()),
+              TimeQualifier.FIRST,
+              onOrAfter,
+              onOrBefore,
+              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
+              context);
+
+      CalculationResultMap notInINHDateMap =
+          ePTSCalculationService.getObs(
+              tbMetadata.getRegimeTPTConcept(),
+              tbMetadata.getRegimeTPTEncounterType(),
+              cohort,
+              location,
+              Arrays.asList(
+                  tbMetadata.getIsoniazidConcept(), tbMetadata.getIsoniazidePiridoxinaConcept()),
+              TimeQualifier.ANY,
+              DateUtils.addMonths(onOrAfter, -7),
+              onOrBefore,
+              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
+              context);
+
+      CalculationResultMap notInINHDateMap2 =
+          ePTSCalculationService.getObs(
+              tbMetadata.getRegimeTPTConcept(),
+              hivMetadata.getAdultoSeguimentoEncounterType(),
+              cohort,
+              location,
+              Arrays.asList(hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept()),
+              TimeQualifier.ANY,
+              DateUtils.addMonths(onOrAfter, -7),
+              onOrBefore,
+              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
+              context);
+
+      CalculationResultMap notInINHDateMap3 =
+          ePTSCalculationService.getObs(
+              tbMetadata.getRegimeTPTConcept(),
+              hivMetadata.getPediatriaSeguimentoEncounterType(),
+              cohort,
+              location,
+              Arrays.asList(hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept()),
+              TimeQualifier.ANY,
+              DateUtils.addMonths(onOrAfter, -7),
+              onOrBefore,
+              EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
+              context);
+
+      CalculationResultMap notInINHDateMap4 =
+          ePTSCalculationService.getObs(
+              tbMetadata.getRegimeTPTConcept(),
+              hivMetadata.getMasterCardEncounterType(),
+              cohort,
+              location,
+              Arrays.asList(hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept()),
+              TimeQualifier.ANY,
+              DateUtils.addMonths(onOrAfter, -7),
+              onOrBefore,
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
@@ -755,10 +862,22 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
         Obs regimeTPT1stPickUpPreviousPeriod =
             EptsCalculationUtils.obsResultForPatient(
                 regimeTPT1stPickUpPreviousPeriodMap, patientId);
+
+        Obs regimeTPT1stPickUpPreviousPeriod2 =
+            EptsCalculationUtils.obsResultForPatient(
+                regimeTPT1stPickUpPreviousPeriodMap2, patientId);
         List<Obs> exclisionRegimeTPT1stPickUpPreviousPeriod =
             getObsListFromResultMap(exclisionRegimeTPT1stPickUpPreviousPeriodMap, patientId);
 
-        // ipt end date section
+        // ipt end date section regimeTPT1stPickUpPreviousPeriodMap2
+        Obs anyIsoniazida =
+            EptsCalculationUtils.obsResultForPatient(anyIsoniazidaPiridoxina, patientId);
+        Obs anyIsoniazida2 =
+            EptsCalculationUtils.obsResultForPatient(anyIsoniazidaPiridoxina2, patientId);
+
+        List<Obs> notInINHDateObs2 = getObsListFromResultMap(notInINHDateMap2, patientId);
+        List<Obs> notInINHDateObs3 = getObsListFromResultMap(notInINHDateMap3, patientId);
+        List<Obs> notInINHDateObs4 = getObsListFromResultMap(notInINHDateMap4, patientId);
 
         Obs endProfilaxiaObs6 =
             EptsCalculationUtils.obsResultForPatient(endProfilaxiaObservations6, patientId);
@@ -774,6 +893,18 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
                 Arrays.asList(
                     startProfilaxiaObs,
                     startDrugsObs,
+                    anyIsoniazida,
+                    anyIsoniazida2,
+                    this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs2, -7),
+                    this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs3, -7),
+                    this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs4, -7),
+                    this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs2, -7),
+                    this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs3, -7),
+                    this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs4, -7),
+                    this.exclude(
+                        regimeTPT1stPickUpPreviousPeriod2,
+                        exclisionRegimeTPT1stPickUpPreviousPeriod,
+                        -7),
                     this.exclude(
                         regimeTPT1stPickUpPreviousPeriod,
                         exclisionRegimeTPT1stPickUpPreviousPeriod,
@@ -940,6 +1071,13 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
                 || ((xiiia1 + xiiia2) >= 1 && (xiiib1 + xiiib2) >= 3)) {
               map.put(patientId, new BooleanResult(true, this));
             }
+          }
+          if (anyIsoniazida != null
+              && anyIsoniazida2 != null
+              && anyIsoniazida.getValueDatetime().compareTo(DateUtils.addMonths(onOrAfter, -6)) <= 0
+              && anyIsoniazida.getValueDatetime().compareTo(DateUtils.addMonths(onOrBefore, -6))
+                  <= 0) {
+            map.put(patientId, new BooleanResult(true, this));
           }
         }
         /* 3HP */
