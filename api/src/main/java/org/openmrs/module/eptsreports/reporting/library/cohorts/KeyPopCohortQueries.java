@@ -7,6 +7,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.KeyPopQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -164,8 +165,7 @@ public class KeyPopCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "TRANSFERED-IN",
-                KeyPopQueriesInterface.QUERY
-                    .findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
+                TxNewQueries.QUERY.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
             mappings));
 
     definition.addSearch(
@@ -173,8 +173,8 @@ public class KeyPopCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-                ResumoMensalQueries
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardB2),
+                TxNewQueries.QUERY
+                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
             mappings));
 
     definition.addSearch(
@@ -186,7 +186,7 @@ public class KeyPopCohortQueries {
             mappingsEndDate));
 
     definition.setCompositionString(
-        "START-ART NOT (TRANSFERED-OUT OR TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD)");
+        "(START-ART OR TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD) NOT (TRANSFERED-OUT)");
 
     return definition;
   }
@@ -430,24 +430,24 @@ public class KeyPopCohortQueries {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "VL",
-                ResumoMensalQueries.findPatietWithRequestForVL(
+                ResumoMensalQueries.findPatientWithVlResult(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-                    hivMetadata.getHivViralLoadConcept().getConceptId())),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
             mappingsToVL));
 
     definition.addSearch(
-        "E1x",
+        "Ex2",
         map(
             genericCohortQueries.generalSql(
-                "E1x",
-                ResumoMensalQueries.getE1ExclusionCriteria(
+                "Ex2",
+                ResumoMensalQueries.getE2ExclusionCriteria(
+                    hivMetadata.getHivViralLoadConcept().getConceptId(),
                     hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
-                    hivMetadata.getHivViralLoadConcept().getConceptId())),
+                    hivMetadata.getHivViralLoadQualitative().getConceptId())),
             mappingsToVL));
 
-    definition.setCompositionString("(TX-CURR-COORTE-6-MONTHS AND VL) NOT E1x");
+    definition.setCompositionString("(TX-CURR-COORTE-6-MONTHS AND VL) NOT Ex2");
 
     return definition;
   }
