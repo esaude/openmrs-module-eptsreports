@@ -46,10 +46,12 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         this.resumoMensalCohortQueries.findPatientWithVlResulLessThan1000E3();
 
     final CohortDefinition patientWhoAreNewOnART12MonthsCohort =
-        this.keyPopCohortQueries.findPatientsWhoAreNewlyEnrolledOnArtKeyPopPreviousPeriod();
+        this.keyPopCohortQueries
+            .findPatientsWhoAreNewlyEnrolledOnArtKeyPopPreviousPeriodCoorte12Months();
 
     final CohortDefinition patientWhoAreCurrentlyOnART12MonthsCohort =
-        this.keyPopCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtPreviousPeriod();
+        this.keyPopCohortQueries
+            .findPatientsWhoAreCurrentlyEnrolledOnArtPreviousPeriodCoorte12Months();
 
     // create cohort indicator
     final CohortIndicator patientEnrolledInHIVStartedARTIndicator =

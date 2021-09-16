@@ -139,7 +139,7 @@ public class KeyPopCohortQueries {
     return definition;
   }
 
-  public CohortDefinition findPatientsWhoAreNewlyEnrolledOnArtKeyPopPreviousPeriod() {
+  public CohortDefinition findPatientsWhoAreNewlyEnrolledOnArtKeyPopPreviousPeriodCoorte12Months() {
 
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
@@ -191,7 +191,7 @@ public class KeyPopCohortQueries {
     return definition;
   }
 
-  public CohortDefinition findPatientsWhoAreCurrentlyEnrolledOnArtPreviousPeriod() {
+  public CohortDefinition findPatientsWhoAreCurrentlyEnrolledOnArtPreviousPeriodCoorte12Months() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName("TX CURR KEY POP");
@@ -205,31 +205,15 @@ public class KeyPopCohortQueries {
     final String mappingsEndDate = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     definition.addSearch(
-        "START-ART",
+        "TX-CURR",
         EptsReportUtils.map(
             resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
 
     definition.addSearch(
         "TX-NEW-12MONTHS",
-        EptsReportUtils.map(this.findPatientsWhoAreNewlyEnrolledOnArtKeyPop(), mappings));
-
-    definition.addSearch(
-        "TRANSFERED-IN",
         EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                KeyPopQueriesInterface.QUERY
-                    .findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
-            mappings));
-
-    definition.addSearch(
-        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-                ResumoMensalQueries
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCardB2),
-            mappings));
+            this.findPatientsWhoAreNewlyEnrolledOnArtKeyPopPreviousPeriodCoorte12Months(),
+            mappingsEndDate));
 
     definition.addSearch(
         "TRANSFERED-OUT",
@@ -261,7 +245,7 @@ public class KeyPopCohortQueries {
             mappingsEndDate));
 
     definition.setCompositionString(
-        "(TX-NEW-12MONTHS OR START-ART OR TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD) NOT (TRANSFERED-OUT OR SUSPEND OR ABANDONED OR DIED)");
+        "(TX-NEW-12MONTHS AND TX-CURR) NOT (TRANSFERED-OUT OR SUSPEND OR ABANDONED OR DIED)");
 
     return definition;
   }
@@ -405,7 +389,7 @@ public class KeyPopCohortQueries {
             mappingsEndDate));
 
     definition.setCompositionString(
-        "((TX-CURR-6-MONTHS OR TX-NEW-6-MONTHS) OR ((TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD) NOT(TRANSFERED-IN-PREVIOS-6-MESES OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD-PREVIOS-6-MESES))) NOT (TRANSFERED-OUT OR SUSPEND OR ABANDONED OR DIED)");
+        "((TX-CURR-6-MONTHS AND TX-NEW-6-MONTHS) OR ((TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD) NOT(TRANSFERED-IN-PREVIOS-6-MESES OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD-PREVIOS-6-MESES))) NOT (TRANSFERED-OUT OR SUSPEND OR ABANDONED OR DIED)");
 
     return definition;
   }
