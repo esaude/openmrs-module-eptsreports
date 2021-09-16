@@ -49,4 +49,31 @@ public class SummaryDataQualityDuplicateDataset extends BaseDataSet {
 
     return dsd;
   }
+
+  public static String getBaseCohortQuery() {
+
+    final String query =
+        " 																	"
+            + " select p.patient_id 														"
+            + " from patient p 																"
+            + " 	inner join encounter e on e.patient_id=p.patient_id 					"
+            + " where e.voided=0 and p.voided=0 											"
+            + " 	and e.encounter_type in (5,7) 											"
+            + " union 																		"
+            + " select pg.patient_id 														"
+            + " from patient p 																"
+            + " 	inner join patient_program pg on p.patient_id=pg.patient_id 			"
+            + " where pg.voided=0 and p.voided=0 											"
+            + " 	and program_id in (1,2)  												"
+            + " union 																		"
+            + " select p.patient_id 														"
+            + " from patient p 																"
+            + " 	inner join encounter e on p.patient_id=e.patient_id 					"
+            + " 	inner join obs o on e.encounter_id=o.encounter_id 						"
+            + " where p.voided=0 and e.voided=0 and o.voided=0 								"
+            + " 	and e.encounter_type=53 and o.concept_id=23891 							"
+            + "	and o.value_datetime is not null 											";
+
+    return query;
+  }
 }
