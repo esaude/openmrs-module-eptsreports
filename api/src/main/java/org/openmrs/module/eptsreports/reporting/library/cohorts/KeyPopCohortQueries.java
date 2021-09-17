@@ -3,7 +3,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 
 import java.util.Date;
-
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.KeyPopQueriesInterface;
@@ -170,8 +169,7 @@ public class KeyPopCohortQueries {
                 KeyPopQueriesInterface.QUERY.findPatientsWhoWhereMarkedAsTransferedOutAEndDateRF7),
             mappingsEndDate));
 
-    definition.setCompositionString(
-        "START-ART NOT (TRANSFERED-OUT)");
+    definition.setCompositionString("START-ART NOT (TRANSFERED-OUT)");
 
     return definition;
   }
@@ -184,15 +182,13 @@ public class KeyPopCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
 
-    final String mappings =
-        "startDate=${startDate-12m},endDate=${endDate-12m},location=${location}";
-
     final String mappingsEndDate = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     definition.addSearch(
         "TX-CURR",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(), mappings));
+            resumoMensalCohortQueries.findPatientsWhoAreCurrentlyEnrolledOnArtMOHB13(),
+            mappingsEndDate));
 
     definition.addSearch(
         "TX-NEW-12MONTHS",
