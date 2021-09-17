@@ -3,11 +3,11 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
 
 import java.util.Date;
+
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.KeyPopQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -157,24 +157,9 @@ public class KeyPopCohortQueries {
         "START-ART",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
-                "", KeyPopQueriesInterface.QUERY.findPatientsWhoAreNewlyEnrolledOnArtKeyPop),
-            mappings));
-
-    definition.addSearch(
-        "TRANSFERED-IN",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
-                TxNewQueries.QUERY.findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
-            mappings));
-
-    definition.addSearch(
-        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-                TxNewQueries.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
+                "",
+                KeyPopQueriesInterface.QUERY
+                    .findPatientsWhoAreNewlyEnrolledOnArtKeyPopCoorte12Months),
             mappings));
 
     definition.addSearch(
@@ -186,7 +171,7 @@ public class KeyPopCohortQueries {
             mappingsEndDate));
 
     definition.setCompositionString(
-        "(START-ART OR TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD) NOT (TRANSFERED-OUT)");
+        "START-ART NOT (TRANSFERED-OUT)");
 
     return definition;
   }
