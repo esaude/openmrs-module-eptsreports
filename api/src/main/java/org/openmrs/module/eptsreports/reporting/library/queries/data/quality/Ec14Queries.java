@@ -117,7 +117,7 @@ public class Ec14Queries {
             + " AND e.encounter_datetime between :startDate AND :endDate "
             + " UNION "
             + " SELECT p.patient_id AS patient_id, o.obs_datetime AS obs_datetime, e.encounter_datetime, l.name location_name, "
-            + " o.value_datetime as concept_value, cn.name, 'Recepcao' AS FormType "
+            + " o.value_datetime as concept_value, cn.name, 'RECEPCAO - LEVANTOU TARV' AS FormType "
             + " FROM patient p "
             + " INNER JOIN encounter e on p.patient_id = e.patient_id "
             + " INNER JOIN obs o on e.encounter_id = o.encounter_id "

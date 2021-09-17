@@ -27,7 +27,7 @@ public class Ec1Queries {
             + "DATE_FORMAT(pe.date_created, '%d-%m-%Y %H:%i:%s') AS First_entry_date, "
             + "DATE_FORMAT(pe.date_changed, '%d-%m-%Y %H:%i:%s') AS Last_updated, "
             + "gravida.criteria as criteria, "
-            + "DATE_FORMAT(gravida.data_gravida, '%d-%m-%Y %H:%i:%s') AS data_criterio_gravida, "
+            + "IF(gravida.criteria = 'PC4', '',DATE_FORMAT(gravida.data_gravida, '%d-%m-%Y %H:%i:%s'))  AS data_criterio_gravida, "
             + "prog.state  as state, "
             + "prog.date_enrolled  as state_date, l.name as location_name FROM  person pe  "
             + "inner join  ( "
