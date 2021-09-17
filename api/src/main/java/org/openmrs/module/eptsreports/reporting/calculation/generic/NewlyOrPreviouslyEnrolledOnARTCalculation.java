@@ -311,12 +311,10 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
         Obs firstINHDateObs = EptsCalculationUtils.obsResultForPatient(firstINHDateMap, patientId);
         Obs firstINHDateObs2 =
             EptsCalculationUtils.obsResultForPatient(firstINHDateMap2, patientId);
-        Obs anyIsoniazida =
-            EptsCalculationUtils.obsResultForPatient(anyIsoniazidaPiridoxina, patientId);
-        Obs anyIsoniazida2 =
-            EptsCalculationUtils.obsResultForPatient(anyIsoniazidaPiridoxina2, patientId);
-        Obs in3HPor3HPPiridoxina =
-            EptsCalculationUtils.obsResultForPatient(in3HPor3HPPiridoxinaMap, patientId);
+        List<Obs> anyIsoniazida = getObsListFromResultMap(anyIsoniazidaPiridoxina, patientId);
+        List<Obs> anyIsoniazida2 = getObsListFromResultMap(anyIsoniazidaPiridoxina2, patientId);
+        List<Obs> in3HPor3HPPiridoxina =
+            getObsListFromResultMap(in3HPor3HPPiridoxinaMap, patientId);
         List<Obs> notInINHDateObs = getObsListFromResultMap(notInINHDateMap, patientId);
         List<Obs> notInINHDateObs2 = getObsListFromResultMap(notInINHDateMap2, patientId);
         List<Obs> notInINHDateObs3 = getObsListFromResultMap(notInINHDateMap3, patientId);
@@ -334,6 +332,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
                 && firstINHDateObs == null
                 && anyIsoniazida == null
                 && anyIsoniazida2 == null
+                && !anyIsoniazida2.isEmpty()
                 && firstINHDateObs2 == null
                 && first3HPDateObs == null
                 && in3HPor3HPPiridoxina == null
@@ -341,46 +340,55 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             || artStartDate == null) {
           continue;
         }
+        Obs anyIsoniazida2a = null;
+        if (anyIsoniazida2 != null && !anyIsoniazida2.isEmpty() && anyIsoniazida2.size() > 0) {
+          anyIsoniazida2a = anyIsoniazida2.get(0);
+        }
+        Obs anyIsoniazidaaa = null;
+        if (anyIsoniazida != null && !anyIsoniazida.isEmpty() && anyIsoniazida.size() > 0) {
+          anyIsoniazidaaa = anyIsoniazida.get(0);
+        }
 
         DateTime artStartDateTime = new DateTime(artStartDate.getTime());
-        DateTime iptStartDateTime =
-            new DateTime(
-                getEarliestIptStartDate(
-                        Arrays.asList(
-                            seguimentoOrFichaResumo,
-                            fichaClinicaMasterCardStartDrugsObs,
-                            anyIsoniazida,
-                            anyIsoniazida2,
-                            this.getObsNotInMonthsPriorTo(firstINHDateObs, notInINHDateObs, -7),
-                            this.getObsNotInMonthsPriorTo(firstINHDateObs, notInINHDateObs2, -7),
-                            this.getObsNotInMonthsPriorTo(firstINHDateObs, notInINHDateObs3, -7),
-                            this.getObsNotInMonthsPriorTo(firstINHDateObs, notInINHDateObs4, -7),
-                            this.getObsNotInMonthsPriorTo(firstINHDateObs2, notInINHDateObs, -7),
-                            this.getObsNotInMonthsPriorTo(firstINHDateObs2, notInINHDateObs2, -7),
-                            this.getObsNotInMonthsPriorTo(firstINHDateObs2, notInINHDateObs3, -7),
-                            this.getObsNotInMonthsPriorTo(firstINHDateObs2, notInINHDateObs4, -7),
-                            this.getObsNotInMonthsPriorTo(first3HPDateObs, notIn3HPDateObs, -4),
-                            this.getObsNotInMonthsPriorTo(first3HPDateObs, notIn3HPDateObs2, -4),
-                            this.getObsNotInMonthsPriorTo(
-                                first3HPOr3HPPlusPiridoxinaDateObs, notIn3HPDateObs, -4),
-                            this.getObsNotInMonthsPriorTo(
-                                first3HPOr3HPPlusPiridoxinaDateObs,
-                                notIn3HPOr3HPPlusPiridoxinaDateObs,
-                                -4)))
-                    .getTime());
-        boolean isDiffMoreThanSix =
-            isDateDiffGreaterThanSixMonths(artStartDateTime, iptStartDateTime);
-        if (artStartDate != null
-            && artStartDate.compareTo(endDate) <= 0
-            && isDiffMoreThanSix == false
-            && isNewlyEnrolledOnArtSearch == true) {
-          map.put(patientId, new BooleanResult(true, this));
-        }
-        if (artStartDate != null
-            && artStartDate.compareTo(endDate) <= 0
-            && isDiffMoreThanSix == true
-            && isNewlyEnrolledOnArtSearch == false) {
-          map.put(patientId, new BooleanResult(true, this));
+        Date EarliestIptStartDate =
+            getEarliestIptStartDate(
+                Arrays.asList(
+                    seguimentoOrFichaResumo,
+                    fichaClinicaMasterCardStartDrugsObs,
+                    anyIsoniazidaaa,
+                    anyIsoniazida2a,
+                    this.getObsNotInMonthsPriorTo(firstINHDateObs, notInINHDateObs, -7),
+                    this.getObsNotInMonthsPriorTo(firstINHDateObs, notInINHDateObs2, -7),
+                    this.getObsNotInMonthsPriorTo(firstINHDateObs, notInINHDateObs3, -7),
+                    this.getObsNotInMonthsPriorTo(firstINHDateObs, notInINHDateObs4, -7),
+                    this.getObsNotInMonthsPriorTo(firstINHDateObs2, notInINHDateObs, -7),
+                    this.getObsNotInMonthsPriorTo(firstINHDateObs2, notInINHDateObs2, -7),
+                    this.getObsNotInMonthsPriorTo(firstINHDateObs2, notInINHDateObs3, -7),
+                    this.getObsNotInMonthsPriorTo(firstINHDateObs2, notInINHDateObs4, -7),
+                    this.getObsNotInMonthsPriorTo(first3HPDateObs, notIn3HPDateObs, -4),
+                    this.getObsNotInMonthsPriorTo(first3HPDateObs, notIn3HPDateObs2, -4),
+                    this.getObsNotInMonthsPriorTo(
+                        first3HPOr3HPPlusPiridoxinaDateObs, notIn3HPDateObs, -4),
+                    this.getObsNotInMonthsPriorTo(
+                        first3HPOr3HPPlusPiridoxinaDateObs,
+                        notIn3HPOr3HPPlusPiridoxinaDateObs,
+                        -4)));
+        if (EarliestIptStartDate != null) {
+          DateTime iptStartDateTime = new DateTime(EarliestIptStartDate.getTime());
+          boolean isDiffMoreThanSix =
+              isDateDiffGreaterThanSixMonths(artStartDateTime, iptStartDateTime);
+          if (artStartDate != null
+              && artStartDate.compareTo(endDate) <= 0
+              && isDiffMoreThanSix == false
+              && isNewlyEnrolledOnArtSearch == true) {
+            map.put(patientId, new BooleanResult(true, this));
+          }
+          if (artStartDate != null
+              && artStartDate.compareTo(endDate) <= 0
+              && isDiffMoreThanSix == true
+              && isNewlyEnrolledOnArtSearch == false) {
+            map.put(patientId, new BooleanResult(true, this));
+          }
         }
         if (firstINHDateObs != null
             && firstINHDateObs2 != null
@@ -390,10 +398,12 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
           map.put(patientId, new BooleanResult(true, this));
         }
 
-        if (anyIsoniazida != null
+        if (anyIsoniazidaaa != null
             && anyIsoniazida2 != null
-            && anyIsoniazida.getValueDatetime().compareTo(DateUtils.addMonths(startDate, -6)) <= 0
-            && anyIsoniazida.getValueDatetime().compareTo(DateUtils.addMonths(endDate, -6)) <= 0) {
+            && !anyIsoniazida2.isEmpty()
+            && anyIsoniazidaaa.getValueDatetime().compareTo(DateUtils.addMonths(startDate, -6)) <= 0
+            && anyIsoniazidaaa.getValueDatetime().compareTo(DateUtils.addMonths(endDate, -6))
+                <= 0) {
           map.put(patientId, new BooleanResult(true, this));
         }
       }

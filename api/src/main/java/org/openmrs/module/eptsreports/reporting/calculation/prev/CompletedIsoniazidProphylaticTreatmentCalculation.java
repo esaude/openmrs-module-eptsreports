@@ -133,7 +133,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               Arrays.asList(hivMetadata.getStartDrugs()),
               TimeQualifier.FIRST,
               beginPeriodStartDate,
-              onOrAfter,
+              beginPeriodEndDate,
               context);
       // III. Patients who have Regime de TPT with the values marked on the first pick-up date
       // during the previous period
