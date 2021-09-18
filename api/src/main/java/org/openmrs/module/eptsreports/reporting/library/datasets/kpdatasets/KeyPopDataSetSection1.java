@@ -95,7 +95,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "KPI1",
         "Número adultos que iniciaram TARV durante o trimestre",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        getKeyPopColumns());
+        this.getKeyPopColumns());
 
     dataSetDefinition.addColumn(
         "I2T",
@@ -108,7 +108,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "KPI2",
         "Número adultos actualmente em TARV no fim do trimestre",
         EptsReportUtils.map(patientCurrentlyEnrolledOnArtIndicator, mappings),
-        getKeyPopColumns());
+        this.getKeyPopColumns());
 
     dataSetDefinition.addColumn(
         "I3T",
@@ -123,7 +123,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "Dos activos em TARV no fim do trimestre, subgrupo que recebeu um teste de Carga Viral "
             + "(CV)  durante o trimestre (Notificação anual!)",
         EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLRequestIndicator, mappings),
-        getKeyPopColumns());
+        this.getKeyPopColumns());
 
     dataSetDefinition.addColumn(
         "I4T",
@@ -138,7 +138,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "KPI3:Dos activos TARV no fim do trimestre, subgrupo que recebeu resultado de "
             + "CV com supressão virológica durante o trimestre  (<1000 cópias/mL) (Notificação anual!)",
         EptsReportUtils.map(patientCurrentlyEnrolledOnArtHaveVLResultIndicator, mappings),
-        getKeyPopColumns());
+        this.getKeyPopColumns());
 
     dataSetDefinition.addColumn(
         "I5T",
@@ -151,7 +151,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "KPI5",
         "KPI5:Número de adultos na coorte 12 meses - inicio de TARV ",
         EptsReportUtils.map(patientWhoAreNewOnART12MonthsCohortIndicator, mappings),
-        getKeyPopColumns());
+        this.getKeyPopColumns());
 
     dataSetDefinition.addColumn(
         "I6T",
@@ -164,7 +164,7 @@ public class KeyPopDataSetSection1 extends KeyPopAbstractDataset {
         "KPI6",
         "KPI6:Número de adultos na coorte 12 meses - Activos em TARV ",
         EptsReportUtils.map(patientWhoAreCurrentlyOnART12MonthsCohortIndicator, mappings),
-        getKeyPopColumns());
+        this.getKeyPopColumns());
 
     return dataSetDefinition;
   }
