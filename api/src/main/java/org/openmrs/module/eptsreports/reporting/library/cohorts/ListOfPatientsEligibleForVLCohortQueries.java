@@ -97,7 +97,7 @@ public class ListOfPatientsEligibleForVLCohortQueries {
             chdE2, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "txcurr AND (X1 OR X2 OR X3) AND VL1 and ( ((VL2 OR VL3) AND VL4) OR (VL5 AND VL6) OR VL7) AND NOT (E1 OR E2)");
+        "txcurr AND (X1 OR X2 OR X3) AND VL1 AND ( ((VL2 OR VL3) AND VL4) OR (VL5 AND VL6) OR VL7) AND NOT (E1 OR E2)");
 
     return cd;
   }
@@ -792,45 +792,57 @@ public class ListOfPatientsEligibleForVLCohortQueries {
     valuesMap.put("51", hivMetadata.getFsrEncounterType().getEncounterTypeId());
     valuesMap.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     valuesMap.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    valuesMap.put("1305", hivMetadata.getHivViralLoadQualitative().getConceptId());
 
     String query =
-        "      FROM( "
-            + " SELECT most_recent.patient_id, MAX(recent_date) AS recent_datetime FROM( "
-            + " SELECT p.patient_id, MAX(e.encounter_datetime) recent_date "
-            + " FROM patient p "
-            + "                 INNER JOIN encounter e ON p.patient_id = e.patient_id "
-            + "                 INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-            + "                 WHERE e.encounter_type IN (${13},${6},${9},${51}) "
-            + "                 AND e.encounter_datetime <= :startDate "
-            + "                 AND o.concept_id = ${856} "
-            + "                 AND o.value_numeric %s %d "
-            + "                 AND e.location_id = :location "
-            + "                 AND e.voided = 0 "
-            + "                 AND o.voided = 0 "
-            + "                 AND p.voided = 0 "
-            + "                 GROUP BY p.patient_id "
-            + "                  "
-            + "                 UNION "
-            + "                  "
-            + "                SELECT p.patient_id, MAX(o.obs_datetime) recent_date "
-            + "                 FROM patient p  "
-            + "                 INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "                 INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-            + "                 WHERE e.encounter_type = ${53} "
-            + "                 AND o.concept_id = ${856} "
-            + "                 AND o.value_numeric %s %d "
-            + "                 AND o.obs_datetime <= :startDate "
-            + "                 AND e.location_id = :location "
-            + "                 AND e.voided = 0 "
-            + "                 AND p.voided = 0 "
-            + "                 AND o.voided = 0    "
-            + "                 GROUP BY p.patient_id "
-            + "                  "
-            + " ) AS most_recent GROUP BY most_recent.patient_id "
-            + "              "
-            + "              "
-            + " ) AS recent_vl "
-            + "     GROUP BY recent_vl.patient_id ";
+        "  FROM patient p        "
+            + "   INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "   INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "   INNER JOIN ( "
+            + "            SELECT max_vl.patient_id, MAX(max_vl.recent_date) recent_datetime  FROM( "
+            + "   SELECT p.patient_id,MAX(e.encounter_datetime) recent_date  "
+            + "         FROM patient p  "
+            + "                              INNER JOIN encounter e ON p.patient_id = e.patient_id  "
+            + "                              INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "                              WHERE e.encounter_type IN (${13},${6},${9},${51})  "
+            + "                              AND e.encounter_datetime <= :startDate  "
+            + "                              AND o.concept_id IN (${856},${1305})                                "
+            + "                              AND e.location_id = :location  "
+            + "                              AND e.voided = 0  "
+            + "                              AND o.voided = 0  "
+            + "                              AND p.voided = 0  "
+            + "                              GROUP BY p.patient_id  "
+            + "                               "
+            + "      UNION  "
+            + "                                "
+            + "                             SELECT p.patient_id, MAX(o.obs_datetime) recent_date  "
+            + "                              FROM patient p   "
+            + "                              INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "                              INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
+            + "                              WHERE e.encounter_type = ${53}  "
+            + "                              AND o.concept_id IN (${856},${1305})                                 "
+            + "                              AND o.obs_datetime <= :startDate  "
+            + "                              AND e.location_id = :location  "
+            + "                              AND e.voided = 0  "
+            + "                              AND p.voided = 0  "
+            + "                              AND o.voided = 0     "
+            + "                              GROUP BY p.patient_id  ) max_vl  GROUP BY max_vl.patient_id                "
+            + "                              ) AS recent_vl ON recent_vl.patient_id = p.patient_id "
+            + "   WHERE        e.location_id = :location  "
+            + "                              AND e.voided = 0  "
+            + "                              AND o.voided = 0  "
+            + "                              AND p.voided = 0  "
+            + "       AND(( "
+            + "        e.encounter_datetime = recent_vl.recent_datetime "
+            + "        AND e.encounter_type IN (${13},${6},${9},${51})                             "
+            + "        AND o.concept_id = ${856}    "
+            + "        AND o.value_numeric %s %s)  "
+            + "                              OR "
+            + "        (e.encounter_type = ${53}                             "
+            + "          AND o.concept_id = ${856}    "
+            + "          AND o.value_numeric %s %s "
+            + "        AND  o.obs_datetime = recent_vl.recent_datetime ) "
+            + "                              ) ";
 
     String fromSQL =
         String.format(query, sentence.getSentence(), value, sentence.getSentence(), value);
