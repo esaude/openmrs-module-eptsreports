@@ -1,56 +1,40 @@
-/*
- * The contents of this file are subject to the OpenMRS Public License
- * Version 1.0 (the "License"); you may not use this file except in
- * compliance with the License. You may obtain a copy of the License at
- * http://license.openmrs.org
- *
- * Software distributed under the License is distributed on an "AS IS"
- * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
- * License for the specific language governing rights and limitations
- * under the License.
- *
- * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
- */
 package org.openmrs.module.eptsreports.reporting.reports;
-
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.MisauKeyPopReportDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.kpdatasets.KeyPopDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Deprecated
 @Component
-public class SetupMisauKeyPopReport extends EptsDataExportManager {
+public class SetupKeyPopDataSet extends EptsDataExportManager {
 
-  private MisauKeyPopReportDataSetDefinition misauKeyPopDataSetDefinition;
-
-  @Autowired protected GenericCohortQueries genericCohortQueries;
-
-  @Autowired
-  public SetupMisauKeyPopReport(MisauKeyPopReportDataSetDefinition misauKeyPopDataSetDefinition) {
-    this.misauKeyPopDataSetDefinition = misauKeyPopDataSetDefinition;
-  }
+  @Autowired private KeyPopDataSet keyPopDataSet;
+  @Autowired private GenericCohortQueries genericCohortQueries;
 
   @Override
   public String getExcelDesignUuid() {
-    return "9d9afa2f-d107-48e7-bd0a-c82a24fecdec";
+    return "d4caee44-0a99-11ec-a947-0f3e772993da";
   }
 
   @Override
   public String getUuid() {
-    return "5de5a817-000e-4572-80a1-61ab83a49461";
+    return "cac66234-0a99-11ec-94d2-f35432fbd6ea";
+  }
+
+  @Override
+  public String getVersion() {
+    return "1.0-SNAPSHOT";
   }
 
   @Override
@@ -69,20 +53,16 @@ public class SetupMisauKeyPopReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.addParameters(misauKeyPopDataSetDefinition.getParameters());
+    rd.setParameters(keyPopDataSet.getParameters());
     rd.addDataSetDefinition(
-        "M", mapStraightThrough(misauKeyPopDataSetDefinition.constructMisauKeyPopDataset()));
+        "KP", Mapped.mapStraightThrough(keyPopDataSet.constructTKeyPopDatset()));
+
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "baseCohortQuery", BaseQueries.getAdultBaseCohortQuery()),
+                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
             "endDate=${endDate},location=${location}"));
     return rd;
-  }
-
-  @Override
-  public String getVersion() {
-    return "1.0-SNAPSHOT";
   }
 
   @Override
@@ -92,7 +72,7 @@ public class SetupMisauKeyPopReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Relatorio_de_Populacao_Chave_MISAU.xls",
+              "KEY_POPPULATION.xls",
               "Relatorio de Populacao Chave - MISAU",
               getExcelDesignUuid(),
               null);
@@ -102,6 +82,7 @@ public class SetupMisauKeyPopReport extends EptsDataExportManager {
     } catch (IOException e) {
       throw new ReportingException(e.toString());
     }
+
     return Arrays.asList(reportDesign);
   }
 }
