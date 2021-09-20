@@ -173,7 +173,7 @@ public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {
 
     String sql =
         "SELECT p.patient_id, CASE "
-            + "                       WHEN (pregnancy_date IS NULL AND breastfeeding_date IS NULL) THEN 'N/A' "
+            + "                       WHEN (pregnancy_date IS NULL AND breastfeeding_date IS NULL) THEN '' "
             + "                       WHEN pregnancy_date IS NOT NULL THEN 'Grávida' "
             + "                       WHEN breastfeeding_date IS NOT NULL THEN 'Lactante' "
             + "                       END AS pregnance_state"
