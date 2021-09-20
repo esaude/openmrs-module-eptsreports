@@ -86,21 +86,12 @@ public class KeyPopCohortQueries {
         EptsReportUtils.map(this.findPatientsWhoAreNewlyEnrolledOnArtKeyPop(), mappings));
 
     definition.addSearch(
-        "TRANSFERED-IN",
+        "START-ART2",
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
-                "TRANSFERED-IN",
+                "START-ART2",
                 KeyPopQueriesInterface.QUERY
-                    .findPatientsWithAProgramStateMarkedAsTransferedInInAPeriod),
-            mappings));
-
-    definition.addSearch(
-        "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-        EptsReportUtils.map(
-            this.genericCohorts.generalSql(
-                "TRANSFERED-IN-AND-IN-ART-MASTER-CARD",
-                KeyPopQueriesInterface.QUERY
-                    .findPatientsWhoWhereMarkedAsTransferedInAndOnARTOnInAPeriodOnMasterCard),
+                    .findPatientsWhoAreNewlyEnrolledOnArtKeyPopCoorte12Months),
             mappings));
 
     definition.addSearch(
@@ -133,7 +124,7 @@ public class KeyPopCohortQueries {
             mappings));
 
     definition.setCompositionString(
-        "(TX-CURR OR START-ART OR TRANSFERED-IN OR TRANSFERED-IN-AND-IN-ART-MASTER-CARD) NOT(TRANSFERED-OUT OR SUSPEND OR ABANDONED OR DIED)");
+        "(TX-CURR OR START-ART OR START-ART2) NOT(TRANSFERED-OUT OR SUSPEND OR ABANDONED OR DIED)");
 
     return definition;
   }
