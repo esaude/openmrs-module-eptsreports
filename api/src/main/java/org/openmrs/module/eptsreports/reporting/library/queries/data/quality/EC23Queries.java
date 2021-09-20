@@ -15,6 +15,13 @@ public class EC23Queries {
             + "DATE_FORMAT(ultimaMestruacao.value_datetime, '%d-%m-%Y %H:%i:%s') AS dataUltimaMestruacao, "
             + "DATE_FORMAT(ultimaMestruacao.encounter_datetime, '%d-%m-%Y %H:%i:%s') AS encounter_datetime, "
             + "DATE_FORMAT(ultimaMestruacao.date_created, '%d-%m-%Y %H:%i:%s') AS date_created, "
+            + "DATE_FORMAT(pg.date_enrolled, '%d-%m-%Y') AS date_enrolled, "
+            + "case when ps.state = 9 then 'DROPPED FROM TREATMENT' "
+            + " when ps.state = 6 then 'ACTIVE ON PROGRAM' "
+            + " when ps.state = 10 then 'PATIENT HAS DIED' "
+            + " when ps.state = 8 then 'SUSPENDED TREATMENT' "
+            + " when ps.state = 7 then 'TRANSFERED OUT TO ANOTHER FACILITY' "
+            + " when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' end AS state, ps.start_date as ps_start_date, "
             + "l.name AS location_name "
             + "FROM  person pe  "
             + "left join ( "
@@ -70,7 +77,9 @@ public class EC23Queries {
             + "where pn1.person_id=pn2.person_id and pn1.person_name_id=pn2.id "
             + ") pn on pn.person_id=pe.person_id "
             + "left join location l on pid.location_id=l.location_id "
-            + "where pe.voided = 0 and pe.gender='F' and ultimaMestruacao.patient_id is not null and gravida_real.patient_id is null "
+            + " LEFT  JOIN patient_program pg ON ultimaMestruacao.patient_id = pg.patient_id AND pg.program_id = 2 "
+            + " LEFT JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
+            + "where pe.voided = 0 and pe.gender='F' and ultimaMestruacao.patient_id is not null and gravida_real.patient_id is null AND ps.end_date is null "
             + "GROUP BY pe.person_id ";
     return query;
   }

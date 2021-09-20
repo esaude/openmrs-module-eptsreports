@@ -177,7 +177,7 @@ public class SummaryQueries {
             + " LEFT JOIN patient_state ps ON pg.patient_program_id = ps.patient_program_id "
             + " INNER JOIN location l ON pg.location_id = l.location_id "
             + " WHERE pe.birthdate IS NOT NULL AND "
-            + " YEAR(pe.birthdate) < 1920 ";
+            + " YEAR(pe.birthdate) < 1920 AND ps.end_date is null ";
     return String.format(query, year);
   }
 
