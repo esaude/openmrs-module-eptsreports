@@ -392,6 +392,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
         }
         if (firstINHDateObs != null
             && firstINHDateObs2 != null
+            && firstINHDateObs.getValueDatetime() != null
             && firstINHDateObs.getValueDatetime().compareTo(DateUtils.addMonths(startDate, -6)) <= 0
             && firstINHDateObs.getValueDatetime().compareTo(DateUtils.addMonths(endDate, -6))
                 <= 0) {
@@ -401,6 +402,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
         if (anyIsoniazidaaa != null
             && anyIsoniazida2 != null
             && !anyIsoniazida2.isEmpty()
+            && anyIsoniazidaaa.getValueDatetime() != null
             && anyIsoniazidaaa.getValueDatetime().compareTo(DateUtils.addMonths(startDate, -6)) <= 0
             && anyIsoniazidaaa.getValueDatetime().compareTo(DateUtils.addMonths(endDate, -6))
                 <= 0) {
