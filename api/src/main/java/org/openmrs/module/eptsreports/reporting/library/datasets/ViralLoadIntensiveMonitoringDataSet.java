@@ -196,7 +196,7 @@ public class ViralLoadIntensiveMonitoringDataSet extends BaseDataSet {
             "DEN11TOTAL",
             EptsReportUtils.map(
                 this.viralLoadIntensiveMonitoringCohortQueries.getDenominator11(),
-                    "startDate=${endDate-5m-1d},endDate=${endDate-4m},location=${location}"));
+                "startDate=${endDate-5m-1d},endDate=${endDate-4m},location=${location}"));
 
     CohortIndicator indicatorNUm11Total =
         this.eptsGeneralIndicator.getIndicator(

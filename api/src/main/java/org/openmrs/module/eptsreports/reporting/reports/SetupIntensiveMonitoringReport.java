@@ -9,6 +9,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.IntensiveMonitoringDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.QualityImprovement2020DataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.ViralLoadIntensiveMonitoringDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -27,14 +28,18 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
 
   private IntensiveMonitoringDataSet intensiveMonitoringDataSet;
 
+  private ViralLoadIntensiveMonitoringDataSet viralLoadIntensiveMonitoringDataSet;
+
   @Autowired
   public SetupIntensiveMonitoringReport(
       GenericCohortQueries genericCohortQueries,
       QualityImprovement2020DataSet initQltyImpDataSet,
-      IntensiveMonitoringDataSet intensiveMonitoringDataSet) {
+      IntensiveMonitoringDataSet intensiveMonitoringDataSet,
+      ViralLoadIntensiveMonitoringDataSet viralLoadIntensiveMonitoringDataSet) {
     this.genericCohortQueries = genericCohortQueries;
     this.initQltyImpDataSet = initQltyImpDataSet;
     this.intensiveMonitoringDataSet = intensiveMonitoringDataSet;
+    this.viralLoadIntensiveMonitoringDataSet = viralLoadIntensiveMonitoringDataSet;
   }
 
   @Override
@@ -73,6 +78,12 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
         "IM",
         Mapped.mapStraightThrough(
             intensiveMonitoringDataSet.constructIntensiveMonitoringDataSet()));
+
+    reportDefinition.addDataSetDefinition(
+        "TOTAL",
+        EptsReportUtils.map(
+            this.viralLoadIntensiveMonitoringDataSet.constructViralLoadIntensiveMonitoringDataSet(),
+            "endDate=${revisionEndDate},location=${location}"));
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
