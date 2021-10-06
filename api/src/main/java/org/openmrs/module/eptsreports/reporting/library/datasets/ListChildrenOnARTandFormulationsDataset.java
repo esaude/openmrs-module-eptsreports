@@ -85,6 +85,10 @@ public class ListChildrenOnARTandFormulationsDataset extends BaseDataSet {
         "gender", new GenderDataDefinition(), "", new GenderConverter());
     patientDataSetDefinition.addColumn("age", this.getAge(), "endDate=${endDate}", null);
 
+    patientDataSetDefinition.addRowFilter(
+        listChildrenOnARTandFormulationsCohortQueries.getBaseCohort(),
+        "endDate=${endDate},location=${location}");
+
     /** Query 6 Patients active on TB Treatment - Sheet 1: Column F */
     patientDataSetDefinition.addColumn(
         "ontbtreatment",

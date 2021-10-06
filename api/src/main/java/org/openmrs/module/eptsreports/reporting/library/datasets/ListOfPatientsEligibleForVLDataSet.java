@@ -5,6 +5,7 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.data.converter.ConceptNameConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.GenderConverter;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsEligibleForVLCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsEligibleForVLDataDefinitionQueries;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.BirthdateConverter;
@@ -24,17 +25,21 @@ public class ListOfPatientsEligibleForVLDataSet extends BaseDataSet {
   private ListOfPatientsEligibleForVLDataDefinitionQueries
       listOfpatientsEligibleForVLDataDefinitionQueries;
 
+  private ListOfPatientsEligibleForVLCohortQueries listOfPatientsEligibleForVLCohortQueries;
+
   private ListChildrenOnARTandFormulationsDataset listChildrenOnARTandFormulationsDataset;
 
   @Autowired
   public ListOfPatientsEligibleForVLDataSet(
       ListOfPatientsEligibleForVLDataDefinitionQueries
           listOfpatientsEligibleForVLDataDefinitionQueries,
-      ListChildrenOnARTandFormulationsDataset listChildrenOnARTandFormulationsDataset) {
+      ListChildrenOnARTandFormulationsDataset listChildrenOnARTandFormulationsDataset,
+      ListOfPatientsEligibleForVLCohortQueries listOfPatientsEligibleForVLCohortQueries) {
 
     this.listOfpatientsEligibleForVLDataDefinitionQueries =
         listOfpatientsEligibleForVLDataDefinitionQueries;
     this.listChildrenOnARTandFormulationsDataset = listChildrenOnARTandFormulationsDataset;
+    this.listOfPatientsEligibleForVLCohortQueries = listOfPatientsEligibleForVLCohortQueries;
   }
 
   public DataSetDefinition constructDataSet() {
@@ -57,6 +62,10 @@ public class ListOfPatientsEligibleForVLDataSet extends BaseDataSet {
     DataDefinition nameDef =
         new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
     pdd.setParameters(getParameters());
+
+    pdd.addRowFilter(
+        listOfPatientsEligibleForVLCohortQueries.getBaseCohort(),
+        "startDate=${startDate},endDate=${endDate},location=${location}");
 
     PersonAttributeType contactAttributeType =
         Context.getPersonService()

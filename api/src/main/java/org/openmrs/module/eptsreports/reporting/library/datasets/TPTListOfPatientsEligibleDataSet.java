@@ -15,6 +15,7 @@ import org.openmrs.module.eptsreports.reporting.data.converter.CalculationResult
 import org.openmrs.module.eptsreports.reporting.data.converter.EncounterDatetimeConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.GenderConverter;
 import org.openmrs.module.eptsreports.reporting.data.definition.CalculationDataDefinition;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TPTEligiblePatientListCohortQueries;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -41,10 +42,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {
   private HivMetadata hivMetadata;
+  private TPTEligiblePatientListCohortQueries tPTEligiblePatientListCohortQueries;
 
   @Autowired
-  public TPTListOfPatientsEligibleDataSet(HivMetadata hivMetadata) {
+  public TPTListOfPatientsEligibleDataSet(
+      HivMetadata hivMetadata,
+      TPTEligiblePatientListCohortQueries tPTEligiblePatientListCohortQueries) {
     this.hivMetadata = hivMetadata;
+    this.tPTEligiblePatientListCohortQueries = tPTEligiblePatientListCohortQueries;
   }
 
   public DataSetDefinition constructDataset() throws EvaluationException {
@@ -66,6 +71,10 @@ public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {
     DataDefinition nameDef =
         new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
     pdd.setParameters(getParameters());
+
+    pdd.addRowFilter(
+        tPTEligiblePatientListCohortQueries.getTxCurrWithoutTPT(),
+        "endDate=${endDate},location=${location}");
 
     pdd.addColumn("id", new PersonIdDataDefinition(), "");
     pdd.addColumn("name", nameDef, "");

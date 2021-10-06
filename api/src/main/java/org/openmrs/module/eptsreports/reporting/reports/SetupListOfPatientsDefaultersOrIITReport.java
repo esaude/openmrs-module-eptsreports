@@ -7,7 +7,6 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsDe
 import org.openmrs.module.eptsreports.reporting.library.datasets.ListOfPatientsDefaultersOrIITTemplateDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TotalListOfPatientsDefaultersOrIITTemplateDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -54,10 +53,6 @@ public class SetupListOfPatientsDefaultersOrIITReport extends EptsDataExportMana
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.addParameters(getParameters());
-    rd.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            listOfPatientsDefaultersOrIITCohortQueries.getBaseCohort(),
-            "endDate=${endDate},minDay=${minDay},maxDay=${maxDay},location=${location}"));
 
     rd.addDataSetDefinition(
         "FATS", Mapped.mapStraightThrough(iniTotalLListOfPatDefIITDataSet.constructDataSet()));

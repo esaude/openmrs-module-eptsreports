@@ -7,7 +7,6 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.TPTEligiblePatie
 import org.openmrs.module.eptsreports.reporting.library.datasets.TPTListOfPatientsEligibleDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TPTTotalListOfPatientsEligibleDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -62,10 +61,6 @@ public class SetupTPTListOfPatientsEligibleReport extends EptsDataExportManager 
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.addParameters(getParameters());
-    rd.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            tPTEligiblePatientListCohortQueries.getTxCurrWithoutTPT(),
-            "endDate=${endDate},location=${location}"));
 
     rd.addDataSetDefinition(
         "TOTAL",

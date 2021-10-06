@@ -10,7 +10,6 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsEl
 import org.openmrs.module.eptsreports.reporting.library.datasets.ListOfPatientsEligibleForVLDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TotalOfPatientsEligibleForVLDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -64,10 +63,6 @@ public class SetupListOfPatientsEligibleForVLReport extends EptsDataExportManage
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.addParameters(getParameters());
-    rd.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            listOfPatientsEligibleForVLCohortQueries.getBaseCohort(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     rd.addDataSetDefinition(
         "TPEVL", Mapped.mapStraightThrough(totalOfPatientsEligibleForVLDataSet.constructDataSet()));

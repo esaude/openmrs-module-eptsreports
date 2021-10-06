@@ -6,7 +6,6 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ListChildrenOnARTandFormulationsCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ListChildrenOnARTandFormulationsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -59,10 +58,6 @@ public class SetupListChildrenOnARTandFormulationsReport extends EptsDataExportM
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.addParameters(getParameters());
-    rd.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            listChildrenOnARTandFormulationsCohortQueries.getBaseCohort(),
-            "endDate=${endDate},location=${location}"));
 
     rd.addDataSetDefinition(
         "ALL",
