@@ -5,6 +5,8 @@ import java.util.*;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TPTInitiationDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TPTInitiationNewDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TPTInitiationTotalNewDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TPTTotalsDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
@@ -20,14 +22,21 @@ public class SetupTPTInitiationReport extends EptsDataExportManager {
 
   private TPTInitiationDataset tptInitiationDataset;
   private TPTTotalsDataset tptTotalsDataset;
+  private TPTInitiationNewDataSet tptInitiationNewDataSet;
+  private TPTInitiationTotalNewDataSet tptInitiationTotalNewDataSet;
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
   @Autowired
   public SetupTPTInitiationReport(
-      TPTInitiationDataset tptInitiationDataset, TPTTotalsDataset tptTotalsDataset) {
+      TPTInitiationDataset tptInitiationDataset,
+      TPTTotalsDataset tptTotalsDataset,
+      TPTInitiationNewDataSet tptInitiationNewDataSet,
+      TPTInitiationTotalNewDataSet tptInitiationTotalNewDataSet) {
     this.tptInitiationDataset = tptInitiationDataset;
     this.tptTotalsDataset = tptTotalsDataset;
+    this.tptInitiationNewDataSet = tptInitiationNewDataSet;
+    this.tptInitiationTotalNewDataSet = tptInitiationTotalNewDataSet;
   }
 
   @Override
@@ -58,11 +67,15 @@ public class SetupTPTInitiationReport extends EptsDataExportManager {
     rd.setDescription(getDescription());
     rd.addParameters(getParameters());
     // Base Cohort embeded in TPT Initiation query
-    rd.addDataSetDefinition(
-        "TOTAL", Mapped.mapStraightThrough(tptTotalsDataset.constructDataset(getParameters())));
+    // rd.addDataSetDefinition("TOTAL",
+    // Mapped.mapStraightThrough(tptTotalsDataset.constructDataset(getParameters())));
 
+    // rd.addDataSetDefinition("TPT",
+    // Mapped.mapStraightThrough(tptInitiationDataset.constructDataset(getParameters())));
     rd.addDataSetDefinition(
-        "TPT", Mapped.mapStraightThrough(tptInitiationDataset.constructDataset(getParameters())));
+        "TOTAL", Mapped.mapStraightThrough(tptInitiationTotalNewDataSet.constructDataSet()));
+    rd.addDataSetDefinition(
+        "TPT", Mapped.mapStraightThrough(tptInitiationNewDataSet.constructDataSet()));
     return rd;
   }
 
