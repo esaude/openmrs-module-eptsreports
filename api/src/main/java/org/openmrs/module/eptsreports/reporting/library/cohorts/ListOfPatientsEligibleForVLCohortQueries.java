@@ -605,7 +605,7 @@ public class ListOfPatientsEligibleForVLCohortQueries {
     return sqlCohortDefinition;
   }
 
-  private String getLastNextScheduledPickUpDate(boolean selectDatetime) {
+  public String getLastNextScheduledPickUpDate(boolean selectDatetime) {
 
     Map<String, Integer> valuesMap = new HashMap<>();
 
