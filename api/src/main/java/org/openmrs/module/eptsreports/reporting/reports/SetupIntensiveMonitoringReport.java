@@ -11,6 +11,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.midatasets.MIDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.viralloadmidatasets.VLMIDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -26,6 +27,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
   @Autowired MIDataSet miDataSet;
+  @Autowired VLMIDataSet vlMIDataSet;
 
   @Override
   public String getUuid() {
@@ -66,6 +68,9 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
     reportDefinition.addDataSetDefinition(
         "MI", Mapped.mapStraightThrough(miDataSet.constructTMiDatset()));
 
+    reportDefinition.addDataSetDefinition(
+        "VLMI", Mapped.mapStraightThrough(vlMIDataSet.constructVLMiDatset()));
+
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
@@ -87,6 +92,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
+      props.put("repeatingSections", "sheet:1,row:8,dataset:MI");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
