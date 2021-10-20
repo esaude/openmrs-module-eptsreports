@@ -159,8 +159,8 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
               location,
               Arrays.asList(hivMetadata.getContinueRegimenConcept()),
               TimeQualifier.FIRST,
-              onOrAfter,
-              onOrBefore,
+              DateUtils.addMonths(onOrAfter, -6),
+              DateUtils.addMonths(onOrBefore, -6),
               EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
               context);
 
@@ -869,7 +869,7 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
         Obs regimeTPT1stPickUpPreviousPeriod2 =
             EptsCalculationUtils.obsResultForPatient(
                 regimeTPT1stPickUpPreviousPeriodMap2, patientId);
-        List<Obs> exclisionRegimeTPT1stPickUpPreviousPeriod =
+        List<Obs> exclusionRegimeTPT1stPickUpPreviousPeriod =
             getObsListFromResultMap(exclisionRegimeTPT1stPickUpPreviousPeriodMap, patientId);
 
         // ipt end date section regimeTPT1stPickUpPreviousPeriodMap2
@@ -889,26 +889,79 @@ public class CompletedIsoniazidProphylaticTreatmentCalculation extends AbstractP
         Obs endDrugsObs =
             EptsCalculationUtils.obsResultForPatient(completedDrugsObservations, patientId);
 
-        List<Obs> obss =
-            Arrays.asList(
-                startProfilaxiaObs,
-                startDrugsObs,
-                anyIsoniazida != null && anyIsoniazida.size() > 0 ? anyIsoniazida.get(0) : null,
-                anyIsoniazida2 != null && anyIsoniazida2.size() > 0 ? anyIsoniazida2.get(0) : null,
-                this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs2, -7),
-                this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs3, -7),
-                this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs4, -7),
-                this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs2, -7),
-                this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs3, -7),
-                this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs4, -7),
-                this.exclude(
-                    regimeTPT1stPickUpPreviousPeriod2,
-                    exclisionRegimeTPT1stPickUpPreviousPeriod,
-                    -7),
-                this.exclude(
-                    regimeTPT1stPickUpPreviousPeriod,
-                    exclisionRegimeTPT1stPickUpPreviousPeriod,
-                    -7));
+        List<Obs> obss = new ArrayList<>();
+        if ((regimeTPT1stPickUpPreviousPeriod != null
+            && regimeTPT1stPickUpPreviousPeriod2 != null)) {
+          obss =
+              Arrays.asList(
+                  startProfilaxiaObs,
+                  startDrugsObs,
+                  anyIsoniazida != null && anyIsoniazida.size() > 0 ? anyIsoniazida.get(0) : null,
+                  anyIsoniazida2 != null && anyIsoniazida2.size() > 0
+                      ? anyIsoniazida2.get(0)
+                      : null,
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs2, -7),
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs3, -7),
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs4, -7),
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs2, -7),
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs3, -7),
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs4, -7),
+                  this.exclude(
+                      regimeTPT1stPickUpPreviousPeriod2,
+                      exclusionRegimeTPT1stPickUpPreviousPeriod,
+                      -7),
+                  this.exclude(
+                      regimeTPT1stPickUpPreviousPeriod,
+                      exclusionRegimeTPT1stPickUpPreviousPeriod,
+                      -7));
+        }
+        if ((regimeTPT1stPickUpPreviousPeriod == null
+            && regimeTPT1stPickUpPreviousPeriod2 != null)) {
+          obss =
+              Arrays.asList(
+                  startProfilaxiaObs,
+                  startDrugsObs,
+                  anyIsoniazida != null && anyIsoniazida.size() > 0 ? anyIsoniazida.get(0) : null,
+                  anyIsoniazida2 != null && anyIsoniazida2.size() > 0
+                      ? anyIsoniazida2.get(0)
+                      : null,
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs2, -7),
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs3, -7),
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod2, notInINHDateObs4, -7),
+                  this.exclude(
+                      regimeTPT1stPickUpPreviousPeriod2,
+                      exclusionRegimeTPT1stPickUpPreviousPeriod,
+                      -7));
+        }
+        if ((regimeTPT1stPickUpPreviousPeriod != null
+            && regimeTPT1stPickUpPreviousPeriod2 == null)) {
+          obss =
+              Arrays.asList(
+                  startProfilaxiaObs,
+                  startDrugsObs,
+                  anyIsoniazida != null && anyIsoniazida.size() > 0 ? anyIsoniazida.get(0) : null,
+                  anyIsoniazida2 != null && anyIsoniazida2.size() > 0
+                      ? anyIsoniazida2.get(0)
+                      : null,
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs2, -7),
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs3, -7),
+                  this.exclude(regimeTPT1stPickUpPreviousPeriod, notInINHDateObs4, -7),
+                  this.exclude(
+                      regimeTPT1stPickUpPreviousPeriod,
+                      exclusionRegimeTPT1stPickUpPreviousPeriod,
+                      -7));
+        }
+        if ((regimeTPT1stPickUpPreviousPeriod == null
+            && regimeTPT1stPickUpPreviousPeriod2 == null)) {
+          obss =
+              Arrays.asList(
+                  startProfilaxiaObs,
+                  startDrugsObs,
+                  anyIsoniazida != null && anyIsoniazida.size() > 0 ? anyIsoniazida.get(0) : null,
+                  anyIsoniazida2 != null && anyIsoniazida2.size() > 0
+                      ? anyIsoniazida2.get(0)
+                      : null);
+        }
 
         Date iptStartDate = getMinOrMaxObsDate(obss, Priority.MIN, true);
 
