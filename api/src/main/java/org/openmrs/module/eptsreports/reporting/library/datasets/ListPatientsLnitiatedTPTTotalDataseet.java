@@ -15,7 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TptTotalDataseet {
+public class ListPatientsLnitiatedTPTTotalDataseet {
 
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
   @Autowired private TptCohortQueries tptCohortQueries;

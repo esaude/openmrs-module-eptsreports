@@ -4,6 +4,7 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxTbPrevQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxTbPrevQueriesInterface.QUERY.DisaggregationTypes;
+import org.openmrs.module.eptsreports.reporting.utils.EptsQuerysUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -17,6 +18,13 @@ import org.springframework.stereotype.Component;
 public class TxTbPrevCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohorts;
+
+  private static final String
+      FIND_PATIENTS_WHO_STARTED_TB_PREV_PREVENTIVE_TREATMENT_DURING_PREVIOUS_REPORTING_PERIOD =
+          "TBPREV/PATIENTS_WHO_STARTED_TB_PREV_PREVENTIVE_TREATMENT_DURING_PREVIOUS_REPORTING_PERIOD.sql";
+  private static final String
+      FIND_PATIENTS_WHO_COMPLETED_TB_PREV_PREVENTIVE_TREATMENT_DURING_REPORTING_PERIOD =
+          "TBPREV/PATIENTS_WHO_COMPLETED_TB_PREV_PREVENTIVE_TREATMENT_DURING_REPORTING_PERIOD.sql";
 
   @DocumentedDefinition(value = "getTbPrevTotalDenominator")
   public CohortDefinition getTbPrevTotalDenominator() {
@@ -33,8 +41,8 @@ public class TxTbPrevCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "Finding Patients Who have Started TPT During Previous Reporting Period",
-                TxTbPrevQueriesInterface.QUERY
-                    .findPatientsWhoStartedTbPrevPreventiveTreatmentDuringPreviousReportingPeriod),
+                EptsQuerysUtils.loadQuery(
+                    FIND_PATIENTS_WHO_STARTED_TB_PREV_PREVENTIVE_TREATMENT_DURING_PREVIOUS_REPORTING_PERIOD)),
             mappings));
     dsd.addSearch("TRF-OUT", EptsReportUtils.map(this.findPatientsTransferredOut(), mappings));
     dsd.addSearch(
@@ -42,8 +50,8 @@ public class TxTbPrevCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "Finding Patients Who have Completed TPT",
-                TxTbPrevQueriesInterface.QUERY
-                    .findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
+                EptsQuerysUtils.loadQuery(
+                    FIND_PATIENTS_WHO_COMPLETED_TB_PREV_PREVENTIVE_TREATMENT_DURING_REPORTING_PERIOD)),
             mappings));
     dsd.addSearch(
         "NEWLY-ART",
@@ -74,8 +82,8 @@ public class TxTbPrevCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "Finding Patients Who have Completed TPT",
-                TxTbPrevQueriesInterface.QUERY
-                    .findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
+                EptsQuerysUtils.loadQuery(
+                    FIND_PATIENTS_WHO_COMPLETED_TB_PREV_PREVENTIVE_TREATMENT_DURING_REPORTING_PERIOD)),
             mappings));
     dsd.addSearch("DENOMINATOR", EptsReportUtils.map(this.getTbPrevTotalDenominator(), mappings));
 

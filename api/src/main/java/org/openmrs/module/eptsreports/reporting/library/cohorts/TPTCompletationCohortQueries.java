@@ -8,6 +8,7 @@ import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.TPTCompletationQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TXTBQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxTbPrevQueriesInterface.QUERY.DisaggregationTypes;
+import org.openmrs.module.eptsreports.reporting.utils.EptsQuerysUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -31,6 +32,17 @@ public class TPTCompletationCohortQueries {
   @Autowired private TbMetadata tbMetadata;
 
   @Autowired private HivMetadata hivMetadata;
+
+  private static final String FIND_PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD =
+      "TPTCOMPLETION/PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD.sql";
+
+  private static final String
+      FIND_PATIENTS_WHO_STARTED_TB_PREV_PREVENTIVE_TREATMENT_DURING_7MONTHS_PREVIOUS_REPORTING_ENDDATE_PERIOD =
+          "TPTCOMPLETION/PATIENTS_WHO_STARTED_TB_PREV_PREVENTIVE_TREATMENT_DURING_7MONTHS_PREVIOUS_REPORTING_ENDDATE_PERIOD.sql";
+
+  private static final String
+      FIND_PATIENTS_WHO_COMPLETED_TB_PREV_PREVENTIVE_TREATMENT_DURING_7MONTHS_PREVIOUS_REPORTING_ENDDATE_PERIOD =
+          "TPTCOMPLETION/PATIENTS_WHO_COMPLETED_TB_PREV_PREVENTIVE_TREATMENT_DURING_7MONTHS_PREVIOUS_REPORTING_ENDDATE_PERIOD.sql";
 
   @DocumentedDefinition(value = "findTxCurrWithTPTCompletation")
   public CohortDefinition findTxCurrWithTPTCompletation() {
@@ -574,8 +586,8 @@ public class TPTCompletationCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "Finding Patients Who have Started TPT During Previous Reporting Period",
-                TPTCompletationQueries.QUERY
-                    .findPatientsWhoStartedTbPrevPreventiveTreatmentDuringPreviousReportingPeriod),
+                EptsQuerysUtils.loadQuery(
+                    FIND_PATIENTS_WHO_STARTED_TB_PREV_PREVENTIVE_TREATMENT_DURING_7MONTHS_PREVIOUS_REPORTING_ENDDATE_PERIOD)),
             mappings));
     dsd.addSearch(
         "TRF-OUT",
@@ -585,8 +597,8 @@ public class TPTCompletationCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "Finding Patients Who have Completed TPT",
-                TPTCompletationQueries.QUERY
-                    .findPatientsWhoCompletedTbPrevPreventiveTreatmentDuringReportingPeriod),
+                EptsQuerysUtils.loadQuery(
+                    FIND_PATIENTS_WHO_COMPLETED_TB_PREV_PREVENTIVE_TREATMENT_DURING_7MONTHS_PREVIOUS_REPORTING_ENDDATE_PERIOD)),
             mappings));
     dsd.addSearch(
         "NEWLY-ART",
@@ -614,87 +626,16 @@ public class TPTCompletationCohortQueries {
     return dsd;
   }
 
-  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery1")
+  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapy")
   public CohortDefinition findPatientsWhoCompletedINHTherapy() {
-    final CompositionCohortDefinition dsd = new CompositionCohortDefinition();
-
-    dsd.setName("Patients Who completed INH Therapy");
-    dsd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    dsd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dsd.addParameter(new Parameter("location", "location", Location.class));
-    final String mappings = "endDate=${endDate},location=${location}";
-
-    dsd.addSearch(
-        "INH-1", EptsReportUtils.map(findPatientsWhoCompletedINHTherapyQuery1(), mappings));
-
-    dsd.addSearch(
-        "INH-2", EptsReportUtils.map(findPatientsWhoCompletedINHTherapyQuery2(), mappings));
-
-    dsd.addSearch(
-        "INH-3", EptsReportUtils.map(findPatientsWhoCompletedINHTherapyQuery3(), mappings));
-
-    dsd.addSearch(
-        "INH-4", EptsReportUtils.map(findPatientsWhoCompletedINHTherapyQuery4(), mappings));
-
-    dsd.addSearch(
-        "INH-5", EptsReportUtils.map(findPatientsWhoCompletedINHTherapyQuery5(), mappings));
-
-    dsd.setCompositionString("INH-1 OR INH-2 OR INH-3 OR INH-4 OR INH-5");
-
-    return dsd;
-  }
-
-  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery1")
-  private CohortDefinition findPatientsWhoCompletedINHTherapyQuery1() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName(
-        "Finding Patients Who completed INH Therapy between 173 days and 365 days from the INH Start Date");
+    definition.setName("Finding Patients Who completed INH Therapy ");
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
-    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query1);
-    return definition;
-  }
+    definition.setQuery(
+        EptsQuerysUtils.loadQuery(
+            FIND_PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD));
 
-  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery2")
-  private CohortDefinition findPatientsWhoCompletedINHTherapyQuery2() {
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName(
-        "Finding Patients Who completed INH Therapy - (Profilaxia INH=I,C and NO DT-INH)) ");
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query2);
-    return definition;
-  }
-
-  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery3")
-  private CohortDefinition findPatientsWhoCompletedINHTherapyQuery3() {
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName(
-        "Finding Patients Who completed INH Therapy - Regime TPT(Isoniazida or Isoniazida + Piridoxina, DM = Mensal)");
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query3);
-    return definition;
-  }
-
-  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery4")
-  private CohortDefinition findPatientsWhoCompletedINHTherapyQuery4() {
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName(
-        "Finding Patients Who completed INH Therapy - >=3 FILT with INH Mensal, >=1 FILT with DT-INH ");
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query4);
-    return definition;
-  }
-
-  @DocumentedDefinition(value = "findPatientsWhoCompletedINHTherapyQuery5")
-  private CohortDefinition findPatientsWhoCompletedINHTherapyQuery5() {
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("Finding Patients Who completed INH Therapy - ...");
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-    definition.setQuery(TPTCompletationQueries.QUERY.findPatientsWhoCompletedINHTherapy_query5);
     return definition;
   }
 

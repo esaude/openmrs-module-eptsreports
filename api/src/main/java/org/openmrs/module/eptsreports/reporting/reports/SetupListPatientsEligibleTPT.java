@@ -89,7 +89,7 @@ public class SetupListPatientsEligibleTPT extends EptsDataExportManager {
               null);
 
       Properties props = new Properties();
-      props.put("repeatingSections", "sheet:1,row:4,dataset:TPTELIG");
+      props.put("repeatingSections", "sheet:1,row:5,dataset:TPTELIG");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {

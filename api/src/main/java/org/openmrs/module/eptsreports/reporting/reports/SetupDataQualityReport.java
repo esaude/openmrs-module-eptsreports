@@ -23,7 +23,6 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryDataQualityCohorts;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.data.quality.SummaryEc20DataQualityCohorts;
-import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.*;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec10PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec11PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec12PatientListDataset;
@@ -36,6 +35,8 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec19PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec1PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec20PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec21PatientListDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec22PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec23PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec2PatientListDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ec3PatientListDataset;
@@ -49,7 +50,6 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.Ge
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryDataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.data.quality.SummaryEc20DataQualityDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -111,10 +111,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
 
   private Ec22PatientListDataset ec22PatientListDataset;
 
-  private GetCustomConfigurationDataset getCustomConfigurationDataset;
-
-  private HivMetadata hivMetadata;
-
   @Autowired
   public SetupDataQualityReport(
       SummaryDataQualityDataset summaryDataQualityDataset,
@@ -171,9 +167,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     this.ec21PatientListDataset = ec21PatientListDataset;
     this.ec22PatientListDataset = ec22PatientListDataset;
     this.summaryEc20DataQualityDataset = summaryEc20DataQualityDataset;
-
-    this.hivMetadata = hivMetadata;
-    this.getCustomConfigurationDataset = getCustomConfigurationDataset;
   }
 
   @Override
@@ -207,13 +200,13 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "S",
         Mapped.mapStraightThrough(
-            summaryDataQualityDataset.constructSummaryDataQualityDatset(getDataParametersEC20())));
+            summaryDataQualityDataset.constructSummaryDataQualityDatset(getDataParameters())));
 
     rd.addDataSetDefinition(
         "S20",
         Mapped.mapStraightThrough(
             summaryEc20DataQualityDataset.constructSummaryEc20DataQualityDatset(
-                getDataParametersEC20())));
+                getDataParameters())));
 
     rd.addDataSetDefinition(
         "EC1",
@@ -309,10 +302,6 @@ public class SetupDataQualityReport extends EptsDataExportManager {
         Mapped.mapStraightThrough(
             ec22PatientListDataset.ec22PatientListDataset(getDataParameters())));
 
-    rd.addDataSetDefinition(
-        "EC01",
-        Mapped.mapStraightThrough(
-            getCustomConfigurationDataset.configDataSetDefinition(getDataParameters())));
     return rd;
   }
 
@@ -350,16 +339,10 @@ public class SetupDataQualityReport extends EptsDataExportManager {
     List<Parameter> parameters = new ArrayList<Parameter>();
     parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
-    parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
-    parameters.add(EptsReportUtils.getProgramConfigurableParameter(hivMetadata.getARTProgram()));
-    return parameters;
-  }
 
-  private List<Parameter> getDataParametersEC20() {
-    List<Parameter> parameters = new ArrayList<Parameter>();
-    parameters.add(ReportingConstants.START_DATE_PARAMETER);
-    parameters.add(ReportingConstants.END_DATE_PARAMETER);
-    parameters.add(new Parameter("location", "Facilities", Location.class, List.class, null));
+    parameters.add(
+        new Parameter(
+            "location", "reporting.parameter.locationList", Location.class, List.class, null));
     return parameters;
   }
 }

@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.mq.MQCategory12P2CohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.KeyPopCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -21,27 +21,27 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
   //  @Autowired private MQCohortQueries mqCohortQueries;
-  @Autowired private MQCategory12P2CohortQueries mQCategory13Section1CohortQueries;
+  @Autowired private KeyPopCohortQueries mQCategory13Section1CohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
-    final Location location = Context.getLocationService().getLocation(271);
-    final Date startDate = DateUtil.getDateTime(2020, 1, 1);
-    final Date endDate = DateUtil.getDateTime(2020, 3, 31);
-    final Date revisionDate = DateUtil.getDateTime(2020, 12, 31);
+    final Location location = Context.getLocationService().getLocation(398);
+    final Date startDate = DateUtil.getDateTime(2020, 12, 21);
+    final Date endDate = DateUtil.getDateTime(2021, 3, 20);
+    //    final Date revisionDate = DateUtil.getDateTime(2020, 12, 31);
 
     final CohortDefinition txNewCompositionCohort =
         this.mQCategory13Section1CohortQueries
-            .findPatientsInTheFirstLineWhoStartedARTDuring14MonthsBeforeRevisionDateAnd11MonthsBeforeRevisionDateCategory12Line64ColumnDDenominator();
+            .findPatientsWhoAreCurrentlyEnrolledOnArtPreviousPeriodCoorte12Months();
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 
-    parameters.put(new Parameter("startInclusionDate", "Start Date", Date.class), startDate);
+    parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
 
-    parameters.put(new Parameter("endInclusionDate", "End Date", Date.class), endDate);
+    parameters.put(new Parameter("endDate", "End Date", Date.class), endDate);
 
-    parameters.put(new Parameter("endRevisionDate", "End Date", Date.class), revisionDate);
+    //    parameters.put(new Parameter("endRevisionDate", "End Date", Date.class), revisionDate);
 
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
@@ -57,11 +57,11 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
   @Override
   protected String username() {
-    return "admin";
+    return "domingos.bernardo";
   }
 
   @Override
   protected String password() {
-    return "eSaude123";
+    return "dBernardo1";
   }
 }
