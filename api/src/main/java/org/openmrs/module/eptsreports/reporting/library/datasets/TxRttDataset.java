@@ -22,6 +22,7 @@ import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIn
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -78,6 +79,43 @@ public class TxRttDataset extends BaseDataSet {
                 EptsReportUtils.map(txRttCohortQueries.getRTTComposition(), mappings)),
             mappings),
         dissagChildrenAndAdultsAndKeyPop());
+
+    CohortIndicator RTT90 =
+        eptsGeneralIndicator.getIndicator(
+            "RTT90",
+            EptsReportUtils.map(
+                txRttCohortQueries.treatmentInterruptionOfXDays(null, 90), mappings));
+
+    dsd.addColumn(
+        "RTT90",
+        "Treatment Interruption Less Than 90 days",
+        EptsReportUtils.map(RTT90, mappings),
+        "");
+
+    CohortIndicator RTT180 =
+        eptsGeneralIndicator.getIndicator(
+            "RTT180",
+            EptsReportUtils.map(
+                txRttCohortQueries.treatmentInterruptionOfXDays(180, null), mappings));
+
+    dsd.addColumn(
+        "RTT180",
+        "Treatment Interruption Less Than 180 days",
+        EptsReportUtils.map(RTT180, mappings),
+        "");
+
+    CohortIndicator RTT90180 =
+        eptsGeneralIndicator.getIndicator(
+            "RTT90180",
+            EptsReportUtils.map(
+                txRttCohortQueries.treatmentInterruptionOfXDays(90, 180), mappings));
+
+    dsd.addColumn(
+        "RTT90180",
+        "Treatment Interruption between 90 and 180 days",
+        EptsReportUtils.map(RTT90180, mappings),
+        "");
+
     return dsd;
   }
 

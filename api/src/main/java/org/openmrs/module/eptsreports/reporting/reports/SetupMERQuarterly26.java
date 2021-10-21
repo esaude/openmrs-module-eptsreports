@@ -34,7 +34,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupMERQuarterly25 extends EptsDataExportManager {
+public class SetupMERQuarterly26 extends EptsDataExportManager {
 
   private TxPvlsDataset txPvlsDataset;
 
@@ -53,7 +53,7 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
   private TxRTTPLHIVDataset txRTTPLHIVDateset;
 
   @Autowired
-  public SetupMERQuarterly25(
+  public SetupMERQuarterly26(
       TxPvlsDataset txPvlsDataset,
       TxNewDataset txNewDataset,
       TxCurrDataset txCurrDataset,
@@ -92,12 +92,12 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.5 Quarterly";
+    return "PEPFAR MER 2.6 Quarterly";
   }
 
   @Override
   public String getDescription() {
-    return "MER 2.5 Quarterly Report";
+    return "MER 2.6 Quarterly Report";
   }
 
   @Override
@@ -115,8 +115,7 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
     // Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
     //    rd.addDataSetDefinition(
     //        "TXML", Mapped.mapStraightThrough(txMlDataset25.constructtxMlDataset()));
-    //    rd.addDataSetDefinition("R",
-    // Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
+    rd.addDataSetDefinition("R", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
     //    rd.addDataSetDefinition(
     //        "T", Mapped.mapStraightThrough(transferredInDataset.constructTransferInDataset()));
     //    rd.addDataSetDefinition(
@@ -137,8 +136,8 @@ public class SetupMERQuarterly25 extends EptsDataExportManager {
       rd =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.5_Quarterly_sheets.xls",
-              "PEPFAR MER 2.5 Quarterly Report",
+              "PEPFAR_MER_2.6_Quarterly_sheets.xls",
+              "PEPFAR MER 2.6 Quarterly Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
