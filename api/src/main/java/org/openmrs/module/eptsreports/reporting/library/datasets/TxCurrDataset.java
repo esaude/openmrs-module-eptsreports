@@ -12,12 +12,15 @@
 
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.ABOVE_FIFTY;
+import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.ABOVE_SIXTY_FIVE;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.FIFTEEN_TO_NINETEEN;
+import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.FIFTY_FIVE_TO_FIFTY_NINE;
+import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.FIFTY_TO_FIFTY_FOUR;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.FIVE_TO_NINE;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.FORTY_FIVE_TO_FORTY_NINE;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.FORTY_TO_FORTY_FOUR;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.ONE_TO_FOUR;
+import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.SIXTY_TO_SIXTY_FOUR;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.TEN_TO_FOURTEEN;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.THIRTY_FIVE_TO_THIRTY_NINE;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.THIRTY_TO_THRITY_FOUR;
@@ -128,7 +131,10 @@ public class TxCurrDataset extends BaseDataSet {
         THIRTY_FIVE_TO_THIRTY_NINE,
         FORTY_TO_FORTY_FOUR,
         FORTY_FIVE_TO_FORTY_NINE,
-        ABOVE_FIFTY);
+        FIFTY_TO_FIFTY_FOUR,
+        FIFTY_FIVE_TO_FIFTY_NINE,
+        SIXTY_TO_SIXTY_FOUR,
+        ABOVE_SIXTY_FIVE);
 
     dataSetDefinition.addDimension(
         this.getName(Gender.MALE, AgeRange.UNKNOWN),
@@ -171,7 +177,10 @@ public class TxCurrDataset extends BaseDataSet {
         THIRTY_FIVE_TO_THIRTY_NINE,
         FORTY_TO_FORTY_FOUR,
         FORTY_FIVE_TO_FORTY_NINE,
-        ABOVE_FIFTY);
+        FIFTY_TO_FIFTY_FOUR,
+        FIFTY_FIVE_TO_FIFTY_NINE,
+        SIXTY_TO_SIXTY_FOUR,
+        ABOVE_SIXTY_FIVE);
 
     dataSetDefinition.addColumn(
         "C-malesUnknownM",

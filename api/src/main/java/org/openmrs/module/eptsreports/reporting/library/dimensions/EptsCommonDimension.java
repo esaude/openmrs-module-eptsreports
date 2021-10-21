@@ -145,6 +145,21 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "50+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 50", 50, null));
 
+    dim.addCohortDefinition(
+        "50-54",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 50 and 54", 50, 54));
+
+    dim.addCohortDefinition(
+        "55-59",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 55 and 59", 55, 59));
+
+    dim.addCohortDefinition(
+        "60-64",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 60 and 64", 60, 64));
+
+    dim.addCohortDefinition(
+        "65+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 65", 65, null));
+
     return dim;
   }
 
@@ -540,6 +555,12 @@ public class EptsCommonDimension {
         query =
             query.replace("BETWEEN " + ageRange.getMin() + " AND " + ageRange.getMax(), " >= 50");
 
+        break;
+
+      case ABOVE_SIXTY_FIVE:
+        query =
+            query.replace("BETWEEN " + ageRange.getMin() + " AND " + ageRange.getMax(), " >= 65");
+
       default:
         break;
     }
@@ -590,6 +611,10 @@ public class EptsCommonDimension {
 
       case ABOVE_FIFTY:
         query = query.replace("BETWEEN " + range.getMin() + " AND " + range.getMax(), " >= 50");
+        break;
+
+      case ABOVE_SIXTY_FIVE:
+        query = query.replace("BETWEEN " + range.getMin() + " AND " + range.getMax(), " >= 65");
 
       default:
         break;
