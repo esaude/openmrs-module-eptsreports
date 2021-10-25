@@ -244,7 +244,7 @@ public class TxRttQueries {
             + "                                   AND enc.voided = 0 "
             + "                                   AND enc.encounter_type = ${aRVPharmaciaEncounterType} "
             + "                                   AND enc.location_id = :location "
-            + "                                   AND enc.encounter_datetime <= :endDate "
+            + "                                   AND enc.encounter_datetime <= DATE_ADD(:startDate, interval -1 DAY) "
             + "                                 GROUP BY pa.patient_id) fila "
             + "                                 INNER JOIN encounter e on "
             + "                                    e.patient_id = fila.patient_id and "
@@ -252,7 +252,7 @@ public class TxRttQueries {
             + "                                    e.encounter_type = ${aRVPharmaciaEncounterType} and "
             + "                                    e.location_id = :location and "
             + "                                    e.voided = 0 and "
-            + "                                    e.encounter_datetime <= :endDate "
+            + "                                    e.encounter_datetime <= DATE_ADD(:startDate, interval -1 DAY) "
             + "                                 INNER JOIN obs o on "
             + "                                    o.encounter_id = e.encounter_id and "
             + "                                    o.concept_id = ${returnVisitDateForArvDrugConcept} and "
@@ -269,7 +269,7 @@ public class TxRttQueries {
             + "                                   AND enc.voided = 0 "
             + "                                   AND enc.encounter_type IN (${adultoSeguimentoEncounterType}, ${pediatriaSeguimentoEncounterType}) "
             + "                                   AND enc.location_id = :location "
-            + "                                   AND enc.encounter_datetime <= :endDate "
+            + "                                   AND enc.encounter_datetime <= DATE_ADD(:startDate, interval -1 DAY) "
             + "                                 GROUP BY pa.patient_id) ficha "
             + "                                 INNER JOIN encounter e on "
             + "                                    e.patient_id = ficha.patient_id and "
@@ -296,14 +296,14 @@ public class TxRttQueries {
             + "                          AND obs.value_datetime IS NOT NULL "
             + "                          AND enc.encounter_type = ${masterCardDrugPickupEncounterType} "
             + "                          AND enc.location_id = :location "
-            + "                          AND obs.value_datetime <= :endDate "
+            + "                          AND obs.value_datetime <= DATE_ADD(:startDate, interval -1 DAY) "
             + "                        GROUP BY pa.patient_id "
             + "                       ) most_recent "
             + "                  GROUP BY most_recent.patient_id "
-            + "                  HAVING final_encounter_date < :endDate "
+            + "                  HAVING final_encounter_date < DATE_ADD(:startDate, interval -1 DAY) "
             + "              ) query_a "
             + "        INNER JOIN ( "
-            + "             SELECT patient_id, earliest_date "
+            + "             SELECT patient_id, MIN(earliest_date) as final_earliest_date "
             + "             FROM ( "
             + "                      SELECT p.patient_id, MIN(e.encounter_datetime) as earliest_date "
             + "                      FROM patient p "
@@ -346,18 +346,19 @@ public class TxRttQueries {
             + "                        AND e.location_id = :location "
             + "                      GROUP BY p.patient_id "
             + "                  ) as query_b "
+            + "               GROUP BY patient_id "
             + "         ) as B "
             + "    ON B.patient_id = query_a.patient_id ";
     if (minDays == null && maxDays != null) {
       query +=
-          "    WHERE  TIMESTAMPDIFF(day, B.earliest_date, query_a.final_encounter_date) < ${maxDays} ";
+          "    WHERE  TIMESTAMPDIFF(day, B.final_earliest_date, query_a.final_encounter_date) < ${maxDays} ";
     } else if (minDays != null && maxDays == null) {
       query +=
-          "    WHERE  TIMESTAMPDIFF(day, B.earliest_date, query_a.final_encounter_date) >= ${minDays} ";
+          "    WHERE  TIMESTAMPDIFF(day, B.final_earliest_date, query_a.final_encounter_date) >= ${minDays} ";
     } else {
       query +=
-          "    WHERE  TIMESTAMPDIFF(day, B.earliest_date, query_a.final_encounter_date) >= ${minDays} "
-              + " AND TIMESTAMPDIFF(day, B.earliest_date, query_a.final_encounter_date) < ${maxDays} ";
+          "    WHERE  TIMESTAMPDIFF(day, B.final_earliest_date, query_a.final_encounter_date) >= ${minDays} "
+              + " AND TIMESTAMPDIFF(day, B.final_earliest_date, query_a.final_encounter_date) < ${maxDays} ";
     }
     query += ") as final";
 
