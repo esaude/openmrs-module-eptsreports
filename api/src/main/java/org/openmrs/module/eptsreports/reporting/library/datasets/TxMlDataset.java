@@ -5,6 +5,7 @@ import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxMlCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.KeyPopulationDimension;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.TxMLDimensions;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -32,6 +33,8 @@ public class TxMlDataset extends BaseDataSet {
 
   @Autowired private TxMLDimensions txMLDimensions;
 
+  @Autowired private KeyPopulationDimension keyPopulationDimension;
+
   public DataSetDefinition constructtxMlDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     dsd.setName("Tx_Ml Data Set");
@@ -42,8 +45,16 @@ public class TxMlDataset extends BaseDataSet {
         txMlCohortQueries.getPatientsWhoMissedNextApointment();
     CohortDefinition ltfuLessThan3Months =
         this.txMlCohortQueries.getPatientsWhoAreLTFULessThan3Months();
-    CohortDefinition ltfuLessGreatherThan3Months =
-        this.txMlCohortQueries.getPatientsWhoAreLTFUGreaterThan3Months();
+    CohortDefinition ltfuLessGreatherThan6Months =
+        this.txMlCohortQueries.getPatientsWhoAreLTFUGreaterThan6Months();
+    final CohortDefinition patientsMarkedDeadDefinition =
+        this.txMlCohortQueries.getPatientsMarkedAsDead();
+    final CohortDefinition transferedoutDefinition =
+        this.txMlCohortQueries.getPatientsWhoAreTransferedOut();
+    final CohortDefinition refusedStoppedTreatmentDefinition =
+        this.txMlCohortQueries.getPatientsWhoRefusedOrStoppedTreatment();
+    CohortDefinition ltfuLessGreatherThan3MonthsLessThan6Months =
+        this.txMlCohortQueries.getPatientsWhoAreLTFUGreaterThan3MonthsAndLessThan6Months();
 
     final CohortIndicator patientsWhoMissedNextApointmentIndicator =
         this.eptsGeneralIndicator.getIndicator(
@@ -53,10 +64,23 @@ public class TxMlDataset extends BaseDataSet {
         this.eptsGeneralIndicator.getIndicator(
             "findPatientsWhoAreLTFULessThan3Months",
             EptsReportUtils.map(ltfuLessThan3Months, mappings));
-    final CohortIndicator ltfuLessGreatherThan3MonthsIndicator =
+    final CohortIndicator ltfuLessGreatherThan6MonthsIndicator =
         this.eptsGeneralIndicator.getIndicator(
-            "findPatientsWhoAreLTFUGreaterThan3Months",
-            EptsReportUtils.map(ltfuLessGreatherThan3Months, mappings));
+            "findPatientsWhoAreLTFUGreaterThan6Months",
+            EptsReportUtils.map(ltfuLessGreatherThan6Months, mappings));
+    final CohortIndicator ltfuLessGreatherThan3MonthsLessThan6MonthsIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "findPatientsWhoAreLTFUGreaterThan3MonthsAndLessThan6Months",
+            EptsReportUtils.map(ltfuLessGreatherThan3MonthsLessThan6Months, mappings));
+    final CohortIndicator patientMarkedDeadIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientsOnTxRtt", EptsReportUtils.map(patientsMarkedDeadDefinition, mappings));
+    final CohortIndicator transferedOutIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientsOnTxRtt", EptsReportUtils.map(transferedoutDefinition, mappings));
+    final CohortIndicator refusedStoppedTreatmentIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "patientsOnTxRtt", EptsReportUtils.map(refusedStoppedTreatmentDefinition, mappings));
 
     dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dsd.addDimension(
@@ -118,24 +142,49 @@ public class TxMlDataset extends BaseDataSet {
     super.addRow(
         dsd,
         "M5",
-        "IIT >= 90 days",
-        EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
+        "IIT >= 180 days",
+        EptsReportUtils.map(ltfuLessGreatherThan6MonthsIndicator, mappings),
         getColumnsForAgeAndGender());
     dsd.addColumn(
         "M5-TotalMale",
-        "IIT >= 90 days (Totals male) ",
-        EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
+        "IIT >= 180 days (Totals male) ",
+        EptsReportUtils.map(ltfuLessGreatherThan6MonthsIndicator, mappings),
         "gender=M");
     dsd.addColumn(
         "M5-TotalFemale",
-        "IIT >= 90 days (Totals female) ",
-        EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
+        "IIT >= 180 days (Totals female) ",
+        EptsReportUtils.map(ltfuLessGreatherThan6MonthsIndicator, mappings),
+        "gender=F");
+
+    super.addRow(
+        dsd,
+        "M8",
+        "IIT >= 90 days AND IIT < 180 days",
+        EptsReportUtils.map(ltfuLessGreatherThan3MonthsLessThan6MonthsIndicator, mappings),
+        getColumnsForAgeAndGender());
+    dsd.addColumn(
+        "M8-TotalMale",
+        "IIT >= 90 days AND IIT < 180 days (Totals male) ",
+        EptsReportUtils.map(ltfuLessGreatherThan3MonthsLessThan6MonthsIndicator, mappings),
+        "gender=M");
+    dsd.addColumn(
+        "M8-TotalFemale",
+        "IIT >= 90 days AND IIT < 180 days (Totals female) ",
+        EptsReportUtils.map(ltfuLessGreatherThan3MonthsLessThan6MonthsIndicator, mappings),
         "gender=F");
 
     this.setTransferedDimension(
         dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
     this.setRefusedOrStoppedTreatmentDimension(
         dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
+    this.addKeyPopDisagregation(dsd, mappings, "M4", ltfuLessThan3MonthsIndicator);
+    this.addKeyPopDisagregation(dsd, mappings, "M5", ltfuLessGreatherThan6MonthsIndicator);
+    this.addKeyPopDisagregation(dsd, mappings, "M2", patientsWhoMissedNextApointmentIndicator);
+    this.addKeyPopDisagregation(dsd, mappings, "M3", patientMarkedDeadIndicator);
+    this.addKeyPopDisagregation(dsd, mappings, "M6", transferedOutIndicator);
+    this.addKeyPopDisagregation(dsd, mappings, "M7", refusedStoppedTreatmentIndicator);
+    this.addKeyPopDisagregation(
+        dsd, mappings, "M8", ltfuLessGreatherThan3MonthsLessThan6MonthsIndicator);
 
     return dsd;
   }
@@ -297,5 +346,52 @@ public class TxMlDataset extends BaseDataSet {
         above50F,
         unknownF,
         total);
+  }
+
+  private void addKeyPopDisagregation(
+      final CohortIndicatorDataSetDefinition definition,
+      final String mappings,
+      String name,
+      CohortIndicator indicator) {
+
+    definition.addDimension(
+        "homosexual",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreHomosexual(), mappings));
+
+    definition.addDimension(
+        "drug-user",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoUseDrugs(), mappings));
+
+    definition.addDimension(
+        "prisioner",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreInPrison(), mappings));
+
+    definition.addDimension(
+        "sex-worker",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreSexWorker(), mappings));
+
+    definition.addColumn(
+        name + "-MSM",
+        "Homosexual",
+        EptsReportUtils.map(indicator, mappings),
+        "gender=M|homosexual=homosexual");
+
+    definition.addColumn(
+        name + "-PWID",
+        "Drugs User",
+        EptsReportUtils.map(indicator, mappings),
+        "drug-user=drug-user");
+
+    definition.addColumn(
+        name + "-PRI",
+        "Prisioners",
+        EptsReportUtils.map(indicator, mappings),
+        "prisioner=prisioner");
+
+    definition.addColumn(
+        name + "-FSW",
+        "Sex Worker",
+        EptsReportUtils.map(indicator, mappings),
+        "gender=F|sex-worker=sex-worker");
   }
 }
