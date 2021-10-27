@@ -29,11 +29,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
+public class TxRTTDurationOfTreatmentInterruptionBetween3And5MonthsCalculation
+    extends BaseFghCalculation {
 
   private static final int CHUNK_SIZE = 1000;
 
-  private static int DAYS_OF_YEAR = 365;
+  private static int DAYS_OF_YEAR = 90;
 
   @Autowired private TxRTTCohortQueries txRTTCohortQueries;
 
@@ -58,13 +59,13 @@ public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
       parameters.put("endDate", DateUtil.adjustDate(startDate, -1, DurationUnit.DAYS));
       parameters.put("realEndDate", endDate);
       parameters.put("location", location);
+
       CalculationResultMap iiTPatients =
           Context.getRegisteredComponents(TxRTTPatientsWhoExperiencedIITCalculation.class)
               .get(0)
               .evaluate(parameters, this.getNewEvaluationContext(parameters));
 
-      this.calculateGreaterOrEqual12MonthsDates(
-          context, new ArrayList<>(cohort), iiTPatients, resultMap);
+      this.calculateLessThan12MonthsDates(context, new ArrayList<>(cohort), iiTPatients, resultMap);
 
     } catch (EvaluationException e) {
       throw new APIException(e);
@@ -72,7 +73,7 @@ public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
     return resultMap;
   }
 
-  private void calculateGreaterOrEqual12MonthsDates(
+  private void calculateLessThan12MonthsDates(
       EvaluationContext context,
       List<Integer> cohort,
       CalculationResultMap iiTPatients,
@@ -86,11 +87,12 @@ public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
       Date minTxCurrDate = entry.getValue();
 
       CalculationResult calculationResult = iiTPatients.get(patientId);
+
       if (calculationResult != null && calculationResult.getValue() != null) {
         if (calculationResult.getValue() instanceof Date) {
           Date iitDate = (Date) calculationResult.getValue();
           // Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-          if (EptsDateUtil.getDaysBetween(iitDate, minTxCurrDate) >= DAYS_OF_YEAR) {
+          if (EptsDateUtil.getDaysBetween(iitDate, minTxCurrDate) < DAYS_OF_YEAR) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
         }
@@ -112,7 +114,7 @@ public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
         if (calculationResult.getValue() instanceof Date) {
           Date iitDate = (Date) calculationResult.getValue();
           // Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-          if (EptsDateUtil.getDaysBetween(iitDate, maxTxCurrDate) >= DAYS_OF_YEAR) {
+          if (EptsDateUtil.getDaysBetween(iitDate, maxTxCurrDate) < DAYS_OF_YEAR) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
         }

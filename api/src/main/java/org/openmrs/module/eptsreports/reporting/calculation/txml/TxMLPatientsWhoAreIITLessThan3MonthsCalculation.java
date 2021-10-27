@@ -12,7 +12,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation extends TxMLPatientCalculation {
+public class TxMLPatientsWhoAreIITLessThan3MonthsCalculation extends TxMLPatientCalculation {
 
   private static int LESS_THAN_3_MONTHS = 90;
   private static int DAYS_TO_LTFU = 28;

@@ -29,11 +29,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
+public class TxRTTDurationOfTreatmentInterruptionGreaterOrEqual6MonthsCalculation
+    extends BaseFghCalculation {
 
   private static final int CHUNK_SIZE = 1000;
 
-  private static int DAYS_OF_YEAR = 365;
+  private static int DAYS_OF_YEAR = 180;
 
   @Autowired private TxRTTCohortQueries txRTTCohortQueries;
 

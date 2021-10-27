@@ -26,11 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsAndLessThan6MonthsCalculation
-    extends TxMLPatientCalculation {
+public class TxMLPatientsWhoAreIITGreaterOrEquel6MonthsCalculation extends TxMLPatientCalculation {
 
-  private static int LESS_THAN_6_MONTHS = 180;
-  private static int GREATER_THAN_3_MONTHS = 90;
+  private static int GREATHER_THAN_6_MONTHS = 180;
   private static int DAYS_TO_LTFU = 28;
 
   @Autowired private QueryDisaggregationProcessor disaggregationProcessor;
@@ -63,8 +61,7 @@ public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsAndLessThan6MonthsCalculat
               TxMLPatientsWhoMissedNextApointmentCalculation.getLastRecepcaoLevantamentoPlus30(
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
       if (maxNextDate != null
-          && (EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) >= GREATER_THAN_3_MONTHS
-              && EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) < LESS_THAN_6_MONTHS)) {
+          && EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) >= GREATHER_THAN_6_MONTHS) {
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
         if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
             && nextDatePlus28.compareTo(endDate) < 0) {

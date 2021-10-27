@@ -43,18 +43,18 @@ public class TxMlDataset extends BaseDataSet {
 
     CohortDefinition patientsWhoMissedNextApointment =
         txMlCohortQueries.getPatientsWhoMissedNextApointment();
-    CohortDefinition ltfuLessThan3Months =
+    CohortDefinition iitLessThan3Months =
         this.txMlCohortQueries.getPatientsWhoAreLTFULessThan3Months();
-    CohortDefinition ltfuLessGreatherThan6Months =
-        this.txMlCohortQueries.getPatientsWhoAreLTFUGreaterThan6Months();
+    CohortDefinition iitBetween3And5Months =
+        this.txMlCohortQueries.getPatientsWhoAreIITBetween3And5Months();
+    CohortDefinition iitGreaterOrEqual6Months =
+        this.txMlCohortQueries.getPatientsWhoAreIITGreaterOrEqual6Months();
     final CohortDefinition patientsMarkedDeadDefinition =
         this.txMlCohortQueries.getPatientsMarkedAsDead();
     final CohortDefinition transferedoutDefinition =
         this.txMlCohortQueries.getPatientsWhoAreTransferedOut();
     final CohortDefinition refusedStoppedTreatmentDefinition =
         this.txMlCohortQueries.getPatientsWhoRefusedOrStoppedTreatment();
-    CohortDefinition ltfuLessGreatherThan3MonthsLessThan6Months =
-        this.txMlCohortQueries.getPatientsWhoAreLTFUGreaterThan3MonthsAndLessThan6Months();
 
     final CohortIndicator patientsWhoMissedNextApointmentIndicator =
         this.eptsGeneralIndicator.getIndicator(
@@ -62,16 +62,13 @@ public class TxMlDataset extends BaseDataSet {
             EptsReportUtils.map(patientsWhoMissedNextApointment, mappings));
     final CohortIndicator ltfuLessThan3MonthsIndicator =
         this.eptsGeneralIndicator.getIndicator(
-            "findPatientsWhoAreLTFULessThan3Months",
-            EptsReportUtils.map(ltfuLessThan3Months, mappings));
+            "iitLessThan3Months", EptsReportUtils.map(iitLessThan3Months, mappings));
     final CohortIndicator ltfuLessGreatherThan6MonthsIndicator =
         this.eptsGeneralIndicator.getIndicator(
-            "findPatientsWhoAreLTFUGreaterThan6Months",
-            EptsReportUtils.map(ltfuLessGreatherThan6Months, mappings));
+            "iitGreaterOrEqual6Months", EptsReportUtils.map(iitGreaterOrEqual6Months, mappings));
     final CohortIndicator ltfuLessGreatherThan3MonthsLessThan6MonthsIndicator =
         this.eptsGeneralIndicator.getIndicator(
-            "findPatientsWhoAreLTFUGreaterThan3MonthsAndLessThan6Months",
-            EptsReportUtils.map(ltfuLessGreatherThan3MonthsLessThan6Months, mappings));
+            "iitBetween3And5Months", EptsReportUtils.map(iitBetween3And5Months, mappings));
     final CohortIndicator patientMarkedDeadIndicator =
         this.eptsGeneralIndicator.getIndicator(
             "patientsOnTxRtt", EptsReportUtils.map(patientsMarkedDeadDefinition, mappings));
