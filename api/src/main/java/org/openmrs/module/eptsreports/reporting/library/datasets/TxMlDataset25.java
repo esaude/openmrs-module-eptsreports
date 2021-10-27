@@ -34,6 +34,7 @@ public class TxMlDataset25 extends BaseDataSet {
   public DataSetDefinition constructtxMlDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mappingsKp = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     dsd.setName("Tx_Ml Data Set");
     dsd.addParameters(getParameters());
     // tie dimensions to this data definition
@@ -42,6 +43,8 @@ public class TxMlDataset25 extends BaseDataSet {
         "age",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
+    dsd.addDimension(
+        "KP", EptsReportUtils.map(eptsCommonDimension.getKeyPopsDimension(), mappingsKp));
     // start building the datasets
     // get the column for the totals
     dsd.addColumn(
@@ -69,7 +72,8 @@ public class TxMlDataset25 extends BaseDataSet {
                         .getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
                     mappings)),
             mappings),
-        getColumnsForAgeAndGender());
+        getColumnsForAgeAndGenderAndKeyPop());
+
     // Missed appointment and dead
     addRow(
         dsd,
@@ -83,7 +87,7 @@ public class TxMlDataset25 extends BaseDataSet {
                         .getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod(),
                     mappings)),
             mappings),
-        getColumnsForAgeAndGender());
+        getColumnsForAgeAndGenderAndKeyPop());
     // LTFU Less Than 90 days
     addRow(
         dsd,
@@ -95,7 +99,7 @@ public class TxMlDataset25 extends BaseDataSet {
                 EptsReportUtils.map(
                     txMlCohortQueries.getPatientsIITLessThan90DaysComposition(), mappings)),
             mappings),
-        getColumnsForAgeAndGender());
+        getColumnsForAgeAndGenderAndKeyPop());
     // Transferred Out
     addRow(
         dsd,
@@ -108,33 +112,56 @@ public class TxMlDataset25 extends BaseDataSet {
                     txMlCohortQueries.getPatientsWhoMissedNextAppointmentAndTransferredOut(),
                     mappings)),
             mappings),
-        getColumnsForAgeAndGender());
+        getColumnsForAgeAndGenderAndKeyPop());
     // Refused Or Stopped Treatment
-    addRow(
-        dsd,
-        "M6",
-        "RefusedOrStoppedTreatment",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "missed and RefusedOrStoppedTreatment",
-                EptsReportUtils.map(
-                    txMlCohortQueries
-                        .getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
-                    mappings)),
-            mappings),
-        getColumnsForAgeAndGender());
-    // LTFU More Than 90 days
+    //    addRow(
+    //        dsd,
+    //        "M6",
+    //        "RefusedOrStoppedTreatment",
+    //        EptsReportUtils.map(
+    //            eptsGeneralIndicator.getIndicator(
+    //                "missed and RefusedOrStoppedTreatment",
+    //                EptsReportUtils.map(
+    //                    txMlCohortQueries
+    //                        .getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
+    //                    mappings)),
+    //            mappings),
+    //        getColumnsForAgeAndGenderAndKeyPop());
+    // LTFU More Than 180 days
     addRow(
         dsd,
         "M7",
-        "ITT More Than 90 days",
+        "ITT More Than 180 days",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "missed and ITT More Than 90 days",
+                "missed and ITT More Than 180 days",
                 EptsReportUtils.map(
-                    txMlCohortQueries.getPatientsIITMoreThan90DaysComposition(), mappings)),
+                    txMlCohortQueries.getPatientsIITMoreThan180DaysComposition(), mappings)),
             mappings),
-        getColumnsForAgeAndGender());
+        getColumnsForAgeAndGenderAndKeyPop());
+
+    addRow(
+        dsd,
+        "M8",
+        "IIT On Treatment for 3-5 months",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "missed and ITT for 3-5 months",
+                EptsReportUtils.map(
+                    txMlCohortQueries.getPatientsIITBetween90DaysAnd180DaysComposition(),
+                    mappings)),
+            mappings),
+        getColumnsForAgeAndGenderAndKeyPop());
+
+    dsd.addColumn(
+        "M9",
+        "Total IIT",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "totals IIT",
+                EptsReportUtils.map(txMlCohortQueries.getPatientsWithIITComposition(), mappings)),
+            mappings),
+        "");
 
     return dsd;
   }
@@ -144,7 +171,7 @@ public class TxMlDataset25 extends BaseDataSet {
    *
    * @return
    */
-  private List<ColumnParameters> getColumnsForAgeAndGender() {
+  private List<ColumnParameters> getColumnsForAgeAndGenderAndKeyPop() {
     ColumnParameters under1M =
         new ColumnParameters("under1M", "under 1 year male", "gender=M|age=<1", "01");
     ColumnParameters oneTo4M =
@@ -202,6 +229,12 @@ public class TxMlDataset25 extends BaseDataSet {
     ColumnParameters total = new ColumnParameters("totals", "Totals", "", "27");
     ColumnParameters totalF = new ColumnParameters("totalF", "Total of Females", "gender=F", "29");
 
+    // Key population
+    ColumnParameters pid = new ColumnParameters("pid", "PID", "KP=PID", "30");
+    ColumnParameters msm = new ColumnParameters("msm", "MSM", "KP=MSM", "31");
+    ColumnParameters csw = new ColumnParameters("msm", "CSW", "KP=CSW", "32");
+    ColumnParameters pri = new ColumnParameters("pri", "PRI", "KP=PRI", "33");
+
     return Arrays.asList(
         under1M,
         oneTo4M,
@@ -231,6 +264,10 @@ public class TxMlDataset25 extends BaseDataSet {
         above50F,
         unknownF,
         total,
-        totalF);
+        totalF,
+        pid,
+        msm,
+        csw,
+        pri);
   }
 }

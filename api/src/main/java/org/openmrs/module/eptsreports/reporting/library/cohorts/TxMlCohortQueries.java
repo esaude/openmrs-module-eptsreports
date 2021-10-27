@@ -24,15 +24,29 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxMlCohortQueries {
 
-  @Autowired private HivMetadata hivMetadata;
+  private HivMetadata hivMetadata;
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
+  private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+  private TxCurrCohortQueries txCurrCohortQueries;
 
-  @Autowired private HivCohortQueries hivCohortQueries;
+  private HivCohortQueries hivCohortQueries;
 
-  @Autowired private TxRttCohortQueries txRttCohortQueries;
+  private TxRttCohortQueries txRttCohortQueries;
+
+  @Autowired
+  public TxMlCohortQueries(
+      HivMetadata hivMetadata,
+      GenericCohortQueries genericCohortQueries,
+      TxCurrCohortQueries txCurrCohortQueries,
+      HivCohortQueries hivCohortQueries,
+      TxRttCohortQueries txRttCohortQueries) {
+    this.hivMetadata = hivMetadata;
+    this.genericCohortQueries = genericCohortQueries;
+    this.txCurrCohortQueries = txCurrCohortQueries;
+    this.hivCohortQueries = hivCohortQueries;
+    this.txRttCohortQueries = txRttCohortQueries;
+  }
 
   /**
    * <b>Description:</b> Patients started ART and missed Next Appointment or Next Drug Pickup (A and
@@ -327,7 +341,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "C1",
         EptsReportUtils.map(
-            getPatientsOnARTForLessOrMoreThan90Days(true),
+            getPatientsOnARTForLessOrMoreThan180Days(1),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
@@ -352,7 +366,7 @@ public class TxMlCohortQueries {
   }
 
   /**
-   * <b>Description:</b> “Lost to Follow-Up After being on Treatment for >3 months” will have the
+   * <b>Description:</b> “Lost to Follow-Up After being on Treatment for >6 months” will have the
    * following combination:
    *
    * <ul>
@@ -361,7 +375,7 @@ public class TxMlCohortQueries {
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getPatientsLTFUMoreThan90DaysComposition() {
+  public CohortDefinition getPatientsLTFUMoreThan180DaysComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("Get patients who are Lost To Follow Up Composition");
@@ -387,7 +401,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "C2",
         EptsReportUtils.map(
-            getPatientsOnARTForLessOrMoreThan90Days(false),
+            getPatientsOnARTForLessOrMoreThan180Days(3),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
@@ -1149,14 +1163,14 @@ public class TxMlCohortQueries {
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getPatientsOnARTForLessOrMoreThan90Days(Boolean lessThan90Days) {
+  public CohortDefinition getPatientsOnARTForLessOrMoreThan180Days(Integer periodFlag) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             "lessThanOrMoreThan90DaysPatients",
             Context.getRegisteredComponents(StartedArtOnLastClinicalContactCalculation.class)
                 .get(0));
 
-    cd.addCalculationParameter("lessThan90Days", lessThan90Days);
+    cd.addCalculationParameter("periodFlag", periodFlag);
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -1383,16 +1397,16 @@ public class TxMlCohortQueries {
   }
 
   /**
-   * <b>Description:</b> “Interruption In Treatment for >3 months” will have the following
+   * <b>Description:</b> “Interruption In Treatment for >6 months” will have the following
    * combination:
    *
    * <ul>
-   *   <li>((A OR B) AND C2) AND NOT Dead AND NOT Transferred-Out AND NOT Refused
+   *   <li>((A OR B) AND C3) AND NOT Dead AND NOT Transferred-Out AND NOT Refused
    * </ul>
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getPatientsIITMoreThan90DaysComposition() {
+  public CohortDefinition getPatientsIITMoreThan180DaysComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.setName("Get patients who are Lost To Follow Up Composition");
@@ -1407,9 +1421,9 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
-        "C2",
+        "C3",
         EptsReportUtils.map(
-            getPatientsOnARTForLessOrMoreThan90Days(false),
+            getPatientsOnARTForLessOrMoreThan180Days(3),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
@@ -1428,7 +1442,7 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "(missedAppointment AND C2) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
+        "(missedAppointment AND C3) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
     return cd;
   }
 
@@ -1455,7 +1469,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "C1",
         EptsReportUtils.map(
-            getPatientsOnARTForLessOrMoreThan90Days(true),
+            getPatientsOnARTForLessOrMoreThan180Days(1),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
@@ -1476,6 +1490,116 @@ public class TxMlCohortQueries {
     cd.setCompositionString(
         "(missedAppointment AND C1) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
 
+    return cd;
+  }
+
+  /**
+   * <b>Description:</b> “Interruption In Treatment between 3-5 months” will have the following
+   * combination:
+   *
+   * <ul>
+   *   <li>((A OR B) AND C2) AND NOT Dead AND NOT Transferred-Out AND NOT Refused
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getPatientsIITBetween90DaysAnd180DaysComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Get patients who are Lost To Follow Up Composition between 3-5 months");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "missedAppointment",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "C2",
+        EptsReportUtils.map(
+            getPatientsOnARTForLessOrMoreThan180Days(2),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transferredOut",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndTransferredOut(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "refusedOrStopped",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "(missedAppointment AND C2) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
+    return cd;
+  }
+
+  /**
+   * <b>Description:</b> “Interruption In Treatment Total” will have the following combination:
+   *
+   * <ul>
+   *   <li>(IIT<3month OR IITBetween3-5month OR IIT>6months)
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getPatientsWithIITComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    cd.setName("Get All patients who are Lost To Follow Up Composition");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "missedAppointment",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "C1",
+        EptsReportUtils.map(
+            getPatientsOnARTForLessOrMoreThan180Days(1),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "C2",
+        EptsReportUtils.map(
+            getPatientsOnARTForLessOrMoreThan180Days(2),
+            "onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "C3",
+        EptsReportUtils.map(
+            getPatientsOnARTForLessOrMoreThan180Days(3),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transferredOut",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndTransferredOut(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "refusedOrStopped",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "(missedAppointment AND (C1 OR C2 OR C3)) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
     return cd;
   }
 }

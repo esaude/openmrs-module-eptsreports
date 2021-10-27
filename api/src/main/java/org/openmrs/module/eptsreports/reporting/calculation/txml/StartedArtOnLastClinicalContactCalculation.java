@@ -30,10 +30,12 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
     CalculationResultMap lastClinicalContactMap =
         getLastClinicalContactMap(cohort, context, commonMetadata, hivMetadata);
 
-    Boolean lessThan90Days = (Boolean) parameterValues.get("lessThan90Days");
+    Integer periodFlag = (Integer) parameterValues.get("periodFlag");
 
     CalculationResultMap lessThan90DaysMap = new CalculationResultMap();
-    CalculationResultMap moreThan90DaysMap = new CalculationResultMap();
+    CalculationResultMap between90DaysAnd180DaysMap = new CalculationResultMap();
+    CalculationResultMap moreThan180DaysMap = new CalculationResultMap();
+
     CalculationResultMap artStartDates =
         calculate(
             Context.getRegisteredComponents(InitialArtStartDateCalculation.class).get(0),
@@ -51,15 +53,22 @@ public class StartedArtOnLastClinicalContactCalculation extends AbstractPatientC
 
         if (days < 90) {
           lessThan90DaysMap.put(patientId, new BooleanResult(true, this));
+        } else if (days >= 180) {
+          moreThan180DaysMap.put(patientId, new BooleanResult(true, this));
         } else {
-          moreThan90DaysMap.put(patientId, new BooleanResult(true, this));
+          between90DaysAnd180DaysMap.put(patientId, new BooleanResult(true, this));
         }
       }
     }
-    if (lessThan90Days) {
+    //    TODO:Change the paramaters passed from the CohotQueries
+    if (periodFlag == 1) {
       return lessThan90DaysMap;
+    } else if (periodFlag == 2) {
+      return between90DaysAnd180DaysMap;
+    } else if (periodFlag == 3) {
+      return moreThan180DaysMap;
     } else {
-      return moreThan90DaysMap;
+      return null;
     }
   }
 

@@ -132,7 +132,7 @@ public class TxMlDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "missed and LTFU More Than 90 days",
                 EptsReportUtils.map(
-                    txMlCohortQueries.getPatientsLTFUMoreThan90DaysComposition(), mappings)),
+                    txMlCohortQueries.getPatientsLTFUMoreThan180DaysComposition(), mappings)),
             mappings),
         getColumnsForAgeAndGender());
 
