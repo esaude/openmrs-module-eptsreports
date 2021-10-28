@@ -377,7 +377,7 @@ public class TxMlCohortQueries {
     return sqlCohortDefinition;
   }
 
-  public CohortDefinition getPatientsWhoAreLTFULessThan3Months() {
+  public CohortDefinition getPatientsWhoAreIITLessThan3Months() {
     String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Get patients who are LTFU less than 3 months");
@@ -392,13 +392,10 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "transferedOut", EptsReportUtils.map(this.getPatientsWhoAreTransferedOut(), mapping));
     cd.addSearch(
-        "refusedTreatment",
-        EptsReportUtils.map(this.getPatientsWhoRefusedOrStoppedTreatment(), mapping));
-    cd.addSearch(
         "numerator", EptsReportUtils.map(this.getPatientsWhoMissedNextApointment(), mapping));
 
     cd.setCompositionString(
-        "(numerator AND missedAppointmentIITLess3Month) NOT (dead OR transferedOut OR refusedTreatment)");
+        "(numerator AND missedAppointmentIITLess3Month) NOT (dead OR transferedOut)");
     return cd;
   }
 
@@ -417,13 +414,10 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "transferedOut", EptsReportUtils.map(this.getPatientsWhoAreTransferedOut(), mapping));
     cd.addSearch(
-        "refusedTreatment",
-        EptsReportUtils.map(this.getPatientsWhoRefusedOrStoppedTreatment(), mapping));
-    cd.addSearch(
         "numerator", EptsReportUtils.map(this.getPatientsWhoMissedNextApointment(), mapping));
 
     cd.setCompositionString(
-        "(numerator AND missedAppointmentIITGreaterOrEqual6Month) NOT (dead OR transferedOut OR refusedTreatment)");
+        "(numerator AND missedAppointmentIITGreaterOrEqual6Month) NOT (dead OR transferedOut)");
     return cd;
   }
 
@@ -443,13 +437,10 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "transferedOut", EptsReportUtils.map(this.getPatientsWhoAreTransferedOut(), mapping));
     cd.addSearch(
-        "refusedTreatment",
-        EptsReportUtils.map(this.getPatientsWhoRefusedOrStoppedTreatment(), mapping));
-    cd.addSearch(
         "numerator", EptsReportUtils.map(this.getPatientsWhoMissedNextApointment(), mapping));
 
     cd.setCompositionString(
-        "(numerator AND missedAppointmentIITBetween3And5Months) NOT (dead OR transferedOut OR refusedTreatment)");
+        "(numerator AND missedAppointmentIITBetween3And5Months) NOT (dead OR transferedOut)");
     return cd;
   }
 
@@ -506,7 +497,28 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("endDate", "end Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    return cd;
+    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
+    CompositionCohortDefinition compositionCohort = new CompositionCohortDefinition();
+    compositionCohort.setName("Get patients who are Refused/Stopped Treatment");
+    compositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    compositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compositionCohort.addParameter(new Parameter("location", "Location", Location.class));
+
+    compositionCohort.addSearch("refusedTreatment", EptsReportUtils.map(cd, mapping));
+    compositionCohort.addSearch(
+        "numerator", EptsReportUtils.map(this.getPatientsWhoMissedNextApointment(), mapping));
+
+    compositionCohort.addSearch(
+        "iit1", EptsReportUtils.map(this.getPatientsWhoAreIITLessThan3Months(), mapping));
+    compositionCohort.addSearch(
+        "iit2", EptsReportUtils.map(this.getPatientsWhoAreIITBetween3And5Months(), mapping));
+    compositionCohort.addSearch(
+        "iit3", EptsReportUtils.map(this.getPatientsWhoAreIITGreaterOrEqual6Months(), mapping));
+
+    compositionCohort.setCompositionString(
+        "(numerator AND refusedTreatment) NOT (iit1 OR iit2 OR iit3)");
+
+    return compositionCohort;
   }
 
   @DocumentedDefinition(value = "PatientsWhoAreIITLessThan3MonthsCalculation")
@@ -524,7 +536,7 @@ public class TxMlCohortQueries {
   }
 
   @DocumentedDefinition(value = "PatientsWhoAreIITGreatherOrEqual6MonthsCalculation")
-  public CohortDefinition getPatientsWhoAreIITGreatherOrEqual6MonthsCalculation() {
+  private CohortDefinition getPatientsWhoAreIITGreatherOrEqual6MonthsCalculation() {
 
     BaseFghCalculationCohortDefinition cd =
         new BaseFghCalculationCohortDefinition(
@@ -541,7 +553,7 @@ public class TxMlCohortQueries {
   }
 
   @DocumentedDefinition(value = "PatientsWhoAreIITBetween3And5MonthsCalculation")
-  public CohortDefinition getPatientsWhoAreIITBetween3And5MonthsCalculationCalculation() {
+  private CohortDefinition getPatientsWhoAreIITBetween3And5MonthsCalculationCalculation() {
 
     BaseFghCalculationCohortDefinition cd =
         new BaseFghCalculationCohortDefinition(

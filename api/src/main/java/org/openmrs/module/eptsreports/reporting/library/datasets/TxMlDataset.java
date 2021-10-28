@@ -44,7 +44,7 @@ public class TxMlDataset extends BaseDataSet {
     CohortDefinition patientsWhoMissedNextApointment =
         txMlCohortQueries.getPatientsWhoMissedNextApointment();
     CohortDefinition iitLessThan3Months =
-        this.txMlCohortQueries.getPatientsWhoAreLTFULessThan3Months();
+        this.txMlCohortQueries.getPatientsWhoAreIITLessThan3Months();
     CohortDefinition iitBetween3And5Months =
         this.txMlCohortQueries.getPatientsWhoAreIITBetween3And5Months();
     CohortDefinition iitGreaterOrEqual6Months =
