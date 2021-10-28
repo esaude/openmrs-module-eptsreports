@@ -248,7 +248,8 @@ public class TxRttCohortQueries {
     if (conceptIds.length == 3) {
       builder.append(" AND o1.voided= 0 ");
       builder.append(" AND o2.voided= 0 ");
-      builder.append(" AND (o1.concept_id = %s AND o1.value_coded = %s) ");
+      builder.append(
+          " AND (o1.concept_id = %s AND o1.value_coded = %s AND o1.value_datetime BETWEEN :startDate AND :endDate) ");
       builder.append(
           " AND (o2.concept_id = %s AND o2.value_datetime BETWEEN :startDate AND :endDate) ");
     } else {
@@ -506,7 +507,7 @@ public class TxRttCohortQueries {
   }
 
   public CohortDefinition getTreatmentInterruptionOfXDaysBeforeReturningToTreatment(
-      Integer minDays, Integer maxDays, Integer numDays) {
+      Integer minDays, Integer maxDays) {
     SqlCohortDefinition definition = new SqlCohortDefinition();
 
     definition.setName("patientHavingLastScheduledDrugPickupDate");
@@ -523,8 +524,7 @@ public class TxRttCohortQueries {
             hivMetadata.getArtPickupConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             minDays,
-            maxDays,
-            numDays));
+            maxDays));
 
     definition.addParameter(new Parameter("startDate", "startDate", Date.class));
     definition.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -596,7 +596,7 @@ public class TxRttCohortQueries {
     cd.addSearch(
         "AAB",
         EptsReportUtils.map(
-            getTreatmentInterruptionOfXDaysBeforeReturningToTreatment(minDays, maxDays, 28),
+            getTreatmentInterruptionOfXDaysBeforeReturningToTreatment(minDays, maxDays),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(

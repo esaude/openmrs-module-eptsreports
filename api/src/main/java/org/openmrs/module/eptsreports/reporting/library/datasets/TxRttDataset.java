@@ -88,7 +88,7 @@ public class TxRttDataset extends BaseDataSet {
 
     dsd.addColumn(
         "RTT90",
-        "Treatment Interruption Less Than 90 days",
+        "Experienced treatment interruption of <3 months (less than 90 days)  before returning to treatment",
         EptsReportUtils.map(RTT90, mappings),
         "");
 
@@ -100,7 +100,7 @@ public class TxRttDataset extends BaseDataSet {
 
     dsd.addColumn(
         "RTT180",
-        "Treatment Interruption Less Than 180 days",
+        "Experienced treatment interruption of 6+ months (>=180 days) before returning to treatment",
         EptsReportUtils.map(RTT180, mappings),
         "");
 
@@ -112,7 +112,7 @@ public class TxRttDataset extends BaseDataSet {
 
     dsd.addColumn(
         "RTT90180",
-        "Treatment Interruption between 90 and 180 days",
+        "Experienced treatment interruption of 3-5 months (>= 90 days and <180 days) before returning to treatment",
         EptsReportUtils.map(RTT90180, mappings),
         "");
 
