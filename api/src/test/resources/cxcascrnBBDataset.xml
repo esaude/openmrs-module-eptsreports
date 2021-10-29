@@ -12,9 +12,36 @@
             date_created="2005-01-01 00:00:00.0" voided="false"
             uuid="421875e2-6f22-1000-9281-8f1ee524029e" />
 
+    <person person_id="1002" gender="F"  creator="1"
+            birthdate="1973-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="61905c7c-3251-11ec-bd62-1fe43f3cf5ef" />
+
+    <person person_id="1003" gender="F"  creator="1"
+            birthdate="1973-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="ccb5b00c-331d-11ec-ab63-a38a8d0f3a36" />
+
+    <person person_id="1004" gender="F"  creator="1"
+            birthdate="1973-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+            date_created="2005-01-01 00:00:00.0" voided="false"
+            uuid="3c3d7dfa-3563-11ec-a59d-47c3c36b554c" />
 
     <!-- patient -->
     <patient patient_id="1001"   creator="1"
+             date_created="2005-09-22 00:00:00.0"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+    <patient patient_id="1002"   creator="1"
+             date_created="2005-09-22 00:00:00.0"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+
+    <patient patient_id="1003"   creator="1"
+             date_created="2005-09-22 00:00:00.0"
+             date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+    <patient patient_id="1004"   creator="1"
              date_created="2005-09-22 00:00:00.0"
              date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
 
@@ -68,13 +95,12 @@
             uuid="5f55cfda-6d0f-11eb-8101-1f96516b47ea"/>
 
 
-<!--
     <global_property
             property="eptsreports.yesConceptUuid"
-            property_value="e1d81b62-1d5f-11e0-b929-000c29ad1d07"
+            property_value="85e0e470-326f-11ec-9b3a-2f2ff7a89963"
             description="UUID for the SIM  concept"
             uuid="82584a8a-6d0f-11eb-9f12-ffd51aae22b1"/>
--->
+
     <global_property
             property="eptsreports.cryotherapyDateConceptUuid"
             property_value="273095dc-c0c6-4771-8584-7eabe0a1cc06"
@@ -159,26 +185,43 @@
     <concept concept_id="23972" retired="0" datatype_id="4" class_id="2" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="1a73d9c6-f8e4-4ca1-8565-f6b70221c102"/>
 
     <concept concept_id="23973" retired="0" datatype_id="4" class_id="2" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="0ff52333-c5bc-48f9-b600-291de742dd9c"/>
+    <concept concept_id="1065" retired="0" datatype_id="4" class_id="2" is_set="0" creator="1" date_created="2010-07-09 13:00:20" uuid="85e0e470-326f-11ec-9b3a-2f2ff7a89963"/>
 <!--
 -->
 
     <!-- Data -->
-    <!-- AA -->
-    <encounter encounter_id="311" encounter_type="28" patient_id="1001" encounter_datetime="2019-12-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="4c51ad06-3893-11eb-940c-33e77471aced" location_id="1" />
-
+    <!--Data 4 Patient 2-->
     <!-- AA4 -->
-    <encounter encounter_id="312" encounter_type="53" patient_id="1001" encounter_datetime="2019-12-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="0ab05c24-6d10-11eb-a4cd-9374f6df3f5e" location_id="1" />
-
+    <encounter encounter_id="312" encounter_type="28" patient_id="1002" encounter_datetime="2018-12-26 00:00:00" creator="1" date_created="2018-09-26 00:00:00" voided="0" uuid="0ab05c24-6d10-11eb-a4cd-9374f6df3f5e" location_id="1" />
+    <obs obs_id="101" person_id="1002" concept_id="2094" encounter_id="312" obs_datetime="2018-09-26 00:00:00" value_datetime="2018-10-19 00:00:00" value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c75287da-3277-11ec-9382-8babdd8b3706" location_id="1" />
     <!-- BB -->
-    <encounter encounter_id="313" encounter_type="28" patient_id="1001" encounter_datetime="2019-11-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="23fdfd66-6d2a-11eb-bb10-a7b6187a65eb" location_id="1" />
-
+    <encounter encounter_id="313" encounter_type="28" patient_id="1002" encounter_datetime="2019-11-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="23fdfd66-6d2a-11eb-bb10-a7b6187a65eb" location_id="1" />
     <!-- obs for AA -->
-    <obs obs_id="122" person_id="1001" concept_id="2094" encounter_id="311" obs_datetime="2019-12-26 00:00:00"  value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c183947a-388b-11eb-b6a7-eb9d5a01c619" location_id="1" />
-
-    <!-- obs for AA4 -->
-    <obs obs_id="123" person_id="1001" concept_id="2094" encounter_id="312" obs_datetime="2019-09-26 00:00:00" value_datetime="2019-10-19 00:00:00" value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="a4cbe362-6d3a-11eb-abc0-bbca549cdf68" location_id="1" />
-
+    <obs obs_id="102" person_id="1002" concept_id="2094" encounter_id="313" obs_datetime="2019-11-30 00:00:00"  value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c183947a-388b-11eb-b6a7-eb9d5a01c619" location_id="1" />
     <!-- obs for BB -->
-    <obs obs_id="124" person_id="1001" concept_id="23967" encounter_id="313" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-11-26 00:00:00"   creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="5d06d0d8-6d2a-11eb-aacb-f3833f57f000" location_id="1" />
+    <obs obs_id="103" person_id="1002" concept_id="23967" encounter_id="313" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-11-26 00:00:00"   creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="5d06d0d8-6d2a-11eb-aacb-f3833f57f000" location_id="1" />
+
+    <!--Data 4 Patient 3-->
+    <!-- AA4 -->
+    <encounter encounter_id="314" encounter_type="28" patient_id="1003" encounter_datetime="2018-12-26 00:00:00" creator="1" date_created="2018-09-26 00:00:00" voided="0" uuid="d0746b16-3561-11ec-bcc6-57c1f021156c" location_id="1" />
+    <obs obs_id="104" person_id="1003" concept_id="2094" encounter_id="314" obs_datetime="2018-09-26 00:00:00" value_datetime="2018-10-19 00:00:00" value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="da094e08-3561-11ec-af95-93c7f2927263" location_id="1" />
+    <!-- BB -->
+    <encounter encounter_id="315" encounter_type="28" patient_id="1003" encounter_datetime="2019-11-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="e73df95c-3561-11ec-a8d9-bbd6ced5a3f1" location_id="1" />
+    <!-- obs for AA -->
+    <obs obs_id="105" person_id="1003" concept_id="2094" encounter_id="315" obs_datetime="2019-11-30 00:00:00"  value_coded="664"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="f05a18ea-3561-11ec-93c3-93bf9a5c84f0" location_id="1" />
+    <!-- obs for BB -->
+    <obs obs_id="106" person_id="1003" concept_id="23967" encounter_id="315" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-11-26 00:00:00"   creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="f870f828-3561-11ec-af4d-23624a204bc2" location_id="1" />
+
+    <!--Data 4 Patient 4-->
+    <!-- AA4 -->
+    <encounter encounter_id="316" encounter_type="28" patient_id="1004" encounter_datetime="2018-12-26 00:00:00" creator="1" date_created="2018-09-26 00:00:00" voided="0" uuid="14169af4-3564-11ec-a647-c3ee1d0f7bdd" location_id="1" />
+    <obs obs_id="107" person_id="1004" concept_id="2094" encounter_id="316" obs_datetime="2018-09-26 00:00:00" value_datetime="2018-10-19 00:00:00" value_coded="703"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="1dec8732-3564-11ec-b9a3-ab0d3e9a9328" location_id="1" />
+    <!-- BB -->
+    <encounter encounter_id="317" encounter_type="28" patient_id="1004" encounter_datetime="2019-11-26 00:00:00" creator="1" date_created="2019-09-26 00:00:00" voided="0" uuid="2a616e42-3564-11ec-8636-f3ddfe0e36cc" location_id="1" />
+    <!-- obs for AA -->
+    <obs obs_id="108" person_id="1004" concept_id="2094" encounter_id="317" obs_datetime="2019-11-30 00:00:00"  value_coded="2093"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="3352e2ba-3564-11ec-8b4a-fb88b10c62bd" location_id="1" />
+    <!-- obs for BB -->
+    <obs obs_id="109" person_id="1004" concept_id="23967" encounter_id="317" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-11-26 00:00:00"   creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="3afe9220-3564-11ec-b547-ebdb3e42b494" location_id="1" />
+
 
 </dataset>
