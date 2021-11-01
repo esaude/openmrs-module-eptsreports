@@ -1,28 +1,45 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <dataset>
+	<location location_id="1" name="Alto Ligonha" description="NA"
+			  address2="NA" state_province="NA" country="MA"
+			  date_created="2008-10-13 11:32:52" county_district="NA" address6="NA"
+			  retired="0" uuid="e2b32fc2-1d5f-11e0-b929-000c29ad1d07" />
+
 	<person person_id="90" gender="F" dead="false" creator="1"
-		birthdate_estimated="0" date_created="2008-08-15 15:57:09.0"
-		voided="false" void_reason="For test purposes"
-		uuid="36697c48-3643-11e9-bda5-9f738f42826f" />
+			birthdate_estimated="0" date_created="2008-08-15 15:57:09.0"
+			voided="false" void_reason="For test purposes"
+			uuid="36697c48-3643-11e9-bda5-9f738f42826f" />
+
 	<person person_id="91" gender="M" dead="false" creator="1"
-		birthdate_estimated="0" date_created="2008-08-15 15:57:09.0"
-		voided="false" void_reason="For test purposes"
-		uuid="eb9a9b2f-e5cc-4da7-b607-839895f64b34" />
+			birthdate_estimated="0" date_created="2008-08-15 15:57:09.0"
+			voided="false" void_reason="For test purposes"
+			uuid="eb9a9b2f-e5cc-4da7-b607-839895f64b34" />
+
 	<person person_id="92" gender="M" dead="false" creator="1"
 			birthdate_estimated="0" date_created="2008-08-15 15:57:09.0"
 			voided="false" void_reason="For test purposes"
 			uuid="e54c8eba-7d8d-11eb-93b1-0bf6ecdc3a8b" />
 
+	<person person_id="1007" gender="F" dead="false" creator="1"
+			birthdate_estimated="0" date_created="2005-01-01 00:00:00.0"
+			voided="false" void_reason="For test purposes"
+			uuid="421875fe-6f22-1000-9281-8f1ee524029e" />
+
 	<patient patient_id="90" creator="1"
-		date_created="2006-01-18 00:00:00.0" changed_by="1"
-		date_changed="2008-08-18 12:25:57.0" voided="false" void_reason="" />
+			 date_created="2006-01-18 00:00:00.0" changed_by="1"
+			 date_changed="2008-08-18 12:25:57.0" voided="false" void_reason="" />
+
 	<patient patient_id="91" creator="1"
-		date_created="2006-01-18 00:00:00.0" changed_by="1"
-		date_changed="2008-08-18 12:25:57.0" voided="false" void_reason="" />
+			 date_created="2006-01-18 00:00:00.0" changed_by="1"
+			 date_changed="2008-08-18 12:25:57.0" voided="false" void_reason="" />
+
 	<patient patient_id="92" creator="1"
 			 date_created="2006-01-18 00:00:00.0" changed_by="1"
 			 date_changed="2008-08-18 12:25:57.0" voided="false" void_reason="" />
 
+	<patient patient_id="1007" creator="1"
+			 date_created="2005-09-22 00:00:00.0" changed_by="1"
+			 date_changed="2008-08-18 12:29:59.0" voided="0" void_reason="" />
 	<global_property
 			property="eptsreports.regimeTPTConceptUuid"
 			property_value="9db4ce3b-4c1c-45dd-905f-c984a052f26e"
@@ -91,18 +108,46 @@
 			uuid="951804fe-7d8f-11eb-ab62-eb300e90ee9e" />
 
 	<global_property
-			property="eptsreports.isoniazidUseConceptUuid"
-			property_value="be4a76ca-662a-4c39-903b-71983f5f67c9"
+			property="@MODULE_ID@.isoniazidUseConceptUuid"
+			property_value="510dc9c4-1f92-11ec-b2e0-47d185d17ac6"
 			description="Uso de Isoniazida"
 			uuid="8b672146-7d90-11eb-a9cc-ef7bbde701f3" />
+
+	<global_property
+			property="@MODULE_ID@.treatmentFollowUpUuid"
+			property_value="93603742-1cae-4970-9077-e2b27e46bd7e"
+			description="UUID for the Seguimento de tratamento TPT concept"
+			uuid="d2f5a5da-1f77-11ec-bc76-e7240ca5ed74" />
+
+	<global_property
+			property="eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid"
+			property_value="e278fce4-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for the S.TARV: PEDIATRIA SEGUIMENTO encounter type"
+			uuid="de8c4056-4da5-4f29-b3f0-e9eddab84fc7" />
+
+	<global_property
+			property="eptsreports.masterCardEncounterType"
+			property_value="365a8f8c-fc19-11eb-98f7-1bbd61edddc2"
+			description="UUID for the Master Card - Ficha Resumo encounter type"
+			uuid="9455436d-e87c-4393-ad9c-551046a4afa4" />
+
+	<global_property
+			property="@MODULE_ID@.startDrugsConceptUuid"
+			property_value="e1d9ef28-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for the INICIAR concept"
+			uuid="7f143bf0-ff26-11eb-a18a-df6dd24cb829" />
+
+	<global_property
+			property="eptsreports.DataFimProfilaxiaIsoniazidaConceptUuid"
+			property_value="74535e3c-ff29-11eb-8524-bb8de33b09a4"
+			description="Data de finalizacao de profilaxia com Isoniazida"
+			uuid="c027a6ec-ff29-11eb-be75-73ac678fe2fb" />
 
 	<concept concept_id="23985" datatype_id="2"
 			 class_id="7" creator="1"
 			 date_created="2020-09-09 09:54:21"
 			 uuid="9db4ce3b-4c1c-45dd-905f-c984a052f26e"
 			 retired="0" is_set="0"/>
-
-
 
 	<encounter_type encounter_type_id="60"
 					name="Tratamento ProfilÃ¡tico da Tuberculose (TPT)"
@@ -115,6 +160,18 @@
 					description="seguimento visita do paciente adulto"
 					creator="1" date_created="2008-10-13 04:32:34" retired="0"
 					uuid="e278f956-1d5f-11e0-b929-000c29ad1d07" />
+
+	<encounter_type encounter_type_id="9"
+					name="S.TARV: PEDIATRIA SEGUIMENTO"
+					description="Seguimento visita do paciente pediatria" creator="1"
+					date_created="2008-10-13 11:35:34" retired="0"
+					uuid="e278fce4-1d5f-11e0-b929-000c29ad1d07" />
+
+	<encounter_type encounter_type_id="53"
+					name="Master Card - Ficha Resumo Encounter"
+					description="Ficha resumo no master card" creator="1"
+					date_created="2019-07-31 14:23:47" retired="0"
+					uuid="365a8f8c-fc19-11eb-98f7-1bbd61edddc2"/>
 
 	<concept concept_id="656" datatype_id="4"
 			 class_id="3" creator="1"
@@ -165,12 +222,36 @@
 			 uuid="e1d9facc-1d5f-11e0-b929-000c29ad1d07"
 			 retired="0" is_set="0"/>
 
+	<concept concept_id="23987" datatype_id="2"
+			 class_id="7" creator="1"
+			 date_created="2020-09-09 09:54:21"
+			 uuid="93603742-1cae-4970-9077-e2b27e46bd7e"
+			 retired="0" is_set="0"/>
+
+	<!-- 6122 -->
+	<concept concept_id="6122" retired="0"
+			 is_set="0"  class_id="7" datatype_id="2"
+			 date_created="2012-02-27 11:30:21" creator="1"
+			 uuid="510dc9c4-1f92-11ec-b2e0-47d185d17ac6" />
+
+	<!-- 1256 -->
+	<concept concept_id="1256" retired="0"
+			 is_set="0"  class_id="15" datatype_id="4"
+			 date_created="2012-02-27 11:30:21" creator="1"
+			 uuid="e1d9ef28-1d5f-11e0-b929-000c29ad1d07" />
+
+
+	<!-- 6129 -->
+	<concept concept_id="6129" retired="0"
+			 is_set="0"  class_id="7" datatype_id="6"
+			 date_created="2012-02-27 11:30:21" creator="1"
+			 uuid="74535e3c-ff29-11eb-8524-bb8de33b09a4" />
+
 	<encounter encounter_id="2777001" encounter_type="6"
 			   patient_id="92" location_id="1" form_id="1"
 			   encounter_datetime="2019-01-21 00:00:00.0" creator="1"
 			   date_created="2019-6-26 14:09:05.0" voided="false"
 			   uuid="9ee333ba-7d93-11eb-aba4-d31dfec7f1a3" />
-
 
 	<encounter encounter_id="2777002" encounter_type="6"
 			   patient_id="92" location_id="1" form_id="1"
@@ -178,18 +259,153 @@
 			   date_created="2019-6-26 14:09:05.0" voided="false"
 			   uuid="caec91f4-7d8e-11eb-817f-07c851f9d1a5" />
 
-	<obs obs_id="2777001" person_id="92" concept_id="7777032"
-		 encounter_id="2777002" obs_datetime="2018-06-21 00:00:00.0"
-		 location_id="1" value_coded="1267" comments="" creator="1"
+	<encounter encounter_id="101010" encounter_type="6"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2019-07-21 00:00:00" creator="1"
+			   date_created="2019-07-22 00:00:00" voided="false"
+			   uuid="25df5ffe-fc17-11eb-9ddf-8b0532f2a9ea" />
+
+	<encounter encounter_id="101013" encounter_type="6"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2020-01-21 00:00:00" creator="1"
+			   date_created="2019-6-26 14:09:05.0" voided="false"
+			   uuid="dc772004-fc39-11eb-960d-43f31f7a7fa7" />
+
+	<encounter encounter_id="101020" encounter_type="6"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2020-01-21 00:00:00" creator="1"
+			   date_created="2019-6-26 14:09:05.0" voided="false"
+			   uuid="6616f87e-2030-11ec-bfb1-6bdb38dde989" />
+
+	<encounter encounter_id="101011" encounter_type="9"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2020-01-09 00:00:00.0" creator="1"
+			   date_created="2019-6-26 14:09:05.0" voided="false"
+			   uuid="292251f8-fc17-11eb-ae50-cf1c4f774c73" />
+
+	<encounter encounter_id="101012" encounter_type="53"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2020-01-09 00:00:00.0"  creator="1"
+			   date_created="2020-01-09 14:09:05.0" voided="false"
+			   uuid="29d19d2a-fc17-11eb-bffa-7b3d4a74c984" />
+
+	<encounter encounter_id="101014" encounter_type="6"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2019-08-30 00:00:00" creator="1"
+			   date_created="2019-6-26 14:09:05.0" voided="false"
+			   uuid="a7b65ca4-ff22-11eb-9c76-3faaaf194b3f" />
+
+	<encounter encounter_id="101015" encounter_type="6"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2019-04-30 00:00:00" creator="1"
+			   date_created="2019-6-26 14:09:05.0" voided="false"
+			   uuid="956f2eb8-ff2c-11eb-aa70-eb8e98268c20" />
+
+	<encounter encounter_id="101016" encounter_type="60"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2019-08-30 00:00:00" creator="1"
+			   date_created="2019-6-26 14:09:05.0" voided="false"
+			   uuid="f7ab8f86-ff2c-11eb-8692-33234e510d69" />
+
+	<encounter encounter_id="101017" encounter_type="60"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2019-04-30 00:00:00" creator="1"
+			   date_created="2019-6-26 14:09:05.0" voided="false"
+			   uuid="edf1352c-ff2c-11eb-9963-57b38b9fd0f2" />
+
+	<!--For encounter 6 -->
+	<encounter encounter_id="101023" encounter_type="6"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2020-01-19 00:00:00" creator="1"
+			   date_created="2019-6-26 14:09:05.0" voided="false"
+			   uuid="5f0b1eae-203d-11ec-b210-2ff38b30cb2e" />
+
+	<!--For encounter 9 -->
+	<encounter encounter_id="101021" encounter_type="9"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2020-01-21 00:00:00.0" creator="1"
+			   date_created="2019-6-26 14:09:05.0" voided="false"
+			   uuid="b80eaa62-2037-11ec-98d5-9fec552f6c04" />
+
+	<!--For encounter 53 -->
+	<encounter encounter_id="101025" encounter_type="53"
+			   patient_id="1007" location_id="1" form_id="1"
+			   encounter_datetime="2020-01-21 00:00:00.0" creator="1"
+			   date_created="2019-6-26 14:09:05.0" voided="false"
+			   uuid="8a6d04ae-2042-11ec-814a-e3a323bd37b8" />
+
+	<obs obs_id="201010" person_id="1007" concept_id="6129"
+		 encounter_id="101012" obs_datetime="2020-01-09 00:00:00"
+		 value_datetime="2020-01-09 00:00:00"
+		 location_id="1"  comments="" creator="1"
+		 date_created="2020-01-09 00:00:00" voided="false"
+		 uuid="7be4f49a-fc17-11eb-a0ff-0fa8d71e317b" />
+
+	<obs obs_id="201011" person_id="1007" concept_id="6129"
+		 encounter_id="101011" obs_datetime="2020-01-21 00:00:00.0"
+		 value_datetime="2020-01-21 00:00:00.0"
+		 location_id="1"  comments="" creator="1"
 		 date_created="2019-06-24 14:11:13.0" voided="false"
-		 uuid="f974e7ec-7d93-11eb-81ea-c37ade681c95" />
+		 uuid="7d405eba-fc17-11eb-a00f-f307f5792690" />
 
-
-	<obs obs_id="2777003" person_id="92" concept_id="7777031"
-		 encounter_id="2777002" obs_datetime="2018-06-21 00:00:00.0"
+	<!--For Completed Drugs Observations -->
+	<obs obs_id="201020" person_id="1007" concept_id="6122"
+		 encounter_id="101020" obs_datetime="2020-01-21 00:00:00.0"
+		 value_datetime="2020-01-21 00:00:00.0"
 		 location_id="1" value_coded="1267" comments="" creator="1"
-		 date_created="2019-06-24 14:11:13.0" voided="false"
-		 uuid="40ce05ec-7d8f-11eb-8740-4fa1a2cc0b7e" />
+		 date_created="2019-07-22 00:00:00" voided="false"
+		 uuid="056ddd98-2031-11ec-b17f-7fe56ceaef70" />
 
+	<obs obs_id="201013" person_id="1007" concept_id="6122"
+		 encounter_id="101010" obs_datetime="2019-07-22 00:00:00"
+		 value_datetime="2019-07-22 00:00:00"
+		 location_id="1" value_coded="1256" comments="" creator="1"
+		 date_created="2019-07-22 00:00:00" voided="false"
+		 uuid="e3e27b96-fc29-11eb-a520-affcfa4947fb" />
+
+	<obs obs_id="201014" person_id="1007" concept_id="6122"
+		 encounter_id="101013" obs_datetime="2019-07-22 00:00:00"
+		 value_datetime="2019-07-22 00:00:00"
+		 location_id="1" value_coded="1256" comments="" creator="1"
+		 date_created="2019-06-24 14:11:13.0" voided="false"
+		 uuid="f154c440-fc39-11eb-aac7-2f3c68ca507b" />
+
+	<obs obs_id="201015" person_id="1007" concept_id="1719"
+		 encounter_id="101014" obs_datetime="2019-08-30 00:00:00"
+		 value_datetime="2019-08-30 00:00:00"
+		 location_id="1" value_coded="23954" comments="" creator="1"
+		 date_created="2019-06-24 14:11:13.0" voided="false"
+		 uuid="0637a5bc-ff23-11eb-ac3e-cf4a927a76a3" />
+
+	<obs obs_id="201017" person_id="1007" concept_id="23985"
+		 encounter_id="101015" obs_datetime="2019-08-30 00:00:00"
+		 value_datetime="2019-04-30 00:00:00"
+		 location_id="1" value_coded="23954" comments="" creator="1"
+		 date_created="2019-06-24 14:11:13.0" voided="false"
+		 uuid="a4b7aa4e-ff2c-11eb-a9eb-9b8f77a41fd9" />
+
+	<!--For encounter 6 -->
+	<obs obs_id="201021" person_id="1007" concept_id="6129"
+		 encounter_id="101023" obs_datetime="2020-01-21 00:00:00"
+		 value_datetime="2020-01-21 00:00:00"
+		 location_id="1" comments="" creator="1"
+		 date_created="2019-06-24 14:11:13.0" voided="false"
+		 uuid="91583fa4-2038-11ec-b5ff-27a1c251b6a5" />
+
+	<!--For encounter 9 -->
+	<obs obs_id="201022" person_id="1007" concept_id="6129"
+		 encounter_id="101021" obs_datetime="2020-01-21 00:00:00"
+		 value_datetime="2020-01-21 00:00:00"
+		 location_id="1" comments="" creator="1"
+		 date_created="2019-06-24 14:11:13.0" voided="false"
+		 uuid="b2c04910-203e-11ec-bd1e-57c841871e53" />
+
+	<!--For encounter 53 -->
+	<obs obs_id="201023" person_id="1007" concept_id="6129"
+		 encounter_id="101025" obs_datetime="2020-01-21 00:00:00"
+		 value_datetime="2020-01-21 00:00:00"
+		 location_id="1" comments="" creator="1"
+		 date_created="2019-06-24 14:11:13.0" voided="false"
+		 uuid="d4912c04-2042-11ec-8fd6-23fcb10cfcb0" />
 
 </dataset>

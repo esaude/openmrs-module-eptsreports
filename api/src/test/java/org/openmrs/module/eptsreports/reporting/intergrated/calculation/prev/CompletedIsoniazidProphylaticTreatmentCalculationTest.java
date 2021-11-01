@@ -10,10 +10,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
+import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.prev.CompletedIsoniazidProphylaticTreatmentCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
@@ -99,6 +101,26 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     Assert.assertNull(result);
   }
 
+  @Test
+  public void evaluateShouldBeTrueIfCompletedDrugsObservations() {
+    Map<String, Object> parameterValues = new HashMap<>();
+    PatientCalculationContext context = getEvaluationContext();
+    Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
+    // "2020-10-30 00:00:00"
+    calendar.set(2020, Calendar.JANUARY, 21);
+    context.addToCache("onOrAfter", calendar.getTime());
+    calendar.set(2020, Calendar.JULY, 21);
+    context.addToCache("onOrBefore", calendar.getTime());
+    context.addToCache("location", new Location(1));
+
+    final int patientId = 1007;
+    CalculationResultMap results =
+        service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
+    SimpleResult result = (SimpleResult) results.get(patientId);
+    Assert.assertNotNull(result);
+    Assert.assertEquals(Boolean.TRUE, result.getValue());
+  }
+
   @Ignore
   @Test
   public void evaluateShouldBeTrueIfDoesNotHaveEndDateButAnsweredYesEnoughTimes() {
@@ -114,6 +136,66 @@ public class CompletedIsoniazidProphylaticTreatmentCalculationTest
     CalculationResultMap results =
         service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
     BooleanResult result = (BooleanResult) results.get(patientId);
+    Assert.assertEquals(Boolean.TRUE, result.getValue());
+  }
+
+  @Test
+  public void evaluateShouldBeTrueIfEndProfilaxiaObservations6() {
+    Map<String, Object> parameterValues = new HashMap<>();
+    PatientCalculationContext context = getEvaluationContext();
+    Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
+    // "2020-10-30 00:00:00"
+    calendar.set(2020, Calendar.JANUARY, 21);
+    context.addToCache("onOrAfter", calendar.getTime());
+    calendar.set(2020, Calendar.JULY, 21);
+    context.addToCache("onOrBefore", calendar.getTime());
+    context.addToCache("location", new Location(1));
+
+    final int patientId = 1007;
+    CalculationResultMap results =
+        service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
+    SimpleResult result = (SimpleResult) results.get(patientId);
+    Assert.assertNotNull(result);
+    Assert.assertEquals(Boolean.TRUE, result.getValue());
+  }
+
+  @Test
+  public void evaluateShouldBeTrueIfEndProfilaxiaObservations9() {
+    Map<String, Object> parameterValues = new HashMap<>();
+    PatientCalculationContext context = getEvaluationContext();
+    Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
+    // "2020-10-30 00:00:00"
+    calendar.set(2020, Calendar.JANUARY, 21);
+    context.addToCache("onOrAfter", calendar.getTime());
+    calendar.set(2020, Calendar.JULY, 21);
+    context.addToCache("onOrBefore", calendar.getTime());
+    context.addToCache("location", new Location(1));
+
+    final int patientId = 1007;
+    CalculationResultMap results =
+        service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
+    SimpleResult result = (SimpleResult) results.get(patientId);
+    Assert.assertNotNull(result);
+    Assert.assertEquals(Boolean.TRUE, result.getValue());
+  }
+
+  @Test
+  public void evaluateShouldBeTrueIfEndProfilaxiaObservations53() {
+    Map<String, Object> parameterValues = new HashMap<>();
+    PatientCalculationContext context = getEvaluationContext();
+    Calendar calendar = DateUtils.truncate(Calendar.getInstance(), Calendar.DAY_OF_MONTH);
+    // "2020-10-30 00:00:00"
+    calendar.set(2020, Calendar.JANUARY, 21);
+    context.addToCache("onOrAfter", calendar.getTime());
+    calendar.set(2020, Calendar.JULY, 21);
+    context.addToCache("onOrBefore", calendar.getTime());
+    context.addToCache("location", new Location(1));
+
+    final int patientId = 1007;
+    CalculationResultMap results =
+        service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
+    SimpleResult result = (SimpleResult) results.get(patientId);
+    Assert.assertNotNull(result);
     Assert.assertEquals(Boolean.TRUE, result.getValue());
   }
 }
