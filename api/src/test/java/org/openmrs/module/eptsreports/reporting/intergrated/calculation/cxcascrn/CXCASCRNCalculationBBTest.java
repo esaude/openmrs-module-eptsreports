@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.calculation.cxcascrn;
 
+import java.util.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -17,8 +18,6 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.cxcascrn.CXCASCRNBBCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.CXCASCRNCohortQueries;
-
-import java.util.*;
 
 public class CXCASCRNCalculationBBTest extends BasePatientCalculationTest {
 
@@ -93,7 +92,7 @@ public class CXCASCRNCalculationBBTest extends BasePatientCalculationTest {
     final int patientId = 1002;
 
     CalculationResultMap results =
-            service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
+        service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
 
     SimpleResult result = (SimpleResult) results.get(patientId);
 
@@ -107,9 +106,9 @@ public class CXCASCRNCalculationBBTest extends BasePatientCalculationTest {
     Assert.assertEquals(hivMetadata.getCryotherapyDateConcept(), obs.getConcept());
   }
 
-
   @Test
-  public void evaluate_ShouldGetPatientsWithCryotherapyPerformedOnTheSameDayAsTheViaAndCXCANResultNegative() {
+  public void
+      evaluate_ShouldGetPatientsWithCryotherapyPerformedOnTheSameDayAsTheViaAndCXCANResultNegative() {
 
     PatientCalculationContext context = getEvaluationContext();
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
@@ -130,10 +129,9 @@ public class CXCASCRNCalculationBBTest extends BasePatientCalculationTest {
     final int patientId = 1003;
 
     CalculationResultMap results =
-            service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
+        service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
 
     SimpleResult result = (SimpleResult) results.get(patientId);
-
 
     Assert.assertNotNull(result);
     Obs obs = (Obs) result.getValue();
@@ -162,10 +160,9 @@ public class CXCASCRNCalculationBBTest extends BasePatientCalculationTest {
     final int patientId = 1004;
 
     CalculationResultMap results =
-            service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
+        service.evaluate(Arrays.asList(patientId), getCalculation(), parameterValues, context);
 
     SimpleResult result = (SimpleResult) results.get(patientId);
-
 
     Assert.assertNotNull(result);
     Obs obs = (Obs) result.getValue();
