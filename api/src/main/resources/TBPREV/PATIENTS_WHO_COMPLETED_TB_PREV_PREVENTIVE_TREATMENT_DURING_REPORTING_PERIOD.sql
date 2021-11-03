@@ -734,10 +734,11 @@ from
 				inicio_tpi             
 					inner join encounter e on e.patient_id=inicio_tpi.patient_id           
 					inner join obs obsLevTPI on e.encounter_id=obsLevTPI.encounter_id 
-					left join obs obsOutrasPresc on (obsOutrasPresc.encounter_id  = e.encounter_id and obsOutrasPresc.concept_id = 1719  and obsOutrasPresc.value_coded in(23954,23955))      
+					left join obs obsOutrasPresc on (obsOutrasPresc.encounter_id  = e.encounter_id and obsOutrasPresc.concept_id = 1719  and obsOutrasPresc.value_coded in(23954,23955)) 
+					left join obs obsOutroIzoniazida on (obsOutroIzoniazida.encounter_id  = e.encounter_id and obsOutroIzoniazida.concept_id = 6122  and obsOutroIzoniazida.value_coded in (1257,1065,1256,23955))
 					where e.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (6,9) 
 						and e.encounter_datetime between inicio_tpi.data_inicio_tpi and (inicio_tpi.data_inicio_tpi + INTERVAL 7 MONTH) 
-						and ((obsLevTPI.concept_id = 6122 and  obsOutrasPresc.encounter_id is null) or (obsLevTPI.concept_id =1719 ))  
+						and ((obsLevTPI.concept_id = 6122 and  obsOutrasPresc.encounter_id is null) or (obsLevTPI.concept_id =1719 and obsOutroIzoniazida.encounter_id is not null))  
 						and obsLevTPI.value_coded in (1257,1065,1256,23955) and e.location_id=:location  
 						group by inicio_tpi.patient_id                  
 			) 

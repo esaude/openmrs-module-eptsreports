@@ -34,7 +34,9 @@ public class TxRTTDurationOfTreatmentInterruptionBetween3And5MonthsCalculation
 
   private static final int CHUNK_SIZE = 1000;
 
-  private static int DAYS_OF_YEAR = 90;
+  private static int MIN_DAYS_OF_YEAR = 90;
+
+  private static int MAX_DAYS_OF_YEARS = 180;
 
   @Autowired private TxRTTCohortQueries txRTTCohortQueries;
 
@@ -92,7 +94,8 @@ public class TxRTTDurationOfTreatmentInterruptionBetween3And5MonthsCalculation
         if (calculationResult.getValue() instanceof Date) {
           Date iitDate = (Date) calculationResult.getValue();
           // Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-          if (EptsDateUtil.getDaysBetween(iitDate, minTxCurrDate) < DAYS_OF_YEAR) {
+          if (EptsDateUtil.getDaysBetween(iitDate, minTxCurrDate) >= MIN_DAYS_OF_YEAR
+              && EptsDateUtil.getDaysBetween(iitDate, minTxCurrDate) < MAX_DAYS_OF_YEARS) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
         }
@@ -114,7 +117,8 @@ public class TxRTTDurationOfTreatmentInterruptionBetween3And5MonthsCalculation
         if (calculationResult.getValue() instanceof Date) {
           Date iitDate = (Date) calculationResult.getValue();
           // Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-          if (EptsDateUtil.getDaysBetween(iitDate, maxTxCurrDate) < DAYS_OF_YEAR) {
+          if (EptsDateUtil.getDaysBetween(iitDate, maxTxCurrDate) >= MIN_DAYS_OF_YEAR
+              && EptsDateUtil.getDaysBetween(iitDate, maxTxCurrDate) < MAX_DAYS_OF_YEARS) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
         }
