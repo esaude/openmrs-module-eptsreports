@@ -32,12 +32,12 @@ public class FaltososLevantamentoARVReport extends EptsDataExportManager {
 
   @Override
   public String getUuid() {
-    return "6b3762b8-2cf0-11ec-8e14-97de0861d5ef";
+    return "73ba713a-3bca-11ec-b0d7-b7913905b82c";
   }
 
   @Override
   public String getName() {
-    return "Faltosos ao Levantamento de ARV - MISAU";
+    return "RELATÓRIO DE FALTOSOS AO LEVANTAMENTO DE ARV - MISAU";
   }
 
   @Override
@@ -52,7 +52,7 @@ public class FaltososLevantamentoARVReport extends EptsDataExportManager {
 
   @Override
   public String getExcelDesignUuid() {
-    return "284c9ad8-81b0-11eb-b8e0-0242ac120002";
+    return "67f5bf1c-3bca-11ec-9e72-cb0763b0876d";
   }
 
   @Override
@@ -80,8 +80,8 @@ public class FaltososLevantamentoARVReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Faltosos_Levantamento_ARV_Template.xls",
-              "Faltos ao Levantameto de ARV - MISAU",
+              "Template_Faltosos_Levantamento_ARV.xls",
+              "Relatório de Faltosos ao Levantamento de ARV",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
