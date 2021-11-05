@@ -25,6 +25,10 @@ import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.TWENTY_FIV
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.TWENTY_TO_TWENTY_FOUR;
 import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.UNDER_ONE;
 
+import org.openmrs.Location;
+import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.calculation.rtt.DatimExtractCalculation;
+import org.openmrs.module.eptsreports.reporting.data.definition.CalculationDataDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TRFINCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
@@ -33,7 +37,11 @@ import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.eptsreports.reporting.utils.Gender;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -144,6 +152,29 @@ public class TRFINDataset extends BaseDataSet {
             + this.getName(Gender.FEMALE, AgeRange.UNKNOWN));
 
     return dataSetDefinition;
+  }
+
+  public DataSetDefinition getDatimCode() {
+
+    PatientDataSetDefinition patientDataSetDefinition = new PatientDataSetDefinition();
+
+    patientDataSetDefinition.setName("D");
+    patientDataSetDefinition.addParameter(new Parameter("location", "Location", Location.class));
+    patientDataSetDefinition.addColumn(
+        "DatimCode", getDatimCodeCalculation(), "location=${location}");
+
+    return patientDataSetDefinition;
+  }
+
+  private DataDefinition getDatimCodeCalculation() {
+
+    CalculationDataDefinition calculationDataDefinition =
+        new CalculationDataDefinition(
+            "DatimCode", Context.getRegisteredComponents(DatimExtractCalculation.class).get(0));
+    calculationDataDefinition.setName("DatimCode");
+    calculationDataDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    return calculationDataDefinition;
   }
 
   private void addDimensions(

@@ -16,14 +16,14 @@ import org.springframework.stereotype.Component;
 @Component
 public class DatimExtractCalculation extends BaseFghCalculation {
 
+  public static final int PATIENT_DATIM_CODE_WRAPPER = -1000;
+
   @Override
   public CalculationResultMap evaluate(
       Map<String, Object> parameterValues, EvaluationContext context) {
     CalculationResultMap resultMap = new CalculationResultMap();
 
-    String datimCode = this.getDatimCode(context);
-
-    resultMap.put(1, new SimpleResult(datimCode, this));
+    resultMap.put(PATIENT_DATIM_CODE_WRAPPER, new SimpleResult(this.getDatimCode(context), this));
     return resultMap;
   }
 
