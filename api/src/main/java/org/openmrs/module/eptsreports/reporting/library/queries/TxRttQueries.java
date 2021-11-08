@@ -317,7 +317,7 @@ public class TxRttQueries {
             + "                        AND e.encounter_type = ${masterCardDrugPickupEncounterType} "
             + "                        AND o1.voided = 0 "
             + "                        AND o2.voided = 0 "
-            + "                        AND (o1.concept_id = ${artPickupConcept} AND o1.value_coded = ${yesConcept} AND o1.value_datetime BETWEEN :startDate AND :endDate) "
+            + "                        AND (o1.concept_id = ${artPickupConcept} AND o1.value_coded = ${yesConcept}) "
             + "                        AND (o2.concept_id = ${artDatePickupMasterCard} AND o2.value_datetime BETWEEN :startDate AND :endDate) "
             + "                        AND e.location_id = :location "
             + "                      GROUP BY p.patient_id "
