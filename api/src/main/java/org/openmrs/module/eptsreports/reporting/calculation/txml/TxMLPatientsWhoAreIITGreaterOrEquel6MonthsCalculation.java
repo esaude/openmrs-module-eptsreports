@@ -60,11 +60,12 @@ public class TxMLPatientsWhoAreIITGreaterOrEquel6MonthsCalculation extends TxMLP
               nextSeguimentoResult,
               TxMLPatientsWhoMissedNextApointmentCalculation.getLastRecepcaoLevantamentoPlus30(
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
-      if (maxNextDate != null
-          && EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) >= GREATHER_THAN_6_MONTHS) {
+
+      if (maxNextDate != null) {
+
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
-        if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
-            && nextDatePlus28.compareTo(endDate) < 0) {
+
+        if (EptsDateUtil.getDaysBetween(inicioRealDate, nextDatePlus28) >= GREATHER_THAN_6_MONTHS) {
           resultMap.put(patientId, new SimpleResult(maxNextDate, this));
         }
       } else {
