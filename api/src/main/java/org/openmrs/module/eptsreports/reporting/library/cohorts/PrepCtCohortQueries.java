@@ -16,6 +16,8 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.queries.PrepCtQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.PrepReasonInterruptionType;
+import org.openmrs.module.eptsreports.reporting.library.queries.ReasonsOfPrepInterruptionQuery;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -223,6 +225,141 @@ public class PrepCtCohortQueries {
             mappings));
 
     prepCtCompositionCohort.setCompositionString("START-PREP AND BREASTFEEDING");
+
+    return prepCtCompositionCohort;
+  }
+
+  public CohortDefinition getClientsWithPrepInterruptionReasonInfected() {
+    final CompositionCohortDefinition prepCtCompositionCohort = new CompositionCohortDefinition();
+
+    prepCtCompositionCohort.setName("INFECTED");
+    prepCtCompositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    prepCtCompositionCohort.addSearch(
+        "START-PREP", EptsReportUtils.map(this.getClientsNewlyEnrolledInPrep(), mappings));
+
+    prepCtCompositionCohort.addSearch(
+        "INFECTED",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "findClientsWithPrepInterruptionReasonInfected",
+                ReasonsOfPrepInterruptionQuery.findPatientsWhoInterruptPrep(
+                    PrepReasonInterruptionType.INFECTED)),
+            mappings));
+
+    prepCtCompositionCohort.setCompositionString("START-PREP AND INFECTED");
+
+    return prepCtCompositionCohort;
+  }
+
+  public CohortDefinition getClientsWithPrepInterruptionReasonSideEffects() {
+    final CompositionCohortDefinition prepCtCompositionCohort = new CompositionCohortDefinition();
+
+    prepCtCompositionCohort.setName("SIDE-EFFECTS");
+    prepCtCompositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    prepCtCompositionCohort.addSearch(
+        "START-PREP", EptsReportUtils.map(this.getClientsNewlyEnrolledInPrep(), mappings));
+
+    prepCtCompositionCohort.addSearch(
+        "SIDE-EFFECTS",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "findClientsWithPrepInterruptionReasonSideEffects",
+                ReasonsOfPrepInterruptionQuery.findPatientsWhoInterruptPrep(
+                    PrepReasonInterruptionType.COLATERAL_DAMAGES)),
+            mappings));
+
+    prepCtCompositionCohort.setCompositionString("START-PREP AND SIDE-EFFECTS");
+
+    return prepCtCompositionCohort;
+  }
+
+  public CohortDefinition getClientsWithPrepInterruptionReasonNoRisks() {
+    final CompositionCohortDefinition prepCtCompositionCohort = new CompositionCohortDefinition();
+
+    prepCtCompositionCohort.setName("NO-RISKS");
+    prepCtCompositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    prepCtCompositionCohort.addSearch(
+        "START-PREP", EptsReportUtils.map(this.getClientsNewlyEnrolledInPrep(), mappings));
+
+    prepCtCompositionCohort.addSearch(
+        "NO-RISKS",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "findClientsWithPrepInterruptionReasonNoRisks",
+                ReasonsOfPrepInterruptionQuery.findPatientsWhoInterruptPrep(
+                    PrepReasonInterruptionType.NO_RISKS)),
+            mappings));
+
+    prepCtCompositionCohort.setCompositionString("START-PREP AND NO-RISKS");
+
+    return prepCtCompositionCohort;
+  }
+
+  public CohortDefinition getClientsWithPrepInterruptionReasonUserPreference() {
+    final CompositionCohortDefinition prepCtCompositionCohort = new CompositionCohortDefinition();
+
+    prepCtCompositionCohort.setName("USER-PREFERENCE");
+    prepCtCompositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    prepCtCompositionCohort.addSearch(
+        "START-PREP", EptsReportUtils.map(this.getClientsNewlyEnrolledInPrep(), mappings));
+
+    prepCtCompositionCohort.addSearch(
+        "USER-PREFERENCE",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "findClientsWithPrepInterruptionReasonUserPreference",
+                ReasonsOfPrepInterruptionQuery.findPatientsWhoInterruptPrep(
+                    PrepReasonInterruptionType.USER_PREFERENCE)),
+            mappings));
+
+    prepCtCompositionCohort.setCompositionString("START-PREP AND USER-PREFERENCE");
+
+    return prepCtCompositionCohort;
+  }
+
+  public CohortDefinition getClientsWithPrepInterruptionReasonUserOther() {
+    final CompositionCohortDefinition prepCtCompositionCohort = new CompositionCohortDefinition();
+
+    prepCtCompositionCohort.setName("OTHER");
+    prepCtCompositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    prepCtCompositionCohort.addSearch(
+        "START-PREP", EptsReportUtils.map(this.getClientsNewlyEnrolledInPrep(), mappings));
+
+    prepCtCompositionCohort.addSearch(
+        "OTHER",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "findClientsWithPrepInterruptionReasonUserOther",
+                ReasonsOfPrepInterruptionQuery.findPatientsWhoInterruptPrep(
+                    PrepReasonInterruptionType.OTHER)),
+            mappings));
+
+    prepCtCompositionCohort.setCompositionString("START-PREP AND OTHER");
 
     return prepCtCompositionCohort;
   }

@@ -73,6 +73,21 @@ public class PrepCtDataset extends BaseDataSet {
     final CohortDefinition clientsWithBreastfeedingStatus =
         this.prepCtCohortQueries.getClientsWithBreastfeedingStatusDuringReportingPeriod();
 
+    final CohortDefinition clientsWithPrepInterruptionReasonInfected =
+        this.prepCtCohortQueries.getClientsWithPrepInterruptionReasonInfected();
+
+    final CohortDefinition clientsWithPrepInterruptionReasonSideEffects =
+        this.prepCtCohortQueries.getClientsWithPrepInterruptionReasonSideEffects();
+
+    final CohortDefinition clientsWithPrepInterruptionReasonNoRisks =
+        this.prepCtCohortQueries.getClientsWithPrepInterruptionReasonNoRisks();
+
+    final CohortDefinition clientsWithPrepInterruptionReasonUserPreference =
+        this.prepCtCohortQueries.getClientsWithPrepInterruptionReasonUserPreference();
+
+    final CohortDefinition clientsWithPrepInterruptionReasonUserOther =
+        this.prepCtCohortQueries.getClientsWithPrepInterruptionReasonUserOther();
+
     final CohortIndicator clientsNewlyEnrolledInPrepIndicator =
         this.eptsGeneralIndicator.getIndicator(
             "clientsNewlyEnrolledInPrepIndicator",
@@ -102,6 +117,31 @@ public class PrepCtDataset extends BaseDataSet {
         this.eptsGeneralIndicator.getIndicator(
             "clientsNewlyEnrolledInPrepIndicator",
             EptsReportUtils.map(clientsWithBreastfeedingStatus, mappings));
+
+    final CohortIndicator clientsWithPrepInterruptionReasonInfectedIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "clientsNewlyEnrolledInPrepIndicator",
+            EptsReportUtils.map(clientsWithPrepInterruptionReasonInfected, mappings));
+
+    final CohortIndicator clientsWithPrepInterruptionReasonSideEffectsIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "clientsNewlyEnrolledInPrepIndicator",
+            EptsReportUtils.map(clientsWithPrepInterruptionReasonSideEffects, mappings));
+
+    final CohortIndicator clientsWithPrepInterruptionReasonNoRisksIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "clientsNewlyEnrolledInPrepIndicator",
+            EptsReportUtils.map(clientsWithPrepInterruptionReasonNoRisks, mappings));
+
+    final CohortIndicator clientsWithPrepInterruptionReasonUserPreferenceIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "clientsNewlyEnrolledInPrepIndicator",
+            EptsReportUtils.map(clientsWithPrepInterruptionReasonUserPreference, mappings));
+
+    final CohortIndicator clientsWithPrepInterruptionReasonUserOtherIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "clientsNewlyEnrolledInPrepIndicator",
+            EptsReportUtils.map(clientsWithPrepInterruptionReasonUserOther, mappings));
 
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
@@ -201,6 +241,12 @@ public class PrepCtDataset extends BaseDataSet {
         "gender=F|sex-worker=sex-worker");
 
     dataSetDefinition.addColumn(
+        "PREP-C-MSW",
+        "Sex Worker",
+        EptsReportUtils.map(clientsNewlyEnrolledInPrepIndicator, mappings),
+        "gender=M|sex-worker=sex-worker");
+
+    dataSetDefinition.addColumn(
         "PREP-C-TG",
         "Transgender",
         EptsReportUtils.map(clientsNewlyEnrolledInPrepIndicator, mappings),
@@ -216,6 +262,36 @@ public class PrepCtDataset extends BaseDataSet {
         "PREP-C-BREASTFEEDING",
         "PREP_CT: BREASTFEEDING STATUS",
         EptsReportUtils.map(clientsWithBreastfeedingStatusIndicator, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "PREP-C-INFECTED",
+        "Prep Interruption Reason - INFECTED",
+        EptsReportUtils.map(clientsWithPrepInterruptionReasonInfectedIndicator, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "PREP-C-NORISKS",
+        "Prep Interruption Reason - NO RISKS",
+        EptsReportUtils.map(clientsWithPrepInterruptionReasonNoRisksIndicator, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "PREP-C-SIDEEFFECTS",
+        "Prep Interruption Reason - SIDE EFFECTS",
+        EptsReportUtils.map(clientsWithPrepInterruptionReasonSideEffectsIndicator, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "PREP-C-USERPREFERENCE",
+        "Prep Interruption Reason - USER PREFERENCE",
+        EptsReportUtils.map(clientsWithPrepInterruptionReasonUserPreferenceIndicator, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "PREP-C-OTHER",
+        "Prep Interruption Reason - OTHER",
+        EptsReportUtils.map(clientsWithPrepInterruptionReasonUserOtherIndicator, mappings),
         "");
 
     return dataSetDefinition;

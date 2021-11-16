@@ -91,14 +91,13 @@ public interface PrepCtQueries {
 
     public static final String findClientsWhoReinitiatedPrep =
         "select patient_id from ( "
-            + "select p.patient_id, max(e.encounter_datetime) data_estado from patient p "
+            + "select p.patient_id, max(obsReinitiated.obs_datetime) data_estado from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs obsReinitiated on e.encounter_id= obsReinitiated.encounter_id "
             + "where e.voided=0 and obsReinitiated.voided=0 and p.voided=0 "
             + "and e.encounter_type=80 and obsReinitiated.concept_id=165296 and obsReinitiated.value_coded=1705 and obsReinitiated.obs_datetime  >=:startDate "
             + "and obsReinitiated.obs_datetime <=:endDate "
-            + "and e.encounter_datetime >=:startDate "
-            + " and e.encounter_datetime <=:endDate and e.location_id=:location group by p.patient_id "
+            + "and e.location_id=:location group by p.patient_id "
             + ") reinicio "
             + "inner join person pe on pe.person_id=reinicio.patient_id "
             + "    				where "
