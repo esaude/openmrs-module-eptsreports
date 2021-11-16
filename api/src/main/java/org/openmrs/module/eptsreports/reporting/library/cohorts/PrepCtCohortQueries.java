@@ -108,9 +108,7 @@ public class PrepCtCohortQueries {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     prepCtCompositionCohort.addSearch(
-        "START-PREP",
-        EptsReportUtils.map(
-            this.getClientsNewlyEnrolledInPrep(), "endDate=${endDate},location=${location}"));
+        "START-PREP", EptsReportUtils.map(this.getClientsNewlyEnrolledInPrep(), mappings));
 
     prepCtCompositionCohort.addSearch(
         "POSITIVE-TEST",
@@ -120,7 +118,7 @@ public class PrepCtCohortQueries {
                 PrepCtQueries.QUERY.findClientsWithPositiveTestResult),
             mappings));
 
-    prepCtCompositionCohort.setCompositionString("(START-PREP AND POSITIVE-TEST)");
+    prepCtCompositionCohort.setCompositionString("START-PREP AND POSITIVE-TEST");
 
     return prepCtCompositionCohort;
   }
@@ -136,9 +134,7 @@ public class PrepCtCohortQueries {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     prepCtCompositionCohort.addSearch(
-        "START-PREP",
-        EptsReportUtils.map(
-            this.getClientsNewlyEnrolledInPrep(), "endDate=${endDate},location=${location}"));
+        "START-PREP", EptsReportUtils.map(this.getClientsNewlyEnrolledInPrep(), mappings));
 
     prepCtCompositionCohort.addSearch(
         "NEGATIVE-TEST",
@@ -148,7 +144,7 @@ public class PrepCtCohortQueries {
                 PrepCtQueries.QUERY.findClientsWithNegativeTestResult),
             mappings));
 
-    prepCtCompositionCohort.setCompositionString("(START-PREP AND NEGATIVE-TEST)");
+    prepCtCompositionCohort.setCompositionString("START-PREP AND NEGATIVE-TEST");
 
     return prepCtCompositionCohort;
   }
@@ -164,9 +160,7 @@ public class PrepCtCohortQueries {
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     prepCtCompositionCohort.addSearch(
-        "START-PREP",
-        EptsReportUtils.map(
-            this.getClientsNewlyEnrolledInPrep(), "endDate=${endDate},location=${location}"));
+        "START-PREP", EptsReportUtils.map(this.getClientsNewlyEnrolledInPrep(), mappings));
 
     prepCtCompositionCohort.addSearch(
         "INDETERMINATE-TEST",
@@ -176,7 +170,59 @@ public class PrepCtCohortQueries {
                 PrepCtQueries.QUERY.findClientsWithIndeterminateTestResult),
             mappings));
 
-    prepCtCompositionCohort.setCompositionString("(START-PREP AND INDETERMINATE-TEST)");
+    prepCtCompositionCohort.setCompositionString("START-PREP AND INDETERMINATE-TEST");
+
+    return prepCtCompositionCohort;
+  }
+
+  public CohortDefinition getClientsWithPregnancyStatusDuringReportingPeriod() {
+    final CompositionCohortDefinition prepCtCompositionCohort = new CompositionCohortDefinition();
+
+    prepCtCompositionCohort.setName("PREGNANT");
+    prepCtCompositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    prepCtCompositionCohort.addSearch(
+        "START-PREP", EptsReportUtils.map(this.getClientsNewlyEnrolledInPrep(), mappings));
+
+    prepCtCompositionCohort.addSearch(
+        "PREGNANT",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "findClientsWithPregnancyStatusDuringReportingPeriod",
+                PrepCtQueries.QUERY.findClientsWithPregnancyStatusDuringReportingPeriod),
+            mappings));
+
+    prepCtCompositionCohort.setCompositionString("START-PREP AND PREGNANT");
+
+    return prepCtCompositionCohort;
+  }
+
+  public CohortDefinition getClientsWithBreastfeedingStatusDuringReportingPeriod() {
+    final CompositionCohortDefinition prepCtCompositionCohort = new CompositionCohortDefinition();
+
+    prepCtCompositionCohort.setName("BREASTFEEDING");
+    prepCtCompositionCohort.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("endDate", "End Date", Date.class));
+    prepCtCompositionCohort.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    prepCtCompositionCohort.addSearch(
+        "START-PREP", EptsReportUtils.map(this.getClientsNewlyEnrolledInPrep(), mappings));
+
+    prepCtCompositionCohort.addSearch(
+        "BREASTFEEDING",
+        EptsReportUtils.map(
+            this.genericCohorts.generalSql(
+                "findClientsWithBreastfeedingStatusDuringReportingPeriod",
+                PrepCtQueries.QUERY.findClientsWithBreastfeedingStatusDuringReportingPeriod),
+            mappings));
+
+    prepCtCompositionCohort.setCompositionString("START-PREP AND BREASTFEEDING");
 
     return prepCtCompositionCohort;
   }

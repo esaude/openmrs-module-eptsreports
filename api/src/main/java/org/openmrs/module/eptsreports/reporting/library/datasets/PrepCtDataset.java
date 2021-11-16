@@ -67,6 +67,12 @@ public class PrepCtDataset extends BaseDataSet {
     final CohortDefinition clientsWithIndeterminateTestResult =
         this.prepCtCohortQueries.getClientsWithIndeterminateTestResult();
 
+    final CohortDefinition clientsWithPregnancyStatus =
+        this.prepCtCohortQueries.getClientsWithPregnancyStatusDuringReportingPeriod();
+
+    final CohortDefinition clientsWithBreastfeedingStatus =
+        this.prepCtCohortQueries.getClientsWithBreastfeedingStatusDuringReportingPeriod();
+
     final CohortIndicator clientsNewlyEnrolledInPrepIndicator =
         this.eptsGeneralIndicator.getIndicator(
             "clientsNewlyEnrolledInPrepIndicator",
@@ -86,6 +92,16 @@ public class PrepCtDataset extends BaseDataSet {
         this.eptsGeneralIndicator.getIndicator(
             "clientsNewlyEnrolledInPrepIndicator",
             EptsReportUtils.map(clientsWithIndeterminateTestResult, mappings));
+
+    final CohortIndicator clientsWithPregnancyStatusIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "clientsNewlyEnrolledInPrepIndicator",
+            EptsReportUtils.map(clientsWithPregnancyStatus, mappings));
+
+    final CohortIndicator clientsWithBreastfeedingStatusIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "clientsNewlyEnrolledInPrepIndicator",
+            EptsReportUtils.map(clientsWithBreastfeedingStatus, mappings));
 
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
@@ -189,6 +205,18 @@ public class PrepCtDataset extends BaseDataSet {
         "Transgender",
         EptsReportUtils.map(clientsNewlyEnrolledInPrepIndicator, mappings),
         "transgender=transgender");
+
+    dataSetDefinition.addColumn(
+        "PREP-C-PREGNANT",
+        "PREP_CT: PREGNANT STATUS",
+        EptsReportUtils.map(clientsWithPregnancyStatusIndicator, mappings),
+        "");
+
+    dataSetDefinition.addColumn(
+        "PREP-C-BREASTFEEDING",
+        "PREP_CT: BREASTFEEDING STATUS",
+        EptsReportUtils.map(clientsWithBreastfeedingStatusIndicator, mappings),
+        "");
 
     return dataSetDefinition;
   }
