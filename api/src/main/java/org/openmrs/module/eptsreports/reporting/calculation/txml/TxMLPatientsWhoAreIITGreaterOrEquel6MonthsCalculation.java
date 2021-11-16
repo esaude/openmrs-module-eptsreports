@@ -65,7 +65,10 @@ public class TxMLPatientsWhoAreIITGreaterOrEquel6MonthsCalculation extends TxMLP
 
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
 
-        if (EptsDateUtil.getDaysBetween(inicioRealDate, nextDatePlus28) >= GREATHER_THAN_6_MONTHS) {
+        if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
+            && nextDatePlus28.compareTo(endDate) < 0
+            && EptsDateUtil.getDaysBetween(inicioRealDate, nextDatePlus28)
+                >= GREATHER_THAN_6_MONTHS) {
           resultMap.put(patientId, new SimpleResult(maxNextDate, this));
         }
       } else {

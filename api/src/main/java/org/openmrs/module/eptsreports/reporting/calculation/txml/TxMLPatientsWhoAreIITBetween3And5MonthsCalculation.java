@@ -66,8 +66,10 @@ public class TxMLPatientsWhoAreIITBetween3And5MonthsCalculation extends TxMLPati
 
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
 
-        if ((EptsDateUtil.getDaysBetween(inicioRealDate, nextDatePlus28) >= MIN_DAYS_IIT
-            && EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) < MAX_DAYS_IIT)) {
+        if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
+            && nextDatePlus28.compareTo(endDate) < 0
+            && (EptsDateUtil.getDaysBetween(inicioRealDate, nextDatePlus28) >= MIN_DAYS_IIT
+                && EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) < MAX_DAYS_IIT)) {
           resultMap.put(patientId, new SimpleResult(maxNextDate, this));
         }
       } else {
