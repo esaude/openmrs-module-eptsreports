@@ -47,11 +47,14 @@ public class TxMLPatientsWhoAreIITLessThan3MonthsCalculation extends TxMLPatient
 
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
 
+        // verificar se o paciente eh TX_ML
         if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
-            && nextDatePlus28.compareTo(endDate) < 0
-            && EptsDateUtil.getDaysBetween(inicioRealDate, nextDatePlus28) < LESS_THAN_3_MONTHS) {
+            && nextDatePlus28.compareTo(endDate) < 0) {
 
-          resultMap.put(patientId, new SimpleResult(maxNextDate, this));
+          // verificar se pertence a desagregacao
+          if (EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) < LESS_THAN_3_MONTHS) {
+            resultMap.put(patientId, new SimpleResult(maxNextDate, this));
+          }
         }
       } else {
         super.checkConsultationsOrFilaWithoutNextConsultationDate(
