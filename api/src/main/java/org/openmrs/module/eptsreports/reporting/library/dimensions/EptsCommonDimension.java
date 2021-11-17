@@ -15,18 +15,7 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.MISAUKeyPopsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.*;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InverseCohortDefinition;
@@ -114,88 +103,102 @@ public class EptsCommonDimension {
     dim.setParameters(ageDimensionCohort.getParameters());
     dim.setName("age dimension");
 
-    dim.addCohortDefinition("UK", ageDimensionCohort.createUnknownAgeCohort());
     dim.addCohortDefinition(
-        "<1", ageDimensionCohort.createXtoYAgeCohort("patients with age below 1", 0, 0));
+        DimensionKeyForAge.unknown.getKey(), ageDimensionCohort.createUnknownAgeCohort());
     dim.addCohortDefinition(
-        "<2", ageDimensionCohort.createXtoYAgeCohort("patients with age below 2 years", 0, 1));
+        DimensionKeyForAge.bellowOneYear.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age below 1", 0, 0));
     dim.addCohortDefinition(
-        "0-4",
+        DimensionKeyForAge.bellow2Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age below 2 years", 0, 1));
+    dim.addCohortDefinition(
+        DimensionKeyForAge.betweenZeroAnd4Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 4 years", 0, 4));
     dim.addCohortDefinition(
-        "0-14",
+        DimensionKeyForAge.betweenZeroAnd14Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 14 years", 0, 14));
     dim.addCohortDefinition(
-        "0-15",
+        DimensionKeyForAge.betweenZeroAnd15Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 15 years", 0, 15));
     dim.addCohortDefinition(
-        "1-4", ageDimensionCohort.createXtoYAgeCohort("patients with age between 1 and 4", 1, 4));
+        DimensionKeyForAge.betweenOneAnd4Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 1 and 4", 1, 4));
     dim.addCohortDefinition(
-        "2-4", ageDimensionCohort.createXtoYAgeCohort("patients with age between 1 and 4", 2, 4));
+        DimensionKeyForAge.between2And4Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 2 and 4", 2, 4));
     dim.addCohortDefinition(
-        "5-9", ageDimensionCohort.createXtoYAgeCohort("patients with age between 5 and 9", 5, 9));
+        DimensionKeyForAge.between5And9Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 5 and 9", 5, 9));
     dim.addCohortDefinition(
-        "<15", ageDimensionCohort.createXtoYAgeCohort("patients with age below 15", null, 14));
+        DimensionKeyForAge.bellow15Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age below 15", null, 14));
     dim.addCohortDefinition(
-        "14+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 14", 14, null));
+        DimensionKeyForAge.overOrEqualTo14Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age over 14", 14, null));
     dim.addCohortDefinition(
-        "10-14",
+        DimensionKeyForAge.between10And14Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 10 and 14", 10, 14));
     dim.addCohortDefinition(
-        "15+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 15", 15, null));
+        DimensionKeyForAge.overOrEqualTo15Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age over 15", 15, null));
     dim.addCohortDefinition(
-        "15-19",
+        DimensionKeyForAge.between15And19Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 15 and 19", 15, 19));
     dim.addCohortDefinition(
-        "20-24",
+        DimensionKeyForAge.between20And24Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 20 and 24", 20, 24));
     dim.addCohortDefinition(
-        "25-29",
+        DimensionKeyForAge.between25And29Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 25 and 29", 25, 29));
     dim.addCohortDefinition(
-        "30-34",
+        DimensionKeyForAge.between30And34Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 30 and 34", 30, 34));
     dim.addCohortDefinition(
-        "35-39",
+        DimensionKeyForAge.between35And39Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 35 and 39", 35, 39));
     dim.addCohortDefinition(
-        "40-44",
+        DimensionKeyForAge.between40And44Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 40 and 44", 40, 44));
     dim.addCohortDefinition(
-        "45-49",
+        DimensionKeyForAge.between45and49Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 45 and 49", 45, 49));
     dim.addCohortDefinition(
-        "50+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 50", 50, null));
+        DimensionKeyForAge.overOrEqualTo50Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age over 50", 50, null));
 
     dim.addCohortDefinition(
-        "20+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 20 years", 20, null));
+        DimensionKeyForAge.overOrEqualTo20Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age over 20 years", 20, null));
 
     dim.addCohortDefinition(
-        "10-19",
+        DimensionKeyForAge.between10And19Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 10 and 19", 10, 19));
     dim.addCohortDefinition(
-        "2-14",
+        DimensionKeyForAge.between2And14Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 2 and 14", 2, 14));
     dim.addCohortDefinition(
-        "2-9", ageDimensionCohort.createXtoYAgeCohort("patients with age between 2 and 9", 2, 9));
+        DimensionKeyForAge.between2And9Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 2 and 9", 2, 9));
 
     dim.addCohortDefinition(
-        "25+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 25 years", 25, null));
+        DimensionKeyForAge.overOrEqualTo25Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age over 25 years", 25, null));
     // 50-54, 55-59, 60-64, 65+
     dim.addCohortDefinition(
-        "50-54",
+        DimensionKeyForAge.between50And54Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort(
             "patients with age between 50 and 54 years", 50, 54));
     dim.addCohortDefinition(
-        "55-59",
+        DimensionKeyForAge.between55And59Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort(
             "patients with age between 55 and 59 years", 55, 59));
     dim.addCohortDefinition(
-        "60-64",
+        DimensionKeyForAge.between60And64Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort(
             "patients with age between 60 and 64 years", 60, 64));
     dim.addCohortDefinition(
-        "65+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 65 years", 65, null));
+        DimensionKeyForAge.overOrEqualTo65Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age over 65 years", 65, null));
 
     return dim;
   }

@@ -1,9 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.FaltososLevantamentoARVCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.DimensionKeyForAge;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.DimensionKeyForGender;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -13,6 +13,9 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class FaltososLevantamentoARVDataSet extends BaseDataSet {
@@ -188,25 +191,46 @@ public class FaltososLevantamentoARVDataSet extends BaseDataSet {
 
   private List<ColumnParameters> getColumnsForChildren() {
     ColumnParameters lessThan15 =
-        new ColumnParameters("under15", "under 15 year ", "age=<15", "lessThan15");
+        new ColumnParameters(
+            "under15",
+            "under 15 year ",
+            DimensionKeyForAge.bellow15Years.getDimension(),
+            "lessThan15");
     ColumnParameters lessTha15Female =
         new ColumnParameters(
-            "under15Female", "under 15 years Female", "gender=F|age=<15", "lessThan15Female");
+            "under15Female",
+            "under 15 years Female",
+            DimensionKeyForGender.female.and(DimensionKeyForAge.bellow15Years).getDimension(),
+            "lessThan15Female");
     ColumnParameters lessThan15Male =
         new ColumnParameters(
-            "under15Male", "under 15 years Male", "gender=M|age=<15", "lessThan15Male");
+            "under15Male",
+            "under 15 years Male",
+            DimensionKeyForGender.male.and(DimensionKeyForAge.bellow15Years).getDimension(),
+            "lessThan15Male");
 
     return Arrays.asList(lessThan15, lessTha15Female, lessThan15Male);
   }
 
   private List<ColumnParameters> getColumnsForAdult() {
     ColumnParameters greaterThan15 =
-        new ColumnParameters("above15", "above 15", "age=15+", "greaterThan15");
+        new ColumnParameters(
+            "EqualOrAbove15",
+            "Equal above 15",
+            DimensionKeyForAge.overOrEqualTo15Years.getDimension(),
+            "greaterThan15");
     ColumnParameters greaterTha15Female =
         new ColumnParameters(
-            "above15Female", "above 15 female", "gender=F|age=15+", "greaterThan15Female");
+            "above15Female",
+            "above 15 female",
+            DimensionKeyForGender.male.and(DimensionKeyForAge.overOrEqualTo15Years).getDimension(),
+            "greaterThan15Female");
     ColumnParameters greaterThan15Male =
-        new ColumnParameters("above15Male", "above15Male", "gender=M|age=15+", "greaterThan15Male");
+        new ColumnParameters(
+            "above15Male",
+            "above15Male",
+            DimensionKeyForGender.male.and(DimensionKeyForAge.overOrEqualTo15Years).getDimension(),
+            "greaterThan15Male");
 
     return Arrays.asList(greaterThan15, greaterTha15Female, greaterThan15Male);
   }
