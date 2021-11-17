@@ -5,6 +5,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.SurveyDefaultQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.eptsreports.reporting.utils.TypePTV;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,14 +31,17 @@ public class SurveyDefaultDimentions {
         "BREASTFEEDING",
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "BREASTFEEDING", SurveyDefaultQueries.getPatientsWhoAreBreastfeeding()),
+                "BREASTFEEDING",
+                SurveyDefaultQueries.getPatientsWhoArePregnantOrBreastfeeding(
+                    TypePTV.BREASTFEEDING)),
             mappings));
 
     dimension.addCohortDefinition(
         "PREGNANT",
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "PREGNANT", SurveyDefaultQueries.getPatientsWhoArePregnant()),
+                "PREGNANT",
+                SurveyDefaultQueries.getPatientsWhoArePregnantOrBreastfeeding(TypePTV.PREGNANT)),
             mappings));
 
     dimension.addCohortDefinition(

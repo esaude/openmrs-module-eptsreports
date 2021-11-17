@@ -71,8 +71,7 @@ public class SurveyDefaultDataSet extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Denominador: Nº de pacientes marcados para levantamento de ARV durante o período  (total)",
-                EptsReportUtils.map(
-                    this.surveyDefaultCohortQueries.getTotalDenominator(), mappings)),
+                EptsReportUtils.map(this.surveyDefaultCohortQueries.getTotalNumerator(), mappings)),
             mappings),
         "");
 

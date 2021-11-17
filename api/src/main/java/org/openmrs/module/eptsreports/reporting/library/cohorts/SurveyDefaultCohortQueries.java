@@ -18,7 +18,7 @@ public class SurveyDefaultCohortQueries {
   public CohortDefinition findPatientswhoHaveScheduledAppointmentsDuringReportingPeriod() {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
-    definition.setName("findPatientsWithScreeningTestForCervicalCancerDuringReportingPeriod");
+    definition.setName("findPatientswhoHaveScheduledAppointmentsDuringReportingPeriod");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -33,7 +33,7 @@ public class SurveyDefaultCohortQueries {
   public CohortDefinition getPatientsTransferredFromAnotherHealthFacilityUntilEndDate() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName("getPatientsTransferredFromAnotherHealthFacilityUntilEndDate");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
@@ -49,7 +49,7 @@ public class SurveyDefaultCohortQueries {
   public CohortDefinition getPatientsWhoDied() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName("getPatientsWhoDied");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
@@ -64,7 +64,7 @@ public class SurveyDefaultCohortQueries {
   public CohortDefinition getPatientsWhoSuspendTratment() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName("getPatientsWhoSuspendTratment");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
@@ -79,7 +79,7 @@ public class SurveyDefaultCohortQueries {
   public CohortDefinition findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumerator() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("patientsPregnantEnrolledOnART");
+    definition.setName("findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumerator");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
@@ -95,7 +95,7 @@ public class SurveyDefaultCohortQueries {
   public CohortDefinition getTotalDenominator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
-    definition.setName("getTotalNumerator");
+    definition.setName("getTotalDenominator");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
