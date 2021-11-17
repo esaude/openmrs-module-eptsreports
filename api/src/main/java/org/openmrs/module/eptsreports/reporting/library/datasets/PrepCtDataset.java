@@ -43,7 +43,7 @@ public class PrepCtDataset extends BaseDataSet {
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
 
-  @Autowired private PrepKeyPopulationDimension keyPopulationDimension;
+  @Autowired private PrepKeyPopulationDimension prepKeyPopulationDimension;
 
   public DataSetDefinition constructPrepCtDataset() {
 
@@ -174,23 +174,27 @@ public class PrepCtDataset extends BaseDataSet {
 
     dataSetDefinition.addDimension(
         "homosexual",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreHomosexual(), mappings));
+        EptsReportUtils.map(
+            this.prepKeyPopulationDimension.findPatientsWhoAreHomosexual(), mappings));
 
     dataSetDefinition.addDimension(
         "drug-user",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoUseDrugs(), mappings));
+        EptsReportUtils.map(this.prepKeyPopulationDimension.findPatientsWhoUseDrugs(), mappings));
 
     dataSetDefinition.addDimension(
         "prisioner",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreInPrison(), mappings));
+        EptsReportUtils.map(
+            this.prepKeyPopulationDimension.findPatientsWhoAreInPrison(), mappings));
 
     dataSetDefinition.addDimension(
         "sex-worker",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreSexWorker(), mappings));
+        EptsReportUtils.map(
+            this.prepKeyPopulationDimension.findPatientsWhoAreSexWorker(), mappings));
 
     dataSetDefinition.addDimension(
         "transgender",
-        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreTransGender(), mappings));
+        EptsReportUtils.map(
+            this.prepKeyPopulationDimension.findPatientsWhoAreTransGender(), mappings));
 
     dataSetDefinition.addColumn(
         "PREP-C-All",
