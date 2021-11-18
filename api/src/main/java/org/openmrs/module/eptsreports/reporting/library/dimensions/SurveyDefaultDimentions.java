@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.SurveyDefaultCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.SurveyDefaultQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.eptsreports.reporting.utils.TypePTV;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class SurveyDefaultDimentions {
 
   @Autowired GenericCohortQueries genericCohortQueries;
+  @Autowired SurveyDefaultCohortQueries surveyDefaultCohortQueries;
 
   public CohortDefinitionDimension getDefaultersDimentions() {
 
@@ -47,9 +49,7 @@ public class SurveyDefaultDimentions {
     dimension.addCohortDefinition(
         "CV",
         EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "CV", SurveyDefaultQueries.getPatientsWhoHaveViralLoadNotSupresed()),
-            mappings));
+            surveyDefaultCohortQueries.getPatientsWhoHaveViralLoadNotSupresed(), mappings));
 
     dimension.addCohortDefinition(
         "APSS",
