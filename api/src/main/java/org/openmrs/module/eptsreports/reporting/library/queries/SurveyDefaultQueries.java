@@ -31,31 +31,93 @@ public class SurveyDefaultQueries {
     return query;
   }
 
-  public static String findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumerator() {
+  public static String findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorB() {
     String query =
-        "select defaulters.patient_id from ( "
-            + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from (  "
-            + "select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p  "
-            + "inner join encounter e on p.patient_id=e.patient_id "
-            + "where e.encounter_type=18 and e.location_id=:location  and e.voided=0 and p.voided=0 and e.encounter_datetime<:endDate "
-            + "group by p.patient_id  "
-            + ")fila "
-            + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id  "
-            + "where obs_fila.voided=0 and obs_fila.concept_id=5096  "
-            + "and fila.data_levantamento=obs_fila.obs_datetime "
+        "select final.patient_id from ( "
+            + "select NUN.patient_id, NUN.data_levantamento from ( "
+            + "select defaulters.patient_id,defaulters.data_levantamento,defaulters.data_proximo_levantamento from  (  "
+            + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from  ( "
+            + "select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p   "
+            + "inner join encounter e on p.patient_id=e.patient_id   "
+            + "where encounter_type=18 and e.encounter_datetime <=:startDate and e.location_id=:location and e.voided=0 and p.voided=0   "
+            + "group by p.patient_id   "
+            + ")fila   "
+            + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id "
+            + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime "
             + "union "
-            + "select p.patient_id,max(o.value_datetime) data_levantamento, date_add(max(o.value_datetime), INTERVAL 30 day)  data_proximo_levantamento  "
-            + "from patient p inner join encounter e on p.patient_id = e.patient_id  "
-            + "inner join obs o on o.encounter_id = e.encounter_id 	 "
-            + "where  e.voided = 0 and p.voided = 0 and o.voided = 0 and o.concept_id = 23866  "
-            + "and e.encounter_type=52 and o.value_datetime<:endDate and e.location_id=:location   "
+            + "select p.patient_id,max(o.value_datetime) data_levantamento, date_add(max(o.value_datetime), INTERVAL 30 day)  data_proximo_levantamento  from patient p  "
+            + "inner join encounter e on p.patient_id = e.patient_id "
+            + "inner join obs o on o.encounter_id = e.encounter_id "
+            + "inner join obs obsLevantou on obsLevantou.encounter_id=e.encounter_id "
+            + "where e.voided = 0 and p.voided = 0 and o.value_datetime <= :startDate and o.voided = 0 "
+            + "and obsLevantou.voided=0 and obsLevantou.concept_id=23865 and obsLevantou.value_coded = 1065  "
+            + "and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location "
             + "group by p.patient_id "
             + ") defaulters "
-            + "where "
-            + "DATEDIFF(defaulters.data_levantamento,DATE_ADD(:endDate, INTERVAL 7 DAY)) = 0 "
-            + "OR  "
-            + "DATEDIFF(defaulters.data_levantamento,defaulters.data_proximo_levantamento) > 7  "
-            + "group by defaulters.patient_id ";
+            + "where defaulters.data_proximo_levantamento between :startDate  AND :endDate "
+            + "group by defaulters.patient_id "
+            + ")DEN "
+            + "inner join ( "
+            + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from ( "
+            + "select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "where encounter_type=18 and e.encounter_datetime <=:endDate and e.location_id=:location and e.voided=0 and p.voided=0 "
+            + "group by p.patient_id "
+            + ")fila   "
+            + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id   "
+            + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime "
+            + "union "
+            + "select p.patient_id,max(o.value_datetime) data_levantamento, date_add(max(o.value_datetime), INTERVAL 30 day) data_proximo_levantamento  from patient p "
+            + "inner join encounter e on p.patient_id = e.patient_id "
+            + "inner join obs o on o.encounter_id = e.encounter_id "
+            + "where  e.voided = 0 and p.voided = 0 and o.value_datetime <=:endDate and o.voided = 0 and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location "
+            + "group by p.patient_id "
+            + ")NUN on DEN.patient_id=NUN.patient_id "
+            + "where  DATEDIFF(NUN.data_levantamento,DEN.data_proximo_levantamento) > 7 "
+            + " )final ";
+    return query;
+  }
+
+  public static String findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorC() {
+    String query =
+        "select defaulters.patient_id from  (  "
+            + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from (  "
+            + "select p.patient_id,e.encounter_datetime as data_levantamento from patient p    "
+            + "inner join encounter e on p.patient_id=e.patient_id    "
+            + "where encounter_type=18 and e.location_id=:location and e.voided=0 and p.voided=0    "
+            + "group by p.patient_id , e.encounter_datetime   "
+            + ")fila    "
+            + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id    "
+            + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime   "
+            + "union   "
+            + "select p.patient_id,o.value_datetime data_levantamento, date_add(o.value_datetime, INTERVAL 30 day)  data_proximo_levantamento  from patient p   "
+            + "inner join encounter e on p.patient_id = e.patient_id    "
+            + "inner join obs o on o.encounter_id = e.encounter_id    "
+            + "where  e.voided = 0 and p.voided = 0  and o.voided = 0 and o.value_datetime  "
+            + "and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location    "
+            + "group by p.patient_id, e.encounter_datetime "
+            + ") defaulters  "
+            + "left join ( "
+            + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from  ( "
+            + "select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p    "
+            + "inner join encounter e on p.patient_id=e.patient_id    "
+            + "where encounter_type=18 and e.encounter_datetime <=:startDate and e.location_id=:location and e.voided=0 and p.voided=0  "
+            + "group by p.patient_id "
+            + ")fila    "
+            + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id    "
+            + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime   "
+            + "union   "
+            + "select p.patient_id,max(o.value_datetime) data_levantamento, date_add(max(o.value_datetime), INTERVAL 30 day)  data_proximo_levantamento  from patient p   "
+            + "inner join encounter e on p.patient_id = e.patient_id    "
+            + "inner join obs o on o.encounter_id = e.encounter_id    "
+            + "where  e.voided = 0 and p.voided = 0 and o.value_datetime <= :startDate and o.voided = 0   "
+            + "and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location    "
+            + "group by p.patient_id  "
+            + ")DEN on defaulters.patient_id=DEN.patient_id "
+            + "where  defaulters.data_levantamento between DEN.data_levantamento  and date_add(:endDate, INTERVAL 7 day)   "
+            + "group by defaulters.patient_id,DEN.patient_id, defaulters.data_levantamento "
+            + "having count(*)=0 ";
+
     return query;
   }
 
@@ -317,7 +379,7 @@ public class SurveyDefaultQueries {
             + "where  e.voided = 0 and p.voided = 0  "
             + "and e.encounter_datetime between DATE_SUB(:endDate, INTERVAL 3 MONTH) and :endDate "
             + "and o.voided = 0  and e.encounter_type in(34)  and e.location_id=:location "
-            + "group by p.patient_id ";
+            + "group by p.patient_id,e.encounter_datetime ";
 
     return query;
   }

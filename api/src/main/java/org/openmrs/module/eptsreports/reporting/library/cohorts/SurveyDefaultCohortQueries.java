@@ -78,18 +78,37 @@ public class SurveyDefaultCohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "NUMERATOR")
-  public CohortDefinition findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumerator() {
+  @DocumentedDefinition(value = "NUMERATOR-B")
+  public CohortDefinition
+      findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorB() {
 
     final SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumerator");
+    definition.setName("findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorB");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
         SurveyDefaultQueries
-            .findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumerator();
+            .findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorB();
+    definition.setQuery(query);
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "NUMERATOR-C")
+  public CohortDefinition
+      findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorC() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorC");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query =
+        SurveyDefaultQueries
+            .findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorC();
     definition.setQuery(query);
 
     return definition;
@@ -151,12 +170,18 @@ public class SurveyDefaultCohortQueries {
     definition.addSearch("DENOMINATOR", EptsReportUtils.map(this.getTotalDenominator(), mappings));
 
     definition.addSearch(
-        "NUMERATOR",
+        "NUMERATOR-B",
         EptsReportUtils.map(
-            this.findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumerator(),
+            this.findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorB(),
             mappings));
 
-    definition.setCompositionString("DENOMINATOR AND NUMERATOR");
+    definition.addSearch(
+        "NUMERATOR-C",
+        EptsReportUtils.map(
+            this.findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorC(),
+            mappings));
+
+    definition.setCompositionString("DENOMINATOR AND (NUMERATOR-B OR NUMERATOR-C)");
 
     return definition;
   }
