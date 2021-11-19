@@ -67,7 +67,7 @@ public class SurveyDefaultDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "FN-TOTAL",
-        "Denominador: Nº de pacientes marcados para levantamento de ARV durante o período  (total)",
+        "Numerador: Nº de pacientes faltosos ao levantamento de ARV durante o período (total)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Denominador: Nº de pacientes marcados para levantamento de ARV durante o período  (total)",
@@ -78,7 +78,7 @@ public class SurveyDefaultDataSet extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "FN",
-        "Denominador: Nº de pacientes marcados para levantamento de ARV durante o período",
+        "Numerador: Nº de pacientes faltosos ao levantamento de ARV durante o período",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Denominador: Nº de pacientes marcados para levantamento de ARV durante o período",
