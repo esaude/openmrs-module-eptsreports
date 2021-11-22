@@ -5,10 +5,12 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.calculation.rtt.ReturnedDateIITDateDaysCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRttCohortQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 /**
@@ -23,8 +25,15 @@ import org.springframework.stereotype.Component;
 @Component
 public class TxRTTDimenstion {
 
+  private TxRttCohortQueries txRttCohortQueries;
+
   private final String MAPPINGS =
       "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+
+  @Autowired
+  public TxRTTDimenstion(TxRttCohortQueries txRttCohortQueries) {
+    this.txRttCohortQueries = txRttCohortQueries;
+  }
 
   public CohortDefinitionDimension getAnBFromRTT() {
 
@@ -40,7 +49,9 @@ public class TxRTTDimenstion {
         EptsReportUtils.map(getPatientsReturnedAndIITDays(PLHIVDays.LESS_THAN_365), MAPPINGS));
     cdd.addCohortDefinition(
         "365+",
-        EptsReportUtils.map(getPatientsReturnedAndIITDays(PLHIVDays.MORE_THAN_365), MAPPINGS));
+        EptsReportUtils.map(
+            txRttCohortQueries.treatmentInterruptionOfXDays(365, null),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cdd.addCohortDefinition(
         "unk", EptsReportUtils.map(getPatientsReturnedAndIITDays(PLHIVDays.UNKNOWN), MAPPINGS));
 

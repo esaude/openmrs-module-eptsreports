@@ -304,7 +304,7 @@ public class TxRttQueries {
             + "        INNER JOIN ( "
             + "             SELECT patient_id, MIN(earliest_date) as final_earliest_date "
             + "             FROM ( "
-            + "                      SELECT p.patient_id, MIN(e.encounter_datetime) as earliest_date "
+            + "                      SELECT p.patient_id, MIN(o2.value_datetime) as earliest_date "
             + "                      FROM patient p "
             + "                               INNER JOIN encounter e "
             + "                                          on e.patient_id = p.patient_id "
