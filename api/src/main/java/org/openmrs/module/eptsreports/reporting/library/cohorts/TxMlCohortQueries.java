@@ -1523,8 +1523,7 @@ public class TxMlCohortQueries {
             getPatientsWhoMissedNextAppointmentAndTransferredOut(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString(
-        "(missedAppointment AND C2) AND NOT dead AND NOT transferredOut");
+    cd.setCompositionString("(missedAppointment AND C2) AND NOT dead AND NOT transferredOut");
     return cd;
   }
 
@@ -1577,14 +1576,8 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoMissedNextAppointmentAndTransferredOut(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "refusedOrStopped",
-        EptsReportUtils.map(
-            getPatientsWhoMissedNextAppointmentAndRefusedOrStoppedTreatment(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
     cd.setCompositionString(
-        "(missedAppointment AND (C1 OR C2 OR C3)) AND NOT dead AND NOT transferredOut AND NOT refusedOrStopped");
+        "(missedAppointment AND (C1 OR C2 OR C3)) AND NOT dead AND NOT transferredOut");
     return cd;
   }
 }
