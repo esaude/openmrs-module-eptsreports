@@ -105,11 +105,17 @@
          			where e.voided=0 and p.voided=0 and e.encounter_datetime between (:startDate - INTERVAL 13 MONTH) and (:endDate - interval 6 month)  
          				and o.voided=0 and o.concept_id=23985 and o.value_coded in (656,23982) and e.encounter_type=60 and  e.location_id=:location      
          			union                                                                                                                                
-         			select  p.patient_id, o.value_datetime data_inicio_tpi from patient p                                                                
-				inner join encounter e on p.patient_id=e.patient_id                                                                                      
-				inner join obs o on o.encounter_id=e.encounter_id                                                                                        
-			where   e.voided=0 and p.voided=0 and o.value_datetime between (:startDate - interval 13 month) and (:endDate - interval 6 month)            
-				and o.voided=0 and o.concept_id=6128 and e.encounter_type in (6,9,53) and e.location_id=:location  		                                 
+         			select p.patient_id, o.value_datetime data_inicio_tpi from patient p                                                                
+					inner join encounter e on p.patient_id=e.patient_id                                                                                      
+					inner join obs o on o.encounter_id=e.encounter_id                                                                                        
+				where e.voided=0 and p.voided=0 and o.value_datetime between (:startDate - interval 13 month) and (:endDate - interval 7 month)            
+							and o.voided=0 and o.concept_id=6128 and e.encounter_type in(6,9,53) and e.location_id=:location  	
+				union
+				select p.patient_id, e.encounter_datetime data_inicio_tpi from patient p                                                                
+					inner join encounter e on p.patient_id=e.patient_id                                                                                      
+					inner join obs o on o.encounter_id=e.encounter_id                                                                                        
+				where e.voided=0 and p.voided=0 and e.encounter_datetime between (:startDate - interval 13 month) and (:endDate - interval 7 month)            
+							and o.voided=0 and o.concept_id=6122  and o.value_coded =1256 and  e.encounter_type in(6,9) and e.location_id=:location  		                                 		      		                                  		                                                     
          		) inicioAnterior on inicioAnterior.patient_id=inicio.patient_id  																		 
          			and inicioAnterior.data_inicio_tpi between (inicio.data_inicio_tpi - INTERVAL 7 MONTH) and (inicio.data_inicio_tpi - INTERVAL 1 day) 
          		where inicioAnterior.patient_id is null																									 
