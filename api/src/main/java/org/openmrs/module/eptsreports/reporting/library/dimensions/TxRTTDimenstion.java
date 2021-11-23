@@ -46,7 +46,9 @@ public class TxRTTDimenstion {
 
     cdd.addCohortDefinition(
         "<365",
-        EptsReportUtils.map(getPatientsReturnedAndIITDays(PLHIVDays.LESS_THAN_365), MAPPINGS));
+        EptsReportUtils.map(
+            txRttCohortQueries.treatmentInterruptionOfXDays(null, 365),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cdd.addCohortDefinition(
         "365+",
         EptsReportUtils.map(
