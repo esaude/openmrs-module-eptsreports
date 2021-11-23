@@ -5299,8 +5299,8 @@ public class QualityImprovement2020CohortQueries {
    * B2 - Select all female patients with first clinical consultation (encounter type 6) that have
    * the concept “GESTANTE” (Concept Id 1982) and value coded “SIM” (Concept Id 1065) registered
    * (1)during the inclusion period (first occurrence, encounter_datetime >= startDateInclusion and
-   * <=endDateInclusion) and (2) after the start of ART (encounter_datetime > “Patient ART Start
-   * Date”)
+   * <=endDateInclusion) and (2) 3 months after the start of ART (encounter_datetime > “Patient ART
+   * Start Date” + 3 months)
    *
    * @return CohortDefinition
    */
@@ -5321,29 +5321,31 @@ public class QualityImprovement2020CohortQueries {
     map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
 
     String query =
-        "    SELECT patient_id "
-            + "    FROM    ("
-            + "        SELECT p.patient_id, MIN(e.encounter_datetime) AS first_gestante "
-            + "        FROM patient p "
-            + "            INNER JOIN person per on p.patient_id=per.person_id "
-            + "            INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "            INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "        WHERE   p.voided = 0 "
-            + "        AND per.voided=0 AND per.gender = 'F' "
-            + "          AND e.voided = 0 AND o.voided  = 0 "
-            + "          AND e.encounter_type = ${6} AND o.concept_id = ${1982} "
-            + "          AND o.value_coded = ${1065} AND e.location_id = :location "
-            + "        GROUP BY p.patient_id) gest  "
-            + "  WHERE  gest.first_gestante >= :startDate AND gest.first_gestante <= :endDate "
-            + "  AND gest.first_gestante > (SELECT MIN(o.value_datetime) as art_date "
-            + "        FROM encounter e "
-            + "  INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "        WHERE   "
-            + "  gest.patient_id = e.patient_id "
-            + "          AND e.voided = 0 AND o.voided = 0 "
-            + "          AND e.encounter_type = ${53} AND o.concept_id = ${1190} "
-            + "          AND o.value_datetime IS NOT NULL AND o.value_datetime <= :endDate AND e.location_id = :location "
-            + "    LIMIT 1) ";
+        "       SELECT patient_id "
+            + " FROM ("
+            + "         SELECT p.patient_id, MIN(e.encounter_datetime) AS first_gestante "
+            + "         FROM  patient p "
+            + "               INNER JOIN person per on p.patient_id=per.person_id "
+            + "               INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "               INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "         WHERE p.voided = 0 "
+            + "           AND per.voided=0 AND per.gender = 'F' "
+            + "           AND e.voided = 0 AND o.voided  = 0 "
+            + "           AND e.encounter_type = ${6} "
+            + "           AND o.concept_id = ${1982} "
+            + "           AND o.value_coded = ${1065} "
+            + "           AND e.location_id = :location "
+            + "         GROUP BY p.patient_id) gest  "
+            + " WHERE gest.first_gestante >= :startDate "
+            + "   AND gest.first_gestante <= :endDate "
+            + "   AND gest.first_gestante > DATE_ADD((SELECT MIN(o.value_datetime) as art_date "
+            + "                                       FROM encounter e "
+            + "                                           INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "                                       WHERE gest.patient_id = e.patient_id "
+            + "                                         AND e.voided = 0 AND o.voided = 0 "
+            + "                                         AND e.encounter_type = ${53} AND o.concept_id = ${1190} "
+            + "                                         AND o.value_datetime IS NOT NULL AND o.value_datetime <= :endDate AND e.location_id = :location "
+            + "                                       LIMIT 1), interval 3 MONTH) ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
 
@@ -5559,7 +5561,7 @@ public class QualityImprovement2020CohortQueries {
    * 13.16. % de MG elegíveis a CV com registo de pedido de CV feito pelo clínico na primeira CPN
    * (MG que entraram em TARV na CPN) Denominator:# de MG que tiveram a primeira CPN no período de
    * inclusão, e que já estavam em TARV há mais de 3 meses (Line 91,Column F in the Template) as
-   * following: <code>B2 and NOT (D or E or F) and Age >= 15*</code>
+   * following: B2
    *
    * @return CohortDefinition
    */
@@ -6200,7 +6202,7 @@ public class QualityImprovement2020CohortQueries {
   /**
    * 13.16. % de MG elegíveis a CV com registo de pedido de CV feito pelo clínico na primeira CPN
    * (MG que entraram em TARV na CPN) (Line 91 in the template) Numerator (Column E in the Template)
-   * as following: <code>(B2 and J) and NOT (D or E or F) and Age >= 15*</code>
+   * as following: (B2 and J)
    *
    * @return CohortDefinition
    */

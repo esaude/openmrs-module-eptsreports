@@ -818,8 +818,7 @@ public class FaltososLevantamentoARVCohortQueries {
     map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
 
     String query =
-
-              "SELECT pregnant.patient_id "
+        "SELECT pregnant.patient_id "
             + "FROM   (SELECT p.patient_id, MAX(e.encounter_datetime) AS pregnancy_date "
             + "        FROM   patient p "
             + "               INNER JOIN encounter e ON e.patient_id = p.patient_id "
@@ -894,8 +893,7 @@ public class FaltososLevantamentoARVCohortQueries {
     map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
 
     String query =
-
-              "SELECT breastfeeding.patient_id "
+        "SELECT breastfeeding.patient_id "
             + "FROM  (SELECT p.patient_id, MAX(e.encounter_datetime) breastfeed_date "
             + "       FROM   patient p INNER JOIN encounter e ON e.patient_id = p.patient_id "
             + "              INNER JOIN obs o ON o.encounter_id = e.encounter_id "
@@ -1010,8 +1008,7 @@ public class FaltososLevantamentoARVCohortQueries {
     valuesMap.put("1305", hivMetadata.getHivViralLoadQualitative().getConceptId());
 
     String query =
-
-              "SELECT viral_result.patient_id "
+        "SELECT viral_result.patient_id "
             + "FROM   (SELECT vl_registered.patient_id, vl_registered.concept_id, vl_registered.value_numeric "
             + "        FROM   (SELECT p.patient_id, e.encounter_id, e.encounter_type, encounter_datetime, o.concept_id, o.value_numeric, o.obs_datetime "
             + "                FROM   patient p INNER JOIN encounter e ON e.patient_id = p.patient_id "
