@@ -1,6 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
 import java.util.Date;
+
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.queries.mq.MQQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -56,6 +57,13 @@ public class MIAgeDimentions {
         EptsReportUtils.map(
             mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTChildren(15),
             mappingsMILessTwoMonths));
+    
+    dimension.addCohortDefinition(
+            "LESS_2_MONTHS_1-14",
+            EptsReportUtils.map(
+                mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(1, 14),
+                mappingsMILessTwoMonths));
+
 
     dimension.addCohortDefinition(
         "LESS_2_MONTHS_2-14",
@@ -272,6 +280,13 @@ public class MIAgeDimentions {
         EptsReportUtils.map(
             mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTChildren(15),
             mappingsMILess8Months));
+    
+    dimension.addCohortDefinition(
+            "LESS_8_MONTHS_1-14",
+            EptsReportUtils.map(
+                mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(1, 14),
+                mappingsMILess8Months));
+
 
     dimension.addCohortDefinition(
         "LESS_8_MONTHS_2-14",
