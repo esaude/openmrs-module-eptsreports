@@ -48,7 +48,7 @@ public class MQCategory7Dataset extends MQAbstractDataSet {
                 "CAT7ChildrenDENOMINATOR",
                 mappings),
             mappings),
-        "ageMqNewART=15-");
+        "ageMqNewART=1-14");
 
     dataSetDefinition.addColumn(
         "CAT7ChildrenNUMERATOR",
@@ -60,7 +60,7 @@ public class MQCategory7Dataset extends MQAbstractDataSet {
                 "CAT7ChildrenNUMERATOR",
                 mappings),
             mappings),
-        "ageMqNewART=15-");
+        "ageMqNewART=1-14");
 
     dataSetDefinition.addColumn(
         "CAT7PregnantDENOMINATOR",
@@ -120,7 +120,7 @@ public class MQCategory7Dataset extends MQAbstractDataSet {
                 "CAT7ChildrenTPIDENOMINATOR",
                 mappings),
             mappings),
-        "ageMqNewART=15-");
+        "ageMqNewART=1-14");
 
     dataSetDefinition.addColumn(
         "CAT7ChildrenTPINUMERATOR",
@@ -132,7 +132,7 @@ public class MQCategory7Dataset extends MQAbstractDataSet {
                 "CAT7ChildrenTPINUMERATOR",
                 mappings),
             mappings),
-        "ageMqNewART=15-");
+        "ageMqNewART=1-14");
 
     dataSetDefinition.addColumn(
         "CAT7PragnantTPIDENOMINATOR",
