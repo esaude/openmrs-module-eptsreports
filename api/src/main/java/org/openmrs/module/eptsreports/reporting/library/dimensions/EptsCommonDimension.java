@@ -177,6 +177,9 @@ public class EptsCommonDimension {
         DimensionKeyForAge.between2And14Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 2 and 14", 2, 14));
     dim.addCohortDefinition(
+        DimensionKeyForAge.between1And14Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 1 and 14", 1, 14));
+    dim.addCohortDefinition(
         DimensionKeyForAge.between2And9Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 2 and 9", 2, 9));
 
@@ -470,6 +473,11 @@ public class EptsCommonDimension {
         "<2",
         EptsReportUtils.map(
             genericCohortQueries.getAgeOnMOHArtStartDate(null, 1, false),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+    dim.addCohortDefinition(
+        "1-14",
+        EptsReportUtils.map(
+            genericCohortQueries.getAgeOnMOHArtStartDate(1, 14, false),
             "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
 
     return dim;
