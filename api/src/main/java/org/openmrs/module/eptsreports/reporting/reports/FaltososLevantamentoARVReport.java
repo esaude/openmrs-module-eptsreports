@@ -96,8 +96,8 @@ public class FaltososLevantamentoARVReport extends EptsDataExportManager {
   @Override
   public List<Parameter> getParameters() {
     return Arrays.asList(
-        new Parameter("endDate", "End date", Date.class),
         new Parameter("startDate", "Start date", Date.class),
+        new Parameter("endDate", "End date", Date.class),
         new Parameter("location", "Location", Location.class));
   }
 }

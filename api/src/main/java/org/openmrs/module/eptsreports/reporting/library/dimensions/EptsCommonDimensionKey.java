@@ -1,26 +1,33 @@
 package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
-import org.springframework.stereotype.Service;
+import java.util.ArrayList;
+import java.util.List;
 
-@Service
 public class EptsCommonDimensionKey {
 
-  private DimensionKey dimensionKey;
+  private List<DimensionKey> dimensionKeys;
 
-  public DimensionKey keyFor(DimensionKey dimensionKey) {
-    this.dimensionKey = dimensionKey;
-    return this.dimensionKey;
+  private EptsCommonDimensionKey() {
+    dimensionKeys = new ArrayList<>();
   }
 
-  public DimensionKey and(DimensionKey dimensionKey) {
-    if (dimensionKey == null) {
-      throw new NullPointerException("");
+  public static EptsCommonDimensionKey of(DimensionKey dimensionKey) {
+    EptsCommonDimensionKey commonDimensionKey = new EptsCommonDimensionKey();
+    commonDimensionKey.dimensionKeys.add(dimensionKey);
+    return commonDimensionKey;
+  }
+
+  public EptsCommonDimensionKey and(DimensionKey dimensionKey) {
+    this.dimensionKeys.add(dimensionKey);
+    return this;
+  }
+
+  public String getDimensions() {
+    StringBuilder sb = new StringBuilder();
+    for (DimensionKey dimensionKey : dimensionKeys) {
+      sb.append(dimensionKey.getDimension()).append("|");
     }
-    this.dimensionKey.and(dimensionKey);
-    return this.dimensionKey;
-  }
-
-  public String get() {
-    return this.dimensionKey.getDimension();
+    String dimensionOptions = sb.toString();
+    return dimensionOptions.substring(0, dimensionOptions.length() - 1);
   }
 }
