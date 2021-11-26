@@ -1,6 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.calculation.pvls;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
@@ -10,6 +12,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculation;
@@ -19,6 +22,7 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingDateCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
+@Ignore
 public class BreastFeedingDateCalculationTest extends BasePatientCalculationTest {
 
   @Override

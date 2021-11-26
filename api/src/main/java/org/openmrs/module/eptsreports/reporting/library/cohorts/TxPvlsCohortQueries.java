@@ -408,6 +408,7 @@ public class TxPvlsCohortQueries {
             "pregnantBreastfeeding",
             Context.getRegisteredComponents(BreastfeedingPregnantCalculation.class).get(0));
     cd.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "On or before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("state", state);
 

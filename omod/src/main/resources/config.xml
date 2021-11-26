@@ -3023,6 +3023,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.sampleCollectionDateAndTimeUuid</property>
+		<defaultValue>f85e3f84-a255-412a-aa43-40174f69c305</defaultValue>
+		<description>
+			Sample collection date and time concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

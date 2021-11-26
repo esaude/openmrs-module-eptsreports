@@ -51,6 +51,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
     EncounterType fichaResumoEncounterType = hivMetadata.getMasterCardEncounterType();
+    EncounterType fsrEncounterType = hivMetadata.getFsrEncounterType();
 
     Concept breastfeedingConcept = hivMetadata.getBreastfeeding();
     Concept yes = hivMetadata.getYesConcept();
@@ -61,6 +62,7 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
     Concept historicalArtStartDate = hivMetadata.getARVStartDateConcept();
+    Concept sampleCollectionDateAndTime = hivMetadata.getSampleCollectionDateAndTime();
 
     CalculationResultMap lactatingMap =
         ePTSCalculationService.getObs(
@@ -138,6 +140,28 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
             null,
             context);
 
+    CalculationResultMap breastfeedingMap =
+        ePTSCalculationService.getObs(
+            breastfeedingConcept,
+            Arrays.asList(fsrEncounterType),
+            cohort,
+            Arrays.asList(location),
+            Arrays.asList(yes),
+            TimeQualifier.ANY,
+            null,
+            context);
+
+    CalculationResultMap breastfeedingSampleDatetimeMap =
+        ePTSCalculationService.getObs(
+            sampleCollectionDateAndTime,
+            Arrays.asList(fsrEncounterType),
+            cohort,
+            Arrays.asList(location),
+            null,
+            TimeQualifier.ANY,
+            null,
+            context);
+
     for (Integer pId : cohort) {
       Obs lastVlObs = EptsCalculationUtils.resultForPatient(lastVl, pId);
       Obs lastVlQualitativeObs = EptsCalculationUtils.resultForPatient(lastHivVlQualitative, pId);
@@ -152,7 +176,11 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
               lastVlQualitativeObs,
               startArtBeingBpostiveMap,
               breastfeedingRegistrationBasedOnValueDateAndEncounter53Map,
-              lactatingBasedOnEncounter53Map);
+              lactatingBasedOnEncounter53Map,
+              breastfeedingMap,
+              breastfeedingSampleDatetimeMap,
+              yes,
+              onOrBefore);
       resultMap.put(pId, new SimpleResult(resultantDate, this));
     }
     return resultMap;
@@ -168,7 +196,11 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       Obs lastVlQualitative,
       CalculationResultMap startArtBeingBpostiveMap,
       CalculationResultMap registeredBreastfeedingValueDate53,
-      CalculationResultMap registeredBreastfeedingEncounterType53) {
+      CalculationResultMap registeredBreastfeedingEncounterType53,
+      CalculationResultMap breatfeedingMap,
+      CalculationResultMap breatfeedingSampleDatetimeMap,
+      Concept yes,
+      Date endDate) {
     Date resultantDate = null;
     // check of the 2 dates passed for viral load and pick the latest
     List<Date> dateListForVl = new ArrayList<>();
@@ -205,6 +237,15 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
           EptsCalculationUtils.extractResultValues(
               getRegisteredBreastFeedingBasedOnEncounter53ListResults);
 
+      ListResult breastfeedingFsrResults = (ListResult) breatfeedingMap.get(pId);
+      List<Obs> breastfeedingFsrResultsObs =
+          EptsCalculationUtils.extractResultValues(breastfeedingFsrResults);
+
+      ListResult breastfeedingFSampleDatetimesrResults =
+          (ListResult) breatfeedingSampleDatetimeMap.get(pId);
+      List<Obs> breastfeedingFsrResultsSampleDateTimeObs =
+          EptsCalculationUtils.extractResultValues(breastfeedingFSampleDatetimesrResults);
+
       // get a list of all eligible dates
       List<Date> allEligibleDates =
           Arrays.asList(
@@ -216,7 +257,13 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
               this.getBreastFeedingRegistrationDate(
                   lastVlDate,
                   registeredBreastfeedingListResultsListBasedOnValueDate53,
-                  getRegisteredBreastFeedingBasedOnEncounter53ObsList));
+                  getRegisteredBreastFeedingBasedOnEncounter53ObsList),
+              this.isBreastFeedingWithFsr(
+                  lastVlDate,
+                  breastfeedingFsrResultsObs,
+                  yes,
+                  breastfeedingFsrResultsSampleDateTimeObs,
+                  endDate));
 
       // have a resultant list of dates
       List<Date> resultantList = new ArrayList<>();
@@ -317,5 +364,26 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
       }
     }
     return requiredDate;
+  }
+
+  private Date isBreastFeedingWithFsr(
+      Date lastVlDate,
+      List<Obs> breastfeeding,
+      Concept yes,
+      List<Obs> sampleCollectionDate,
+      Date endDate) {
+    Date isBreastfeedingWihFsrDate = null;
+    for (Obs obsYes : breastfeeding) {
+      for (Obs date : sampleCollectionDate) {
+        if (obsYes.getEncounter().equals(date.getEncounter())
+            && obsYes.getValueCoded().equals(yes)
+            && date.getValueDatetime().compareTo(endDate) <= 0
+            && (this.isInBreastFeedingViralLoadRange(lastVlDate, date.getValueDatetime()))) {
+          isBreastfeedingWihFsrDate = date.getValueDatetime();
+          break;
+        }
+      }
+    }
+    return isBreastfeedingWihFsrDate;
   }
 }
