@@ -55,8 +55,7 @@ public class SetupListOfPatientsInART extends EptsDataExportManager {
 
     rd.addDataSetDefinition(
         "NR",
-        Mapped.mapStraightThrough(
-            listOfPatientsInARTDataSet.costructDataSet(this.getParameters())));
+        Mapped.mapStraightThrough(listOfPatientsInARTDataSet.constructDataset(getParameters())));
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
@@ -78,12 +77,12 @@ public class SetupListOfPatientsInART extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "FORMULACOES_ARV.xls",
-              "CRIANÇAS COM FORMULAÇÕES DE ARV",
+              "LISTA_DE_PACIENTES_QUE_INICIARAM_TARV.xls",
+              "LISTA_DE_PACIENTES_QUE_INICIARAM_TARV",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
-      props.put("repeatingSections", "sheet:1,row:7,dataset:FR");
+      props.put("repeatingSections", "sheet:1,row:7,dataset:NR");
 
       props.put("sortWeight", "5000");
       props.put("sortWeight", "5000");
