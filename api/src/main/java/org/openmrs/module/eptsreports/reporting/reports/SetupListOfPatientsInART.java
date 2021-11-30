@@ -7,7 +7,8 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.ListOfPatientsInARTDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.listarvsdatasets.ListOfPatientsInARTDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.listarvsdatasets.ListOfPatientsInARTTotalDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -24,15 +25,16 @@ public class SetupListOfPatientsInART extends EptsDataExportManager {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
   @Autowired private ListOfPatientsInARTDataSet listOfPatientsInARTDataSet;
+  @Autowired private ListOfPatientsInARTTotalDataSet listOfPatientsInARTTotalDataSet;
 
   @Override
   public String getExcelDesignUuid() {
-    return "62655a74-bd87-11eb-ba08-1baa50006a23";
+    return "48dcb15c-515b-11ec-826c-ff14bb3686bd";
   }
 
   @Override
   public String getUuid() {
-    return "5768351a-bd87-11eb-90f5-5768b48b1c69";
+    return "567fc3d0-515b-11ec-91df-4fef42a0849f";
   }
 
   @Override
@@ -56,6 +58,10 @@ public class SetupListOfPatientsInART extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "NR",
         Mapped.mapStraightThrough(listOfPatientsInARTDataSet.constructDataset(getParameters())));
+
+    rd.addDataSetDefinition(
+        "RT", Mapped.mapStraightThrough(listOfPatientsInARTTotalDataSet.constructTDatset()));
+
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
