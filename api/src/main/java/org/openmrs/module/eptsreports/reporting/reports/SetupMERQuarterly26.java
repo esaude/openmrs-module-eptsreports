@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.*;
+import org.openmrs.module.eptsreports.reporting.library.datasets.DatimCodeDatasetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TransferredInDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
@@ -118,6 +119,7 @@ public class SetupMERQuarterly26 extends EptsDataExportManager {
         "T", Mapped.mapStraightThrough(transferredInDataset.constructTransferInDataset()));
     rd.addDataSetDefinition(
         "PL", Mapped.mapStraightThrough(txRTTPLHIVDateset.constructTxRTTPLHIVDateset()));
+    rd.addDataSetDefinition("DT", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));
 
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
@@ -134,7 +136,7 @@ public class SetupMERQuarterly26 extends EptsDataExportManager {
       rd =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.6_Quarterly_sheets.xls",
+              "PEPFAR_MER_2.6_Quarterly_v1.9.xls",
               "PEPFAR MER 2.6 Quarterly Report",
               getExcelDesignUuid(),
               null);
