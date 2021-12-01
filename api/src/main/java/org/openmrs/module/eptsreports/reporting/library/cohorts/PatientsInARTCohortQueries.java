@@ -22,7 +22,6 @@ public class PatientsInARTCohortQueries {
     definition.setName("findPatientsWhoInARTTotal");
     definition.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
     definition.addParameter(new Parameter("cohorEndDate", "Cohort End Date", Date.class));
-    definition.addParameter(new Parameter("evaluationDate", "Evaluation Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(EptsQuerysUtils.loadQuery(FIND_PATIENTS_IN_ART_TOTAL));
