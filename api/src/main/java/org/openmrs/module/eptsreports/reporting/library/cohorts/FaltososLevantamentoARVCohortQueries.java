@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -13,6 +10,10 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class FaltososLevantamentoARVCohortQueries {
@@ -30,19 +31,19 @@ public class FaltososLevantamentoARVCohortQueries {
     cd.setName("DENOMINATOR ");
     addParameters(cd);
 
-    CohortDefinition chdA = getA();
+    CohortDefinition chdScheduledPickup = getPatientsWithLastNextScheduledPickup();
     CohortDefinition chdB = getB();
 
     cd.addSearch(
-        "A",
+        "scheduledPickup",
         EptsReportUtils.map(
-            chdA, "startDate=${startDate},endDate=${endDate},location=${location}"));
+            chdScheduledPickup, "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B",
         EptsReportUtils.map(
             chdB, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("A AND NOT B");
+    cd.setCompositionString("scheduledPickup AND NOT B");
 
     return cd;
   }
@@ -72,33 +73,6 @@ public class FaltososLevantamentoARVCohortQueries {
             chWithoutPickup, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("denominator AND (moreThan7Days OR withoutPickup)");
-
-    return cd;
-  }
-
-  public CohortDefinition getA() {
-
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Denominator - Last Next Schedulled Pickup");
-    addParameters(cd);
-
-    CohortDefinition chdProximoLevantamentoFila = getPatientsWithProximoLevantamentoOnFila();
-    CohortDefinition chdLevantamentoPlus30Days =
-        getPatientsWithMostRecentDataDeLevantamentoPlus30Days();
-
-    cd.addSearch(
-        "A1",
-        EptsReportUtils.map(
-            chdProximoLevantamentoFila,
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.addSearch(
-        "A2",
-        EptsReportUtils.map(
-            chdLevantamentoPlus30Days,
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("A1 OR A2");
 
     return cd;
   }
@@ -304,57 +278,31 @@ public class FaltososLevantamentoARVCohortQueries {
    *
    * <blockquote>
    *
-   * <p>Select all patients with the most recent date from the following sources as <b>Last Next
-   * Scheduled Pick Up</b>
+   * <p>Select all patients with the most recent date from the following sources as: <br>
    *
    * <ul>
    *   <li>The “Data do próximo levantamento” (concept id 5096, value_datetime) from the most recent
    *       FILA (encounter type 18) by report start date(last encounter_datetime < startDate)
+   *   <li>The most recent “Data de Levantamento” (concept_id 23866, value_datetime < startDate) +
+   *       30 days, from “Recepcao Levantou ARV” (encounter type 52) with concept “Levantou ARV”
+   *       (concept_id 23865) set to “SIM” (Concept id 1065) by report start date (value_datetime <
+   *       startDate)
+   *   <li>and this date “Last Next Scheduled Pick Up” is between startdate and endDate
    * </ul>
    *
    * </blockquote>
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getPatientsWithProximoLevantamentoOnFila() {
+  public CohortDefinition getPatientsWithLastNextScheduledPickup() {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Demoninator - Data do próximo levantamento");
+    sqlCohortDefinition.setName("Demoninator - Last Next Scheduled Pick Up");
     addSqlCohortDefinitionParameters(sqlCohortDefinition);
 
-    String query = getPatientsWithProximoLevantamentoOnFila(false);
+    String query = getPatientsWithLastNextScheduledPickup(false);
 
     sqlCohortDefinition.setQuery(query);
-    return sqlCohortDefinition;
-  }
-
-  /**
-   * <b>Technical Specs</b>
-   *
-   * <blockquote>
-   *
-   * <p>Select all patients with the most recent date from the following sources as <b>Last Next
-   * Scheduled Pick Up</b>
-   *
-   * <ul>
-   *   <li>the most recent “Data de Levantamento” (concept_id 23866, value_datetime < startDate) +
-   *       30 days, from “Recepcao Levantou ARV” (encounter type 52) with concept “Levantou ARV”
-   *       (concept_id 23865) set to “SIM” (Concept id 1065) by report start date (value_datetime <=
-   *       startDate)
-   * </ul>
-   *
-   * </blockquote>
-   *
-   * @return {@link CohortDefinition}
-   */
-  public CohortDefinition getPatientsWithMostRecentDataDeLevantamentoPlus30Days() {
-
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.setName("Demoninator - Most recent ARV pick up");
-    addSqlCohortDefinitionParameters(sqlCohortDefinition);
-
-    String sql = getPatientsWithMostRecentDataDeLevantamentoPlus30Days(false);
-    sqlCohortDefinition.setQuery(sql);
     return sqlCohortDefinition;
   }
 
@@ -379,6 +327,14 @@ public class FaltososLevantamentoARVCohortQueries {
     sqlCohortDefinition.setName("Exlusions  - E1.1 Trasfered out state in program");
     addSqlCohortDefinitionParameters(sqlCohortDefinition);
 
+    String queryPatientsTransferedOut = getPatientsTransferredOutRegisteredInProgramState(false);
+
+    sqlCohortDefinition.setQuery(queryPatientsTransferedOut);
+    return sqlCohortDefinition;
+  }
+
+  private String getPatientsTransferredOutRegisteredInProgramState(boolean selectDatetime) {
+
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("2", hivMetadata.getARTProgram().getProgramId());
     valuesMap.put(
@@ -387,15 +343,11 @@ public class FaltososLevantamentoARVCohortQueries {
             .getTransferredOutToAnotherHealthFacilityWorkflowState()
             .getProgramWorkflowStateId());
 
-    String query =
-        " SELECT patient_id "
-            + "FROM   (SELECT p.patient_id, "
-            + "               Max(ps.start_date) recent_startdate "
+    String fromSql =
+        "FROM   (SELECT p.patient_id, Max(ps.start_date) recent_date "
             + "        FROM   patient p "
-            + "               INNER JOIN patient_program pg "
-            + "                       ON pg.patient_id = p.patient_id "
-            + "               INNER JOIN patient_state ps "
-            + "                       ON ps.patient_program_id = pg.patient_program_id "
+            + "               INNER JOIN patient_program pg ON pg.patient_id = p.patient_id "
+            + "               INNER JOIN patient_state ps ON ps.patient_program_id = pg.patient_program_id "
             + "        WHERE  pg.program_id = ${2} "
             + "               AND pg.location_id = :location "
             + "               AND ps.state = ${7} "
@@ -404,12 +356,16 @@ public class FaltososLevantamentoARVCohortQueries {
             + "               AND pg.voided = 0 "
             + "               AND ps.voided = 0 "
             + "        GROUP  BY p.patient_id "
-            + "        HAVING recent_startdate <= :endDate) transfered_out "
+            + "        HAVING recent_date <= :endDate) transfered_out "
             + "GROUP  BY patient_id ";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
-    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
-    return sqlCohortDefinition;
+    String query =
+        selectDatetime
+            ? "SELECT patient_id, recent_date ".concat(fromSql)
+            : "SELECT patient_id ".concat(fromSql);
+
+    return stringSubstitutor.replace(query);
   }
 
   /**
@@ -438,6 +394,15 @@ public class FaltososLevantamentoARVCohortQueries {
         "All transferred-outs registered in Ficha Resumo and Ficha Clinica of Master Card ");
     addSqlCohortDefinitionParameters(sqlCohortDefinition);
 
+    String transferedOut = getPatientsTransferredOutRegisteredInFichaResumoAndMasterCard(false);
+
+    sqlCohortDefinition.setQuery(transferedOut);
+    return sqlCohortDefinition;
+  }
+
+  public String getPatientsTransferredOutRegisteredInFichaResumoAndMasterCard(
+      boolean selectDatetime) {
+
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     valuesMap.put("6273", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
@@ -445,14 +410,13 @@ public class FaltososLevantamentoARVCohortQueries {
     valuesMap.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     valuesMap.put("6272", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
 
-    String query =
-        " SELECT patient_id "
-            + "FROM   (SELECT p.patient_id "
+    String fromSql =
+        "FROM ("
+            + " SELECT transferred_out.patient_id, MAX(transferred_out.recent_datetime) recent_date "
+            + "FROM   (SELECT p.patient_id, MAX(e.encounter_datetime) recent_datetime "
             + "        FROM   patient p "
-            + "               INNER JOIN encounter e "
-            + "                       ON e.patient_id = p.patient_id "
-            + "               INNER JOIN obs o "
-            + "                       ON o.encounter_id = e.encounter_id "
+            + "               INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "               INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "        WHERE  e.encounter_type = ${6} "
             + "               AND e.location_id = :location "
             + "               AND o.concept_id = ${6273} "
@@ -463,12 +427,10 @@ public class FaltososLevantamentoARVCohortQueries {
             + "               AND o.voided = 0 "
             + "        GROUP  BY p.patient_id "
             + "        UNION "
-            + "        SELECT p.patient_id "
+            + "        SELECT p.patient_id, MAX(o.obs_datetime) recent_datetime "
             + "        FROM   patient p "
-            + "               INNER JOIN encounter e "
-            + "                       ON e.patient_id = p.patient_id "
-            + "               INNER JOIN obs o "
-            + "                       ON o.encounter_id = e.encounter_id "
+            + "               INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "               INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "        WHERE  e.encounter_type = ${53} "
             + "               AND o.concept_id = ${6272} "
             + "               AND o.value_coded = ${1706} "
@@ -477,12 +439,15 @@ public class FaltososLevantamentoARVCohortQueries {
             + "               AND p.voided = 0 "
             + "               AND e.voided = 0 "
             + "               AND o.voided = 0 "
-            + "        GROUP  BY p.patient_id) trasfered_out "
-            + "GROUP  BY patient_id  ";
+            + "        GROUP  BY p.patient_id) transferred_out "
+            + "GROUP  BY transferred_out.patient_id  ) transferred "
+            + "GROUP BY transferred.patient_id ";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
-
-    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
-    return sqlCohortDefinition;
+    String query =
+        selectDatetime
+            ? "SELECT patient_id, recent_date ".concat(fromSql)
+            : "SELECT patient_id ".concat(fromSql);
+    return stringSubstitutor.replace(query);
   }
 
   /**
@@ -517,39 +482,40 @@ public class FaltososLevantamentoARVCohortQueries {
     valuesMap.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
     valuesMap.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
 
+    String transferredOutInProgram = getPatientsTransferredOutRegisteredInProgramState(true);
+    String transferredOutInResumoAndMasterCard =
+        getPatientsTransferredOutRegisteredInFichaResumoAndMasterCard(true);
     String query =
-        "SELECT pickedup_drugs.patient_id "
-            + "FROM   (SELECT p.patient_id, "
-            + "               Max(e.encounter_datetime) recent_date "
-            + "        FROM   patient p "
-            + "               INNER JOIN encounter e "
-            + "                       ON e.patient_id = p.patient_id "
-            + "               INNER JOIN obs o "
-            + "                       ON o.encounter_id = e.encounter_id "
-            + "        WHERE  e.encounter_type IN ( ${6}, ${9}, ${18} ) "
-            + "               AND e.location_id = :location "
-            + "               AND p.voided = 0 "
-            + "               AND e.voided = 0 "
-            + "               AND o.voided = 0 "
-            + "        GROUP  BY p.patient_id "
-            + "        HAVING recent_date <= :endDate "
-            + "        UNION "
-            + "        SELECT p.patient_id, "
-            + "               Max(o.value_datetime) recent_date "
-            + "        FROM   patient p "
-            + "               INNER JOIN encounter e "
-            + "                       ON e.patient_id = p.patient_id "
-            + "               INNER JOIN obs o "
-            + "                       ON o.encounter_id = e.encounter_id "
-            + "        WHERE  e.encounter_type = ${52} "
-            + "               AND e.location_id = :location "
-            + "               AND o.concept_id = ${23866} "
-            + "               AND p.voided = 0 "
-            + "               AND e.voided = 0 "
-            + "               AND o.voided = 0 "
-            + "        GROUP  BY p.patient_id "
-            + "        HAVING recent_date <= :endDate) pickedup_drugs "
-            + "GROUP  BY patient_id  ";
+        "SELECT patient_id "
+            + "FROM   (SELECT transferout.patient_id,   Max(transferout.recent_date) transferred_date "
+            + "        FROM   ( "
+            + transferredOutInProgram
+            + "                UNION "
+            + transferredOutInResumoAndMasterCard
+            + "                ) transferout "
+            + "        GROUP  BY transferout.patient_id) max_transfer"
+            + " WHERE  max_transfer.patient_id NOT IN (SELECT p.patient_id "
+            + "                                          FROM   patient p "
+            + "                                          JOIN encounter e ON p.patient_id = e.patient_id "
+            + "                                          WHERE  p.voided = 0 "
+            + "                                            AND e.voided = 0 "
+            + "                                            AND e.encounter_type IN (${6},${9},${18})  "
+            + "                                            AND e.location_id = :location "
+            + "                                            AND e.encounter_datetime > max_transfer.transferred_date "
+            + "                                          AND max_transfer.patient_id = p.patient_id "
+            + "                                            AND e.encounter_datetime <= :endDate "
+            + "                                          UNION "
+            + "                                          SELECT p.patient_id "
+            + "                                          FROM   patient p "
+            + "                                          JOIN encounter e ON p.patient_id = e.patient_id "
+            + "                                          JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "                                          WHERE  p.voided = 0"
+            + "                                            AND e.voided = 0 "
+            + "                                            AND e.encounter_type =  ${52} "
+            + "                                            AND e.location_id = :location "
+            + "                                            AND o.concept_id =  ${23866} "
+            + "                                            AND o.value_datetime > max_transfer.transferred_date AND max_transfer.patient_id = p.patient_id"
+            + "                                            AND o.value_datetime <= :endDate) GROUP BY patient_id ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
@@ -664,8 +630,7 @@ public class FaltososLevantamentoARVCohortQueries {
     sqlCohortDefinition.setName("Select all patients from the A (Denominator) and filter ");
     addSqlCohortDefinitionParameters(sqlCohortDefinition);
 
-    String mostRecentDataLevantamento = getPatientsWithMostRecentDataDeLevantamentoPlus30Days(true);
-    String mostRecentDateFromFila = getPatientsWithProximoLevantamentoOnFila(true);
+    String scheduledPickup = getPatientsWithLastNextScheduledPickup(true);
 
     String lastPickupBetweenFilaAndMasterCard =
         getPatientsAndLastPickupDateBetweenFilaAndMasterCard();
@@ -674,9 +639,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + " "
             + "                SELECT schedule.patient_id,    MAX(recent_datetime) scheduled_date "
             + "                FROM( "
-            + mostRecentDataLevantamento
-            + "                        UNION "
-            + mostRecentDateFromFila
+            + scheduledPickup
             + "                    ) AS schedule "
             + "                GROUP BY "
             + "                schedule.patient_id "
@@ -1327,40 +1290,6 @@ public class FaltososLevantamentoARVCohortQueries {
     return stringSubstitutor.replace(query);
   }
 
-  private String getPatientsWithMostRecentDataDeLevantamentoPlus30Days(boolean selectDatetime) {
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    valuesMap.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
-    valuesMap.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
-    valuesMap.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
-
-    String fromSQL =
-        " FROM patient p "
-            + "INNER JOIN encounter e ON  e.patient_id = p.patient_id "
-            + "INNER JOIN obs oyes ON oyes.encounter_id = e.encounter_id "
-            + "INNER JOIN obs ovalue ON ovalue.encounter_id = e.encounter_id "
-            + "WHERE e.encounter_type = ${52} "
-            + "    AND e.location_id = :location "
-            + "    AND ovalue.concept_id = ${23866} "
-            + "    AND ovalue.value_datetime < :startDate "
-            + "    AND oyes.concept_id = ${23865} "
-            + "    AND oyes.value_coded = ${1065} "
-            + "    AND p.voided = 0 "
-            + "    AND e.voided = 0 "
-            + "    AND oyes.voided = 0 "
-            + "    AND ovalue.voided = 0 "
-            + "GROUP BY patient_id ";
-    String query =
-        selectDatetime
-            ? "SELECT p.patient_id, MAX(DATE_ADD(ovalue.value_datetime, INTERVAL 30 DAY)) recent_datetime "
-                .concat(fromSQL)
-            : "SELECT p.patient_id ".concat(fromSQL);
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
-    return stringSubstitutor.replace(query);
-  }
-
   private String getPatientsAndLastPickupDateBetweenFilaAndMasterCard() {
 
     Map<String, Integer> valuesMap = new HashMap<>();
@@ -1404,40 +1333,61 @@ public class FaltososLevantamentoARVCohortQueries {
     return stringSubstitutor.replace(query);
   }
 
-  private String getPatientsWithProximoLevantamentoOnFila(boolean selectDatetime) {
+  private String getPatientsWithLastNextScheduledPickup(boolean selectDatetime) {
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
     valuesMap.put("5096", hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
+    valuesMap.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    valuesMap.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    valuesMap.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
+    valuesMap.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
     String fromSQL =
-        " FROM patient p "
-            + "INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-            + "INNER JOIN ( "
-            + "			SELECT p.patient_id, MAX(e.encounter_datetime) encounter_date "
-            + "			FROM patient p "
-            + "			INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "			WHERE e.encounter_type = ${18} "
-            + "			AND e.encounter_datetime < :startDate "
-            + "			AND e.location_id = :location "
-            + "			AND e.voided = 0 "
-            + "			AND p.voided = 0 "
-            + "			GROUP BY p.patient_id "
-            + ") most_recent ON most_recent.patient_id = p.patient_id "
-            + "WHERE most_recent.encounter_date = e.encounter_datetime "
-            + "AND e.encounter_type= ${18} "
-            + "AND e.encounter_datetime < :startDate "
-            + "AND e.location_id = :location "
-            + "AND e.voided = 0 "
-            + "AND p.voided = 0 "
-            + "AND o.voided = 0 "
-            + "AND o.concept_id = ${5096} "
-            + "GROUP BY p.patient_id ";
+        "FROM   (SELECT p.patient_id, MAX(o.value_datetime) recent_datetime "
+            + "        FROM   patient p "
+            + "               INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "               INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "               INNER JOIN (SELECT p.patient_id, Max(e.encounter_datetime) encounter_date "
+            + "                           FROM   patient p "
+            + "                                  INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                           WHERE  e.encounter_type = ${18} AND e.encounter_datetime < :startDate "
+            + "                                  AND e.location_id = :location "
+            + "                                  AND e.voided = 0 "
+            + "                                  AND p.voided = 0 "
+            + "                           GROUP  BY p.patient_id) most_recent ON most_recent.patient_id = p.patient_id "
+            + "        WHERE  most_recent.encounter_date = e.encounter_datetime "
+            + "               AND e.encounter_type = ${18} "
+            + "               AND e.encounter_datetime < :startDate "
+            + "               AND e.location_id = :location "
+            + "               AND e.voided = 0 "
+            + "               AND p.voided = 0 "
+            + "               AND o.voided = 0 "
+            + "               AND o.concept_id = ${5096} "
+            + "        GROUP  BY p.patient_id "
+            + "        UNION "
+            + "        SELECT p.patient_id, Max(Date_add(ovalue.value_datetime, INTERVAL 30 DAY)) recent_datetime "
+            + "        FROM   patient p "
+            + "               INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "               INNER JOIN obs oyes ON oyes.encounter_id = e.encounter_id "
+            + "               INNER JOIN obs ovalue ON ovalue.encounter_id = e.encounter_id "
+            + "        WHERE  e.encounter_type = ${52} "
+            + "               AND e.location_id = :location "
+            + "               AND ovalue.concept_id = ${23866} "
+            + "               AND ovalue.value_datetime < :startDate "
+            + "               AND oyes.concept_id = ${23865} "
+            + "               AND oyes.value_coded = ${1065} "
+            + "               AND p.voided = 0 "
+            + "               AND e.voided = 0 "
+            + "               AND oyes.voided = 0 "
+            + "               AND ovalue.voided = 0 "
+            + "        GROUP  BY patient_id) recent_pickup "
+            + "WHERE  recent_pickup.recent_datetime BETWEEN :startDate AND :endDate "
+            + "GROUP  BY patient_id";
 
     String query =
         selectDatetime
-            ? "SELECT p.patient_id, o.value_datetime ".concat(fromSQL)
-            : "SELECT p.patient_id ".concat(fromSQL);
+            ? "SELECT patient_id, recent_datetime ".concat(fromSQL)
+            : "SELECT patient_id ".concat(fromSQL);
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
     return stringSubstitutor.replace(query);
