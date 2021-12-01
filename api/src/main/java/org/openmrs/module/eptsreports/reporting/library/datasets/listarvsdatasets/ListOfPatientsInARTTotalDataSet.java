@@ -3,7 +3,6 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.listarvsdatase
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.PatientsInARTCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
@@ -29,7 +28,7 @@ public class ListOfPatientsInARTTotalDataSet extends BaseDataSet {
         new CohortIndicatorDataSetDefinition();
 
     dataSetDefinition.setName("TXNEW");
-    dataSetDefinition.addParameters(getParameters());
+    dataSetDefinition.addParameters(this.getParameters());
 
     final String mappings =
         "cohortStartDate=${cohortStartDate},cohorEndDate=${cohorEndDate},location=${location}";
@@ -44,7 +43,7 @@ public class ListOfPatientsInARTTotalDataSet extends BaseDataSet {
     indicator.addParameter(new Parameter("location", "location", Date.class));
 
     dataSetDefinition.addColumn("TOTAL", "TXNEW", EptsReportUtils.map(indicator, mappings), "");
-    
+
     return dataSetDefinition;
   }
 
@@ -53,7 +52,6 @@ public class ListOfPatientsInARTTotalDataSet extends BaseDataSet {
     return Arrays.asList(
         new Parameter("cohortStartDate", "Cohort Start Date", Date.class),
         new Parameter("cohorEndDate", "Cohort End Date", Date.class),
-        new Parameter("evaluationDate", "Evaluation Date", Date.class),
         new Parameter("location", "Unidade Sanitária", Location.class));
   }
 }
