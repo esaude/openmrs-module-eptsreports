@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.SummaryPatientWhoStartArtDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.TxNew;
+import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.ListOfPatientWhoStartArtDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -34,7 +34,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SetupListPatientsWhoStartART extends EptsDataExportManager {
 
-  @Autowired private TxNew txNew;
+  @Autowired private ListOfPatientWhoStartArtDataSet txNew;
   @Autowired SummaryPatientWhoStartArtDataSet summaryPatientWhoStartArtDataSet;
 
   @Override

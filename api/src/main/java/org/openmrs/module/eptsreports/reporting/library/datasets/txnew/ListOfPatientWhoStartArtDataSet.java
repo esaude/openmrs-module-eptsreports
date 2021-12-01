@@ -9,7 +9,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxNew extends BaseDataSet {
+public class ListOfPatientWhoStartArtDataSet extends BaseDataSet {
 
   private static final String FIND_PATIENTS_IN_ART =
       "ART-INITIATION/LIST_OF_PATIENTS_IN_ART_COHORT.sql";
