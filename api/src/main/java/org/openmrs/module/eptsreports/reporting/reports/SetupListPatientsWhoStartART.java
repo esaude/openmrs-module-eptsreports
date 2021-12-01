@@ -1,3 +1,17 @@
+/*
+ * The contents of this file are subject to the OpenMRS Public License
+ * Version 1.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://license.openmrs.org
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Copyright (C) OpenMRS, LLC.  All Rights Reserved.
+ */
+
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
@@ -6,12 +20,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.listarvsdatasets.ListOfPatientsInARTDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.listarvsdatasets.ListOfPatientsInARTTotalDataSet;
-import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.SummaryPatientWhoStartArtDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.TxNew;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -21,30 +32,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupListOfPatientsInART extends EptsDataExportManager {
+public class SetupListPatientsWhoStartART extends EptsDataExportManager {
 
-  @Autowired private GenericCohortQueries genericCohortQueries;
-  @Autowired private ListOfPatientsInARTDataSet listOfPatientsInARTDataSet;
-  @Autowired private ListOfPatientsInARTTotalDataSet listOfPatientsInARTTotalDataSet;
+  @Autowired private TxNew txNew;
+  @Autowired SummaryPatientWhoStartArtDataSet summaryPatientWhoStartArtDataSet;
 
   @Override
   public String getExcelDesignUuid() {
-    return "48dcb15c-515b-11ec-826c-ff14bb3686bd";
+    return "d34d80ae-fbad-11eb-9a03-0242ac130007";
   }
 
   @Override
   public String getUuid() {
-    return "567fc3d0-515b-11ec-91df-4fef42a0849f";
+    return "dce1c0b2-fbad-11eb-9a03-0242ac130009";
   }
 
   @Override
   public String getName() {
-    return "LISTA DE PACIENTES QUE INICIARAM TARV";
+    return "LISTA DE PACIENTES QUE INICIARAM TARV PEPFAR";
   }
 
   @Override
   public String getDescription() {
-    return "LISTA DE PACIENTES QUE INICIARAM TARV";
+    return "LISTA DE PACIENTES QUE INICIARAM TARV PEPFAR";
   }
 
   @Override
@@ -56,17 +66,10 @@ public class SetupListOfPatientsInART extends EptsDataExportManager {
     rd.addParameters(this.getParameters());
 
     rd.addDataSetDefinition(
-        "NR",
-        Mapped.mapStraightThrough(listOfPatientsInARTDataSet.constructDataset(getParameters())));
+        "NR", Mapped.mapStraightThrough(txNew.constructDataset(getParameters())));
 
     rd.addDataSetDefinition(
-        "RT", Mapped.mapStraightThrough(listOfPatientsInARTTotalDataSet.constructTDatset()));
-
-    rd.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            this.genericCohortQueries.generalSql(
-                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
-            "endDate=${endDate},location=${location}"));
+        "RT", Mapped.mapStraightThrough(summaryPatientWhoStartArtDataSet.getTotaStartARTDataset()));
 
     return rd;
   }
@@ -89,7 +92,6 @@ public class SetupListOfPatientsInART extends EptsDataExportManager {
               null);
       Properties props = new Properties();
       props.put("repeatingSections", "sheet:1,row:7,dataset:NR");
-
       props.put("sortWeight", "5000");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
@@ -100,11 +102,10 @@ public class SetupListOfPatientsInART extends EptsDataExportManager {
     return Arrays.asList(reportDesign);
   }
 
-  @Override
   public List<Parameter> getParameters() {
     return Arrays.asList(
-        new Parameter("cohortStartDate", "Cohort Start Date", Date.class),
-        new Parameter("cohorEndDate", "Cohort End Date", Date.class),
+        new Parameter("startDate", "Cohort Start Date", Date.class),
+        new Parameter("endDate", "  Cohort End Date", Date.class),
         new Parameter("evaluationDate", "Evaluation Date", Date.class),
         new Parameter("location", "Unidade Sanitária", Location.class));
   }
