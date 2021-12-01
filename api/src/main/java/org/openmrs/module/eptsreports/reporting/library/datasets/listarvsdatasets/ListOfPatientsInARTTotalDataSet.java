@@ -3,9 +3,9 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.listarvsdatase
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.PatientsInARTCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -22,7 +22,6 @@ public class ListOfPatientsInARTTotalDataSet extends BaseDataSet {
 
   @Autowired private PatientsInARTCohortQueries PatientsInARTCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
-  @Autowired TxNewCohortQueries txNewCohortQueries;
 
   public DataSetDefinition constructTDatset() {
 
@@ -45,6 +44,7 @@ public class ListOfPatientsInARTTotalDataSet extends BaseDataSet {
     indicator.addParameter(new Parameter("location", "location", Date.class));
 
     dataSetDefinition.addColumn("TOTAL", "TXNEW", EptsReportUtils.map(indicator, mappings), "");
+    
     return dataSetDefinition;
   }
 
