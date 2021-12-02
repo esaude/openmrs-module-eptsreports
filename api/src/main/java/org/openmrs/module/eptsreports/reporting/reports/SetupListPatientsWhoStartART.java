@@ -20,8 +20,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.SummaryPatientWhoStartArtDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.ListOfPatientWhoStartArtDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.SummaryPatientWhoStartArtDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -49,12 +49,12 @@ public class SetupListPatientsWhoStartART extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "LISTA DE PACIENTES QUE INICIARAM TARV PEPFAR";
+    return "LISTA DE PACIENTES QUE INICIARAM TARV";
   }
 
   @Override
   public String getDescription() {
-    return "LISTA DE PACIENTES QUE INICIARAM TARV PEPFAR";
+    return "LISTA DE PACIENTES QUE INICIARAM TARV";
   }
 
   @Override
