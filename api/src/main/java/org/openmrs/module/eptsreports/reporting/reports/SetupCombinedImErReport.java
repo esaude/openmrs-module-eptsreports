@@ -10,6 +10,7 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.Eri4MonthsDatas
 import org.openmrs.module.eptsreports.reporting.library.datasets.EriDSDDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.IMR1BDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.IMR1Dataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TRFINDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
@@ -40,6 +41,8 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
   @Autowired private IMR1Dataset imr1Dataset;
 
   @Autowired private IMR1BDataset imr1BDataset;
+
+  @Autowired private TRFINDataset txTfrInDataset;
 
   @Override
   public String getExcelDesignUuid() {
@@ -90,6 +93,8 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 
     rd.addDataSetDefinition(
         "ERIDSD", Mapped.mapStraightThrough(this.eriDSDDataset.constructEriDSDDataset()));
+
+    rd.addDataSetDefinition("D", Mapped.mapStraightThrough(this.txTfrInDataset.getDatimCode()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
