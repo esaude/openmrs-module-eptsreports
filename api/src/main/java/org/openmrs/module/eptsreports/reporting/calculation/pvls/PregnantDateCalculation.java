@@ -401,7 +401,11 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
 
   private boolean isInPregnantViralLoadRange(Date viralLoadDate, Date pregnancyDate) {
 
-    Date startDate = EptsCalculationUtils.addMonths(viralLoadDate, -9);
-    return pregnancyDate.compareTo(startDate) >= 0 && pregnancyDate.compareTo(viralLoadDate) <= 0;
+    if (viralLoadDate != null && pregnancyDate != null) {
+
+      Date startDate = EptsCalculationUtils.addMonths(viralLoadDate, -9);
+      return pregnancyDate.compareTo(startDate) >= 0 && pregnancyDate.compareTo(viralLoadDate) <= 0;
+    }
+    return false;
   }
 }
