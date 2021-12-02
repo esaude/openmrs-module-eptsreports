@@ -116,7 +116,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
         "PREP", Mapped.mapStraightThrough(this.prepNewDataset.constructPrepNewDataset()));
 
     reportDefinition.addDataSetDefinition(
-        "PREPCT", Mapped.mapStraightThrough(this.prepCtDataset.constructPrepCtDataset()));
+        "PrEP_CT", Mapped.mapStraightThrough(this.prepCtDataset.constructPrepCtDataset()));
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(

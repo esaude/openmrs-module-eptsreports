@@ -59,7 +59,7 @@ public interface PrepCtQueries {
             + " 	) transferido_de "
             + "inner join person pe on pe.person_id=transferido_de.patient_id "
             + "    				where "
-            + "    			((pe.birthdate is not null and timestampdiff(year,pe.birthdate,:startDate) >= 15) or pe.birthdate is  null); ";
+            + "    			((pe.birthdate is not null and timestampdiff(year,pe.birthdate,:startDate) >= 15) or pe.birthdate is  null) ";
 
     public static final String findClientsWhoWhereTransferredInDuringReportingPeriod =
         " select patient_id "
@@ -87,7 +87,7 @@ public interface PrepCtQueries {
             + " 	) transferido_de "
             + "inner join person pe on pe.person_id=transferido_de.patient_id "
             + "    				where "
-            + "    			((pe.birthdate is not null and timestampdiff(year,pe.birthdate,:startDate) >= 15) or pe.birthdate is  null); ";
+            + "    			((pe.birthdate is not null and timestampdiff(year,pe.birthdate,:startDate) >= 15) or pe.birthdate is  null) ";
 
     public static final String findClientsWhoReinitiatedPrep =
         "select patient_id from ( "
@@ -101,7 +101,7 @@ public interface PrepCtQueries {
             + ") reinicio "
             + "inner join person pe on pe.person_id=reinicio.patient_id "
             + "    				where "
-            + "    			((pe.birthdate is not null and timestampdiff(year,pe.birthdate,:startDate ) >= 15) or pe.birthdate is  null); ";
+            + "    			((pe.birthdate is not null and timestampdiff(year,pe.birthdate,:startDate ) >= 15) or pe.birthdate is  null) ";
 
     public static final String findClientsWhoContinuePrep =
         "select patient_id from ( "
@@ -114,7 +114,7 @@ public interface PrepCtQueries {
             + ") continuePrep "
             + "inner join person pe on pe.person_id=continuePrep.patient_id "
             + "    				where "
-            + "    			((pe.birthdate is not null and timestampdiff(year,pe.birthdate,:startDate ) >= 15) or pe.birthdate is  null); ";
+            + "    			((pe.birthdate is not null and timestampdiff(year,pe.birthdate,:startDate ) >= 15) or pe.birthdate is  null) ";
 
     public static final String findClientsWithPregnancyStatusDuringReportingPeriod =
         "select patient_id from( "

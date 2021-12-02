@@ -31,6 +31,8 @@ public class PrepCtCohortQueries {
 
   @Autowired private GenericCohortQueries genericCohorts;
 
+  @Autowired private PrepNewCohortQueries prepNewCohortQueries;
+
   /**
    * Build PrepCt composition cohort definition
    *
@@ -93,8 +95,12 @@ public class PrepCtCohortQueries {
                 "findClientsWhoReinitiatedPrep", PrepCtQueries.QUERY.findClientsWhoContinuePrep),
             mappings));
 
+    prepCtCompositionCohort.addSearch(
+        "PREP-NEW",
+        EptsReportUtils.map(prepNewCohortQueries.getClientsNewlyEnrolledInPrep(), mappings));
+
     prepCtCompositionCohort.setCompositionString(
-        "((START-PREP OR TRANSFERED-IN-BEFORE) AND ATLEAST-ONE-FOLLOWUP) OR TRANSFERED-IN-DURING OR REINITIATED-PREP OR CONTINUE-PREP");
+        "(((START-PREP OR TRANSFERED-IN-BEFORE) AND ATLEAST-ONE-FOLLOWUP) OR TRANSFERED-IN-DURING OR REINITIATED-PREP OR CONTINUE-PREP) NOT PREP-NEW");
 
     return prepCtCompositionCohort;
   }
