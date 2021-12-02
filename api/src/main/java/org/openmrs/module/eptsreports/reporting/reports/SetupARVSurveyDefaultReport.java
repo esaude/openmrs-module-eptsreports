@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.SurveyDefaultDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TRFINDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -21,6 +22,7 @@ public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
 
   @Autowired private SurveyDefaultDataSet SurveyDefaultDataSet;
   @Autowired private GenericCohortQueries genericCohortQueries;
+  @Autowired private TRFINDataset txTfrInDataset;
 
   @Override
   public String getExcelDesignUuid() {
@@ -56,6 +58,8 @@ public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
     rd.setParameters(SurveyDefaultDataSet.getParameters());
     rd.addDataSetDefinition(
         "FL", Mapped.mapStraightThrough(SurveyDefaultDataSet.constructDatset()));
+
+    rd.addDataSetDefinition("D", Mapped.mapStraightThrough(this.txTfrInDataset.getDatimCode()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
