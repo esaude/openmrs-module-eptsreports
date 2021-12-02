@@ -100,7 +100,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Monitoria_Intensiva_HIV_v1.xls",
+              "Template_MI_2021_v1.9.1.xls",
               "Template Ficha Relatório Monitoria Intensiva HIV",
               getExcelDesignUuid(),
               null);
