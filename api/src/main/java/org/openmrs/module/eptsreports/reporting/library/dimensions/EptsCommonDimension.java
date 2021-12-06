@@ -93,8 +93,8 @@ public class EptsCommonDimension {
   }
 
   /**
-   * Age range dimension <1, 1-4, 5-9, 10-14, 15-19, 20-24,25-29,30-34,35-39,40-44,45-49, 50-54,
-   * 55-59, 60-64, 65+
+   * Age range dimension <1, 1-4, 5-9, 10-14, 15-19, 15-29, 20-24,25-29,30-34,35-39,40-44,45-49,
+   * 50-54, 55-59, 60-64, 65+
    *
    * @return {@link org.openmrs.module.reporting.indicator.dimension.CohortDimension}
    */
@@ -144,6 +144,9 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         DimensionKeyForAge.between15And19Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 15 and 19", 15, 19));
+    dim.addCohortDefinition(
+        DimensionKeyForAge.between15And29Years.getKey(),
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 15 and 29", 15, 29));
     dim.addCohortDefinition(
         DimensionKeyForAge.between20And24Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 20 and 24", 20, 24));
