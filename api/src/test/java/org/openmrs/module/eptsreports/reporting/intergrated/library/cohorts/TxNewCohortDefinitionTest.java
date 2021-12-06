@@ -31,12 +31,15 @@ public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
     final CohortDefinition txNewCompositionCohort =
         this.surveyDefaultCohortQueries.getPatientsWhoHaveViralLoadNotSupresed();
+    final Date revisionDate = DateUtil.getDateTime(2020, 12, 31);
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 
-    parameters.put(new Parameter("startDate", "Start Date", Date.class), startDate);
+    parameters.put(new Parameter("cohortStartDate", "Start Date", Date.class), startDate);
 
-    parameters.put(new Parameter("endDate", "End Date", Date.class), endDate);
+    parameters.put(new Parameter("cohorEndDate", "End Date", Date.class), endDate);
+
+    parameters.put(new Parameter("evaluationDate", "End Date", Date.class), revisionDate);
 
     parameters.put(new Parameter("location", "Location", Location.class), location);
 

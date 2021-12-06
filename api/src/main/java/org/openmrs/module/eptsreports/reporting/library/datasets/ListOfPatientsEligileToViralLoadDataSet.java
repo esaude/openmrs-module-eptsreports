@@ -39,8 +39,10 @@ public class ListOfPatientsEligileToViralLoadDataSet extends BaseDataSet {
     dataSetDefinition.addParameters(getParameters());
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
     final CohortDefinition vlEligibleTotal =
         this.listPatientsEligibleViralLoadCohortQueries.findPatientsEligibleToViralLoad();
+
     dataSetDefinition.addColumn(
         "TOTALVL",
         "Total de Pacientes Elegiveis a Carga Viral",
