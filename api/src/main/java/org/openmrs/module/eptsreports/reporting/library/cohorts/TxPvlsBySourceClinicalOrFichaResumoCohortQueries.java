@@ -282,7 +282,7 @@ public class TxPvlsBySourceClinicalOrFichaResumoCohortQueries {
             txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("RoutineByClinical", EptsReportUtils.map(getRoutineByClinicalForms(), mappings));
-    cd.setCompositionString("(results AND onArtLongEnough) AND RoutineByClinical)");
+    cd.setCompositionString("(results AND onArtLongEnough) AND RoutineByClinical");
     return cd;
   }
 
