@@ -25,7 +25,10 @@ import org.openmrs.module.reporting.data.converter.ObjectFormatter;
 import org.openmrs.module.reporting.data.patient.definition.ConvertedPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.PatientIdentifierDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.*;
+import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -239,7 +242,7 @@ public class ListChildrenOnARTandFormulationsDataset extends BaseDataSet {
   }
 
   /** 6 */
-  private DataDefinition getPatientsActiveOnTB() {
+  public DataDefinition getPatientsActiveOnTB() {
     SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
     spdd.setName("Last ARV Regimen (FILA)");
     spdd.addParameter(new Parameter("location", "location", Location.class));

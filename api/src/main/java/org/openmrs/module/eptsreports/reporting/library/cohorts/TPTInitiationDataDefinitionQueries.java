@@ -1050,7 +1050,7 @@ public class TPTInitiationDataDefinitionQueries {
     sqlPatientDataDefinition.addParameter(new Parameter("startDate", "startDate", Location.class));
     sqlPatientDataDefinition.addParameter(new Parameter("endDate", "endDate", Location.class));
 
-    String query = commonQueries.getARTStartDate();
+    String query = commonQueries.getARTStartDate(true);
     sqlPatientDataDefinition.setQuery(query);
 
     return sqlPatientDataDefinition;

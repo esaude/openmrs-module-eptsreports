@@ -665,7 +665,7 @@ public class CommonQueries {
    *
    * @return {@link String}
    */
-  public String getARTStartDate() {
+  public String getARTStartDate(boolean startDate) {
     return getARTStartDate(
         hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
         hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
@@ -676,7 +676,8 @@ public class CommonQueries {
         hivMetadata.getARVStartDateConcept().getConceptId(),
         hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
         hivMetadata.getArtDatePickupMasterCard().getConceptId(),
-        hivMetadata.getARTProgram().getProgramId());
+        hivMetadata.getARTProgram().getProgramId(),
+        startDate);
   }
 
   /**
@@ -702,7 +703,8 @@ public class CommonQueries {
       int aRVStartDateConcept,
       int masterCardDrugPickupEncounterType,
       int artDatePickupMasterCard,
-      int aRTProgram) {
+      int aRTProgram,
+      boolean startDate) {
 
     Map<String, Integer> valuesMap = new HashMap<>();
     valuesMap.put("6", adultoSeguimentoEncounterType);
@@ -716,8 +718,8 @@ public class CommonQueries {
     valuesMap.put("23866", artDatePickupMasterCard);
     valuesMap.put("2", aRTProgram);
 
-    String sql =
-        " SELECT union_tbl.patient_id , MIN(union_tbl.first_pickup) first_pickup FROM   "
+    String fromSQL =
+        "  FROM   "
             + "       (SELECT p.patient_id, first_pickup FROM patient p   "
             + "       JOIN   "
             + "       patient_program pp ON pp.patient_id = p.patient_id   "
@@ -770,6 +772,12 @@ public class CommonQueries {
             + "       AND p.voided = 0   "
             + "       GROUP BY p.patient_id) union_tbl "
             + "       GROUP BY union_tbl.patient_id ";
+
+    String sql =
+        startDate
+            ? "SELECT union_tbl.patient_id , MIN(union_tbl.first_pickup) first_pickup"
+                .concat(fromSQL)
+            : "SELECT union_tbl.patient_id".concat(fromSQL);
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 

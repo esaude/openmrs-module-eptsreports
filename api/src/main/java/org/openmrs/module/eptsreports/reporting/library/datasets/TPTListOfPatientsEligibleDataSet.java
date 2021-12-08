@@ -140,7 +140,7 @@ public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {
     return obsForPersonDataDefinition;
   }
 
-  private DataDefinition getNID(int identifierType) {
+  public DataDefinition getNID(int identifierType) {
     SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
     spdd.setName("NID");
 
