@@ -18,7 +18,9 @@ import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionC
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.KeyPopulationDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsBySourceQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsBySourceQueriesInterface.QUERY.SourceType;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueriesInterface.QUERY.WomanState;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -113,7 +115,7 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
-                            SourceType.MASTERCARD),
+                            SourceType.MASTERCARD, WomanState.PREGNANT),
                     mappings)),
             mappings),
         "");
@@ -127,7 +129,7 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
-                            SourceType.MASTERCARD),
+                            SourceType.MASTERCARD, WomanState.PREGNANT),
                     mappings)),
             mappings),
         "");
@@ -140,8 +142,8 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
                 "Breastfeeding routine",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
-                        .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
-                            SourceType.MASTERCARD),
+                        .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
+                            SourceType.MASTERCARD, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
         "");
@@ -151,11 +153,11 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
         "Breastfeeding routine (Mastercard Source)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Breastfeeding routine",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
-                            SourceType.MASTERCARD),
+                            SourceType.MASTERCARD, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
         "");
@@ -213,7 +215,7 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine(
-                            SourceType.MASTERCARD),
+                            SourceType.MASTERCARD, WomanState.PREGNANT),
                     mappings)),
             mappings),
         "");
@@ -227,35 +229,35 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(
-                            SourceType.MASTERCARD),
+                            SourceType.MASTERCARD, WomanState.PREGNANT),
                     mappings)),
             mappings),
         "");
 
     dataSetDefinition.addColumn(
         "NBREASROTINE-S2",
-        "Pregant routine (Mastercard Source)",
+        "Breastfeeding routine (Mastercard Source)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Breastfeeding routine",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine(
-                            SourceType.MASTERCARD),
+                            SourceType.MASTERCARD, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
         "");
 
     dataSetDefinition.addColumn(
         "NBREASTARGET-S2",
-        "Pregant target (Mastercard Source)",
+        "Breastfeeding target (Mastercard Source)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Breastfeeding routine",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(
-                            SourceType.MASTERCARD),
+                            SourceType.MASTERCARD, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
         "");
@@ -561,5 +563,15 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
         foutyTo44F,
         fouty5To49F,
         above50F);
+  }
+
+  public static void main(String[] args) {
+
+    String query =
+        TxPvlsBySourceQueriesInterface.QUERY
+            .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
+                SourceType.MASTERCARD, WomanState.BREASTFEEDING);
+
+    System.out.println(query);
   }
 }

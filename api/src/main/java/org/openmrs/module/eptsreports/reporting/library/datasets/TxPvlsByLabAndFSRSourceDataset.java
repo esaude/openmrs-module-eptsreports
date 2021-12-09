@@ -19,6 +19,7 @@ import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDim
 import org.openmrs.module.eptsreports.reporting.library.dimensions.KeyPopulationDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsBySourceQueriesInterface.QUERY.SourceType;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueriesInterface.QUERY.WomanState;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -113,7 +114,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
-                            SourceType.LAB_FSR),
+                            SourceType.LAB_FSR, WomanState.PREGNANT),
                     mappings)),
             mappings),
         "");
@@ -127,7 +128,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
-                            SourceType.LAB_FSR),
+                            SourceType.LAB_FSR, WomanState.PREGNANT),
                     mappings)),
             mappings),
         "");
@@ -141,7 +142,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
-                            SourceType.LAB_FSR),
+                            SourceType.LAB_FSR, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
         "");
@@ -151,11 +152,11 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Breastfeeding routine (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Breastfeeding routine",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
-                            SourceType.LAB_FSR),
+                            SourceType.LAB_FSR, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
         "");
@@ -213,7 +214,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine(
-                            SourceType.LAB_FSR),
+                            SourceType.LAB_FSR, WomanState.PREGNANT),
                     mappings)),
             mappings),
         "");
@@ -227,35 +228,35 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(
-                            SourceType.LAB_FSR),
+                            SourceType.LAB_FSR, WomanState.PREGNANT),
                     mappings)),
             mappings),
         "");
 
     dataSetDefinition.addColumn(
         "NBREASROTINE-S1",
-        "Pregant routine (Laboratory and FSR Sources)",
+        "Breastfeeding routine (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Breastfeeding routine",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine(
-                            SourceType.LAB_FSR),
+                            SourceType.LAB_FSR, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
         "");
 
     dataSetDefinition.addColumn(
         "NBREASTARGET-S1",
-        "Pregant target (Laboratory and FSR Sources)",
+        "Breastfeeding target (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Breastfeeding routine",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(
-                            SourceType.LAB_FSR),
+                            SourceType.LAB_FSR, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
         "");

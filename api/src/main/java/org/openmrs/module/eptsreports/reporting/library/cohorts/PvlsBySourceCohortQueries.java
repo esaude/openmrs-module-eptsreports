@@ -4,6 +4,7 @@ import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsBySourceQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsBySourceQueriesInterface.QUERY.SourceType;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueriesInterface.QUERY.WomanState;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -188,14 +189,16 @@ public class PvlsBySourceCohortQueries {
   }
 
   @DocumentedDefinition(
-      value = "PregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months")
+      value = "WomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months")
   public CohortDefinition
       findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-          SourceType sourceType) {
+          SourceType sourceType, WomanState womanState) {
     final SqlCohortDefinition definition = new SqlCohortDefinition();
 
     definition.setName(
-        "PregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months By Source["
+        "WomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months By State["
+            + womanState.name()
+            + "] and Source["
             + sourceType.name()
             + "]");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -204,46 +207,23 @@ public class PvlsBySourceCohortQueries {
 
     definition.setQuery(
         TxPvlsBySourceQueriesInterface.QUERY
-            .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-                sourceType));
+            .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
+                sourceType, womanState));
 
     return definition;
   }
 
   @DocumentedDefinition(
-      value =
-          "BreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months")
-  public CohortDefinition
-      findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-          SourceType sourceType) {
-    final SqlCohortDefinition definition = new SqlCohortDefinition();
-
-    definition.setName(
-        "BreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months By Source["
-            + sourceType.name()
-            + "]");
-    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-
-    definition.setQuery(
-        TxPvlsBySourceQueriesInterface.QUERY
-            .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-                sourceType));
-
-    return definition;
-  }
-
-  @DocumentedDefinition(
-      value =
-          "PregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine")
+      value = "WomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine")
   public CohortDefinition
       findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
-          SourceType sourceType) {
+          SourceType sourceType, WomanState womanState) {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName(
-        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By Source["
+        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By State["
+            + womanState.name()
+            + "] and Source["
             + sourceType.name()
             + "]");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -257,7 +237,7 @@ public class PvlsBySourceCohortQueries {
         EptsReportUtils.map(
             this
                 .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-                    sourceType),
+                    sourceType, womanState),
             mappings));
 
     definition.addSearch(
@@ -274,15 +254,16 @@ public class PvlsBySourceCohortQueries {
   }
 
   @DocumentedDefinition(
-      value =
-          "PregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget")
+      value = "WomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget")
   public CohortDefinition
       findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
-          SourceType sourceType) {
+          SourceType sourceType, WomanState womanState) {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName(
-        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By Source["
+        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By State["
+            + womanState.name()
+            + "] and Source["
             + sourceType.name()
             + "]");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -296,7 +277,7 @@ public class PvlsBySourceCohortQueries {
         EptsReportUtils.map(
             this
                 .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-                    sourceType),
+                    sourceType, womanState),
             mappings));
 
     definition.addSearch(
@@ -313,15 +294,16 @@ public class PvlsBySourceCohortQueries {
   }
 
   @DocumentedDefinition(
-      value =
-          "BreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine")
+      value = "womanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine")
   public CohortDefinition
       findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
-          SourceType sourceType) {
+          SourceType sourceType, WomanState womanState) {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName(
-        "findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine By Source["
+        "findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine By State["
+            + womanState.name()
+            + "] and Source["
             + sourceType.name()
             + "]");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -334,8 +316,8 @@ public class PvlsBySourceCohortQueries {
         "BREASTEFEEDING3MONTHSVL12",
         EptsReportUtils.map(
             this
-                .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-                    sourceType),
+                .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
+                    sourceType, womanState),
             mappings));
 
     definition.addSearch(
@@ -352,15 +334,16 @@ public class PvlsBySourceCohortQueries {
   }
 
   @DocumentedDefinition(
-      value =
-          "BreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget")
+      value = "womanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget")
   public CohortDefinition
       findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
-          SourceType sourceType) {
+          SourceType sourceType, WomanState womanState) {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName(
-        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By Source["
+        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By State["
+            + womanState.name()
+            + "] and Source["
             + sourceType.name()
             + "]");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -373,8 +356,8 @@ public class PvlsBySourceCohortQueries {
         "BREASTEFEEDING3MONTHSVL12",
         EptsReportUtils.map(
             this
-                .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-                    sourceType),
+                .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
+                    sourceType, womanState),
             mappings));
 
     definition.addSearch(
@@ -392,14 +375,16 @@ public class PvlsBySourceCohortQueries {
 
   @DocumentedDefinition(
       value =
-          "PregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine")
+          "womanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine")
   public CohortDefinition
       findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine(
-          SourceType sourceType) {
+          SourceType sourceType, WomanState womanState) {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName(
-        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By Source["
+        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By State["
+            + womanState.name()
+            + "] and Source["
             + sourceType.name()
             + "]");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -421,7 +406,7 @@ public class PvlsBySourceCohortQueries {
         EptsReportUtils.map(
             this
                 .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-                    sourceType),
+                    sourceType, womanState),
             mappings));
 
     definition.setCompositionString("IART3MONTHSVL12MONTHSROTINE AND PREGNANT");
@@ -431,14 +416,16 @@ public class PvlsBySourceCohortQueries {
 
   @DocumentedDefinition(
       value =
-          "PregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target")
+          "WomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target")
   public CohortDefinition
       findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(
-          SourceType sourceType) {
+          SourceType sourceType, WomanState womanState) {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName(
-        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By Source["
+        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By State["
+            + womanState.name()
+            + "] and Source["
             + sourceType.name()
             + "]");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -460,7 +447,7 @@ public class PvlsBySourceCohortQueries {
         EptsReportUtils.map(
             this
                 .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-                    sourceType),
+                    sourceType, womanState),
             mappings));
 
     definition.setCompositionString("IART3MONTHSVL12MONTHSTARGET AND PREGNANT");
@@ -470,14 +457,16 @@ public class PvlsBySourceCohortQueries {
 
   @DocumentedDefinition(
       value =
-          "findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine")
+          "findWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine")
   public CohortDefinition
       findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine(
-          SourceType sourceType) {
+          SourceType sourceType, WomanState womanState) {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName(
-        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By Source["
+        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By State["
+            + womanState.name()
+            + "] and Source["
             + sourceType.name()
             + "]");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -498,8 +487,8 @@ public class PvlsBySourceCohortQueries {
         "BREASTFEEDING",
         EptsReportUtils.map(
             this
-                .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-                    sourceType),
+                .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
+                    sourceType, womanState),
             mappings));
 
     definition.setCompositionString("IART3MONTHSVL12MONTHSROTINE AND BREASTFEEDING");
@@ -509,14 +498,16 @@ public class PvlsBySourceCohortQueries {
 
   @DocumentedDefinition(
       value =
-          "findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target")
+          "findWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target")
   public CohortDefinition
       findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(
-          SourceType sourceType) {
+          SourceType sourceType, WomanState womanState) {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName(
-        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By Source["
+        "PatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine By State["
+            + womanState.name()
+            + "] and Source["
             + sourceType.name()
             + "]");
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -537,8 +528,8 @@ public class PvlsBySourceCohortQueries {
         "BREASTFEEDING",
         EptsReportUtils.map(
             this
-                .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
-                    sourceType),
+                .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
+                    sourceType, womanState),
             mappings));
 
     definition.setCompositionString("IART3MONTHSVL12MONTHSTARGET AND BREASTFEEDING");
