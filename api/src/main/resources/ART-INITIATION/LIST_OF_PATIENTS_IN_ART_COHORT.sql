@@ -1,5 +1,5 @@
                       select 
-                      inicio.patient_id as ID,
+                      inicio.patient_id as patient_id,
                       inicio.identifier as NID,
                       inicio.NomeCompleto as NAME,
                       inicio.gender AS GENDER,
