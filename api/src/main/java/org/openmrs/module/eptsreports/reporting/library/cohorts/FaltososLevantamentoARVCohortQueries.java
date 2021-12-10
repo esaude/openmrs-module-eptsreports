@@ -628,31 +628,63 @@ public class FaltososLevantamentoARVCohortQueries {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("Select all patients from the A (Denominator) and filter ");
     addSqlCohortDefinitionParameters(sqlCohortDefinition);
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    valuesMap.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    valuesMap.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
 
-    String scheduledPickup = getPatientsWithLastNextScheduledPickup(true);
+    String lastNextScheduledPickup = getPatientsWithLastNextScheduledPickup(true);
 
-    String lastPickupBetweenFilaAndMasterCard =
-        getPatientsAndLastPickupDateBetweenFilaAndMasterCard();
     String query =
-        " SELECT more_days.patient_id FROM( "
-            + " "
-            + "                SELECT schedule.patient_id,    MAX(recent_datetime) scheduled_date "
-            + "                FROM( "
-            + scheduledPickup
-            + "                    ) AS schedule "
-            + "                GROUP BY "
-            + "                schedule.patient_id "
-            + "                 "
-            + "                ) more_days "
-            + "                 "
-            + "                INNER JOIN ( "
-            + lastPickupBetweenFilaAndMasterCard
-            + "                            ) last_pickup ON last_pickup.patient_id = more_days.patient_id "
-            + "                WHERE TIMESTAMPDIFF(DAY ,more_days.scheduled_date, last_pickup.pickup_date) > 7 "
-            + "                 "
-            + "GROUP BY more_days.patient_id ";
+        "SELECT "
+            + "    denominator.patient_id "
+            + "FROM "
+            + "    ( "
+            + "  "
+            + lastNextScheduledPickup
+            + "    ) denominator "
+            + "INNER JOIN ( "
+            + "        SELECT scheduled_pickup.patient_id, MIN(last_pickup.pickup_date) first_date "
+            + "        FROM "
+            + "            ( "
+            + ""
+            + lastNextScheduledPickup
+            + "            ) scheduled_pickup "
+            + "        INNER JOIN  "
+            + "( "
+            + "                SELECT "
+            + "                    p.patient_id , e.encounter_datetime AS pickup_date "
+            + "                FROM  patient p "
+            + "                INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                WHERE "
+            + "                    e.encounter_type = ${18} "
+            + "                    AND e.location_id = :location"
+            + "                    AND e.voided = 0 "
+            + "                    AND p.voided = 0 "
+            + "            UNION "
+            + "                SELECT p.patient_id , o.value_datetime AS pickup_date "
+            + "                FROM patient p "
+            + "                INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "                WHERE "
+            + "                    e.encounter_type = ${52} "
+            + "                    AND e.location_id = :location "
+            + "                    AND o.concept_id = ${23866} "
+            + "                    AND e.voided = 0 "
+            + "                    AND p.voided = 0 "
+            + "            ) last_pickup ON last_pickup.patient_id = scheduled_pickup.patient_id "
+            + "        WHERE "
+            + "            last_pickup.pickup_date BETWEEN scheduled_pickup.recent_datetime  AND DATE_ADD(:endDate, INTERVAL 7 DAY) "
+            + "        GROUP BY "
+            + "            scheduled_pickup.patient_id "
+            + "    ) first_pickup ON first_pickup.patient_id = denominator.patient_id "
+            + "WHERE "
+            + "    TIMESTAMPDIFF(DAY , denominator.recent_datetime, first_pickup.first_date ) > 7 "
+            + "GROUP BY denominator.patient_id ";
 
-    sqlCohortDefinition.setQuery(query);
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
     return sqlCohortDefinition;
   }
   /**
@@ -1159,7 +1191,7 @@ public class FaltososLevantamentoARVCohortQueries {
     valuesMap.put("1709", hivMetadata.getSuspendedTreatmentConcept().getConceptId());
 
     String query =
-        "                SELECT  p.patient_id, MAX(e.encounter_datetime) AS transferout_date "
+        "                SELECT  p.patient_id, MAX(o.obs_datetime) AS transferout_date "
             + "                FROM patient p "
             + "                         INNER JOIN encounter e "
             + "                                    ON e.patient_id=p.patient_id "
@@ -1289,49 +1321,6 @@ public class FaltososLevantamentoARVCohortQueries {
     return stringSubstitutor.replace(query);
   }
 
-  private String getPatientsAndLastPickupDateBetweenFilaAndMasterCard() {
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    valuesMap.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
-    valuesMap.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
-
-    String query =
-        "SELECT last_pickup.patient_id, "
-            + "       Max(recent_date) pickup_date "
-            + "FROM  (SELECT p.patient_id, "
-            + "              Max(o.value_datetime)recent_date "
-            + "       FROM   patient p "
-            + "              INNER JOIN encounter e "
-            + "                      ON e.patient_id = p.patient_id "
-            + "              INNER JOIN obs o "
-            + "                      ON o.encounter_id = e.encounter_id "
-            + "       WHERE  e.encounter_type = ${52} "
-            + "              AND e.location_id = :location "
-            + "              AND o.concept_id = ${23866} "
-            + "              AND p.voided = 0 "
-            + "              AND e.voided = 0 "
-            + "              AND o.voided = 0 "
-            + "       GROUP  BY p.patient_id "
-            + "       HAVING recent_date <= :endDate "
-            + "       UNION "
-            + "       SELECT p.patient_id, "
-            + "              Max(e.encounter_datetime)recent_date "
-            + "       FROM   patient p "
-            + "              INNER JOIN encounter e "
-            + "                      ON e.patient_id = p.patient_id "
-            + "       WHERE  e.encounter_type = ${18} "
-            + "              AND e.location_id = :location "
-            + "              AND p.voided = 0 "
-            + "              AND e.voided = 0 "
-            + "       GROUP  BY p.patient_id "
-            + "       HAVING recent_date <= :endDate) last_pickup "
-            + "GROUP  BY last_pickup.patient_id  ";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
-    return stringSubstitutor.replace(query);
-  }
-
   private String getPatientsWithLastNextScheduledPickup(boolean selectDatetime) {
 
     Map<String, Integer> valuesMap = new HashMap<>();
@@ -1342,50 +1331,53 @@ public class FaltososLevantamentoARVCohortQueries {
     valuesMap.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
     valuesMap.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
     String fromSQL =
-        "FROM   (SELECT p.patient_id, MAX(o.value_datetime) recent_datetime "
-            + "        FROM   patient p "
-            + "               INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "               INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-            + "               INNER JOIN (SELECT p.patient_id, Max(e.encounter_datetime) encounter_date "
-            + "                           FROM   patient p "
-            + "                                  INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "                           WHERE  e.encounter_type = ${18} AND e.encounter_datetime < :startDate "
-            + "                                  AND e.location_id = :location "
-            + "                                  AND e.voided = 0 "
-            + "                                  AND p.voided = 0 "
-            + "                           GROUP  BY p.patient_id) most_recent ON most_recent.patient_id = p.patient_id "
-            + "        WHERE  most_recent.encounter_date = e.encounter_datetime "
-            + "               AND e.encounter_type = ${18} "
-            + "               AND e.encounter_datetime < :startDate "
-            + "               AND e.location_id = :location "
-            + "               AND e.voided = 0 "
-            + "               AND p.voided = 0 "
-            + "               AND o.voided = 0 "
-            + "               AND o.concept_id = ${5096} "
-            + "        GROUP  BY p.patient_id "
-            + "        UNION "
-            + "        SELECT p.patient_id, Max(Date_add(ovalue.value_datetime, INTERVAL 30 DAY)) recent_datetime "
-            + "        FROM   patient p "
-            + "               INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "               INNER JOIN obs oyes ON oyes.encounter_id = e.encounter_id "
-            + "               INNER JOIN obs ovalue ON ovalue.encounter_id = e.encounter_id "
-            + "        WHERE  e.encounter_type = ${52} "
-            + "               AND e.location_id = :location "
-            + "               AND ovalue.concept_id = ${23866} "
-            + "               AND ovalue.value_datetime < :startDate "
-            + "               AND oyes.concept_id = ${23865} "
-            + "               AND oyes.value_coded = ${1065} "
-            + "               AND p.voided = 0 "
-            + "               AND e.voided = 0 "
-            + "               AND oyes.voided = 0 "
-            + "               AND ovalue.voided = 0 "
-            + "        GROUP  BY patient_id) recent_pickup "
-            + "WHERE  recent_pickup.recent_datetime BETWEEN :startDate AND :endDate "
-            + "GROUP  BY patient_id";
+        "FROM   (SELECT patient_id, Max(recent_datetime) recent_datetime "
+            + "        FROM   (SELECT p.patient_id, Max(o.value_datetime) recent_datetime "
+            + "                FROM   patient p "
+            + "                       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "                       INNER JOIN (SELECT p.patient_id, Max(e.encounter_datetime) encounter_date "
+            + "                                   FROM   patient p "
+            + "                                          INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                                   WHERE  e.encounter_type = ${18} "
+            + "                                          AND e.encounter_datetime < :startDate "
+            + "                                          AND e.voided = 0 "
+            + "                                          AND p.voided = 0 "
+            + "                                   GROUP  BY p.patient_id) most_recent ON most_recent.patient_id = p.patient_id "
+            + "                WHERE  most_recent.encounter_date = e.encounter_datetime "
+            + "                       AND e.encounter_type = ${18} "
+            + "                       AND e.encounter_datetime < :startDate "
+            + "                       AND e.location_id = :location "
+            + "                       AND e.voided = 0 "
+            + "                       AND p.voided = 0 "
+            + "                       AND o.voided = 0 "
+            + "                       AND o.concept_id = ${5096} "
+            + "                GROUP  BY p.patient_id "
+            + "                UNION "
+            + "                SELECT p.patient_id, "
+            + "                       Max(Date_add(ovalue.value_datetime, INTERVAL 30 day)) recent_datetime "
+            + "                FROM   patient p "
+            + "                       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                       INNER JOIN obs oyes ON oyes.encounter_id = e.encounter_id "
+            + "                       INNER JOIN obs ovalue ON ovalue.encounter_id = e.encounter_id "
+            + "                WHERE  e.encounter_type = ${52} "
+            + "                       AND e.location_id = :location "
+            + "                       AND ovalue.concept_id = ${23866} "
+            + "                       AND ovalue.value_datetime < :startDate "
+            + "                       AND oyes.concept_id = ${23865} "
+            + "                       AND oyes.value_coded = ${1065} "
+            + "                       AND p.voided = 0 "
+            + "                       AND e.voided = 0 "
+            + "                       AND oyes.voided = 0 "
+            + "                       AND ovalue.voided = 0 "
+            + "                GROUP  BY patient_id) recent_pickup "
+            + "        GROUP  BY recent_pickup.patient_id) max_schedule "
+            + "WHERE  max_schedule.recent_datetime BETWEEN :startDate AND :endDate";
+    ;
 
     String query =
         selectDatetime
-            ? "SELECT patient_id, recent_datetime ".concat(fromSQL)
+            ? "SELECT patient_id,  recent_datetime ".concat(fromSQL)
             : "SELECT patient_id ".concat(fromSQL);
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
