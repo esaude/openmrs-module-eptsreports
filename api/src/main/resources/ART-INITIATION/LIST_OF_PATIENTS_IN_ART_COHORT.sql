@@ -30,7 +30,7 @@
                           pid.identifier,
                           concat(ifnull(pn.given_name,''),' ',ifnull(pn.middle_name,''),' ',ifnull(pn.family_name,'')) as NomeCompleto,
                           p.gender as gender,
-                          if(p.birthdate is not null, (TIMESTAMPDIFF(year,birthdate,:evaluationDate)),'N/A') idade,    
+                          if(p.birthdate is not null, round(datediff(:evaluationDate,p.birthdate)/365),'N/A') idade,    
                           min(data_inicio) data_inicio,
                           preg_or_lac.PREG_LAC,
                           if(tbFinal.patient_id is not null, 'SIM', '') as TB,
@@ -280,7 +280,7 @@
                                inner join encounter e on e.patient_id=p.patient_id
                                inner join obs o on o.encounter_id=e.encounter_id
                                where e.encounter_type in(6,9) and o.concept_id=1113 and p.voided=0 and e.voided=0 and o.voided=0 
-                               and e.encounter_datetime between date_sub(:evaluationDate, INTERVAL 7 MONTH) and :evaluationDate
+                               and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE()
                                group by p.patient_id
 
                                union  
@@ -290,7 +290,7 @@
                                INNER JOIN patient_program pg ON p.patient_id=pg.patient_id 
                                INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id  
                                WHERE pg.program_id=5 AND (ps.start_date IS NOT NULL AND ps.end_date IS NULL and ps.voided = 0) 
-                               and pg.date_enrolled between date_sub(:evaluationDate, INTERVAL 7 MONTH) and :evaluationDate
+                               and pg.date_enrolled between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE() 
                                GROUP BY p.patient_id
 
                                union
@@ -299,7 +299,7 @@
                                inner join encounter e on e.patient_id=p.patient_id
                                inner join obs o on o.encounter_id=e.encounter_id
                                where e.encounter_type in(53) and o.concept_id=42 and o.value_coded=1065 and p.voided=0 and e.voided=0 and o.voided=0 
-                               and e.encounter_datetime between date_sub(:evaluationDate, INTERVAL 7 MONTH) and :evaluationDate
+                               and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE()
                                group by p.patient_id
 
                                union
@@ -308,7 +308,7 @@
                                inner join encounter e on e.patient_id=p.patient_id
                                inner join obs o on o.encounter_id=e.encounter_id
                                where e.encounter_type in(6) and o.concept_id=1268 and o.value_coded=1256 and p.voided=0 and e.voided=0 and o.voided=0 
-                               and e.encounter_datetime between date_sub(:evaluationDate, INTERVAL 7 MONTH) and :evaluationDate
+                               and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE()
                                group by p.patient_id
 
                                union
@@ -317,7 +317,7 @@
                                inner join encounter e on e.patient_id=p.patient_id
                                inner join obs o on o.encounter_id=e.encounter_id
                                where e.encounter_type in(6) and o.concept_id in (23761) and o.value_coded in(1065,1066) and p.voided=0 and e.voided=0 and o.voided=0 
-                               and e.encounter_datetime between date_sub(:evaluationDate, INTERVAL 7 MONTH) and :evaluationDate
+                               and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE()
                                group by p.patient_id
 
                                union
@@ -326,7 +326,7 @@
                                inner join encounter e on e.patient_id=p.patient_id
                                inner join obs o on o.encounter_id=e.encounter_id
                                where e.encounter_type in(6) and o.concept_id in (23722) and o.value_coded in(23723,23774,23951,307,12) and p.voided=0 and e.voided=0 and o.voided=0 
-                               and e.encounter_datetime between date_sub(:evaluationDate, INTERVAL 7 MONTH) and :evaluationDate
+                               and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE()
                                group by p.patient_id
 
                                )tb
