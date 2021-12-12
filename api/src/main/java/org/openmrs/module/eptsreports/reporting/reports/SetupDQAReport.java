@@ -69,8 +69,12 @@ public class SetupDQAReport extends EptsDataExportManager {
     rd.setDescription(getDescription());
     rd.addParameters(dQAViralLoadDataset.getParameters());
     rd.addDataSetDefinition("HF", mapStraightThrough(new LocationDataSetDefinition()));
+
     rd.addDataSetDefinition(
         "DQA", mapStraightThrough(dQAViralLoadDataset.constructDataset(getParameters())));
+
+    rd.addDataSetDefinition("DQ", mapStraightThrough(dQAViralLoadDataset.constructDataSetSESP()));
+
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
