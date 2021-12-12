@@ -1,4 +1,16 @@
-        select coorte12meses_final.patient_id,coorte12meses_final.data_usar, L1.encounter_datetime from (select  inicio_fila_seg_prox.*,GREATEST(COALESCE(data_fila,data_seguimento,data_recepcao_levantou),COALESCE(data_seguimento,data_fila,data_recepcao_levantou),COALESCE(data_recepcao_levantou,data_seguimento,data_fila))  data_usar_c, 
+        select
+        coorte12meses_final.patient_id,
+        coorte12meses_final.data_usar,
+        pid.identifier as NID,
+        pe.gender SEXO,
+        if(round(datediff(:startDate,pe.birthdate)/365) >= 15,'A','C') as AGE ,
+        coorte12meses_final.data_inicio DATA_INICIO_TARV,
+        L.encounter_datetime DATA_CV,
+        L.cv CV
+
+        from (
+
+        	select  inicio_fila_seg_prox.*,GREATEST(COALESCE(data_fila,data_seguimento,data_recepcao_levantou),COALESCE(data_seguimento,data_fila,data_recepcao_levantou),COALESCE(data_recepcao_levantou,data_seguimento,data_fila))  data_usar_c, 
             GREATEST(COALESCE(data_proximo_lev,data_recepcao_levantou30),COALESCE(data_recepcao_levantou30,data_proximo_lev)) data_usar from (select inicio_fila_seg.*, 
             max(obs_fila.value_datetime) data_proximo_lev, 
             max(obs_seguimento.value_datetime) data_proximo_seguimento, 
@@ -28,7 +40,8 @@
             inner join encounter e on p.patient_id=e.patient_id 
             inner join obs o on e.encounter_id=o.encounter_id 
             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=52 and  o.concept_id=23866 and o.value_datetime is not null and  o.value_datetime<=:endDate and e.location_id=:location 
-            group by p.patient_id) inicio_real group by patient_id)inicio 
+            group by p.patient_id
+            ) inicio_real group by patient_id)inicio 
             left join ( 
             select patient_id,max(data_estado) data_estado from ( 
             select maxEstado.patient_id,maxEstado.data_transferidopara data_estado from( 
@@ -73,24 +86,32 @@
             group by patient_id 
 
             ) coorte12meses_final 
+			
+			inner join person pe on pe.person_id=coorte12meses_final.patient_id
             
-	         left join 
-	            (   select pid1.* 
-	            	from patient_identifier pid1 
-	            	inner join 
-	            	( 
-	            		select patient_id,min(patient_identifier_id) id 
-	            		from patient_identifier 
-	            		where voided=0 
-	            		group by patient_id 
-	            	) pid2 
-	            	where pid1.patient_id=pid2.patient_id and pid1.patient_identifier_id=pid2.id 
-	            ) pid on pid.patient_id=coorte12meses_final.patient_id 
+            left join 
+            (   select pid1.* 
+            	from patient_identifier pid1 
+            	inner join 
+            	( 
+            		select patient_id,min(patient_identifier_id) id 
+            		from patient_identifier 
+            		where voided=0 
+            		group by patient_id 
+            	) pid2 
+            	where pid1.patient_id=pid2.patient_id and pid1.patient_identifier_id=pid2.id 
+            ) pid on pid.patient_id=coorte12meses_final.patient_id 
 
-        	left join 
+        	inner join 
+        	( select 
+        		L.patient_id,
+        		L.encounter_datetime,
+        		if(L.concept_id=1305,case L.value_coded when 1306  then 'ALEM DO LIMITE DETECTAVEL' when 1304  then 'MA QUALIDADE DA AMOSTRA' when 23814 then 'CARGA VIRAL INDETECTAVEL' else null end,L.value_numeric) cv
 
-        	(
-	        	 SELECT pat.patient_id,enc.encounter_datetime FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
+        		from (
+	        	
+	        	 SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id 
+	        	 JOIN obs ob ON enc.encounter_id=ob.encounter_id 
 	             WHERE 
 	             pat.voided=0 
 	             AND enc.voided=0 
@@ -111,15 +132,12 @@
 	             AND e.encounter_datetime BETWEEN IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) AND (:startDate -interval 1 day) 
 	             AND o.concept_id IN (856,1305)
 	             AND e.encounter_type=6
+	             
 	             )
 
-        	)L1 on L1.patient_id=coorte12meses_final.patient_id
+	             union
 
-
-        	inner join 
-
-        	(
-	        	 SELECT pat.patient_id,enc.encounter_datetime FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
+	             SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
 	             WHERE 
 	             pat.voided=0 
 	             AND enc.voided=0 
@@ -142,12 +160,9 @@
 	             AND e.encounter_type=6
 	             )
 
-        	)L2 on L2.patient_id=coorte12meses_final.patient_id and (:startDate + interval 1 month) < :endDate
+	             union
 
-        	inner join 
-
-        	(
-	        	 SELECT pat.patient_id,enc.encounter_datetime FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
+	             SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
 	             WHERE 
 	             pat.voided=0 
 	             AND enc.voided=0 
@@ -169,9 +184,8 @@
 	             AND o.concept_id IN (856,1305)
 	             AND e.encounter_type=6
 	             )
-
-        	)L3 on L3.patient_id=coorte12meses_final.patient_id and (:startDate + interval 2 month - interval 1 day) < :endDate
-
-
+        	)L
+        )L on L.patient_id=coorte12meses_final.patient_id
+            
 
             where (coorte12meses_final.data_estado is null or (coorte12meses_final.data_estado is not null and  coorte12meses_final.data_usar_c>coorte12meses_final.data_estado)) and date_add(coorte12meses_final.data_usar, interval 60 day) >=:endDate
