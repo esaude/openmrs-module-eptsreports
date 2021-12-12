@@ -72,12 +72,11 @@ public class SetupDQAReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Data_Quality_Report.xls",
-              "Data Quality Report",
+              "DQA.xls",
+              "DQA CARGA VIRAL",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
-      props.put("sortWeight", "5000");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {
