@@ -30,7 +30,7 @@
                           pid.identifier,
                           concat(ifnull(pn.given_name,''),' ',ifnull(pn.middle_name,''),' ',ifnull(pn.family_name,'')) as NomeCompleto,
                           p.gender as gender,
-                          if(p.birthdate is not null, round(datediff(:evaluationDate,p.birthdate)/365),'N/A') idade,    
+                          if(p.birthdate is not null, floor(datediff(:evaluationDate,p.birthdate)/365),'N/A') idade,    
                           min(data_inicio) data_inicio,
                           preg_or_lac.PREG_LAC,
                           if(tbFinal.patient_id is not null, 'SIM', '') as TB,
@@ -316,7 +316,7 @@
                                select p.patient_id,max(e.encounter_datetime) data_consulta  from patient p 
                                inner join encounter e on e.patient_id=p.patient_id
                                inner join obs o on o.encounter_id=e.encounter_id
-                               where e.encounter_type in(6) and o.concept_id in (23761) and o.value_coded in(1065,1066) and p.voided=0 and e.voided=0 and o.voided=0 
+                               where e.encounter_type in(6) and o.concept_id in (23761) and o.value_coded in(1065) and p.voided=0 and e.voided=0 and o.voided=0 
                                and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE()
                                group by p.patient_id
 

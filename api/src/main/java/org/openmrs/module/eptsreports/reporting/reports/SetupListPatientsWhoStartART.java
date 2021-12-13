@@ -49,12 +49,12 @@ public class SetupListPatientsWhoStartART extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return " Lista de Pacientes na Coorte de TARV";
+    return " LISTA DE PACIENTES NA COORTE DE TARV";
   }
 
   @Override
   public String getDescription() {
-    return " Lista de Pacientes na Coorte de TARV";
+    return " LISTA DE PACIENTES NA COORTE DE TARV";
   }
 
   @Override
@@ -87,7 +87,7 @@ public class SetupListPatientsWhoStartART extends EptsDataExportManager {
           createXlsReportDesign(
               reportDefinition,
               "LISTA_INICIO_DE_TARV.xls",
-              "LISTA_DE_PACIENTES_QUE_INICIARAM_TARV",
+              "LISTA_DE_PACIENTES_NA_COORTE_DE_TARV",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
