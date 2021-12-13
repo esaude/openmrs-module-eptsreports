@@ -1,4 +1,5 @@
         select
+        (@cnt := @cnt + 1) as ID,
         coorte12meses_final.patient_id,
         coorte12meses_final.data_usar,
         pid.identifier as NID,
@@ -186,6 +187,8 @@
 	             )
         	)L
         )L on L.patient_id=coorte12meses_final.patient_id
+
+        CROSS JOIN (SELECT @cnt := 0) as DEMMY
             
 
             where (coorte12meses_final.data_estado is null or (coorte12meses_final.data_estado is not null and  coorte12meses_final.data_usar_c>coorte12meses_final.data_estado)) and date_add(coorte12meses_final.data_usar, interval 60 day) >=:endDate
