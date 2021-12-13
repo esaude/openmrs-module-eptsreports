@@ -93,10 +93,10 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "DT-S1",
-        "Adults & Children Denominator Routine (Laboratory and FSR Sources)",
+        "Adults & Children Denominator Target (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "viral load results on routine adults and children",
+                "viral load results on Target adults and children",
                 EptsReportUtils.map(
                     this.pvlsBySourceCohortQueries
                         .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
@@ -113,7 +113,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
                 "Pregant routine",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
-                        .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
+                        .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
                             SourceType.LAB_FSR, WomanState.PREGNANT),
                     mappings)),
             mappings),
@@ -124,10 +124,10 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "pregnant target (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Pregant target (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
-                        .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
+                        .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
                             SourceType.LAB_FSR, WomanState.PREGNANT),
                     mappings)),
             mappings),
@@ -138,10 +138,10 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Breastfeeding routine (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Breastfeeding routine",
+                "Breastfeeding routine (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
-                        .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
+                        .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
                             SourceType.LAB_FSR, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
@@ -149,13 +149,13 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "DBREASTARGET-S1",
-        "Breastfeeding routine (Laboratory and FSR Sources)",
+        "Breastfeeding Target (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Breastfeeding routine",
+                "Breastfeeding Target",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
-                        .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
+                        .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
                             SourceType.LAB_FSR, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
@@ -181,7 +181,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Adults & Children Numerator Routine (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "viral load results on routine adults and children",
+                "viral load results on routine adults and children (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     this.pvlsBySourceCohortQueries
                         .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine(
@@ -196,7 +196,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Adults & Children Numerator target (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "viral load results on routine adults and children",
+                "viral load results on target adults and children (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     this.pvlsBySourceCohortQueries
                         .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsTarget(
@@ -210,7 +210,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Pregant routine (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Pregant routine (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine(
@@ -224,7 +224,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Pregant routine (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Pregant routine (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(
@@ -238,7 +238,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Breastfeeding routine (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Breastfeeding routine",
+                "Breastfeeding routine (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Rotine(
@@ -252,7 +252,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Breastfeeding target (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Breastfeeding routine",
+                "Breastfeeding target (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(
@@ -282,7 +282,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Target Sub Total (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Target Sub Total",
+                "Target Sub Total (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
@@ -298,7 +298,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Rotine Numerator Sub Total (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Rotine Numerator Sub Total",
+                "Rotine Numerator Sub Total (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsRotine(
@@ -312,7 +312,7 @@ public class TxPvlsByLabAndFSRSourceDataset extends BaseDataSet {
         "Target Numerator Sub Total (Laboratory and FSR Sources)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Target Numerator Sub Total",
+                "Target Numerator Sub Total (Laboratory and FSR Sources)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
                         .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadResultLessthan1000RegisteredInTheLast12MonthsTarget(

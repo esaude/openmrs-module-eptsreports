@@ -271,7 +271,7 @@ public interface TxPvlsQueriesInterface {
               + "		)                                                                                                                                                                                                                                                                       "
               + "	cargaGravidaLactante                                                                                                                                                                                                                                                        "
               + "		inner join person pe on pe.person_id=cargaGravidaLactante.patient_id                                                                                                                                                                                                    "
-              + "    where decisao=2 and pe.voided=0 and pe.gender='F'         																																																				";
+              + "    where decisao=%s and pe.voided=0 and pe.gender='F'         																																																				";
 
       switch (womanState) {
         case PREGNANT:

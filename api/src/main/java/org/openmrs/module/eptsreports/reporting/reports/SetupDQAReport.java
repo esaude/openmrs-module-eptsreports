@@ -14,17 +14,21 @@
 
 package org.openmrs.module.eptsreports.reporting.reports;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Properties;
-import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.ListOfPatientWhoStartArtDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.SummaryPatientWhoStartArtDataSet;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.DQAViralLoadDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
-import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -32,29 +36,29 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupListPatientsWhoStartART extends EptsDataExportManager {
+public class SetupDQAReport extends EptsDataExportManager {
 
-  @Autowired private ListOfPatientWhoStartArtDataSet txNew;
-  @Autowired SummaryPatientWhoStartArtDataSet summaryPatientWhoStartArtDataSet;
+  @Autowired private DQAViralLoadDataset dQAViralLoadDataset;
+  @Autowired protected GenericCohortQueries genericCohortQueries;
 
   @Override
   public String getExcelDesignUuid() {
-    return "d34d80ae-fbad-11eb-9a03-0242ac130007";
+    return "20e32c60-57fc-11ec-8538-d3ce49886eec";
   }
 
   @Override
   public String getUuid() {
-    return "dce1c0b2-fbad-11eb-9a03-0242ac130009";
+    return "28206e48-57fc-11ec-bf8c-ff5e4a342b97";
   }
 
   @Override
   public String getName() {
-    return " Lista de Pacientes na Coorte de TARV";
+    return "DQA Carga Viral - MISAU";
   }
 
   @Override
   public String getDescription() {
-    return " Lista de Pacientes na Coorte de TARV";
+    return "DQA Carga Viral - MISAU";
   }
 
   @Override
@@ -63,14 +67,19 @@ public class SetupListPatientsWhoStartART extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.addParameters(this.getParameters());
+    rd.addParameters(dQAViralLoadDataset.getParameters());
+    rd.addDataSetDefinition("HF", mapStraightThrough(new LocationDataSetDefinition()));
 
     rd.addDataSetDefinition(
-        "NR", Mapped.mapStraightThrough(txNew.constructDataset(getParameters())));
+        "DQA", mapStraightThrough(dQAViralLoadDataset.constructDataset(getParameters())));
 
-    rd.addDataSetDefinition(
-        "RT", Mapped.mapStraightThrough(summaryPatientWhoStartArtDataSet.getTotaStartARTDataset()));
+    rd.addDataSetDefinition("DQ", mapStraightThrough(dQAViralLoadDataset.constructDataSetSESP()));
 
+    rd.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
+            "endDate=${endDate},location=${location}"));
     return rd;
   }
 
@@ -85,15 +94,10 @@ public class SetupListPatientsWhoStartART extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition,
-              "LISTA_INICIO_DE_TARV.xls",
-              "LISTA_DE_PACIENTES_QUE_INICIARAM_TARV",
-              getExcelDesignUuid(),
-              null);
+              reportDefinition, "DQA.xls", "DQA CARGA VIRAL", getExcelDesignUuid(), null);
       Properties props = new Properties();
-      props.put("repeatingSections", "sheet:1,row:7,dataset:NR");
       props.put("sortWeight", "5000");
-      props.put("sortWeight", "5000");
+      props.put("repeatingSections", "sheet:1,row:7,dataset:DQA");
       reportDesign.setProperties(props);
     } catch (IOException e) {
       throw new ReportingException(e.toString());
@@ -102,11 +106,12 @@ public class SetupListPatientsWhoStartART extends EptsDataExportManager {
     return Arrays.asList(reportDesign);
   }
 
+  @Override
   public List<Parameter> getParameters() {
-    return Arrays.asList(
-        new Parameter("startDate", "Cohort Start Date", Date.class),
-        new Parameter("endDate", "  Cohort End Date", Date.class),
-        new Parameter("evaluationDate", "Evaluation Date", Date.class),
-        new Parameter("location", "Unidade Sanitária", Location.class));
+    List<Parameter> parameters = new ArrayList<Parameter>();
+    parameters.add(ReportingConstants.START_DATE_PARAMETER);
+    parameters.add(ReportingConstants.END_DATE_PARAMETER);
+    parameters.add(ReportingConstants.LOCATION_PARAMETER);
+    return parameters;
   }
 }

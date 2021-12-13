@@ -94,10 +94,10 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
     addRow(
         dataSetDefinition,
         "DT-S2",
-        "Adults & Children Denominator Routine (Mastercard Source)",
+        "Adults & Children Denominator Target (Mastercard Source)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "viral load results on routine adults and children",
+                "viral load results on Target adults and children (Mastercard Source)",
                 EptsReportUtils.map(
                     this.pvlsBySourceCohortQueries
                         .findPatientsWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
@@ -111,10 +111,10 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
         "Pregant routine (Mastercard Source)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Pregant routine (Mastercard Card)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
-                        .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
+                        .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
                             SourceType.MASTERCARD, WomanState.PREGNANT),
                     mappings)),
             mappings),
@@ -125,10 +125,10 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
         "pregnant target (Mastercard Source)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Pregant Target (Mastercard Card)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
-                        .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
+                        .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
                             SourceType.MASTERCARD, WomanState.PREGNANT),
                     mappings)),
             mappings),
@@ -139,10 +139,10 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
         "Breastfeeding routine (Mastercard Source)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Breastfeeding routine",
+                "Breastfeeding routine (Mastercaard Source)",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
-                        .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
+                        .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsRotine(
                             SourceType.MASTERCARD, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),
@@ -150,13 +150,13 @@ public class TxPvlsByMasterCardSourceDataset extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "DBREASTARGET-S2",
-        "Breastfeeding routine (Mastercard Source)",
+        "Breastfeeding Target (Mastercard Source)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Breastfeeding routine",
+                "Breastfeeding Target",
                 EptsReportUtils.map(
                     pvlsBySourceCohortQueries
-                        .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
+                        .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(
                             SourceType.MASTERCARD, WomanState.BREASTFEEDING),
                     mappings)),
             mappings),

@@ -118,7 +118,7 @@ public class TxPvlsDataset extends BaseDataSet {
         "pregnant target",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Pregant target",
                 EptsReportUtils.map(
                     pvlsCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(),
@@ -141,10 +141,10 @@ public class TxPvlsDataset extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "DBREASTARGET",
-        "Breastfeeding routine",
+        "Breastfeeding target",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Breastfeeding routine",
+                "Breastfeeding target",
                 EptsReportUtils.map(
                     pvlsCohortQueries
                         .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsTarget(),
@@ -208,10 +208,10 @@ public class TxPvlsDataset extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "NPREGTARGET",
-        "Pregant routine",
+        "Pregant target",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Pregant routine",
+                "Pregant target",
                 EptsReportUtils.map(
                     pvlsCohortQueries
                         .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(),
@@ -237,7 +237,7 @@ public class TxPvlsDataset extends BaseDataSet {
         "Breastfeeding target",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Breastfeeding routine",
+                "Breastfeeding target",
                 EptsReportUtils.map(
                     pvlsCohortQueries
                         .findPregnantBreatsFeedingWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12MonthsWithVlMoreThan1000Target(),

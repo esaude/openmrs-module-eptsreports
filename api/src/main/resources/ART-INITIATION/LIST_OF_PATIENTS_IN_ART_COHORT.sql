@@ -1,5 +1,5 @@
                       select 
-                      inicio.patient_id as ID,
+                      inicio.patient_id as patient_id,
                       inicio.identifier as NID,
                       inicio.NomeCompleto as NAME,
                       inicio.gender AS GENDER,
@@ -290,7 +290,7 @@
                                INNER JOIN patient_program pg ON p.patient_id=pg.patient_id 
                                INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id  
                                WHERE pg.program_id=5 AND (ps.start_date IS NOT NULL AND ps.end_date IS NULL and ps.voided = 0) 
-                               and pg.date_enrolled between date_sub(CURDATE(), INTERVAL 9 MONTH) and CURDATE() 
+                               and pg.date_enrolled between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE() 
                                GROUP BY p.patient_id
 
                                union
@@ -299,7 +299,7 @@
                                inner join encounter e on e.patient_id=p.patient_id
                                inner join obs o on o.encounter_id=e.encounter_id
                                where e.encounter_type in(53) and o.concept_id=42 and o.value_coded=1065 and p.voided=0 and e.voided=0 and o.voided=0 
-                               and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 9 MONTH) and CURDATE()
+                               and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE()
                                group by p.patient_id
 
                                union
