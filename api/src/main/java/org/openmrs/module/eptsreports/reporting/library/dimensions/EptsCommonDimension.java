@@ -263,32 +263,30 @@ public class EptsCommonDimension {
   }
 
   public CohortDefinitionDimension ageDQA(final AgeDimensionCohortInterface ageDimensionCohort) {
+
     final CohortDefinitionDimension dim = new CohortDefinitionDimension();
     dim.setParameters(ageDimensionCohort.getParameters());
     dim.setName("age dimension");
 
-    dim.addCohortDefinition("UK", ageDimensionCohort.createUnknownAgeCohort());
-
     dim.addCohortDefinition(
-        "0-4",
-        ageDimensionCohort.createXtoYAgeCohort("patients with age between 15 and 19 ", 0, 4));
+        "0-4", ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 4 ", 0, 4));
 
     dim.addCohortDefinition(
         "5-9",
-        ageDimensionCohort.createXtoYAgeCohort("patients with age between 20 and 24 years", 5, 9));
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 5 and 9 years", 5, 9));
 
     dim.addCohortDefinition(
         "10-14",
         ageDimensionCohort.createXtoYAgeCohort(
-            "patients with age between 25 and 29s years", 10, 14));
+            "patients with age between 10 and 14 years", 10, 14));
 
     dim.addCohortDefinition(
         "15-29",
         ageDimensionCohort.createXtoYAgeCohort(
-            "patients with age between 30 and 34 years", 15, 29));
+            "patients with age between 15 and 29 years", 15, 29));
 
     dim.addCohortDefinition(
-        "20+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 50", 20, null));
+        "20+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 20", 20, null));
 
     dim.addCohortDefinition(
         "15+", ageDimensionCohort.createXtoYAgeCohort("patients with age over 15", 15, null));
@@ -296,6 +294,10 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "0-15",
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 15 years", 0, 15));
+
+    dim.addCohortDefinition(
+        "0-14",
+        ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 14 years", 0, 14));
 
     return dim;
   }

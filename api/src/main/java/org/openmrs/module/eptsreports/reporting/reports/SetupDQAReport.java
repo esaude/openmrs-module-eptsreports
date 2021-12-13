@@ -22,8 +22,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.DQAViralLoadDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.dqa.DQAViralLoadDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.dqa.DQAViralLoadSummuryDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -39,16 +40,18 @@ import org.springframework.stereotype.Component;
 public class SetupDQAReport extends EptsDataExportManager {
 
   @Autowired private DQAViralLoadDataset dQAViralLoadDataset;
+  @Autowired private DQAViralLoadSummuryDataset viralLoadSummuryDataset;
+
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
   @Override
   public String getExcelDesignUuid() {
-    return "20e32c60-57fc-11ec-8538-d3ce49886eec";
+    return "54981b6c-5be2-11ec-8115-ebcabc659bdf";
   }
 
   @Override
   public String getUuid() {
-    return "28206e48-57fc-11ec-bf8c-ff5e4a342b97";
+    return "5d537ae4-5be2-11ec-8a14-db09b04bb861";
   }
 
   @Override
@@ -73,7 +76,7 @@ public class SetupDQAReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "DQA", mapStraightThrough(dQAViralLoadDataset.constructDataset(getParameters())));
 
-    rd.addDataSetDefinition("DQ", mapStraightThrough(dQAViralLoadDataset.constructDataSetSESP()));
+    rd.addDataSetDefinition("DQ", mapStraightThrough(viralLoadSummuryDataset.constructDatset()));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
