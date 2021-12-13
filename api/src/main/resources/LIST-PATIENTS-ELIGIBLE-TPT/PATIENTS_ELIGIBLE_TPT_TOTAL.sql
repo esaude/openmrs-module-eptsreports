@@ -436,7 +436,7 @@ select 	coorte12meses_final.patient_id patient_id
             	inner join encounter e on e.patient_id=inicio_inh.patient_id 					 
             	inner join obs obsLevTPI on e.encounter_id=obsLevTPI.encounter_id 				 			 
             	where e.voided=0 and obsLevTPI.voided=0 and e.encounter_type in (6,9) and obsLevTPI.concept_id=6122 and obsLevTPI.value_coded in (1257,1065,1256)  
-            		and e.encounter_datetime between (inicio_inh.data_inicio_inh + INTERVAL 1 day) and (inicio_inh.data_inicio_inh + INTERVAL 7 MONTH) 				 
+            		and e.encounter_datetime between (inicio_inh.data_inicio_inh + INTERVAL 1 day) and (inicio_inh.data_inicio_inh + INTERVAL 210 DAY) 				 
             		and e.location_id=:location 				 
             	group by inicio_inh.patient_id,inicio_inh.data_inicio_inh  
             	having count(*)>=5  
@@ -783,8 +783,8 @@ select 	coorte12meses_final.patient_id patient_id
             			INNER JOIN obs o ON o.encounter_id = e.encounter_id 
                 WHERE 	p.voided = 0 AND e.voided = 0 AND o.voided = 0 
                         AND e.encounter_type=53 
-                        AND o.concept_id = 42 
-                        AND o.value_coded=1065 
+                        AND o.concept_id = 1406 
+                        AND o.value_coded=42 
                         AND e.location_id=:location AND o.obs_datetime between (:endDate - INTERVAL 210 DAY) and :endDate 
             	union 
             	select 	p.patient_id 

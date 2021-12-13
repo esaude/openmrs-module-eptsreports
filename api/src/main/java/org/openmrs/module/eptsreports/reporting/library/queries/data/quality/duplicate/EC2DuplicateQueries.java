@@ -25,7 +25,7 @@ public interface EC2DuplicateQueries {
             + "	where patient.voided =0 and patient_identifier.voided =0 and patient_identifier.identifier_type =2 													 				"
             + "		group by patient.patient_id having count(patient_identifier.identifier) >=2																			 			"
             + ") paientID																																		 	 				"
-            + "	inner join patient_identifier on patient_identifier.patient_id = paientID.patient_id 																 				"
+            + "	inner join patient_identifier on (patient_identifier.patient_id = paientID.patient_id and patient_identifier.identifier_type =2)																 				"
             + "	inner join patient on patient.patient_id =patient_identifier.patient_id   																							"
             + "	inner join person  on (person.person_id =patient.patient_id and person.voided =0)  																					"
             + "	inner join person_name on (person_name.person_id = patient.patient_id and person_name.voided =0)		 															"
@@ -42,7 +42,7 @@ public interface EC2DuplicateQueries {
             + " 	where patient.voided =0 and patient_identifier.voided =0 and patient_identifier.identifier_type =2  "
             + " 	group by patient.patient_id having count(patient_identifier.identifier) >=2							"
             + " ) paientID																							"
-            + " inner join patient_identifier on patient_identifier.patient_id = paientID.patient_id 				"
+            + " inner join patient_identifier on (patient_identifier.patient_id = paientID.patient_id and patient_identifier.identifier_type =2)				"
             + " inner join patient on patient.patient_id =patient_identifier.patient_id 								";
   }
 }
