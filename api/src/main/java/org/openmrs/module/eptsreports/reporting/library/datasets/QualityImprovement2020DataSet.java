@@ -421,7 +421,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ7DEN4,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=1-14");
+        "ageBasedOnArt=1-14");
 
     CohortIndicator MQ7DEN5 =
         eptsGeneralIndicator.getIndicator(
@@ -507,7 +507,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ7NUM3,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=1-14");
+        "ageBasedOnArt=1-14");
 
     CohortIndicator MQ7NUM4 =
         eptsGeneralIndicator.getIndicator(
@@ -524,7 +524,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ7NUM4,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "age=1-14");
+        "ageBasedOnArt=1-14");
 
     CohortIndicator MQ7NUM5 =
         eptsGeneralIndicator.getIndicator(
