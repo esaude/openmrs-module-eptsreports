@@ -26,6 +26,7 @@ import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQue
 import org.openmrs.module.eptsreports.reporting.library.queries.DsdQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.Eri2MonthsQueriesInterface;
 import org.openmrs.module.eptsreports.reporting.library.queries.ErimType;
+import org.openmrs.module.eptsreports.reporting.library.queries.PrepNewQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxCurrQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
@@ -699,6 +700,54 @@ public class EptsCommonDimension {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql("findPatientsByRange", query),
             "endDate=${endDate}"));
+
+    return dimension;
+  }
+
+  public CohortDefinitionDimension findClientsWhoAreNewlyEnrolledInPrepByGenderAndAgeRange(
+      final String name, final String gender, final AgeRange ageRange) {
+
+    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+
+    dimension.setName(name);
+    dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dimension.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    String query = PrepNewQueries.QUERY.findClientsNewlyEnrolledInPrepByGenderAndAgeRange;
+    query = String.format(query, gender, ageRange.getMin(), ageRange.getMax());
+
+    int lastIndexOfBetween = query.lastIndexOf("between");
+    StringBuilder builder = new StringBuilder();
+    builder.append(query.subSequence(0, lastIndexOfBetween));
+
+    switch (ageRange) {
+      case UNDER_ONE:
+        builder.append(" < 1");
+        query = builder.toString();
+        break;
+
+      case ABOVE_FIFTY:
+        builder.append(" >= 50");
+        query = builder.toString();
+        break;
+
+      case ABOVE_SIXTY_FIVE:
+        builder.append(" >= 65");
+        query = builder.toString();
+
+      default:
+        break;
+    }
+
+    dimension.addCohortDefinition(
+        name,
+        EptsReportUtils.map(
+            this.genericCohortQueries.generalSql(
+                "findClientsNewlyEnrolledInPrepByGenderAndAgeRange", query),
+            mappings));
 
     return dimension;
   }

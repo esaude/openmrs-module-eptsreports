@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.PrepCtDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.PrepNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TRFINDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
@@ -48,6 +50,10 @@ public class SetupMERQuarterly extends EptsDataExportManager {
   @Autowired private TxMlDataset txMlDataset;
 
   @Autowired private TRFINDataset txTfrInDataset;
+
+  @Autowired private PrepNewDataset prepNewDataset;
+
+  @Autowired private PrepCtDataset prepCtDataset;
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
 
@@ -105,6 +111,12 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
     reportDefinition.addDataSetDefinition(
         "D", Mapped.mapStraightThrough(this.txTfrInDataset.getDatimCode()));
+
+    reportDefinition.addDataSetDefinition(
+        "PREP", Mapped.mapStraightThrough(this.prepNewDataset.constructPrepNewDataset()));
+
+    reportDefinition.addDataSetDefinition(
+        "PrEP_CT", Mapped.mapStraightThrough(this.prepCtDataset.constructPrepCtDataset()));
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
