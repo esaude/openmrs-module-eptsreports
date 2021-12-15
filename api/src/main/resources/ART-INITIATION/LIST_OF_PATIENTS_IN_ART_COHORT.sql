@@ -30,7 +30,7 @@
                           pid.identifier,
                           concat(ifnull(pn.given_name,''),' ',ifnull(pn.middle_name,''),' ',ifnull(pn.family_name,'')) as NomeCompleto,
                           p.gender as gender,
-                          if(p.birthdate is not null, floor(datediff(:evaluationDate,p.birthdate)/365.25),'N/A') idade,
+                          if(p.birthdate is not null, floor(datediff(:evaluationDate,p.birthdate)/365),'N/A') idade,
                           min(data_inicio) data_inicio,
                           preg_or_lac.PREG_LAC,
                           if(tbFinal.patient_id is not null, 'SIM', '') as TB,
