@@ -216,15 +216,14 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
     ColumnParameters dqa3 =
         new ColumnParameters("10-14", "10-14 years female", "gender=F|age=10-14", "03");
     ColumnParameters dqa4 =
-        new ColumnParameters("10-14", "10-14 years female", "gender=M|age=10-14", "04");
+        new ColumnParameters("10-14", "10-14 years mate", "gender=M|age=10-14", "04");
     ColumnParameters dqa5 =
-        new ColumnParameters("15-19", "15-19 years female", "gender=F|age=15-19", "05");
+        new ColumnParameters("15-29", "15-29 years female", "gender=F|age=15-29", "05");
     ColumnParameters dqa6 =
-        new ColumnParameters("15-19", "15-19 years female", "gender=M|age=15-19", "06");
+        new ColumnParameters("15-29", "15-29 years male", "gender=M|age=15-29", "06");
     ColumnParameters dqa7 =
         new ColumnParameters("20+", "20+ years female", "gender=F|age=20+", "07");
-    ColumnParameters dqa8 =
-        new ColumnParameters("20+", "20+ years female", "gender=M|age=20+", "08");
+    ColumnParameters dqa8 = new ColumnParameters("20+", "20+ years male", "gender=M|age=20+", "08");
     return Arrays.asList(dqa1, dqa2, dqa3, dqa4, dqa5, dqa6, dqa7, dqa8);
   }
 }
