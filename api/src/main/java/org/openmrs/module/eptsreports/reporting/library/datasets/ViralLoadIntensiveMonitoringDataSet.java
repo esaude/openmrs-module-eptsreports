@@ -322,45 +322,60 @@ public class ViralLoadIntensiveMonitoringDataSet extends BaseDataSet {
         "NUM9TOTAL", "Description", EptsReportUtils.map(indicatorNUm9Total, MAPPINGS), "");
 
     cohortIndicatorDataSetDefinition.addColumn(
-        "DEN10TOTALT", "Description", EptsReportUtils.map(indicatorDen10Total, MAPPINGS), "");
+        "DEN10TOTALT",
+        "Pacientes com segundo resultado de Carga Viral alto após sessões de APSS/PP - Denominador Total",
+        EptsReportUtils.map(indicatorDen10Total, MAPPINGS),
+        "");
     addRow(
         cohortIndicatorDataSetDefinition,
         "DEN10TOTAL",
-        "Description",
+        "Pacientes com segundo resultado de Carga Viral alto após sessões de APSS/PP - Denominador",
         EptsReportUtils.map(indicatorDen10Total, MAPPINGS),
         getColumnsForAge());
 
     cohortIndicatorDataSetDefinition.addColumn(
-        "NUM10TOTALT", "Description", EptsReportUtils.map(indicatorNUm10Total, MAPPINGS), "");
+        "NUM10TOTALT",
+        "Pacientes com segundo resultado de Carga Viral alto após sessões de APSS/PP - Numerador",
+        EptsReportUtils.map(indicatorNUm10Total, MAPPINGS),
+        "");
     addRow(
         cohortIndicatorDataSetDefinition,
         "NUM10TOTAL",
-        "Description",
+        "Pacientes com segundo resultado de Carga Viral alto após sessões de APSS/PP - Numerador",
         EptsReportUtils.map(indicatorNUm10Total, MAPPINGS),
         getColumnsForAge());
 
     cohortIndicatorDataSetDefinition.addColumn(
-        "DEN11TOTALT", "Description", EptsReportUtils.map(indicatorDen11Total, MAPPINGS), "");
+        "DEN11TOTALT",
+        "Pacientes com segundo resultado de Carga Viral baixo após sessões de APSS/PP - Denominador Total",
+        EptsReportUtils.map(indicatorDen11Total, MAPPINGS),
+        "");
 
     addRow(
         cohortIndicatorDataSetDefinition,
         "DEN11TOTAL",
-        "Description",
+        "Pacientes com segundo resultado de Carga Viral baixo após sessões de APSS/PP - Denominador",
         EptsReportUtils.map(indicatorDen11Total, MAPPINGS),
         getColumnsForAge());
 
     cohortIndicatorDataSetDefinition.addColumn(
-        "NUM11TOTALT", "Description", EptsReportUtils.map(indicatorNUm11Total, MAPPINGS), "");
+        "NUM11TOTALT",
+        "Pacientes com segundo resultado de Carga Viral baixo após sessões de APSS/PP - Numerador Total",
+        EptsReportUtils.map(indicatorNUm11Total, MAPPINGS),
+        "");
 
     addRow(
         cohortIndicatorDataSetDefinition,
         "NUM11TOTAL",
-        "Description",
+        "Pacientes com segundo resultado de Carga Viral baixo após sessões de APSS/PP - Numerador",
         EptsReportUtils.map(indicatorNUm11Total, MAPPINGS),
         getColumnsForAge());
 
     cohortIndicatorDataSetDefinition.addColumn(
-        "DEN12TOTALT", "Description", EptsReportUtils.map(indicatorDen12, MAPPINGS), "");
+        "DEN12TOTALT",
+        "Pacientes que trocaram para segunda linha de TARV após segundo resultado alto de Carga Viral - Denominador Total",
+        EptsReportUtils.map(indicatorDen12, MAPPINGS),
+        "");
 
     addRow(
         cohortIndicatorDataSetDefinition,
@@ -369,7 +384,10 @@ public class ViralLoadIntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(indicatorDen12, MAPPINGS),
         getColumnsForAge());
     cohortIndicatorDataSetDefinition.addColumn(
-        "NUM12TOTALT", "Description", EptsReportUtils.map(indicatorNUm12, MAPPINGS), "");
+        "NUM12TOTALT",
+        "Pacientes que trocaram para segunda linha de TARV após segundo resultado alto de Carga Viral - Numerador Total",
+        EptsReportUtils.map(indicatorNUm12, MAPPINGS),
+        "");
 
     addRow(
         cohortIndicatorDataSetDefinition,
@@ -379,21 +397,39 @@ public class ViralLoadIntensiveMonitoringDataSet extends BaseDataSet {
         getColumnsForAge());
 
     cohortIndicatorDataSetDefinition.addColumn(
-        "DEN14TOTAL", "Description", EptsReportUtils.map(indicatorDen14, MAPPINGS), "");
+        "DEN14TOTAL",
+        "Mulheres Grávidas com segundo resultado de Carga Viral baixo após sessões de APSS/PP - Denominador Total",
+        EptsReportUtils.map(indicatorDen14, MAPPINGS),
+        "");
 
     cohortIndicatorDataSetDefinition.addColumn(
-        "NUM14TOTAL", "Description", EptsReportUtils.map(indicatorNUm14, MAPPINGS), "");
+        "NUM14TOTAL",
+        "Mulheres Grávidas com segundo resultado de Carga Viral baixo após sessões de APSS/PP - Numerador Total",
+        EptsReportUtils.map(indicatorNUm14, MAPPINGS),
+        "");
 
     cohortIndicatorDataSetDefinition.addColumn(
-        "DEN13TOTAL", "Description", EptsReportUtils.map(indicatorDen13Total, MAPPINGS), "");
+        "DEN13TOTAL",
+        "Mulheres Grávidas com segundo resultado de Carga Viral alto após sessões de APSS/PP - Denominador Total",
+        EptsReportUtils.map(indicatorDen13Total, MAPPINGS),
+        "");
 
     cohortIndicatorDataSetDefinition.addColumn(
-        "NUM13TOTAL", "Description", EptsReportUtils.map(indicatorNUm13Total, MAPPINGS), "");
+        "NUM13TOTAL",
+        "Mulheres Grávidas com segundo resultado de Carga Viral alto após sessões de APSS/PP - Numerador Total",
+        EptsReportUtils.map(indicatorNUm13Total, MAPPINGS),
+        "");
     cohortIndicatorDataSetDefinition.addColumn(
-        "DEN15TOTAL", "Description", EptsReportUtils.map(indicatorDen15Total, MAPPINGS), "");
+        "DEN15TOTAL",
+        "Mulheres Grávidas que trocaram para segunda linha de TARV após segundo resultado alto de Carga Viral - Denominador Total",
+        EptsReportUtils.map(indicatorDen15Total, MAPPINGS),
+        "");
 
     cohortIndicatorDataSetDefinition.addColumn(
-        "NUM15TOTAL", "Description", EptsReportUtils.map(indicatorNUm15Total, MAPPINGS), "");
+        "NUM15TOTAL",
+        "Mulheres Grávidas que trocaram para segunda linha de TARV após segundo resultado alto de Carga Viral - Numerador Total",
+        EptsReportUtils.map(indicatorNUm15Total, MAPPINGS),
+        "");
 
     return cohortIndicatorDataSetDefinition;
   }

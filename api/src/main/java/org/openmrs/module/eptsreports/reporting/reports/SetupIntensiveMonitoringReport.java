@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.DatimCodeDatasetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.IntensiveMonitoringDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.QualityImprovement2020DataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ViralLoadIntensiveMonitoringDataSet;
@@ -89,6 +90,8 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
         EptsReportUtils.map(
             genericCohortQueries.getBaseCohort(),
             "endDate=${revisionEndDate},location=${location}"));
+    reportDefinition.addDataSetDefinition(
+        "DT", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));
 
     return reportDefinition;
   }
@@ -100,7 +103,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Template_MI_2021_v1.9.1.xls",
+              "Template_MI_2021_v1.9.3.xls",
               "Template Ficha Relatório Monitoria Intensiva HIV",
               getExcelDesignUuid(),
               null);
