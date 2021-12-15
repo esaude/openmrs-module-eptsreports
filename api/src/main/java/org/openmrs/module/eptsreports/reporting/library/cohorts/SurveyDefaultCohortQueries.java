@@ -157,7 +157,7 @@ public class SurveyDefaultCohortQueries {
     return definition;
   }
 
-  public CohortDefinition getTotalNumerator() {
+  public CohortDefinition getTotalNun() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName("getTotalNumerator");
@@ -166,8 +166,6 @@ public class SurveyDefaultCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-
-    definition.addSearch("DENOMINATOR", EptsReportUtils.map(this.getTotalDenominator(), mappings));
 
     definition.addSearch(
         "NUMERATOR-B",
@@ -181,7 +179,26 @@ public class SurveyDefaultCohortQueries {
             this.findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorC(),
             mappings));
 
-    definition.setCompositionString("DENOMINATOR AND (NUMERATOR-B OR NUMERATOR-C)");
+    definition.setCompositionString("(NUMERATOR-B OR NUMERATOR-C)");
+
+    return definition;
+  }
+
+  public CohortDefinition getTotalNumerator() {
+    final CompositionCohortDefinition definition = new CompositionCohortDefinition();
+
+    definition.setName("getTotalNumerator");
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    definition.addSearch("DENOMINATOR", EptsReportUtils.map(this.getTotalDenominator(), mappings));
+
+    definition.addSearch("NUMERATOR", EptsReportUtils.map(this.getTotalNun(), mappings));
+
+    definition.setCompositionString("(DENOMINATOR AND NUMERATOR");
 
     return definition;
   }
