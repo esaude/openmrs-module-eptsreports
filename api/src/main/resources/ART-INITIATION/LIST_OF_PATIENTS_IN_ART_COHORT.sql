@@ -369,7 +369,7 @@
                         ) seguimento on seguimento.patient_id=inicio_real.patient_id
 
                         left join  patient_program pg ON p.person_id = pg.patient_id and pg.program_id = 2 and pg.location_id=:location
-                        left join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL and ps.start_date<=:evaluationDate
+                        left join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL and ps.start_date<=:evaluationDate and ps.state in(9,10.8,7)
                         left join  obs obsProximaConsulta  on obsProximaConsulta.person_id=seguimento.patient_id and obsProximaConsulta.concept_id=1410 and  obsProximaConsulta.obs_datetime=seguimento.data_seguimento and obsProximaConsulta.voided=0
 
                         left join
