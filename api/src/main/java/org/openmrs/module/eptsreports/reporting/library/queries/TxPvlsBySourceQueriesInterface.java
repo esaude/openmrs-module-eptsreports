@@ -46,7 +46,7 @@ public interface TxPvlsBySourceQueriesInterface {
               + "inner join obs o on e.encounter_id=o.encounter_id "
               + "where p.voided=0 and e.voided=0 and o.voided=0 and "
               + "e.encounter_type in (%s) and  o.concept_id in (856,1305) and  o.obs_datetime between date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) and :endDate and e.location_id=:location group by p.patient_id) carga_viral on inicio_real.patient_id=carga_viral.patient_id "
-              + "where carga_viral.data_carga>=date_add(inicio_real.data_inicio, interval 3 MONTH)";
+              + "where carga_viral.data_carga>=date_add(inicio_real.data_inicio, interval 90 DAY)    ";
 
       switch (sourceType) {
         case LAB_FSR:
@@ -94,7 +94,7 @@ public interface TxPvlsBySourceQueriesInterface {
               + "inner join obs o on e.encounter_id=o.encounter_id "
               + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in (%s) and  o.concept_id in (856,1305) and  o.obs_datetime between date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) and :endDate and e.location_id=:location group by p.patient_id) carga_viral on inicio_real.patient_id=carga_viral.patient_id "
               + "inner join obs obsRazao on obsRazao.person_id=carga_viral.patient_id "
-              + "where carga_viral.data_carga>=date_add(inicio_real.data_inicio, interval 3 MONTH) and  obsRazao.obs_datetime=carga_viral.data_carga and  obsRazao.concept_id=23818 and obsRazao.value_coded in (843,23864,23881,23882) and obsRazao.voided=0 ";
+              + "where carga_viral.data_carga>=date_add(inicio_real.data_inicio, interval 90 DAY) and  obsRazao.obs_datetime=carga_viral.data_carga and  obsRazao.concept_id=23818 and obsRazao.value_coded in (843,23864,23881,23882) and obsRazao.voided=0 ";
 
       switch (sourceType) {
         case LAB_FSR:
@@ -145,7 +145,7 @@ public interface TxPvlsBySourceQueriesInterface {
               + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in (%s) and  o.concept_id in (856,1305) and  o.obs_datetime between date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) and :endDate and e.location_id=:location group by p.patient_id) ultima_carga "
               + "inner join obs on obs.person_id=ultima_carga.patient_id and obs.obs_datetime=ultima_carga.data_carga "
               + "where obs.voided=0 and ((obs.concept_id=856 and obs.value_numeric<1000) or (obs.concept_id=1305 and obs.value_coded in (1306,23814,23905,23906,23907,23908,23904)))  and obs.location_id=:location) carga_viral on inicio_real.patient_id=carga_viral.patient_id "
-              + "where carga_viral.data_carga>=date_add(inicio_real.data_inicio, interval 3 MONTH) ";
+              + "where carga_viral.data_carga>=date_add(inicio_real.data_inicio, interval 90 DAY) ";
       switch (sourceType) {
         case LAB_FSR:
           query = String.format(query, StringUtils.join(Arrays.asList(13, 51), ","));
@@ -191,7 +191,7 @@ public interface TxPvlsBySourceQueriesInterface {
               + "where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type in (%s) and  o.concept_id in (856,1305) and  o.obs_datetime between date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) and :endDate and e.location_id=:location group by p.patient_id) carga_viral on inicio_real.patient_id=carga_viral.patient_id "
               + "inner join obs obsRazao on obsRazao.person_id=carga_viral.patient_id and obsRazao.obs_datetime=carga_viral.data_carga "
               + "inner join obs obscv on obscv.person_id=carga_viral.patient_id and obscv.obs_datetime=carga_viral.data_carga "
-              + "where carga_viral.data_carga>=date_add(inicio_real.data_inicio, interval 3 MONTH) and  obsRazao.concept_id=23818 and obsRazao.value_coded in (843,23864,23881,23882) and obsRazao.voided=0 and ((obscv.concept_id=856 and obscv.value_numeric<1000) or (obscv.concept_id=1305 and obscv.value_coded in (1306,23814,23905,23906,23907,23908,23904))) and obscv.voided=0";
+              + "where carga_viral.data_carga>=date_add(inicio_real.data_inicio, interval 90 DAY) and  obsRazao.concept_id=23818 and obsRazao.value_coded in (843,23864,23881,23882) and obsRazao.voided=0 and ((obscv.concept_id=856 and obscv.value_numeric<1000) or (obscv.concept_id=1305 and obscv.value_coded in (1306,23814,23905,23906,23907,23908,23904))) and obscv.voided=0";
 
       switch (sourceType) {
         case LAB_FSR:
@@ -329,7 +329,7 @@ public interface TxPvlsBySourceQueriesInterface {
               + ")                                                                                                                                                                                                                                                       "
               + "                lactante_real on lactante_real.patient_id = carga_viral.patient_id and carga_viral.data_carga>=lactante_real.data_parto                                                                                                                                      "
               + "                	and lactante_real.data_parto between date_add(carga_viral.data_carga, interval -18 MONTH) and carga_viral.data_carga                                                                                                                                        "
-              + "                where carga_viral.data_carga >= date_add(inicio_real.data_inicio, interval 3 MONTH)  and (lactante_real.data_parto is not null or gravida_real.data_gravida is not null) group by carga_viral.patient_id                                                     "
+              + "                where carga_viral.data_carga >= date_add(inicio_real.data_inicio, interval 90 DAY)  and (lactante_real.data_parto is not null or gravida_real.data_gravida is not null) group by carga_viral.patient_id                                                     "
               + "		)                                                                                                                                                                                                                                                                       "
               + "	cargaGravidaLactante                                                                                                                                                                                                                                                        "
               + "		inner join person pe on pe.person_id=cargaGravidaLactante.patient_id                                                                                                                                                                                                    "
