@@ -34,54 +34,6 @@ public class SurveyDefaultQueries {
     return query;
   }
 
-  public static String findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorB() {
-    String query =
-        "select  DEN.patient_id from (  "
-            + "select defaulters.patient_id,defaulters.data_levantamento,defaulters.data_proximo_levantamento as data_proximo_levantamento  from (  "
-            + "select defaulters.patient_id,defaulters.data_levantamento as data_levantamento, max(defaulters.data_proximo_levantamento) data_proximo_levantamento from (  "
-            + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from (    "
-            + "select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p   "
-            + "inner join encounter e on p.patient_id=e.patient_id   "
-            + "where encounter_type=18 and e.encounter_datetime <:startDate and e.location_id=:location and e.voided=0 and p.voided=0   "
-            + "group by p.patient_id   "
-            + ")fila   "
-            + "inner join obs obs_fila on obs_fila.person_id=fila.patient_id   "
-            + "where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime  "
-            + "union  "
-            + "select p.patient_id,max(o.value_datetime) data_levantamento, date_add(max(o.value_datetime), INTERVAL 30 day)  data_proximo_levantamento  from patient p  "
-            + "inner join encounter e on p.patient_id = e.patient_id   "
-            + "inner join obs o on o.encounter_id = e.encounter_id   "
-            + "inner join obs obsLevantou on obsLevantou.encounter_id=e.encounter_id  "
-            + "where  e.voided = 0 and p.voided = 0 and o.value_datetime <:startDate and o.voided = 0  "
-            + "and obsLevantou.voided=0 and obsLevantou.concept_id=23865 and obsLevantou.value_coded = 1065  "
-            + "and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location   "
-            + "group by p.patient_id  "
-            + ") defaulters  "
-            + "group by defaulters.patient_id  "
-            + ")defaulters  "
-            + "where defaulters.data_proximo_levantamento between :startDate  AND :endDate  "
-            + "group by defaulters.patient_id  "
-            + ")DEN  "
-            + "inner join ( select l.patient_id,l.data_levantamento from ( "
-            + "select p.patient_id,e.encounter_datetime as data_levantamento from patient p "
-            + "inner join encounter e on p.patient_id=e.patient_id "
-            + "where encounter_type=18  and e.location_id=:location and e.voided=0 and p.voided=0 and e.encounter_datetime<=DATE_ADD(:endDate, INTERVAL 7 DAY)  "
-            + "union "
-            + "select p.patient_id,o.value_datetime data_levantamento  from patient p  "
-            + "inner join encounter e on p.patient_id = e.patient_id   "
-            + "inner join obs o on o.encounter_id = e.encounter_id   "
-            + "inner join obs obsLevantou on obsLevantou.encounter_id=e.encounter_id  "
-            + "where  e.voided = 0 and p.voided = 0 and o.value_datetime <:startDate and o.voided = 0  "
-            + "and obsLevantou.voided=0 and obsLevantou.concept_id=23865 and obsLevantou.value_coded = 1065  "
-            + "and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location and o.value_datetime<= DATE_ADD(:endDate, INTERVAL 7 DAY)  "
-            + ") l "
-            + ")l on l.patient_id=DEN.patient_id "
-            + "where l.data_levantamento between DATE_SUB(DEN.data_proximo_levantamento, INTERVAL 7 DAY) and DATE_ADD(:endDate, INTERVAL 7 DAY)  "
-            + "group by DEN.patient_id "
-            + "DATEDIFF(DEN.data_proximo_levantamento,min(l.data_levantamento)) > 7 ";
-    return query;
-  }
-
   public static String findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorC() {
     String query =
         "select DEN.patient_id from (  "
@@ -119,7 +71,7 @@ public class SurveyDefaultQueries {
             + "inner join encounter e on p.patient_id = e.patient_id   "
             + "inner join obs o on o.encounter_id = e.encounter_id   "
             + "inner join obs obsLevantou on obsLevantou.encounter_id=e.encounter_id  "
-            + "where  e.voided = 0 and p.voided = 0 and o.value_datetime <:startDate and o.voided = 0  "
+            + "where  e.voided = 0 and p.voided = 0 and o.voided = 0  "
             + "and obsLevantou.voided=0 and obsLevantou.concept_id=23865 and obsLevantou.value_coded = 1065  "
             + "and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location and o.value_datetime<= DATE_ADD(:endDate, INTERVAL 7 DAY)  "
             + ") l on l.patient_id=DEN.patient_id and l.data_levantamento between DATE_ADD(DEN.data_levantamento, INTERVAL 1 DAY) and DATE_ADD(:endDate, INTERVAL 7 DAY)  "
@@ -265,37 +217,43 @@ public class SurveyDefaultQueries {
   public static String getPatientsWhoArePregnantOrBreastfeeding(TypePTV typePTV) {
 
     String query =
-        "select finalPregLac.patient_id from ("
-            + "select final.patient_id, final.concept_id, max(final.encounter_datetime), if(final.concept_id=1982,1,2) as preg_or_lac from ( "
-            + "select p.patient_id, max(e.encounter_datetime) encounter_datetime,o.concept_id  from patient p  "
-            + "inner join encounter e on p.patient_id = e.patient_id   "
-            + "inner join obs o on o.encounter_id = e.encounter_id   "
-            + "where  e.voided = 0 and p.voided = 0   "
-            + "and e.encounter_datetime between DATE_SUB(:endDate, INTERVAL 9 MONTH) and :endDate  "
-            + "and o.voided = 0  and o.concept_id = 1982 and o.value_coded = 1065 and e.encounter_type in(6,9)   "
-            + "and e.location_id=:location "
-            + "group by p.patient_id  "
-            + "union "
-            + "select p.patient_id, max(e.encounter_datetime) encounter_datetime, o.concept_id from patient p  "
-            + "inner join encounter e on p.patient_id = e.patient_id   "
-            + "inner join obs o on o.encounter_id = e.encounter_id   "
-            + "where  e.voided = 0 and p.voided = 0   "
-            + "and e.encounter_datetime between DATE_SUB(:endDate, INTERVAL 18 MONTH) and :endDate  "
-            + "and o.voided = 0  and o.concept_id = 6332 and o.value_coded = 1065 and e.encounter_type in(6,9)   "
-            + "and e.location_id=:location "
-            + "group by p.patient_id  "
-            + ")final "
-            + "group by final.patient_id "
-            + "order by final.patient_id,final.encounter_datetime desc,preg_or_lac "
-            + ")finalPregLac ";
-
+        "select final.ID_G from ( select  "
+            + "f.ID_G,f.data_gravida, "
+            + "f.data_lactante, "
+            + "if(f.data_gravida is null and f.data_lactante is null, null, "
+            + "if(f.data_gravida is null,1, "
+            + "if(f.data_lactante is null,2, "
+            + "if(f.data_gravida>f.data_lactante,2,1)))) decisao from ( "
+            + "select f.ID_G, f.ID_L, f.data_gravida,f.data_lactante  from  ( "
+            + "select gravida.patient_id ID_G,lactante.patient_id ID_L,gravida.encounter_datetime data_gravida,lactante.encounter_datetime data_lactante from (  "
+            + "select p.patient_id, max(e.encounter_datetime) encounter_datetime,o.concept_id, 1 orderS  from patient p    "
+            + "inner join encounter e on p.patient_id = e.patient_id  "
+            + "inner join obs o on o.encounter_id = e.encounter_id     "
+            + "where  e.voided = 0 and p.voided = 0     "
+            + "and e.encounter_datetime between DATE_SUB(:startDate, INTERVAL 9 MONTH) and :endDate   "
+            + "and o.voided = 0  and o.concept_id = 1982 and o.value_coded = 1065 and e.encounter_type in(6,9) and e.location_id=:location   "
+            + "group by p.patient_id   "
+            + ")gravida  "
+            + "left join (   "
+            + "select p.patient_id, max(e.encounter_datetime) encounter_datetime, o.concept_id, 2 orderS from patient p    "
+            + "inner join encounter e on p.patient_id = e.patient_id     "
+            + "inner join obs o on o.encounter_id = e.encounter_id     "
+            + "where  e.voided = 0 and p.voided = 0     "
+            + "and e.encounter_datetime between DATE_SUB(:startDate, INTERVAL 18 MONTH) and :endDate   "
+            + "and o.voided = 0  and o.concept_id = 6332 and o.value_coded = 1065 and e.encounter_type in(6,9)     "
+            + "and e.location_id=:location   "
+            + "group by p.patient_id    "
+            + ")lactante on gravida.patient_id=lactante.patient_id  "
+            + ")f "
+            + ")f "
+            + ") final ";
     switch (typePTV) {
       case PREGNANT:
-        query = query + "where finalPregLac.concept_id in(1982)";
+        query = query + "where final.decisao = 2 ";
         break;
 
       case BREASTFEEDING:
-        query = query + "where finalPregLac.concept_id in(6332)";
+        query = query + "where final.decisao = 1 ";
         break;
     }
 
@@ -312,7 +270,7 @@ public class SurveyDefaultQueries {
             + "SELECT pat.patient_id,MAX(enc.encounter_datetime) encounter_datetime, enc.encounter_id FROM patient pat "
             + "INNER JOIN encounter enc ON pat.patient_id = enc.patient_id "
             + "INNER JOIN obs o on enc.encounter_id=o.encounter_id "
-            + "WHERE pat.voided = 0 AND enc.voided = 0 "
+            + "WHERE pat.voided = 0 AND enc.voided = 0 AND o.voided = 0 "
             + "AND enc.location_id =:location "
             + "AND enc.encounter_type IN (13) "
             + "AND o.concept_id in(856,1305) "
@@ -328,7 +286,7 @@ public class SurveyDefaultQueries {
             + "SELECT  pat.patient_id,MAX(enc.encounter_datetime) encounter_datetime,enc.encounter_id FROM patient pat "
             + "INNER JOIN encounter enc ON pat.patient_id = enc.patient_id "
             + "INNER JOIN obs o on enc.encounter_id=o.encounter_id "
-            + "WHERE pat.voided = 0 AND enc.voided = 0 "
+            + "WHERE pat.voided = 0 AND enc.voided = 0 AND o.voided = 0 "
             + "AND enc.location_id=:location "
             + "AND enc.encounter_type IN (51) "
             + "AND o.concept_id in(856,1305) "
@@ -344,7 +302,7 @@ public class SurveyDefaultQueries {
             + "SELECT pat.patient_id,MAX(enc.encounter_datetime) encounter_datetime,enc.encounter_id FROM patient pat "
             + "INNER JOIN encounter enc ON pat.patient_id = enc.patient_id "
             + "INNER JOIN obs o on enc.encounter_id=o.encounter_id "
-            + "WHERE pat.voided = 0 AND enc.voided = 0 "
+            + "WHERE pat.voided = 0 AND enc.voided = 0 AND o.voided = 0 "
             + "AND enc.location_id=:location "
             + "AND enc.encounter_type IN (6) "
             + "AND o.concept_id in(856,1305) "
@@ -356,14 +314,14 @@ public class SurveyDefaultQueries {
             + "UNION "
             + "SELECT cvRES.patient_id,cvRES.encounter_datetime,cvRES.concept_numeric,cvRES.concept_coded,cvRES.value_numeric,cvRES.value_coded, 4 ordemSource FROM ( "
             + "SELECT  cv1.patient_id,cv1.encounter_datetime,obsNumeric.concept_id concept_numeric,obsQualitative.concept_id concept_coded,obsNumeric.value_numeric,obsQualitative.value_coded FROM ( "
-            + "SELECT  pat.patient_id, MAX(enc.encounter_datetime) encounter_datetime,enc.encounter_id FROM patient pat "
+            + "SELECT  pat.patient_id, MAX(o.obs_datetime) encounter_datetime,enc.encounter_id FROM patient pat "
             + "INNER JOIN encounter enc ON pat.patient_id = enc.patient_id "
             + "INNER JOIN obs o on enc.encounter_id=o.encounter_id "
-            + "WHERE pat.voided = 0 AND enc.voided = 0 "
+            + "WHERE pat.voided = 0 AND enc.voided = 0 AND o.voided = 0 "
             + "AND enc.location_id=:location "
             + "AND enc.encounter_type IN (53) "
             + "AND o.concept_id in(856,1305) "
-            + "AND enc.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 12 MONTH) AND :endDate "
+            + "AND o.obs_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 12 MONTH) AND :endDate "
             + "group by pat.patient_id "
             + ") cv1 "
             + "LEFT JOIN obs obsNumeric ON cv1.encounter_id = obsNumeric.encounter_id AND obsNumeric.voided = 0 AND obsNumeric.concept_id = 856  "

@@ -34,7 +34,7 @@ select DEN.patient_id, DEN.data_proximo_levantamento from (
             inner join encounter e on p.patient_id = e.patient_id   
             inner join obs o on o.encounter_id = e.encounter_id   
             inner join obs obsLevantou on obsLevantou.encounter_id=e.encounter_id  
-            where  e.voided = 0 and p.voided = 0 and o.value_datetime <:startDate and o.voided = 0  
+            where  e.voided = 0 and p.voided = 0 and o.voided = 0  
             and obsLevantou.voided=0 and obsLevantou.concept_id=23865 and obsLevantou.value_coded = 1065  
             and o.concept_id = 23866 and e.encounter_type=52 and e.location_id=:location and o.value_datetime<= DATE_ADD(:endDate, INTERVAL 7 DAY)  
             ) l 
