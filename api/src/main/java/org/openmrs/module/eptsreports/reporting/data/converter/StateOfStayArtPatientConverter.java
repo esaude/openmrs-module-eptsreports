@@ -5,13 +5,13 @@ import org.openmrs.module.reporting.data.converter.DataConverter;
 /** Converter to return the state of stay for ART patients */
 public class StateOfStayArtPatientConverter implements DataConverter {
 
-  final String transferred = "Transferido";
+  final String transferred = "Transferido para";
 
-  final String suspended = "Suspendido";
+  final String suspended = "Suspensão";
 
-  final String abandoned = "Abandonado";
+  final String abandoned = "Abandono";
 
-  final String died = "Faleceu";
+  final String died = "Óbito";
 
   final String autoTransfer = "Auto Transferência";
 
@@ -37,7 +37,7 @@ public class StateOfStayArtPatientConverter implements DataConverter {
       case "1707":
         return abandoned;
       case "1366":
-        return abandoned;
+        return died;
       case "23863":
         return autoTransfer;
       default:

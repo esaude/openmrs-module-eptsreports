@@ -1,12 +1,13 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class CommonQueries {
@@ -657,9 +658,9 @@ public class CommonQueries {
    *
    * <p>Patient ART Start Date is the oldest date from the set of criterias defined in the common
    * query: 1/1 Patients who initiated ART and ART Start Date as earliest from the following
-   * criterias is by End of the period (reporting endDate) To be used in situations where the {@link
-   * #getARTStartDate(int, int, int, int, int, int, int, int, int, int)} * parameters are the same
-   * as defined in the specification - most cases
+   * criterias is by End of the period (reporting endDate) To be used in situations where the
+   * {@link#getARTStartDate(int, int, int, int, int, int, int, int, int, int)} * parameters are the
+   * same as defined in the specification - most cases
    *
    * </blockquote>
    *
@@ -677,6 +678,8 @@ public class CommonQueries {
         hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
         hivMetadata.getArtDatePickupMasterCard().getConceptId(),
         hivMetadata.getARTProgram().getProgramId(),
+        hivMetadata.getArtPickupConcept().getConceptId(),
+        hivMetadata.getPatientFoundYesConcept().getConceptId(),
         startDate);
   }
 
@@ -704,6 +707,8 @@ public class CommonQueries {
       int masterCardDrugPickupEncounterType,
       int artDatePickupMasterCard,
       int aRTProgram,
+      int aRTPickupConcept,
+      int yesConcept,
       boolean startDate) {
 
     Map<String, Integer> valuesMap = new HashMap<>();
@@ -717,67 +722,81 @@ public class CommonQueries {
     valuesMap.put("52", masterCardDrugPickupEncounterType);
     valuesMap.put("23866", artDatePickupMasterCard);
     valuesMap.put("2", aRTProgram);
+    valuesMap.put("23865", aRTPickupConcept);
+    valuesMap.put("1065", yesConcept);
 
     String fromSQL =
-        "  FROM   "
-            + "       (SELECT p.patient_id, first_pickup FROM patient p   "
-            + "       JOIN   "
-            + "       patient_program pp ON pp.patient_id = p.patient_id   "
-            + "       JOIN   "
-            + "       (SELECT p.patient_id, MIN(e.encounter_datetime) first_pickup FROM patient  p   "
-            + "       JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "       JOIN obs o ON o.encounter_id = e.encounter_id   "
-            + "       WHERE e.encounter_type =  ${18}    "
-            + "       AND e.voided = 0 AND p.voided = 0   "
-            + "       AND o.voided = 0 AND e.location_id = :location   "
-            + "       GROUP BY p.patient_id) first_pickup   "
-            + "       ON first_pickup.patient_id = p.patient_id   "
-            + "       JOIN   "
-            + "       (SELECT p.patient_id FROM patient p   "
-            + "       JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "       JOIN obs o ON o.encounter_id = e.encounter_id   "
-            + "       WHERE e.encounter_type IN ( ${6} , ${9} , ${18} )   "
-            + "       AND o.concept_id =  ${1255}  AND o.value_coded = ${1256}    "
-            + "       AND e.voided = 0 AND p.voided = 0   "
-            + "       AND o.voided = 0 AND e.location_id = :location    "
-            + "       AND e.encounter_datetime <= :startDate) arv_plan    "
-            + "       ON arv_plan.patient_id = p.patient_id   "
-            + "       GROUP BY p.patient_id   "
-            + "       UNION   "
-            + "       SELECT p.patient_id, MIN(o.obs_datetime) AS first_pickup FROM patient p   "
-            + "       JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "       JOIN obs o ON o.encounter_id = e.encounter_id   "
-            + "       WHERE e.encounter_type IN ( ${6} , ${9} , ${18} , ${53} )   "
-            + "       AND o.concept_id =  ${1190}     "
-            + "       AND e.voided = 0 AND p.voided = 0   "
-            + "       AND o.voided = 0 AND e.location_id = :location    "
-            + "       AND o.obs_datetime <= :startDate   "
-            + "       GROUP BY p.patient_id   "
-            + "       UNION   "
-            + "       SELECT p.patient_id, MIN(o.value_datetime) first_pickup FROM patient p    "
-            + "           JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "           JOIN obs o ON o.encounter_id = e.encounter_id   "
-            + "           JOIN obs oo ON oo.encounter_id = e.encounter_id   "
-            + "           WHERE e.encounter_type =  ${52}  AND e.location_id = :location   "
-            + "           AND e.voided = 0 AND p.voided = 0   "
-            + "           AND o.concept_id =   ${23866}  AND o.voided =0   "
-            + "           AND o.value_datetime <= :endDate   "
-            + "           GROUP BY p.patient_id   "
-            + "       UNION   "
-            + "       SELECT p.patient_id, pp.date_enrolled AS first_pickup FROM patient p   "
-            + "       JOIN   "
-            + "       patient_program pp ON pp.patient_id = p.patient_id   "
-            + "       WHERE pp.program_id =  ${2}    "
-            + "       AND pp.date_enrolled <= :endDate   "
-            + "       AND p.voided = 0   "
-            + "       GROUP BY p.patient_id) union_tbl "
-            + "       GROUP BY union_tbl.patient_id ";
+        " FROM ( "
+            + " SELECT p.patient_id, MIN(e.encounter_datetime) first_pickup FROM patient p "
+            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + " WHERE e.encounter_type = ${18} "
+            + " AND e.encounter_datetime <= :endDate "
+            + " AND e.voided = 0 "
+            + " AND p.voided = 0 "
+            + " AND e.location_id = :location "
+            + " GROUP BY p.patient_id "
+            + "  "
+            + " UNION "
+            + "  "
+            + " SELECT p.patient_id, Min(e.encounter_datetime) first_pickup  "
+            + "                                 FROM patient p  "
+            + "                           INNER JOIN encounter e  "
+            + "                               ON p.patient_id = e.patient_id  "
+            + "                           INNER JOIN obs o  "
+            + "                               ON e.encounter_id = o.encounter_id  "
+            + "                       WHERE  p.voided = 0  "
+            + "                           AND e.voided = 0  "
+            + "                           AND o.voided = 0  "
+            + "                           AND e.encounter_type IN (${6}, ${9}, ${18})  "
+            + "                           AND o.concept_id = ${1255}  "
+            + "                           AND o.value_coded= ${1256}  "
+            + "                           AND e.encounter_datetime <= :endDate  "
+            + "                           AND e.location_id = :location  "
+            + "                       GROUP  BY p.patient_id  "
+            + " UNION "
+            + " SELECT p.patient_id,  MIN(o.value_datetime) first_pickup FROM patient p "
+            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + " INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + " WHERE e.encounter_type IN(${6},${9},${18},${53}) "
+            + " AND o.concept_id = ${1190} "
+            + " AND e.location_id = :location "
+            + " AND o.value_datetime <= :endDate "
+            + " AND e.voided = 0 "
+            + " AND p.voided = 0 "
+            + " GROUP BY p.patient_id "
+            + " UNION "
+            + " SELECT p.patient_id, ps.start_date AS first_pickup "
+            + "     FROM   patient p   "
+            + "           INNER JOIN patient_program pg  "
+            + "                ON p.patient_id = pg.patient_id  "
+            + "        INNER JOIN patient_state ps  "
+            + "                   ON pg.patient_program_id = ps.patient_program_id  "
+            + "     WHERE  pg.location_id = :location AND pg.voided = 0"
+            + "    AND pg.program_id = ${2} and ps.start_date <= :endDate "
+            + "     "
+            + "    UNION "
+            + "     "
+            + " SELECT p.patient_id,  MIN(o.value_datetime) AS first_pickup FROM patient p "
+            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + " INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + " INNER JOIN obs oyes ON oyes.encounter_id = e.encounter_id  "
+            + "   AND o.person_id = oyes.person_id "
+            + "   WHERE e.encounter_type = ${52} "
+            + "   AND o.concept_id = ${23866} "
+            + "   AND o.value_datetime <= :endDate "
+            + "   AND o.voided = 0 "
+            + "                 AND oyes.concept_id = ${23865} "
+            + "                 AND oyes.value_coded = ${1065} "
+            + "                 AND oyes.voided = 0 "
+            + "   AND e.location_id = :location                 "
+            + "   AND e.voided = 0 "
+            + "   AND p.voided = 0 "
+            + " GROUP BY p.patient_id ) art group by art.patient_id    ";
 
     String sql =
         startDate
-            ? "SELECT union_tbl.patient_id , MIN(union_tbl.first_pickup) first_pickup"
-                .concat(fromSQL)
-            : "SELECT union_tbl.patient_id".concat(fromSQL);
+            ? "SELECT art.patient_id , MIN(art.first_pickup) first_pickup ".concat(fromSQL)
+            : "SELECT art.patient_id ".concat(fromSQL);
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
