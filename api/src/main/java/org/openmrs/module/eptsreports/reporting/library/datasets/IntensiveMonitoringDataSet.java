@@ -98,6 +98,11 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.ageBasedOnArtStartDateMOH(),
             "onOrAfter=${revisionEndDate-3m+1d},onOrBefore=${revisionEndDate-2m},location=${location}"));
+    dataSetDefinition.addDimension(
+        "ageBasedOnArt73",
+        EptsReportUtils.map(
+            eptsCommonDimension.ageBasedOnArtStartDateMOH(),
+            "onOrAfter=${revisionEndDate-2m+1d},onOrBefore=${revisionEndDate-1m},location=${location}"));
     /**
      * *********************************** CATEGORY 7 ********************* //*********************
      * Denominator CAT7 **************
@@ -133,7 +138,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 intensiveMonitoringCohortQueries.getCat7DenMI2021Part135Definition(3),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
-        "ageBasedOnArt135=childrenArt");
+        "ageBasedOnArt73=1-14");
     // 7.4
     dataSetDefinition.addColumn(
         "MI7DEN4",
@@ -195,7 +200,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 intensiveMonitoringCohortQueries.getCat7NumMI2021Part135Definition(3),
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
-        "ageBasedOnArt135=childrenArt");
+        "ageBasedOnArt73=1-14");
     // 7.4
     dataSetDefinition.addColumn(
         "MI7NUM4",
