@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -13,6 +10,10 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class FaltososLevantamentoARVCohortQueries {
@@ -121,7 +122,7 @@ public class FaltososLevantamentoARVCohortQueries {
     CohortDefinition chPregnant = getPatientsMarkedAsPregnant();
     CohortDefinition chAandNotB = getDenominator();
 
-    cd.addSearch("D", EptsReportUtils.map(chPregnant, "location=${location}"));
+    cd.addSearch("D", EptsReportUtils.map(chPregnant, "location=${location},endDate=${endDate}"));
 
     cd.addSearch(
         "AandNotB",
@@ -141,7 +142,8 @@ public class FaltososLevantamentoARVCohortQueries {
     CohortDefinition chBreastfeeding = getPatientsMarkedAsBreastfeeding();
     CohortDefinition chAandNotB = getDenominator();
 
-    cd.addSearch("E", EptsReportUtils.map(chBreastfeeding, "location=${location}"));
+    cd.addSearch(
+        "E", EptsReportUtils.map(chBreastfeeding, "location=${location},endDate=${endDate}"));
 
     cd.addSearch(
         "AandNotB",
@@ -161,7 +163,7 @@ public class FaltososLevantamentoARVCohortQueries {
     CohortDefinition chVLResult = getPatientsWithMostRecentVLResult();
     CohortDefinition chAandNotB = getDenominator();
 
-    cd.addSearch("F", EptsReportUtils.map(chVLResult, "location=${location}"));
+    cd.addSearch("F", EptsReportUtils.map(chVLResult, "location=${location},endDate=${endDate}"));
 
     cd.addSearch(
         "AandNotB",
@@ -181,7 +183,7 @@ public class FaltososLevantamentoARVCohortQueries {
     CohortDefinition chAPSS = getPatientsWithLeastOneAPSSConsultation();
     CohortDefinition chAandNotB = getDenominator();
 
-    cd.addSearch("G", EptsReportUtils.map(chAPSS, "location=${location}"));
+    cd.addSearch("G", EptsReportUtils.map(chAPSS, "location=${location},endDate=${endDate}"));
 
     cd.addSearch(
         "AandNotB",
@@ -201,7 +203,7 @@ public class FaltososLevantamentoARVCohortQueries {
     CohortDefinition chPregnant = getPatientsMarkedAsPregnant();
     CohortDefinition chNumerator = getNumerator();
 
-    cd.addSearch("D", EptsReportUtils.map(chPregnant, "location=${location}"));
+    cd.addSearch("D", EptsReportUtils.map(chPregnant, "location=${location},endDate=${endDate}"));
 
     cd.addSearch(
         "C",
@@ -221,7 +223,8 @@ public class FaltososLevantamentoARVCohortQueries {
     CohortDefinition chBreastfeeding = getPatientsMarkedAsBreastfeeding();
     CohortDefinition chNumetator = getNumerator();
 
-    cd.addSearch("E", EptsReportUtils.map(chBreastfeeding, "location=${location}"));
+    cd.addSearch(
+        "E", EptsReportUtils.map(chBreastfeeding, "location=${location},endDate=${endDate}"));
 
     cd.addSearch(
         "C",
@@ -241,7 +244,7 @@ public class FaltososLevantamentoARVCohortQueries {
     CohortDefinition chVLResult = getPatientsWithMostRecentVLResult();
     CohortDefinition chNumerator = getNumerator();
 
-    cd.addSearch("F", EptsReportUtils.map(chVLResult, "location=${location}"));
+    cd.addSearch("F", EptsReportUtils.map(chVLResult, "location=${location},endDate=${endDate}"));
 
     cd.addSearch(
         "C",
@@ -261,7 +264,7 @@ public class FaltososLevantamentoARVCohortQueries {
     CohortDefinition chAPSS = getPatientsWithLeastOneAPSSConsultation();
     CohortDefinition chNumetator = getNumerator();
 
-    cd.addSearch("G", EptsReportUtils.map(chAPSS, "location=${location}"));
+    cd.addSearch("G", EptsReportUtils.map(chAPSS, "location=${location},endDate=${endDate}"));
 
     cd.addSearch(
         "C",
@@ -788,7 +791,7 @@ public class FaltososLevantamentoARVCohortQueries {
    *   <li>Select all female patients (sex=female) and filter those with the most recent record of
    *       pregnant (concept id 1982) value coded Yes (concept id 1065) on Ficha Clinica (encounter
    *       type 6) and verify if it falls within the last 9 months (the max (encounter_datetime) is
-   *       >= report generation date minus 9 months and <=report generation date).
+   *       >= report end date minus 9 months and <=report end date).
    *   <li>Note: a) If the patient has both states (pregnant and breastfeeding) the most recent one
    *       should be considered.
    *   <li>b) For patients who have both state (pregnant and breastfeeding) marked on the same day,
@@ -819,7 +822,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "               INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "               INNER JOIN person ps ON ps.person_id = p.patient_id "
             + "        WHERE  e.encounter_type = ${6} "
-            + "               AND e.encounter_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL -9 month) AND CURDATE() "
+            + "               AND e.encounter_datetime BETWEEN DATE_ADD(:endDate, INTERVAL -9 month) AND :endDate "
             + "               AND e.location_id = :location "
             + "               AND e.voided = 0 "
             + "               AND o.concept_id = ${1982} "
@@ -834,7 +837,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                         INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "                         INNER JOIN person ps ON ps.person_id = p.patient_id "
             + "                  WHERE  e.encounter_type = ${6} "
-            + "                         AND e.encounter_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL -18 MONTH) AND CURDATE() "
+            + "                         AND e.encounter_datetime BETWEEN DATE_ADD(:endDate, INTERVAL -18 MONTH) AND :endDate "
             + "                         AND e.location_id = :location "
             + "                         AND e.voided = 0 "
             + "                         AND o.concept_id = ${6332} "
@@ -862,8 +865,7 @@ public class FaltososLevantamentoARVCohortQueries {
    *   <li>Select all female patients (sex=female) and filter those with the most recent record of
    *       breastfeeding (concept id 6332) value coded Yes (concept id 1065) on Ficha Clinica
    *       (encounter type 6) and verify if it falls within the the last 18 months (the max
-   *       (encounter_datetime) is >= report generation date minus 18 months and <=report generation
-   *       date)
+   *       (encounter_datetime) is >= report endDate date minus 18 months and <=report endDate date)
    *   <li>Note: a) If the patient has both states (pregnant and breastfeeding) the most recent one
    *       should be considered.
    *   <li>b) For patients who have both state (pregnant and breastfeeding) marked on the same day,
@@ -893,7 +895,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "              INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "              INNER JOIN person ps ON ps.person_id = p.patient_id "
             + "       WHERE  e.encounter_type = ${6} "
-            + "              AND e.encounter_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL -18 MONTH) AND CURDATE() "
+            + "              AND e.encounter_datetime BETWEEN DATE_ADD(:endDate, INTERVAL -18 MONTH) AND :endDate "
             + "              AND e.location_id = :location "
             + "              AND e.voided = 0 "
             + "              AND o.concept_id = ${6332} "
@@ -908,7 +910,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                        INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "                        INNER JOIN person ps ON ps.person_id = p.patient_id "
             + "                 WHERE  e.encounter_type = ${6} "
-            + "                        AND e.encounter_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL -9 month) AND CURDATE() "
+            + "                        AND e.encounter_datetime BETWEEN DATE_ADD(:endDate, INTERVAL -9 month) AND :endDate "
             + "                        AND e.location_id = :location "
             + "                        AND e.voided = 0 "
             + "                        AND o.concept_id = ${1982} "
@@ -936,7 +938,7 @@ public class FaltososLevantamentoARVCohortQueries {
    *
    * <ul>
    *   <li>Select all patients with at least one APSS/PP consultation (encounter type 35) between
-   *       the report generation date minus 3 months and report generation date
+   *       the report end date minus 3 months and report endDate date
    * </ul>
    *
    * </blockquote>
@@ -957,7 +959,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "FROM   patient p "
             + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
             + "WHERE  e.encounter_type = 35 "
-            + "       AND e.encounter_datetime BETWEEN Date_add(Curdate(), INTERVAL -3 month) AND  Curdate() "
+            + "       AND e.encounter_datetime BETWEEN Date_add(:endDate, INTERVAL -3 month) AND  :endDate "
             + "       AND e.location_id = :location "
             + "AND e.voided = 0  "
             + "       AND p.voided = 0 "
@@ -978,9 +980,9 @@ public class FaltososLevantamentoARVCohortQueries {
    *   <li>Select all patients with the most recent VL Result (concept Id 856 or concept id 1305)
    *       documented in the Laboratory Form (encounter type 13, encounter_datetime) or Ficha
    *       Clinica (encounter type 6, encounter_datetime) or Ficha Resumo (encounter type 53,
-   *       obs_datetime ) or FSR form (encounter type 51, encounter_datetime) between the report
-   *       generation date minus 12 months and report generation date and the Result is >= 1000
-   *       copias/ml (concept 856 value_numeric >= 1000)
+   *       obs_datetime ) or FSR form (encounter type 51, encounter_datetime) between the report end
+   *       date minus 12 months and report end date and the Result is >= 1000 copias/ml (concept 856
+   *       value_numeric >= 1000)
    * </ul>
    *
    * </blockquote>
@@ -1013,7 +1015,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                                                  INNER JOIN encounter e ON e.patient_id = p.patient_id "
             + "                                                  INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "                                           WHERE  e.encounter_type IN ( ${6}, ${13}, ${51} ) "
-            + "                                                  AND e.encounter_datetime BETWEEN DATE_ADD(CURDATE(),INTERVAL - 12 MONTH ) AND CURDATE() "
+            + "                                                  AND e.encounter_datetime BETWEEN DATE_ADD(:endDate,INTERVAL - 12 MONTH ) AND :endDate "
             + "                                                  AND e.location_id = :location "
             + "                                                  AND e.voided = 0 "
             + "                                                  AND o.concept_id IN ( ${856}, ${1305} ) "
@@ -1029,7 +1031,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                                                  AND e.location_id = :location "
             + "                                                  AND e.voided = 0 "
             + "                                                  AND o.concept_id IN ( ${856}, ${1305} ) "
-            + "                                                  AND o.obs_datetime BETWEEN DATE_ADD(CURDATE(), INTERVAL - 12 MONTH) AND CURDATE() "
+            + "                                                  AND o.obs_datetime BETWEEN DATE_ADD(:endDate, INTERVAL - 12 MONTH) AND :endDate "
             + "                                                  AND o.voided = 0 "
             + "                                                  AND p.voided = 0 "
             + "                                           GROUP  BY p.patient_id) most_recent "
