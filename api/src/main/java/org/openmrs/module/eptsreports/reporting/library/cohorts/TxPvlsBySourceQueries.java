@@ -214,25 +214,22 @@ public class TxPvlsBySourceQueries {
    * @param adultoEncounter
    * @param paedEncounter
    * @param resumoEncounter
-   * @param viralLoadRequestReasonConceptId
-   * @param routineViralLoadConceptId
-   * @param unknownConceptId
+   * @param vlConceptQuestion
+   * @param vlQualitativeConceptQuestion
    * @return String
    */
   public static String getPatientsHavingRoutineViralLoadTestsUsingClinicalForms(
       int adultoEncounter,
       int paedEncounter,
       int resumoEncounter,
-      int viralLoadRequestReasonConceptId,
-      int routineViralLoadConceptId,
-      int unknownConceptId) {
+      int vlConceptQuestion,
+      int vlQualitativeConceptQuestion) {
     Map<String, String> map = new HashMap<>();
     map.put("6", String.valueOf(adultoEncounter));
     map.put("9", String.valueOf(paedEncounter));
     map.put("53", String.valueOf(resumoEncounter));
-    map.put("23818", String.valueOf(viralLoadRequestReasonConceptId));
-    map.put("23817", String.valueOf(routineViralLoadConceptId));
-    map.put("1067", String.valueOf(unknownConceptId));
+    map.put("856", String.valueOf(vlConceptQuestion));
+    map.put("1305", String.valueOf(vlQualitativeConceptQuestion));
     String query =
         " SELECT final.patient_id FROM( "
             + " SELECT p.patient_id, MAX(ee.encounter_datetime) AS viral_load_date "
@@ -243,7 +240,7 @@ public class TxPvlsBySourceQueries {
             + " ee.voided = 0 AND "
             + " ee.encounter_type IN( ${6}, ${9}, ${53}) AND "
             + " oo.voided = 0 AND "
-            + " oo.concept_id = ${23818} AND oo.value_coded IN(${23817}, ${1067}) AND "
+            + " oo.concept_id IN( ${856}, ${1305}) AND (oo.value_coded IS NOT NULL OR oo.value_numeric IS NOT NULL) AND "
             + " ee.location_id = :location "
             + " AND ee.encounter_datetime <= :endDate "
             + " GROUP BY p.patient_id ) final";

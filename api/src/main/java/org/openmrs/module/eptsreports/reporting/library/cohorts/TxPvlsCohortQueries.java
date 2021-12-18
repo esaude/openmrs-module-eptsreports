@@ -11,7 +11,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -49,13 +52,15 @@ public class TxPvlsCohortQueries {
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsWhoAreMoreThan3MonthsOnArt() {
+  public CohortDefinition getPatientsWhoAreMoreThan3MonthsOnArt(
+      List<EncounterType> encounterTypeList) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
-            "On ART for at least 3 months",
+            "On ART for at least 3 months for pvls",
             Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0));
     cd.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addCalculationParameter("listOfEncounters", encounterTypeList);
     return cd;
   }
 
@@ -145,7 +150,13 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
-            getPatientsWhoAreMoreThan3MonthsOnArt(), "onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMasterCardEncounterType())),
+            "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("supp AND onArtLongEnough");
     return cd;
   }
@@ -174,7 +185,13 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
-            getPatientsWhoAreMoreThan3MonthsOnArt(), "onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMasterCardEncounterType())),
+            "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("results AND onArtLongEnough");
     return cd;
   }
@@ -203,7 +220,13 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
-            getPatientsWhoAreMoreThan3MonthsOnArt(), "onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMasterCardEncounterType())),
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("Routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(), mappings));
     cd.setCompositionString("(results AND onArtLongEnough) AND Routine");
     return cd;
@@ -233,7 +256,13 @@ public class TxPvlsCohortQueries {
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
-            getPatientsWhoAreMoreThan3MonthsOnArt(), "onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMasterCardEncounterType())),
+            "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("Target", EptsReportUtils.map(getPatientsWhoAreOnTarget(), mappings));
     cd.setCompositionString("(results AND onArtLongEnough) AND Target");
     return cd;

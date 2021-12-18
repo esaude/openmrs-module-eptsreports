@@ -11,9 +11,9 @@
  */
 package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -55,11 +55,8 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
 
     CalculationResultMap map = new CalculationResultMap();
     Location location = (Location) context.getFromCache("location");
+    List<EncounterType> encounterTypeList = (List<EncounterType>) params.get("listOfEncounters");
     Concept viralLoadConcept = hivMetadata.getHivViralLoadConcept();
-    EncounterType labEncounterType = hivMetadata.getMisauLaboratorioEncounterType();
-    EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
-    EncounterType childFollowup = hivMetadata.getPediatriaSeguimentoEncounterType();
-    EncounterType masterCard = hivMetadata.getMasterCardEncounterType();
     Concept qualitativeViralLoadResults = hivMetadata.getHivViralLoadQualitative();
 
     // get data inicio TARV
@@ -74,7 +71,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
-            Arrays.asList(labEncounterType, adultFollowup, childFollowup, masterCard),
+            encounterTypeList,
             viralLoadConcept,
             location,
             oneYearBefore,
@@ -83,7 +80,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
             context);
     CalculationResultMap qViralLoadResultsMap =
         ePTSCalculationService.lastObs(
-            Arrays.asList(labEncounterType, adultFollowup, childFollowup, masterCard),
+            encounterTypeList,
             qualitativeViralLoadResults,
             location,
             oneYearBefore,

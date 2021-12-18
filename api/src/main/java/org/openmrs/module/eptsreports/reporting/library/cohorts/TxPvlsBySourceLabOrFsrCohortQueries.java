@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -99,7 +100,10 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
-            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(),
+            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("supp AND onArtLongEnough");
     return cd;
@@ -130,7 +134,10 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
-            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(),
+            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("results AND onArtLongEnough");
     return cd;
@@ -275,7 +282,10 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
-            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(),
+            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "RoutineByLab",

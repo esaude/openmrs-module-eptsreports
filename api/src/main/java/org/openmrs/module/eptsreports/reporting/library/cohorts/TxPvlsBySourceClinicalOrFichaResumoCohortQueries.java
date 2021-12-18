@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -101,7 +102,11 @@ public class TxPvlsBySourceClinicalOrFichaResumoCohortQueries {
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
-            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(),
+            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMasterCardEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("supp AND onArtLongEnough");
     return cd;
@@ -133,7 +138,11 @@ public class TxPvlsBySourceClinicalOrFichaResumoCohortQueries {
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
-            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(),
+            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMasterCardEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("results AND onArtLongEnough");
     return cd;
@@ -279,7 +288,11 @@ public class TxPvlsBySourceClinicalOrFichaResumoCohortQueries {
     cd.addSearch(
         "onArtLongEnough",
         EptsReportUtils.map(
-            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(),
+            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getAdultoSeguimentoEncounterType(),
+                    hivMetadata.getPediatriaSeguimentoEncounterType(),
+                    hivMetadata.getMasterCardEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("RoutineByClinical", EptsReportUtils.map(getRoutineByClinicalForms(), mappings));
     cd.setCompositionString("(results AND onArtLongEnough) AND RoutineByClinical");
@@ -296,9 +309,8 @@ public class TxPvlsBySourceClinicalOrFichaResumoCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getReasonForRequestingViralLoadConcept().getConceptId(),
-            hivMetadata.getRoutineForRequestingViralLoadConcept().getConceptId(),
-            hivMetadata.getUnkownConcept().getConceptId()));
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getHivViralLoadQualitative().getConceptId()));
     return cd;
   }
 
