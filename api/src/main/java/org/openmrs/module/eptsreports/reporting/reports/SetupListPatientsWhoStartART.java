@@ -49,12 +49,12 @@ public class SetupListPatientsWhoStartART extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return " LISTA DE PACIENTES NA COORTE DE TARV";
+    return "LISTA DE PACIENTES NA COORTE DE TARV";
   }
 
   @Override
   public String getDescription() {
-    return " LISTA DE PACIENTES NA COORTE DE TARV";
+    return "LISTA DE PACIENTES NA COORTE DE TARV";
   }
 
   @Override

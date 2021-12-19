@@ -105,10 +105,11 @@ public class SurveyDefaultDataSet extends BaseDataSet {
 
     ColumnParameters a6 = new ColumnParameters("0-14", "0-14 years male", "gender=M|age=15+", "06");
 
-    ColumnParameters a7 = new ColumnParameters("pregnant", "pregnant", "df=PREGNANT", "07");
+    ColumnParameters a7 =
+        new ColumnParameters("pregnant", "pregnant", "gender=F|df=PREGNANT", "07");
 
     ColumnParameters a8 =
-        new ColumnParameters("breastfeeding", "breastfeeding", "df=BREASTFEEDING", "08");
+        new ColumnParameters("breastfeeding", "breastfeeding", "gender=F|df=BREASTFEEDING", "08");
 
     ColumnParameters a9 = new ColumnParameters("cv", "cv", "df=CV", "09");
 
