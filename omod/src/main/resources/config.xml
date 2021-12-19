@@ -1757,7 +1757,6 @@
 		<description>Report to be Deleted:CDC RETENTION VISIT TOOLS - GRAVIDAS</description>
 	</globalProperty>
 	
-	
 	<globalProperty>
 		<property>eptsoldreports.143bc811-b3b2-403b-acbb-2e15226a58fb</property>
 		<defaultValue>143bc811-b3b2-403b-acbb-2e15226a58fb</defaultValue>
@@ -1770,12 +1769,25 @@
 		<description>Report to be Deleted:Early Retention Monitoring Report Data Set</description>
 	</globalProperty>
 	
-	
 	<globalProperty>
 		<property>eptsoldreports.381077e6-ceb8-4288-863e-818499515a30</property>
 		<defaultValue>381077e6-ceb8-4288-863e-818499515a30</defaultValue>
 		<description>Report to be Deleted:TX_CURR Report 2.4</description>
 	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.df31d4fd-0e02-4839-a3f0-93598f7d091f</property>
+		<defaultValue>df31d4fd-0e02-4839-a3f0-93598f7d091f</defaultValue>
+		<description>Report to be Deleted:COORTE TARV: PERIODO MANUAL- ReportDefinition</description>
+	</globalProperty>
+	
+	
+	<globalProperty>
+		<property>eptsoldreports.34ff65f8-4310-482f-84f4-91dd3eb0aed1</property>
+		<defaultValue>34ff65f8-4310-482f-84f4-91dd3eb0aed1</defaultValue>
+		<description>Report to be Deleted:COORTE TARV: PERIODO MANUAL- DataSetDefinition</description>
+	</globalProperty>
+	
 	
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 

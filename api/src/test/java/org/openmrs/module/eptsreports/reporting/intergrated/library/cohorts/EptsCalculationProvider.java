@@ -5,7 +5,7 @@ import java.util.Map;
 import org.openmrs.calculation.Calculation;
 import org.openmrs.calculation.CalculationProvider;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.rtt.DatimExtractCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.datimcode.DatimExtractCalculation;
 
 public class EptsCalculationProvider implements CalculationProvider {
 

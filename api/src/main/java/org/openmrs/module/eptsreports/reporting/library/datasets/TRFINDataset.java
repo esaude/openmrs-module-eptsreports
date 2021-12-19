@@ -27,7 +27,7 @@ import static org.openmrs.module.eptsreports.reporting.utils.AgeRange.UNDER_ONE;
 
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.calculation.rtt.DatimExtractCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.datimcode.DatimExtractCalculation;
 import org.openmrs.module.eptsreports.reporting.data.definition.CalculationDataDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TRFINCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;

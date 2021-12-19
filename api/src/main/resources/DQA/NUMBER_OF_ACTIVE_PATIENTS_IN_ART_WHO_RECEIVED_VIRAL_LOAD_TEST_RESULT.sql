@@ -5,7 +5,7 @@
         pid.identifier as NID,
         pe.gender SEXO,
         if(round(datediff(:startDate,pe.birthdate)/365) >= 15,'A','C') as AGE ,
-        coorte12meses_final.data_inicio DATA_INICIO_TARV,
+        DATE_FORMAT(coorte12meses_final.data_inicio, '%d-%m-%Y') DATA_INICIO_TARV,
         L.encounter_datetime DATA_CV,
         L.cv CV
 
