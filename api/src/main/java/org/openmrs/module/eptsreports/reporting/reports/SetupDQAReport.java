@@ -97,7 +97,11 @@ public class SetupDQAReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "DQA.xls", "DQA CARGA VIRAL", getExcelDesignUuid(), null);
+              reportDefinition,
+              "DQA_Carga_Viral_MISAU.xls",
+              "DQA CARGA VIRAL MISAU",
+              getExcelDesignUuid(),
+              null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       props.put("repeatingSections", "sheet:1,row:7,dataset:DQA");

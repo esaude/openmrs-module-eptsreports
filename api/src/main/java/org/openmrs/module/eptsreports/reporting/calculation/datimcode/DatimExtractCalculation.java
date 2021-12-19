@@ -1,4 +1,4 @@
-package org.openmrs.module.eptsreports.reporting.calculation.rtt;
+package org.openmrs.module.eptsreports.reporting.calculation.datimcode;
 
 import java.util.List;
 import java.util.Map;
@@ -33,7 +33,7 @@ public class DatimExtractCalculation extends BaseFghCalculation {
 
     String query =
         "select value_reference from location_attribute inner join location on location_attribute.location_id = location.location_id "
-            + " where location_attribute.attribute_type_id =2  and location.uuid = '%s' ";
+            + " where location_attribute.attribute_type_id =2  and location.uuid = '%s' and location_attribute.voided is false ";
 
     final SqlQueryBuilder queryBuilder =
         new SqlQueryBuilder(String.format(query, location.getUuid()), context.getParameterValues());
