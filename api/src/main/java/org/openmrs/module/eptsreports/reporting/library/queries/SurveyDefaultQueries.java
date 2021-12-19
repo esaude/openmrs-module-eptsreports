@@ -38,7 +38,7 @@ public class SurveyDefaultQueries {
     String query =
         "select DEN.patient_id from (  "
             + "select defaulters.patient_id,defaulters.data_levantamento,defaulters.data_proximo_levantamento from (  "
-            + "select defaulters.patient_id,defaulters.data_levantamento as data_levantamento, max(defaulters.data_proximo_levantamento) data_proximo_levantamento from (  "
+            + "select defaulters.patient_id,max(defaulters.data_levantamento) as data_levantamento, max(defaulters.data_proximo_levantamento) data_proximo_levantamento from (  "
             + "select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from (    "
             + "select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p   "
             + "inner join encounter e on p.patient_id=e.patient_id   "
@@ -217,43 +217,41 @@ public class SurveyDefaultQueries {
   public static String getPatientsWhoArePregnantOrBreastfeeding(TypePTV typePTV) {
 
     String query =
-        "select final.ID_G from ( select  "
-            + "f.ID_G,f.data_gravida, "
-            + "f.data_lactante, "
-            + "if(f.data_gravida is null and f.data_lactante is null, null, "
-            + "if(f.data_gravida is null,1, "
-            + "if(f.data_lactante is null,2, "
-            + "if(f.data_gravida>f.data_lactante,2,1)))) decisao from ( "
-            + "select f.ID_G, f.ID_L, f.data_gravida,f.data_lactante  from  ( "
-            + "select gravida.patient_id ID_G,lactante.patient_id ID_L,gravida.encounter_datetime data_gravida,lactante.encounter_datetime data_lactante from (  "
-            + "select p.patient_id, max(e.encounter_datetime) encounter_datetime,o.concept_id, 1 orderS  from patient p    "
-            + "inner join encounter e on p.patient_id = e.patient_id  "
-            + "inner join obs o on o.encounter_id = e.encounter_id     "
-            + "where  e.voided = 0 and p.voided = 0     "
-            + "and e.encounter_datetime between DATE_SUB(:startDate, INTERVAL 9 MONTH) and :endDate   "
-            + "and o.voided = 0  and o.concept_id = 1982 and o.value_coded = 1065 and e.encounter_type in(6,9) and e.location_id=:location   "
-            + "group by p.patient_id   "
-            + ")gravida  "
-            + "left join (   "
-            + "select p.patient_id, max(e.encounter_datetime) encounter_datetime, o.concept_id, 2 orderS from patient p    "
-            + "inner join encounter e on p.patient_id = e.patient_id     "
-            + "inner join obs o on o.encounter_id = e.encounter_id     "
-            + "where  e.voided = 0 and p.voided = 0     "
-            + "and e.encounter_datetime between DATE_SUB(:startDate, INTERVAL 18 MONTH) and :endDate   "
-            + "and o.voided = 0  and o.concept_id = 6332 and o.value_coded = 1065 and e.encounter_type in(6,9)     "
-            + "and e.location_id=:location   "
-            + "group by p.patient_id    "
-            + ")lactante on gravida.patient_id=lactante.patient_id  "
-            + ")f "
-            + ")f "
-            + ") final ";
+        "select f.patient_id from ( "
+            + "select "
+            + "p.person_id as  patient_id,	 "
+            + "lactante.data_lactante, "
+            + "gravida.data_gravida, "
+            + "if(max(lactante.data_lactante) is null,1, "
+            + "if(max(gravida.data_gravida) is null,2, "
+            + "if(max(gravida.data_gravida)>=max(lactante.data_lactante),1,2))) decisao from person p "
+            + "left join ( "
+            + "select p.patient_id, e.encounter_datetime data_lactante   from 	patient p "
+            + "inner join encounter e on p.patient_id = e.patient_id "
+            + "inner join obs o on o.encounter_id = e.encounter_id "
+            + "where	e.voided = 0 and p.voided = 0 "
+            + "and e.encounter_datetime between DATE_SUB(:endDate  , INTERVAL 18 MONTH) and :endDate "
+            + "and o.voided = 0  and o.concept_id = 6332 and o.value_coded = 1065 and e.encounter_type in(6,9) and e.location_id=:location "
+            + ") lactante on p.person_id=lactante.patient_id "
+            + "left join "
+            + "( "
+            + "select p.patient_id, e.encounter_datetime data_gravida   from 	patient p "
+            + "inner join encounter e on p.patient_id = e.patient_id "
+            + "inner join obs o on o.encounter_id = e.encounter_id "
+            + "where 	e.voided = 0 and p.voided = 0 and  "
+            + "e.encounter_datetime between DATE_SUB(:endDate, INTERVAL 9 MONTH) and :endDateand  "
+            + "o.voided = 0  and o.concept_id = 1982 and o.value_coded = 1065 and e.encounter_type in(6,9) and e.location_id=:location "
+            + ")gravida on gravida.patient_id=p.person_id "
+            + "where (lactante.data_lactante is not null or gravida.data_gravida is not null) and p.voided=0 and p.gender='F' "
+            + "group by p.person_id "
+            + ")f ";
     switch (typePTV) {
       case PREGNANT:
-        query = query + "where final.decisao = 2 ";
+        query = query + "where f.decisao = 1 ";
         break;
 
       case BREASTFEEDING:
-        query = query + "where final.decisao = 1 ";
+        query = query + "where f.decisao = 2 ";
         break;
     }
 
@@ -340,10 +338,13 @@ public class SurveyDefaultQueries {
         "select p.patient_id from patient p "
             + "inner join encounter e on p.patient_id = e.patient_id  "
             + "inner join obs o on o.encounter_id = e.encounter_id  "
-            + "where  e.voided = 0 and p.voided = 0  "
+            + "where  "
+            + "e.voided = 0 "
+            + "and p.voided = 0  "
             + "and e.encounter_datetime between DATE_SUB(:endDate, INTERVAL 3 MONTH) and :endDate "
-            + "and o.voided = 0  and e.encounter_type in(34)  and e.location_id=:location "
-            + "group by p.patient_id,e.encounter_datetime ";
+            + "and o.voided = 0  "
+            + "and e.encounter_type in(35)  "
+            + "and e.location_id=:location ";
 
     return query;
   }
