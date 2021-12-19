@@ -298,7 +298,7 @@
                                select p.patient_id,max(e.encounter_datetime) data_consulta from patient p 
                                inner join encounter e on e.patient_id=p.patient_id
                                inner join obs o on o.encounter_id=e.encounter_id
-                               where e.encounter_type in(53) and o.concept_id=42 and o.value_coded=1065 and p.voided=0 and e.voided=0 and o.voided=0 
+                               where e.encounter_type in(53) and o.concept_id=1406 and o.value_coded=42 and p.voided=0 and e.voided=0 and o.voided=0 
                                and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE()
                                group by p.patient_id
 
@@ -334,8 +334,8 @@
 
 
                         left join
-                        (
-                           select fila.patient_id, fila.data_levantamento,obs_fila.value_datetime data_proximo_levantamento from (  
+                        (  select fila.patient_id,fila.data_levantamento,fila.data_proximo_levantamento from (
+                           select fila.patient_id, fila.data_levantamento as data_levantamento ,max(obs_fila.value_datetime) data_proximo_levantamento from (  
                            select p.patient_id,max(e.encounter_datetime) as data_levantamento from patient p 
                            inner join encounter e on p.patient_id=e.patient_id 
                            where encounter_type=18 and e.encounter_datetime <=:evaluationDate and e.location_id=:location and e.voided=0 and p.voided=0 
@@ -343,11 +343,13 @@
                            )fila 
                            inner join obs obs_fila on obs_fila.person_id=fila.patient_id 
                            where obs_fila.voided=0 and obs_fila.concept_id=5096 and fila.data_levantamento=obs_fila.obs_datetime
+                           group by fila.patient_id
 
-                        )fila on fila.patient_id=inicio_real.patient_id
+                        )fila 
+                        group by fila.patient_id
+                        ) fila on fila.patient_id=inicio_real.patient_id
 
-
-                        left join
+                        left join 
 
                         (
                         select p.patient_id,max(o.value_datetime) data_levantamento_recepcao, date_add(max(o.value_datetime), INTERVAL 30 day) data_proximo_levantamento_recepcao 
