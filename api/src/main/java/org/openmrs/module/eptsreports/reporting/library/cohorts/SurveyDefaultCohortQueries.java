@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.calculation.datimcode.DatimExtractCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.defaulters.SurveyDefaultersCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.SurveyDefaultQueries;
@@ -123,6 +124,16 @@ public class SurveyDefaultCohortQueries {
             "CV", Context.getRegisteredComponents(SurveyDefaultersCalculation.class).get(0));
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "end Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    return cd;
+  }
+
+  public CohortDefinition getDatinCode() {
+
+    BaseFghCalculationCohortDefinition cd =
+        new BaseFghCalculationCohortDefinition(
+            "DatinCode", Context.getRegisteredComponents(DatimExtractCalculation.class).get(0));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     return cd;

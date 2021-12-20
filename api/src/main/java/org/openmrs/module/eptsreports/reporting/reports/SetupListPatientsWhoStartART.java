@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.ListOfPatientWhoStartArtDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.txnew.SummaryPatientWhoStartArtDataSet;
@@ -36,6 +37,8 @@ public class SetupListPatientsWhoStartART extends EptsDataExportManager {
 
   @Autowired private ListOfPatientWhoStartArtDataSet txNew;
   @Autowired SummaryPatientWhoStartArtDataSet summaryPatientWhoStartArtDataSet;
+  @Autowired private DatinCodeDataSet DatinCodeDataSet;
+
 
   @Override
   public String getExcelDesignUuid() {
@@ -70,6 +73,11 @@ public class SetupListPatientsWhoStartART extends EptsDataExportManager {
 
     rd.addDataSetDefinition(
         "RT", Mapped.mapStraightThrough(summaryPatientWhoStartArtDataSet.getTotaStartARTDataset()));
+    
+    rd.addDataSetDefinition(
+            "D",
+            Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
+
 
     return rd;
   }

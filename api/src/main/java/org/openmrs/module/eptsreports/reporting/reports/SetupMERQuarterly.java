@@ -56,6 +56,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
   @Autowired private PrepCtDataset prepCtDataset;
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
+  @Autowired private DatinCodeDataSet DatinCodeDataSet;
 
   @Override
   public String getVersion() {
@@ -117,6 +118,9 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
     reportDefinition.addDataSetDefinition(
         "PrEP_CT", Mapped.mapStraightThrough(this.prepCtDataset.constructPrepCtDataset()));
+    reportDefinition.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(

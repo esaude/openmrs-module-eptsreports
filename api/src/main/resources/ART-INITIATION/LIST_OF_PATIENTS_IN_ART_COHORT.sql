@@ -319,16 +319,6 @@
                                where e.encounter_type in(6) and o.concept_id in (23761) and o.value_coded in(1065) and p.voided=0 and e.voided=0 and o.voided=0 
                                and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE()
                                group by p.patient_id
-
-                               union
-
-                               select p.patient_id,max(e.encounter_datetime) data_consulta  from patient p 
-                               inner join encounter e on e.patient_id=p.patient_id
-                               inner join obs o on o.encounter_id=e.encounter_id
-                               where e.encounter_type in(6) and o.concept_id in (23722) and o.value_coded in(23723,23774,23951,307,12) and p.voided=0 and e.voided=0 and o.voided=0 
-                               and e.encounter_datetime between date_sub(CURDATE(), INTERVAL 7 MONTH) and CURDATE()
-                               group by p.patient_id
-
                                )tb
                         ) tbFinal on tbFinal.patient_id=inicio_real.patient_id
 

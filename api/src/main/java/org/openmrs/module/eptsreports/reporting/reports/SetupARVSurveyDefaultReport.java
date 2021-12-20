@@ -1,17 +1,19 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.SurveyDefaultDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TRFINDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +24,7 @@ public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
 
   @Autowired private SurveyDefaultDataSet SurveyDefaultDataSet;
   @Autowired private GenericCohortQueries genericCohortQueries;
-  @Autowired private TRFINDataset txTfrInDataset;
+  @Autowired private DatinCodeDataSet DatinCodeDataSet;
 
   @Override
   public String getExcelDesignUuid() {
@@ -55,11 +57,14 @@ public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.setParameters(SurveyDefaultDataSet.getParameters());
+    rd.setParameters(this.getDataParameters());
     rd.addDataSetDefinition(
         "FL", Mapped.mapStraightThrough(SurveyDefaultDataSet.constructDatset()));
 
-    rd.addDataSetDefinition("D", Mapped.mapStraightThrough(this.txTfrInDataset.getDatimCode()));
+    rd.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(
+            this.DatinCodeDataSet.constructDataset(this.getDataParameters())));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -88,5 +93,13 @@ public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
     }
 
     return Arrays.asList(reportDesign);
+  }
+
+  private List<Parameter> getDataParameters() {
+    List<Parameter> parameters = new ArrayList<Parameter>();
+    parameters.add(ReportingConstants.START_DATE_PARAMETER);
+    parameters.add(ReportingConstants.END_DATE_PARAMETER);
+    parameters.add(ReportingConstants.LOCATION_PARAMETER);
+    return parameters;
   }
 }
