@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaSCRNDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaTXDataSet;
@@ -75,8 +74,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     rd.addDataSetDefinition("CX", Mapped.mapStraightThrough(cxCaSCRNDataSet.constructDatset()));
     rd.addDataSetDefinition("CXT", Mapped.mapStraightThrough(CxCaTXDataSet.constructDatset()));
     rd.addDataSetDefinition(
-            "D",
-            Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
+        "D",
+        Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(

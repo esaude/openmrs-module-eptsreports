@@ -146,7 +146,6 @@ public class TRFINDataset extends BaseDataSet {
     return dataSetDefinition;
   }
 
-
   private void addDimensions(
       final CohortIndicatorDataSetDefinition cohortIndicatorDataSetDefinition,
       final String mappings,

@@ -17,7 +17,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
-
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsByLabAndFSRSourceDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsByMasterCardSourceDataset;
@@ -88,8 +87,8 @@ public class SetupPVLSBySource extends EptsDataExportManager {
         Mapped.mapStraightThrough(this.txPvlsByMasterCardSourceDataset.constructTxPvlsDatset()));
 
     reportDefinition.addDataSetDefinition(
-            "D",
-            Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
+        "D",
+        Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
