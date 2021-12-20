@@ -64,4 +64,58 @@ public class TxMLDimensions {
 
     return dimension;
   }
+
+  public CohortDefinitionDimension findPatientsIITLess3Months() {
+    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+
+    dimension.setName("IIT Less Than 3 Months Dimension");
+    dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dimension.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    dimension.addCohortDefinition(
+        "iitless3months",
+        EptsReportUtils.map(
+            this.txMlCohortQueries.getPatientsWhoAreIITLessThan3Months(), mappings));
+
+    return dimension;
+  }
+
+  public CohortDefinitionDimension findPatientsIITBetween3And5Months() {
+    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+
+    dimension.setName("IIT Between 3 and 5 Months Dimension");
+    dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dimension.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    dimension.addCohortDefinition(
+        "iitbetween3and5months",
+        EptsReportUtils.map(
+            this.txMlCohortQueries.getPatientsWhoAreIITBetween3And5Months(), mappings));
+
+    return dimension;
+  }
+
+  public CohortDefinitionDimension findPatientsIITGreaterOrEqual6Months() {
+    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+
+    dimension.setName("IIT Greater or Equal 6 Months Dimension");
+    dimension.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dimension.addParameter(new Parameter("location", "location", Location.class));
+
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    dimension.addCohortDefinition(
+        "iitgreaterorequal6months",
+        EptsReportUtils.map(
+            this.txMlCohortQueries.getPatientsWhoAreIITGreaterOrEqual6Months(), mappings));
+
+    return dimension;
+  }
 }

@@ -26,9 +26,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends TxMLPatientCalculation {
+public class TxMLPatientsWhoAreIITGreaterOrEquel6MonthsCalculation extends TxMLPatientCalculation {
 
-  private static int GREATHER_THAN_3_MONTHS = 90;
+  private static int GREATHER_THAN_6_MONTHS = 180;
   private static int DAYS_TO_LTFU = 28;
 
   @Autowired private QueryDisaggregationProcessor disaggregationProcessor;
@@ -60,12 +60,19 @@ public class TxMLPatientsWhoAreLTFUGreatherThan3MonthsCalculation extends TxMLPa
               nextSeguimentoResult,
               TxMLPatientsWhoMissedNextApointmentCalculation.getLastRecepcaoLevantamentoPlus30(
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
-      if (maxNextDate != null
-          && EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) >= GREATHER_THAN_3_MONTHS) {
+
+      if (maxNextDate != null) {
+
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
+
+        // verificar se o paciente eh TX_ML
         if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
             && nextDatePlus28.compareTo(endDate) < 0) {
-          resultMap.put(patientId, new SimpleResult(maxNextDate, this));
+
+          // verificar se pertence a desagregacao
+          if (EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) >= GREATHER_THAN_6_MONTHS) {
+            resultMap.put(patientId, new SimpleResult(maxNextDate, this));
+          }
         }
       } else {
         super.checkConsultationsOrFilaWithoutNextConsultationDate(

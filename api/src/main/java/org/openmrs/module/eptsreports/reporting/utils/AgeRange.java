@@ -31,6 +31,14 @@ public enum AgeRange {
 
   FORTY_FIVE_TO_FORTY_NINE("forty5To49", 45, 49),
 
+  FIFTY_TO_FIFTY_FOUR("fiftyT054", 50, 54),
+
+  FIFTY_FIVE_TO_FIFTY_NINE("fiftyfiveT059", 55, 59),
+
+  SIXTY_TO_SIXTY_FOUR("sixtyT064", 60, 64),
+
+  ABOVE_SIXTY_FIVE("above65", 0, 65),
+
   ABOVE_FIFTY("above50", 0, 50),
 
   CHILDREN("bellow4teen", 0, 14),

@@ -59,7 +59,7 @@ public class SetupDataQualityDuplicateReport extends EptsDataExportManager {
 
   @Override
   public String getDescription() {
-    return "Este relatório fornece uma lista de registros de pacientes que não atendem a certas verificações de edição e permite ao usuário revisar as informações para que as informações do paciente possam ser corrigidas";
+    return "Este relatório gera uma listagem de pacientes que atendem a determinadas verificações/validações dos dados existentes no sistema, e permite que os utilizadores confirmem as informações de modo a corrigir os registos duplicados no sistema OpenMRS EPTS";
   }
 
   @Override

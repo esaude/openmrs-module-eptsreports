@@ -51,7 +51,7 @@ public interface MQCategory13P2QueriesInterface {
             + " GROUP by p.patient_id "
             + " ) firstConsult ON firstConsult.patient_id = tx_new.patient_id "
             + " WHERE firstConsult.dataConsulta >= :startInclusionDate AND firstConsult.dataConsulta <= :endInclusionDate "
-            + " AND firstConsult.dataConsulta> tx_new.art_start_date ";
+            + " AND firstConsult.dataConsulta> DATE_ADD(tx_new.art_start_date, INTERVAL 3 MONTH) ";
 
     public static final String
         findPatientsWhoAreRequestForLaboratoryInvestigationsInclusionPeriodByB3 =

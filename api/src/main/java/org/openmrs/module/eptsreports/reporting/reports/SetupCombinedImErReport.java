@@ -41,6 +41,8 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 
   @Autowired private IMR1BDataset imr1BDataset;
 
+  @Autowired private DatinCodeDataSet DatinCodeDataSet;
+
   @Override
   public String getExcelDesignUuid() {
     return "f6a597ba-5fa2-47d4-ab45-da128cabe7ac";
@@ -90,6 +92,10 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
 
     rd.addDataSetDefinition(
         "ERIDSD", Mapped.mapStraightThrough(this.eriDSDDataset.constructEriDSDDataset()));
+
+    rd.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(

@@ -33,7 +33,7 @@ public class Ec6Queries {
             + "f_ec6.date_enrolled date_enrolled, "
             + "f_ec6.state state, "
             + "f_ec6.state_date state_date, "
-            + "IF(f_ec6.state_date<f_ec6.encounter_date_fila ,f_ec6.encounter_date_fila,'') AS encounter_date_fila, "
+            + "DATE_FORMAT(f_ec6.encounter_date_fila,'%d-%m-%Y') AS encounter_date_fila, "
             + "IF(f_ec6.state_date<f_ec6.encounter_date_created_fila,f_ec6.encounter_date_created_fila,'') AS encounter_date_created_fila, "
             + "IF(f_ec6.state_date<f_ec6.encounter_date_recepcao,f_ec6.encounter_date_recepcao,'') AS encounter_date_recepcao, "
             + "IF(f_ec6.state_date<f_ec6.data_encounter_recepcao,f_ec6.data_encounter_recepcao,'') AS data_encounter_recepcao, "
@@ -57,7 +57,7 @@ public class Ec6Queries {
             + "when ps.state = 29 then 'TRANSFERRED FROM OTHER FACILTY' "
             + "end AS state, "
             + "DATE_FORMAT(ps.start_date, '%d-%m-%Y') AS state_date, "
-            + "MIN(DATE_FORMAT(fila.encounter_datetime, '%d-%m-%Y')) AS encounter_date_fila, "
+            + "CASE when MIN(date(fila.encounter_datetime))>date(ps.start_date) then fila.encounter_datetime when MIN(date(fila.encounter_datetime))=date(ps.start_date) then '' else null end as encounter_date_fila,  "
             + "DATE_FORMAT(fila.date_created, '%d-%m-%Y %H:%i:%s') AS encounter_date_created_fila, "
             + "DATE_FORMAT(recepcao.value_datetime, '%d-%m-%Y') AS encounter_date_recepcao, "
             + "DATE_FORMAT(recepcao.encounter_datetime, '%d-%m-%Y %H:%i:%s') AS data_encounter_recepcao, "
@@ -109,7 +109,7 @@ public class Ec6Queries {
             + "and ( ( fila.encounter_datetime>trasferedOut.trasfered_date ) OR ( recepcao.value_datetime>trasferedOut.trasfered_date)) "
             + "GROUP BY pe.person_id "
             + ") f_ec6  "
-            + "GROUP BY f_ec6.patient_id ";
+            + "GROUP BY f_ec6.patient_id,f_ec6.encounter_date_fila,f_ec6.state_date ";
     return query;
   }
 

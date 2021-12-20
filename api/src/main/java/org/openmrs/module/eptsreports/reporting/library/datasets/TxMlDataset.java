@@ -2,9 +2,11 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
+import org.apache.commons.lang3.StringUtils;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxMlCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.KeyPopulationDimension;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.TxMLDimensions;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -32,6 +34,8 @@ public class TxMlDataset extends BaseDataSet {
 
   @Autowired private TxMLDimensions txMLDimensions;
 
+  @Autowired private KeyPopulationDimension keyPopulationDimension;
+
   public DataSetDefinition constructtxMlDataset() {
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     dsd.setName("Tx_Ml Data Set");
@@ -40,23 +44,26 @@ public class TxMlDataset extends BaseDataSet {
 
     CohortDefinition patientsWhoMissedNextApointment =
         txMlCohortQueries.getPatientsWhoMissedNextApointment();
-    CohortDefinition ltfuLessThan3Months =
-        this.txMlCohortQueries.getPatientsWhoAreLTFULessThan3Months();
-    CohortDefinition ltfuLessGreatherThan3Months =
-        this.txMlCohortQueries.getPatientsWhoAreLTFUGreaterThan3Months();
+    CohortDefinition iitLessThan3Months =
+        this.txMlCohortQueries.getPatientsWhoAreIITLessThan3Months();
+    CohortDefinition iitBetween3And5Months =
+        this.txMlCohortQueries.getPatientsWhoAreIITBetween3And5Months();
+    CohortDefinition iitGreaterOrEqual6Months =
+        this.txMlCohortQueries.getPatientsWhoAreIITGreaterOrEqual6Months();
 
     final CohortIndicator patientsWhoMissedNextApointmentIndicator =
         this.eptsGeneralIndicator.getIndicator(
             "findPatientsWhoMissedNextApointment",
             EptsReportUtils.map(patientsWhoMissedNextApointment, mappings));
-    final CohortIndicator ltfuLessThan3MonthsIndicator =
+    final CohortIndicator iitLessThan3MonthsIndicator =
         this.eptsGeneralIndicator.getIndicator(
-            "findPatientsWhoAreLTFULessThan3Months",
-            EptsReportUtils.map(ltfuLessThan3Months, mappings));
-    final CohortIndicator ltfuLessGreatherThan3MonthsIndicator =
+            "iitLessThan3Months", EptsReportUtils.map(iitLessThan3Months, mappings));
+    final CohortIndicator iitGreaterOrEqual6MonthsIndicator =
         this.eptsGeneralIndicator.getIndicator(
-            "findPatientsWhoAreLTFUGreaterThan3Months",
-            EptsReportUtils.map(ltfuLessGreatherThan3Months, mappings));
+            "iitGreaterOrEqual6Months", EptsReportUtils.map(iitGreaterOrEqual6Months, mappings));
+    final CohortIndicator iitBetween3And5MonthsIndicator =
+        this.eptsGeneralIndicator.getIndicator(
+            "iitBetween3And5Months", EptsReportUtils.map(iitBetween3And5Months, mappings));
 
     dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dsd.addDimension(
@@ -72,6 +79,31 @@ public class TxMlDataset extends BaseDataSet {
         "refusedorstoppedtreatment",
         EptsReportUtils.map(
             this.txMLDimensions.findPatientsWhoRefusedOrStoppedTreatment(), mappings));
+
+    dsd.addDimension(
+        "iitless3months",
+        EptsReportUtils.map(this.txMLDimensions.findPatientsIITLess3Months(), mappings));
+
+    dsd.addDimension(
+        "iitbetween3and5months",
+        EptsReportUtils.map(this.txMLDimensions.findPatientsIITBetween3And5Months(), mappings));
+
+    dsd.addDimension(
+        "iitgreaterorequal6months",
+        EptsReportUtils.map(this.txMLDimensions.findPatientsIITGreaterOrEqual6Months(), mappings));
+
+    dsd.addDimension(
+        "homosexual",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreHomosexual(), mappings));
+    dsd.addDimension(
+        "drug-user",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoUseDrugs(), mappings));
+    dsd.addDimension(
+        "prisioner",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreInPrison(), mappings));
+    dsd.addDimension(
+        "sex-worker",
+        EptsReportUtils.map(this.keyPopulationDimension.findPatientsWhoAreSexWorker(), mappings));
 
     dsd.addColumn(
         "M1",
@@ -95,47 +127,119 @@ public class TxMlDataset extends BaseDataSet {
         "Age and Gender (Totals female) ",
         EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings),
         "gender=F");
-
-    this.setDeadDimension(
-        dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
     super.addRow(
         dsd,
         "M4",
         "IIT < 90 days",
-        EptsReportUtils.map(ltfuLessThan3MonthsIndicator, mappings),
+        EptsReportUtils.map(iitLessThan3MonthsIndicator, mappings),
         getColumnsForAgeAndGender());
     dsd.addColumn(
         "M4-TotalMale",
         "IIT < 90 days (Totals male) ",
-        EptsReportUtils.map(ltfuLessThan3MonthsIndicator, mappings),
+        EptsReportUtils.map(iitLessThan3MonthsIndicator, mappings),
         "gender=M");
     dsd.addColumn(
         "M4-TotalFemale",
         "IIT < 90 days (Totals female) ",
-        EptsReportUtils.map(ltfuLessThan3MonthsIndicator, mappings),
+        EptsReportUtils.map(iitLessThan3MonthsIndicator, mappings),
         "gender=F");
 
     super.addRow(
         dsd,
         "M5",
-        "IIT >= 90 days",
-        EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
+        "IIT >= 180 days",
+        EptsReportUtils.map(iitGreaterOrEqual6MonthsIndicator, mappings),
         getColumnsForAgeAndGender());
     dsd.addColumn(
         "M5-TotalMale",
-        "IIT >= 90 days (Totals male) ",
-        EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
+        "IIT >= 180 days (Totals male) ",
+        EptsReportUtils.map(iitGreaterOrEqual6MonthsIndicator, mappings),
         "gender=M");
     dsd.addColumn(
         "M5-TotalFemale",
-        "IIT >= 90 days (Totals female) ",
-        EptsReportUtils.map(ltfuLessGreatherThan3MonthsIndicator, mappings),
+        "IIT >= 180 days (Totals female) ",
+        EptsReportUtils.map(iitGreaterOrEqual6MonthsIndicator, mappings),
         "gender=F");
 
+    super.addRow(
+        dsd,
+        "M8",
+        "IIT >= 90 days AND IIT < 180 days",
+        EptsReportUtils.map(iitBetween3And5MonthsIndicator, mappings),
+        getColumnsForAgeAndGender());
+    dsd.addColumn(
+        "M8-TotalMale",
+        "IIT >= 90 days AND IIT < 180 days (Totals male) ",
+        EptsReportUtils.map(iitBetween3And5MonthsIndicator, mappings),
+        "gender=M");
+    dsd.addColumn(
+        "M8-TotalFemale",
+        "IIT >= 90 days AND IIT < 180 days (Totals female) ",
+        EptsReportUtils.map(iitBetween3And5MonthsIndicator, mappings),
+        "gender=F");
+
+    this.setDeadDimension(
+        dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
     this.setTransferedDimension(
         dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
     this.setRefusedOrStoppedTreatmentDimension(
         dsd, EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings), mappings);
+
+    this.setKeyPopsDimension(
+        dsd,
+        EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings),
+        mappings,
+        "M2",
+        "TX_ML",
+        "");
+
+    this.setKeyPopsDimension(
+        dsd,
+        EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings),
+        mappings,
+        "M3",
+        "Died",
+        "dead=dead");
+
+    this.setKeyPopsDimension(
+        dsd,
+        EptsReportUtils.map(iitLessThan3MonthsIndicator, mappings),
+        mappings,
+        "M4",
+        "IIT < 3 months",
+        "iitless3months=iitless3months");
+
+    this.setKeyPopsDimension(
+        dsd,
+        EptsReportUtils.map(iitBetween3And5MonthsIndicator, mappings),
+        mappings,
+        "M8",
+        "IIT for 3-5 months",
+        "iitbetween3and5months=iitbetween3and5months");
+
+    this.setKeyPopsDimension(
+        dsd,
+        EptsReportUtils.map(iitGreaterOrEqual6MonthsIndicator, mappings),
+        mappings,
+        "M5",
+        "IIT > = 6 months",
+        "iitgreaterorequal6months=iitgreaterorequal6months");
+
+    this.setKeyPopsDimension(
+        dsd,
+        EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings),
+        mappings,
+        "M6",
+        "Transfered Out",
+        "transferedout=transferedout");
+
+    this.setKeyPopsDimension(
+        dsd,
+        EptsReportUtils.map(patientsWhoMissedNextApointmentIndicator, mappings),
+        mappings,
+        "M7",
+        "Refused (Stopped) Treatment",
+        "refusedorstoppedtreatment=refusedorstoppedtreatment");
 
     return dsd;
   }
@@ -297,5 +401,45 @@ public class TxMlDataset extends BaseDataSet {
         above50F,
         unknownF,
         total);
+  }
+
+  private void setKeyPopsDimension(
+      final CohortIndicatorDataSetDefinition dataSetDefinition,
+      Mapped<? extends CohortIndicator> indicator,
+      final String mappings,
+      String columnNamePrefix,
+      String columnNameLabel,
+      String dimension) {
+
+    String aggregatedDimension = StringUtils.EMPTY;
+    if (!StringUtils.isEmpty(dimension)) {
+      aggregatedDimension = "|" + dimension;
+    } else {
+      aggregatedDimension = dimension;
+    }
+
+    dataSetDefinition.addColumn(
+        columnNamePrefix + "-MSM",
+        columnNameLabel + " Homosexual",
+        indicator,
+        "gender=M|homosexual=homosexual" + aggregatedDimension);
+
+    dataSetDefinition.addColumn(
+        columnNamePrefix + "-PWID",
+        columnNameLabel + " Drugs User",
+        indicator,
+        "drug-user=drug-user" + aggregatedDimension);
+
+    dataSetDefinition.addColumn(
+        columnNamePrefix + "-PRI",
+        columnNameLabel + " Prisioners",
+        indicator,
+        "prisioner=prisioner" + aggregatedDimension);
+
+    dataSetDefinition.addColumn(
+        columnNamePrefix + "-FSW",
+        columnNameLabel + " Sex Worker",
+        indicator,
+        "gender=F|sex-worker=sex-worker" + aggregatedDimension);
   }
 }

@@ -71,7 +71,7 @@ public class KeyPopDataSetSection3 extends KeyPopAbstractDataset {
         "I11T",
         "I7T:Número de População Chave (KP) no Grupo de HSH, recém-iniciados em terapia antirretroviral há 6 meses – Coorte 6 meses",
         EptsReportUtils.map(patientEnrolledInART6MonthsCoohortIndicator, mappings),
-        "age=15+|homosexual=homosexual");
+        "age=15+|homosexual=homosexual|gender=M");
 
     addRow(
         dataSetDefinition,
@@ -129,30 +129,31 @@ public class KeyPopDataSetSection3 extends KeyPopAbstractDataset {
   private List<ColumnParameters> getKeyPopColumns() {
 
     ColumnParameters k1 =
-        new ColumnParameters("15-19", "15-19", "homosexual=homosexual|age=15-19", "01");
+        new ColumnParameters("15-19", "15-19", "homosexual=homosexual|age=15-19|gender=M", "01");
     ColumnParameters k2 =
-        new ColumnParameters("20-24", "20-24", "homosexual=homosexual|age=20-24", "02");
-    ColumnParameters k3 = new ColumnParameters("25+", "25+", "homosexual=homosexual|age=25+", "03");
+        new ColumnParameters("20-24", "20-24", "homosexual=homosexual|age=20-24|gender=M", "02");
+    ColumnParameters k3 =
+        new ColumnParameters("25+", "25+", "homosexual=homosexual|age=25+|gender=M", "03");
 
     ColumnParameters k4 =
         new ColumnParameters(
-            "15-19", "15-19", "homosexual=homosexual|drug-user=drug-user|age=15-19", "04");
+            "15-19", "15-19", "homosexual=homosexual|drug-user=drug-user|age=15-19|gender=M", "04");
     ColumnParameters k5 =
         new ColumnParameters(
-            "20-24", "20-24", "homosexual=homosexual|drug-user=drug-user|age=20-24", "05");
+            "20-24", "20-24", "homosexual=homosexual|drug-user=drug-user|age=20-24|gender=M", "05");
     ColumnParameters k6 =
         new ColumnParameters(
-            "25+", "25+", "homosexual=homosexual|drug-user=drug-user|age=25+", "06");
+            "25+", "25+", "homosexual=homosexual|drug-user=drug-user|age=25+|gender=M", "06");
 
     ColumnParameters k7 =
         new ColumnParameters(
-            "15-19", "15-19", "homosexual=homosexual|prisioner=prisioner|age=15-19", "07");
+            "15-19", "15-19", "homosexual=homosexual|prisioner=prisioner|age=15-19|gender=M", "07");
     ColumnParameters k8 =
         new ColumnParameters(
-            "20-24", "20-24", "homosexual=homosexual|prisioner=prisioner|age=20-24", "08");
+            "20-24", "20-24", "homosexual=homosexual|prisioner=prisioner|age=20-24|gender=M", "08");
     ColumnParameters k9 =
         new ColumnParameters(
-            "25+", "25+", "homosexual=homosexual|prisioner=prisioner|age=25+", "09");
+            "25+", "25+", "homosexual=homosexual|prisioner=prisioner|age=25+|gender=M", "09");
 
     return Arrays.asList(k1, k2, k3, k4, k5, k6, k7, k8, k9);
   }

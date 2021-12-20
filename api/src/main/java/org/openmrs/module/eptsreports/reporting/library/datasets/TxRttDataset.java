@@ -163,6 +163,43 @@ public class TxRttDataset extends BaseDataSet {
         "gender=F|sex-worker=sex-worker");
 
     definition.addColumn(
+        "R-DurationIIT-LESS-3MONTHS",
+        "Duration of IIT Before returning Treatment <3 months",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Duration of IIT Before returning Treatment <3 months",
+                EptsReportUtils.map(
+                    this.txRTTCohortQueries.getDurationInterruptionOfTreatmentLessThan3Months(),
+                    mappings)),
+            mappings),
+        "");
+
+    definition.addColumn(
+        "R-DurationIIT-BETWEEN-3-5MONTHS",
+        "Duration of IIT Before returning Treatment Between 3-5 months",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Duration of IIT Before returning Treatment Between 3-5 months",
+                EptsReportUtils.map(
+                    this.txRTTCohortQueries.getDurationInterruptionOfTreatmentBetween3And5Months(),
+                    mappings)),
+            mappings),
+        "");
+
+    definition.addColumn(
+        "R-DurationIIT-GREATER-OR-EQUAL-6MONTHS",
+        "Duration of IIT Before returning Treatment Greater Or Equal 6 months",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "Duration of IIT Before returning Treatment Greater or Equal 6 months",
+                EptsReportUtils.map(
+                    this.txRTTCohortQueries
+                        .getDurationInterruptionOfTreatmentGreaterOrEqual6Months(),
+                    mappings)),
+            mappings),
+        "");
+
+    definition.addColumn(
         "PLHIVLESS12MONTH",
         "PLHIV <12 months",
         EptsReportUtils.map(
