@@ -205,6 +205,10 @@ public class MQAgeDimensions {
         EptsReportUtils.map(this.findPatientsWhoAreNewlyEnrolledOnARTChildren(15), mappings));
 
     dimension.addCohortDefinition(
+        "1-14",
+        EptsReportUtils.map(this.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(1, 14), mappings));
+
+    dimension.addCohortDefinition(
         "2-14",
         EptsReportUtils.map(this.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(2, 14), mappings));
 

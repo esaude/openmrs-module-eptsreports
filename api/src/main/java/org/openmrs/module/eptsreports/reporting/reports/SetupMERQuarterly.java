@@ -18,6 +18,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.PrepCtDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.PrepNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TRFINDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
@@ -49,7 +51,12 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
   @Autowired private TRFINDataset txTfrInDataset;
 
+  @Autowired private PrepNewDataset prepNewDataset;
+
+  @Autowired private PrepCtDataset prepCtDataset;
+
   @Autowired protected GenericCohortQueries genericCohortQueries;
+  @Autowired private DatinCodeDataSet DatinCodeDataSet;
 
   @Override
   public String getVersion() {
@@ -68,7 +75,7 @@ public class SetupMERQuarterly extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.5 Quarterly";
+    return "PEPFAR MER 2.6 Quarterly";
   }
 
   @Override
@@ -103,6 +110,15 @@ public class SetupMERQuarterly extends EptsDataExportManager {
     reportDefinition.addDataSetDefinition(
         "TR", Mapped.mapStraightThrough(this.txTfrInDataset.constructTxTRFIN()));
 
+    reportDefinition.addDataSetDefinition(
+        "PREP", Mapped.mapStraightThrough(this.prepNewDataset.constructPrepNewDataset()));
+
+    reportDefinition.addDataSetDefinition(
+        "PrEP_CT", Mapped.mapStraightThrough(this.prepCtDataset.constructPrepCtDataset()));
+    reportDefinition.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
+
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
@@ -119,8 +135,8 @@ public class SetupMERQuarterly extends EptsDataExportManager {
       reportDesign =
           this.createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.5_QUARTERLY.xls",
-              "PEPFAR MER 2.5 Quarterly Report",
+              "PEPFAR_MER_2.6_QUARTERLY.xls",
+              "PEPFAR MER 2.6 Quarterly Report",
               this.getExcelDesignUuid(),
               null);
       final Properties props = new Properties();

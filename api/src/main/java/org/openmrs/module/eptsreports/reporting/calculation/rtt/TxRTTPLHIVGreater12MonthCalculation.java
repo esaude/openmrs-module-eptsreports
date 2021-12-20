@@ -14,7 +14,6 @@ import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.module.eptsreports.reporting.calculation.BaseFghCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
-import org.openmrs.module.eptsreports.reporting.calculation.util.processor.CalculationProcessorUtils;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxRTTCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxRttQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsDateUtil;
@@ -90,8 +89,8 @@ public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
       if (calculationResult != null && calculationResult.getValue() != null) {
         if (calculationResult.getValue() instanceof Date) {
           Date iitDate = (Date) calculationResult.getValue();
-          Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-          if (EptsDateUtil.getDaysBetween(iiDatePlus29, minTxCurrDate) >= DAYS_OF_YEAR) {
+          // Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
+          if (EptsDateUtil.getDaysBetween(iitDate, minTxCurrDate) >= DAYS_OF_YEAR) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
         }
@@ -112,8 +111,8 @@ public class TxRTTPLHIVGreater12MonthCalculation extends BaseFghCalculation {
       if (calculationResult != null && calculationResult.getValue() != null) {
         if (calculationResult.getValue() instanceof Date) {
           Date iitDate = (Date) calculationResult.getValue();
-          Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
-          if (EptsDateUtil.getDaysBetween(iiDatePlus29, maxTxCurrDate) >= DAYS_OF_YEAR) {
+          // Date iiDatePlus29 = CalculationProcessorUtils.adjustDaysInDate(iitDate, 1);
+          if (EptsDateUtil.getDaysBetween(iitDate, maxTxCurrDate) >= DAYS_OF_YEAR) {
             resultMap.put(patientId, new BooleanResult(Boolean.TRUE, this));
           }
         }

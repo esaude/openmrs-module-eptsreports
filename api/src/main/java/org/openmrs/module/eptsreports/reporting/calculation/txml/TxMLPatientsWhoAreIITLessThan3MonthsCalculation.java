@@ -12,7 +12,7 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.springframework.stereotype.Component;
 
 @Component
-public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation extends TxMLPatientCalculation {
+public class TxMLPatientsWhoAreIITLessThan3MonthsCalculation extends TxMLPatientCalculation {
 
   private static int LESS_THAN_3_MONTHS = 90;
   private static int DAYS_TO_LTFU = 28;
@@ -42,12 +42,19 @@ public class TxMLPatientsWhoAreLTFULessThan3MonthsCalculation extends TxMLPatien
               nextSeguimentoResult,
               TxMLPatientCalculation.getLastRecepcaoLevantamentoPlus30(
                   patientId, lastRecepcaoLevantamentoResult, lastRecepcaoLevantamentoCalculation));
-      if (maxNextDate != null
-          && EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) < LESS_THAN_3_MONTHS) {
+
+      if (maxNextDate != null) {
+
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, DAYS_TO_LTFU);
+
+        // verificar se o paciente eh TX_ML
         if (nextDatePlus28.compareTo(CalculationProcessorUtils.adjustDaysInDate(startDate, -1)) >= 0
             && nextDatePlus28.compareTo(endDate) < 0) {
-          resultMap.put(patientId, new SimpleResult(maxNextDate, this));
+
+          // verificar se pertence a desagregacao
+          if (EptsDateUtil.getDaysBetween(inicioRealDate, maxNextDate) < LESS_THAN_3_MONTHS) {
+            resultMap.put(patientId, new SimpleResult(maxNextDate, this));
+          }
         }
       } else {
         super.checkConsultationsOrFilaWithoutNextConsultationDate(

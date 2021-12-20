@@ -129,30 +129,31 @@ public class KeyPopDataSetSection4 extends KeyPopAbstractDataset {
   private List<ColumnParameters> getKeyPopColumns() {
 
     ColumnParameters k1 =
-        new ColumnParameters("15-19", "15-19", "sex-worker=sex-worker|age=15-19", "01");
+        new ColumnParameters("15-19", "15-19", "sex-worker=sex-worker|age=15-19|gender=F", "01");
     ColumnParameters k2 =
-        new ColumnParameters("20-24", "20-24", "sex-worker=sex-worker|age=20-24", "02");
-    ColumnParameters k3 = new ColumnParameters("25+", "25+", "sex-worker=sex-worker|age=25+", "03");
+        new ColumnParameters("20-24", "20-24", "sex-worker=sex-worker|age=20-24|gender=F", "02");
+    ColumnParameters k3 =
+        new ColumnParameters("25+", "25+", "sex-worker=sex-worker|age=25+|gender=F", "03");
 
     ColumnParameters k4 =
         new ColumnParameters(
-            "15-19", "15-19", "sex-worker=sex-worker|drug-user=drug-user|age=15-19", "04");
+            "15-19", "15-19", "sex-worker=sex-worker|drug-user=drug-user|age=15-19|gender=F", "04");
     ColumnParameters k5 =
         new ColumnParameters(
-            "20-24", "20-24", "sex-worker=sex-worker|drug-user=drug-user|age=20-24", "05");
+            "20-24", "20-24", "sex-worker=sex-worker|drug-user=drug-user|age=20-24|gender=F", "05");
     ColumnParameters k6 =
         new ColumnParameters(
-            "25+", "25+", "sex-worker=sex-worker|drug-user=drug-user|age=25+", "06");
+            "25+", "25+", "sex-worker=sex-worker|drug-user=drug-user|age=25+|gender=F", "06");
 
     ColumnParameters k7 =
         new ColumnParameters(
-            "15-19", "15-19", "sex-worker=sex-worker|prisioner=prisioner|age=15-19", "07");
+            "15-19", "15-19", "sex-worker=sex-worker|prisioner=prisioner|age=15-19|gender=F", "07");
     ColumnParameters k8 =
         new ColumnParameters(
-            "20-24", "20-24", "sex-worker=sex-worker|prisioner=prisioner|age=20-24", "08");
+            "20-24", "20-24", "sex-worker=sex-worker|prisioner=prisioner|age=20-24|gender=F", "08");
     ColumnParameters k9 =
         new ColumnParameters(
-            "25+", "25+", "sex-worker=sex-worker|prisioner=prisioner|age=25+", "09");
+            "25+", "25+", "sex-worker=sex-worker|prisioner=prisioner|age=25+|gender=F", "09");
 
     return Arrays.asList(k1, k2, k3, k4, k5, k6, k7, k8, k9);
   }

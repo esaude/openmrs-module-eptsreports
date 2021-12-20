@@ -4,6 +4,9 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.reporting.calculation.rtt.TxRTTDurationOfTreatmentInterruptionBetween3And5MonthsCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.rtt.TxRTTDurationOfTreatmentInterruptionGreaterOrEqual6MonthsCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.rtt.TxRTTDurationOfTreatmentInterruptionLess3MonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.rtt.TxRTTPLHIVGreater12MonthCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.rtt.TxRTTPLHIVLess12MonthCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.rtt.TxRTTPatientsWhoAreTransferedOutCalculation;
@@ -90,6 +93,51 @@ public class TxRTTCohortQueries {
     definition.addParameter(new Parameter("endDate", "end Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "DurationInterruptionOfTreatmentLessThan3Months")
+  public CohortDefinition getDurationInterruptionOfTreatmentLessThan3Months() {
+    BaseFghCalculationCohortDefinition definition =
+        new BaseFghCalculationCohortDefinition(
+            "DurationInterruptionOfTreatmentLessThan3Months",
+            Context.getRegisteredComponents(
+                    TxRTTDurationOfTreatmentInterruptionLess3MonthsCalculation.class)
+                .get(0));
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "end Date", Date.class));
+    definition.addParameter(new Parameter("realEndDate", "Real End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "DurationInterruptionOfTreatmentBetween3And5Months")
+  public CohortDefinition getDurationInterruptionOfTreatmentBetween3And5Months() {
+    BaseFghCalculationCohortDefinition definition =
+        new BaseFghCalculationCohortDefinition(
+            "DurationInterruptionOfTreatmentBetween3And5Months",
+            Context.getRegisteredComponents(
+                    TxRTTDurationOfTreatmentInterruptionBetween3And5MonthsCalculation.class)
+                .get(0));
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "end Date", Date.class));
+    definition.addParameter(new Parameter("realEndDate", "Real End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "DurationInterruptionOfTreatmentGreaterOrEqual6Months")
+  public CohortDefinition getDurationInterruptionOfTreatmentGreaterOrEqual6Months() {
+    BaseFghCalculationCohortDefinition definition =
+        new BaseFghCalculationCohortDefinition(
+            "DurationInterruptionOfTreatmentGreaterOrEqual6Months",
+            Context.getRegisteredComponents(
+                    TxRTTDurationOfTreatmentInterruptionGreaterOrEqual6MonthsCalculation.class)
+                .get(0));
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "end Date", Date.class));
+    definition.addParameter(new Parameter("realEndDate", "Real End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
     return definition;
   }
 

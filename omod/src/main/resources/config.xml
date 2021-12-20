@@ -1672,17 +1672,142 @@
 
 	<!--Reports to be Deleted -->
 	<globalProperty>
-		<property>eptsoldreports.a9b8c9f5-5a4b-4d54-99d9-b33187f347c8</property>
-		<defaultValue>a9b8c9f5-5a4b-4d54-99d9-b33187f347c8</defaultValue>
-		<description>Report to be Deleted:LISTA DE PACIENTES QUE INICIARAM PROFILAXIA COM ISONIAZIDA (TPI)</description>
+		<property>eptsoldreports.7f8e5778-765c-11e9-8f9e-2a86e4085a59</property>
+		<defaultValue>7f8e5778-765c-11e9-8f9e-2a86e4085a59</defaultValue>
+		<description>Report to be Deleted:TX_RET Report</description>
 	</globalProperty>
 
 	<globalProperty>
-		<property>eptsoldreports.297464e5-e8f2-4fa8-b354-a937492181df</property>
-		<defaultValue>297464e5-e8f2-4fa8-b354-a937492181df</defaultValue>
-		<description>Report to be Deleted:LISTA DE PACIENTES COM RASTREIO DE TB POSITIVO</description>
+		<property>eptsoldreports.5a79c043-32af-40c5-9dcc-041e30d76e2e</property>
+		<defaultValue>5a79c043-32af-40c5-9dcc-041e30d76e2e</defaultValue>
+		<description>Report to be Deleted:SAPR/APR - ARV</description>
+	</globalProperty>
+	
+	
+	<globalProperty>
+		<property>eptsoldreports.933e1c31-e4b8-413d-a7ed-83d9154b25a2</property>
+		<defaultValue>933e1c31-e4b8-413d-a7ed-83d9154b25a2</defaultValue>
+		<description>Report to be Deleted:SAPR/APR - CLC</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.392bde1c-6e3b-484d-a415-be7eef833650</property>
+		<defaultValue>392bde1c-6e3b-484d-a415-be7eef833650</defaultValue>
+		<description>Report to be Deleted:PEPFAR MER QUARTERLY REPORT</description>
+	</globalProperty>
+	
+	
+	<globalProperty>
+		<property>eptsoldreports.b6097ce9-d4ac-422e-a926-b8cbe62f5dd0</property>
+		<defaultValue>b6097ce9-d4ac-422e-a926-b8cbe62f5dd0</defaultValue>
+		<description>Report to be Deleted:PEPFAR MER QUARTERLY REPORT Data Set</description>
+	</globalProperty>
+	
+	
+	
+	<globalProperty>
+		<property>eptsoldreports.0ccad317-aa2c-4805-9935-ad05fdc1d029</property>
+		<defaultValue>0ccad317-aa2c-4805-9935-ad05fdc1d029</defaultValue>
+		<description>Report to be Deleted:PEPFAR MER SEMI-ANNUAL REPORT</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.c2f24339-8fb1-43e8-9cb4-350ef538bb4f</property>
+		<defaultValue>c2f24339-8fb1-43e8-9cb4-350ef538bb4f</defaultValue>
+		<description>PEPFAR MER SEMI-ANNUAL REPORT Data Set</description>
+	</globalProperty>
+	
+	
+	
+	<globalProperty>
+		<property>eptsoldreports.8e9b4ecd-5d96-4a8e-81c3-b02328939afd</property>
+		<defaultValue>8e9b4ecd-5d96-4a8e-81c3-b02328939afd</defaultValue>
+		<description>Report to be Deleted:CDC RETENTION VISIT TOOLS - ADULTO</description>
+	</globalProperty>
+	
+	
+	<globalProperty>
+		<property>eptsoldreports.0b4a71c7-b76b-439e-b921-60d8bf2eb58d</property>
+		<defaultValue>0b4a71c7-b76b-439e-b921-60d8bf2eb58d</defaultValue>
+		<description>Report to be Deleted:CDC RETENTION VISIT TOOLS - ADULTO</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsoldreports.50393011-5c98-4a57-901b-bdda0aaa5ac8</property>
+		<defaultValue>50393011-5c98-4a57-901b-bdda0aaa5ac8</defaultValue>
+		<description>Report to be Deleted:CDC RETENTION VISIT TOOLS - CRIANCAS</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.34d9e924-7d9f-4a9c-9e50-be8eb6ab0645</property>
+		<defaultValue>34d9e924-7d9f-4a9c-9e50-be8eb6ab0645</defaultValue>
+		<description>Report to be Deleted:CDC RETENTION VISIT TOOLS - CRIANCAS</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.4d0112f5-6b26-4596-808d-6209bf664090</property>
+		<defaultValue>4d0112f5-6b26-4596-808d-6209bf664090</defaultValue>
+		<description>Report to be Deleted:CDC RETENTION VISIT TOOLS - GRAVIDAS</description>
+	</globalProperty>
+	
+	
+	<globalProperty>
+		<property>eptsoldreports.daf48f66-c167-4a70-9507-cfaec68f726a</property>
+		<defaultValue>daf48f66-c167-4a70-9507-cfaec68f726a</defaultValue>
+		<description>Report to be Deleted:CDC RETENTION VISIT TOOLS - GRAVIDAS</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.143bc811-b3b2-403b-acbb-2e15226a58fb</property>
+		<defaultValue>143bc811-b3b2-403b-acbb-2e15226a58fb</defaultValue>
+		<description>Report to be Deleted:Early Retention Monitoring Report</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.f623433c-8ed8-4353-b070-008476cf800c</property>
+		<defaultValue>f623433c-8ed8-4353-b070-008476cf800c</defaultValue>
+		<description>Report to be Deleted:Early Retention Monitoring Report Data Set</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.381077e6-ceb8-4288-863e-818499515a30</property>
+		<defaultValue>381077e6-ceb8-4288-863e-818499515a30</defaultValue>
+		<description>Report to be Deleted:TX_CURR Report 2.4</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.df31d4fd-0e02-4839-a3f0-93598f7d091f</property>
+		<defaultValue>df31d4fd-0e02-4839-a3f0-93598f7d091f</defaultValue>
+		<description>Report to be Deleted:COORTE TARV: PERIODO MANUAL- ReportDefinition</description>
+	</globalProperty>
+	
+	
+	<globalProperty>
+		<property>eptsoldreports.34ff65f8-4310-482f-84f4-91dd3eb0aed1</property>
+		<defaultValue>34ff65f8-4310-482f-84f4-91dd3eb0aed1</defaultValue>
+		<description>Report to be Deleted:COORTE TARV: PERIODO MANUAL- DataSetDefinition</description>
+	</globalProperty>
+	
+	
+	<globalProperty>
+		<property>eptsoldreports.372c26f8-b601-406d-a3db-fb78a06686c4</property>
+		<defaultValue>372c26f8-b601-406d-a3db-fb78a06686c4</defaultValue>
+		<description>Report to be deleted: LISTA DE PACIENTES NA COORTE DE TARV</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.04b24c2e-cfd9-4886-9a00-3f8d0d56b864</property>
+		<defaultValue>04b24c2e-cfd9-4886-9a00-3f8d0d56b864</defaultValue>
+		<description>Report to be Deleted: Relatorio de Populacao Chave - MISAU</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.e36852ef-6e68-49b6-8f54-6af882acc391</property>
+		<defaultValue>e36852ef-6e68-49b6-8f54-6af882acc391</defaultValue>
+		<description>Report to be Deleted: Relatorio de Faltosos ao Levantamento de ARV</description>
+	</globalProperty>
+	
+	
 	
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 

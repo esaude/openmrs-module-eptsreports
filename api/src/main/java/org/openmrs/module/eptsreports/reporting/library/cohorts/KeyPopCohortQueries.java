@@ -113,7 +113,8 @@ public class KeyPopCohortQueries {
         "ABANDONED",
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "ABANDONED", ResumoMensalQueries.getPatientsWhoAbandonedTratmentB7()),
+                "ABANDONED",
+                KeyPopQueriesInterface.QUERY.findPatientsWhoWhereMarkedAbandonedUntilEndDate),
             mappings));
 
     definition.addSearch(

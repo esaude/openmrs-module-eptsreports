@@ -4,5 +4,6 @@ public enum KeyPopType {
   HOMOSEXUAL,
   PRISIONER,
   SEXWORKER,
-  DRUGUSER
+  DRUGUSER,
+  TRANSGENDER
 }

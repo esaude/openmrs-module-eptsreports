@@ -21,6 +21,7 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
 
   @Autowired private KeyPopDataSet keyPopDataSet;
   @Autowired private GenericCohortQueries genericCohortQueries;
+  @Autowired private DatinCodeDataSet DatinCodeDataSet;
 
   @Override
   public String getExcelDesignUuid() {
@@ -56,6 +57,10 @@ public class SetupKeyPopDataSet extends EptsDataExportManager {
     rd.setParameters(keyPopDataSet.getParameters());
     rd.addDataSetDefinition(
         "KP", Mapped.mapStraightThrough(keyPopDataSet.constructTKeyPopDatset()));
+
+    rd.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(

@@ -58,6 +58,12 @@ public class MIAgeDimentions {
             mappingsMILessTwoMonths));
 
     dimension.addCohortDefinition(
+        "LESS_2_MONTHS_1-14",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(1, 14),
+            mappingsMILessTwoMonths));
+
+    dimension.addCohortDefinition(
         "LESS_2_MONTHS_2-14",
         EptsReportUtils.map(
             mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(2, 14),
@@ -271,6 +277,12 @@ public class MIAgeDimentions {
         "LESS_8_MONTHS_15-",
         EptsReportUtils.map(
             mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTChildren(15),
+            mappingsMILess8Months));
+
+    dimension.addCohortDefinition(
+        "LESS_8_MONTHS_1-14",
+        EptsReportUtils.map(
+            mQAgeDimensions.findPatientsWhoAreNewlyEnrolledOnARTByAgeRenge(1, 14),
             mappingsMILess8Months));
 
     dimension.addCohortDefinition(

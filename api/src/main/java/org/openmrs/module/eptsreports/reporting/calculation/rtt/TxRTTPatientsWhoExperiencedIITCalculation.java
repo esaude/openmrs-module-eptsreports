@@ -94,7 +94,7 @@ public class TxRTTPatientsWhoExperiencedIITCalculation extends BaseFghCalculatio
         Date nextDatePlus28 = CalculationProcessorUtils.adjustDaysInDate(maxNextDate, 28);
 
         if (nextDatePlus28.compareTo(startDate) < 0) {
-          resultMap.put(patientId, new SimpleResult(nextDatePlus28, this));
+          resultMap.put(patientId, new SimpleResult(maxNextDate, this));
         }
       } else {
         this.checkConsultationsOrFilaWithoutNextConsultationDate(
@@ -133,13 +133,14 @@ public class TxRTTPatientsWhoExperiencedIITCalculation extends BaseFghCalculatio
       resultMap.put(patientId, new BooleanResult(true, this));
     }
     //
-    //		if (calculationNextResult != null && calculationNextResult.getValue() == null) {
-    //			if (calculationLastResult != null) {
-    //				Date lastDate = (Date) calculationLastResult.getValue();
-    //				if (EptsDateUtil.getDaysBetween(lastDate, startDate) < 0) {
-    //					resultMap.put(patientId, new SimpleResult(lastDate, this));
-    //				}
-    //			}
-    //		}
+    // if (calculationNextResult != null && calculationNextResult.getValue() ==
+    // null) {
+    // if (calculationLastResult != null) {
+    // Date lastDate = (Date) calculationLastResult.getValue();
+    // if (EptsDateUtil.getDaysBetween(lastDate, startDate) < 0) {
+    // resultMap.put(patientId, new SimpleResult(lastDate, this));
+    // }
+    // }
+    // }
   }
 }

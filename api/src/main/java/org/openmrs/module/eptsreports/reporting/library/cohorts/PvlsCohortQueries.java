@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueriesInterface;
+import org.openmrs.module.eptsreports.reporting.library.queries.TxPvlsQueriesInterface.QUERY.WomanState;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -172,7 +173,8 @@ public class PvlsCohortQueries {
 
     definition.setQuery(
         TxPvlsQueriesInterface.QUERY
-            .findPregnantWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months);
+            .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
+                WomanState.PREGNANT));
 
     return definition;
   }
@@ -192,7 +194,8 @@ public class PvlsCohortQueries {
 
     definition.setQuery(
         TxPvlsQueriesInterface.QUERY
-            .findBreastfeedingWomanWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months);
+            .findWomanStateWhoHaveMoreThan3MonthsOnArtWithViralLoadRegisteredInTheLast12Months(
+                WomanState.BREASTFEEDING));
 
     return definition;
   }

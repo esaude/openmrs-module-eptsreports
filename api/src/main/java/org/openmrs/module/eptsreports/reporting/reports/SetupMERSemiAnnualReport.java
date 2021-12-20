@@ -35,6 +35,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Autowired private CxCaTXDataSet CxCaTXDataSet;
 
+  @Autowired private DatinCodeDataSet DatinCodeDataSet;
+
   @Override
   public String getExcelDesignUuid() {
     return "61fea06a-472b-11e9-8b42-876961a472ef";
@@ -52,12 +54,12 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.5 Semi-Annual";
+    return "PEPFAR MER 2.6 Semi-Annual";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR MER 2.5 Semi-Annual Report";
+    return "PEPFAR MER 2.6 Semi-Annual Report";
   }
 
   @Override
@@ -71,6 +73,9 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     rd.addDataSetDefinition("TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
     rd.addDataSetDefinition("CX", Mapped.mapStraightThrough(cxCaSCRNDataSet.constructDatset()));
     rd.addDataSetDefinition("CXT", Mapped.mapStraightThrough(CxCaTXDataSet.constructDatset()));
+    rd.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -87,8 +92,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.5_Semiannual.xls",
-              "PEPFAR MER 2.5 Semi-Annual Report",
+              "PEPFAR_MER_2.6_Semiannual.xls",
+              "PEPFAR MER 2.6 Semi-Annual Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
