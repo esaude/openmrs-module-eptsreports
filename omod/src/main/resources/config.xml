@@ -1789,6 +1789,26 @@
 	</globalProperty>
 	
 	
+	<globalProperty>
+		<property>eptsoldreports.372c26f8-b601-406d-a3db-fb78a06686c4</property>
+		<defaultValue>372c26f8-b601-406d-a3db-fb78a06686c4</defaultValue>
+		<description>Report to be deleted: LISTA DE PACIENTES NA COORTE DE TARV</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.04b24c2e-cfd9-4886-9a00-3f8d0d56b864</property>
+		<defaultValue>04b24c2e-cfd9-4886-9a00-3f8d0d56b864</defaultValue>
+		<description>Report to be Deleted: Relatorio de Populacao Chave - MISAU</description>
+	</globalProperty>
+	
+	<globalProperty>
+		<property>eptsoldreports.e36852ef-6e68-49b6-8f54-6af882acc391</property>
+		<defaultValue>e36852ef-6e68-49b6-8f54-6af882acc391</defaultValue>
+		<description>Report to be Deleted: Relatorio de Faltosos ao Levantamento de ARV</description>
+	</globalProperty>
+	
+	
+	
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService"> 
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
