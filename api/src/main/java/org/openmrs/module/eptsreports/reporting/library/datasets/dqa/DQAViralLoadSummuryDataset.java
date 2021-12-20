@@ -15,6 +15,7 @@ package org.openmrs.module.eptsreports.reporting.library.datasets.dqa;
 
 import java.util.Arrays;
 import java.util.List;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.DQACohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.BaseDataSet;
@@ -36,6 +37,7 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
   @Autowired private ResumoMensalCohortQueries resumoMensalCohortQueries;
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+  @Autowired private DQACohortQueries dQACohortQueries;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -46,11 +48,7 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
     final CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
 
     final String mappingsTxCurr = "endDate=${endDate},location=${location}";
-    final String mappingsB1M3 = "startDate=${startDate+2m},endDate=${endDate},location=${location}";
-    final String mappingsB1M2 =
-        "startDate=${startDate+1m},endDate=${startDate+2m-1d},location=${location}";
-    final String mappingsB1M1 =
-        "startDate=${startDate},endDate=${startDate+1m-1d},location=${location}";
+    final String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
 
     dsd.setName("DQA Data Set");
     dsd.addParameters(this.getParameters());
@@ -95,10 +93,10 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
             this.eptsGeneralIndicator.getIndicator(
                 "Number de Activos em TARV no fim do período de revisao (SESP - SISMA)",
                 EptsReportUtils.map(
-                    this.resumoMensalCohortQueries
-                        .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(),
-                    mappingsB1M3)),
-            mappingsB1M3),
+                    this.dQACohortQueries
+                        .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1M3(),
+                    mappings)),
+            mappings),
         this.getDQAColumns());
 
     this.addRow(
@@ -109,10 +107,10 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
             this.eptsGeneralIndicator.getIndicator(
                 "Número de Novos Inícios em TARV durante o período de revisão Resumo Mensal B1",
                 EptsReportUtils.map(
-                    this.resumoMensalCohortQueries
-                        .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(),
-                    mappingsB1M2)),
-            mappingsB1M2),
+                    this.dQACohortQueries
+                        .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1M2(),
+                    mappings)),
+            mappings),
         this.getDQAColumns());
 
     this.addRow(
@@ -123,10 +121,10 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
             this.eptsGeneralIndicator.getIndicator(
                 "Número de Novos Inícios em TARV durante o período de revisão Resumo Mensal B1",
                 EptsReportUtils.map(
-                    this.resumoMensalCohortQueries
-                        .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(),
-                    mappingsB1M1)),
-            mappingsB1M1),
+                    this.dQACohortQueries
+                        .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1M1(),
+                    mappings)),
+            mappings),
         this.getDQAColumns());
 
     dsd.addColumn(
@@ -136,10 +134,10 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral(CV) durante o mês (Notificação anual!)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2(),
-                    mappingsB1M3)),
-            mappingsB1M3),
+                    dQACohortQueries
+                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2B1M3(),
+                    mappings)),
+            mappings),
         "age=0-14");
 
     dsd.addColumn(
@@ -149,10 +147,10 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral(CV) durante o mês (Notificação anual!)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2(),
-                    mappingsB1M3)),
-            mappingsB1M3),
+                    dQACohortQueries
+                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2B1M3(),
+                    mappings)),
+            mappings),
         "age=15+");
 
     dsd.addColumn(
@@ -162,10 +160,10 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral(CV) durante o mês (Notificação anual!)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2(),
-                    mappingsB1M2)),
-            mappingsB1M2),
+                    dQACohortQueries
+                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2B1M2(),
+                    mappings)),
+            mappings),
         "age=0-14");
 
     dsd.addColumn(
@@ -175,10 +173,10 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral(CV) durante o mês (Notificação anual!)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2(),
-                    mappingsB1M2)),
-            mappingsB1M2),
+                    dQACohortQueries
+                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2B1M2(),
+                    mappings)),
+            mappings),
         "age=15+");
 
     dsd.addColumn(
@@ -188,10 +186,10 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral CV) durante o mês (Notificação anual!)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2(),
-                    mappingsB1M1)),
-            mappingsB1M1),
+                    dQACohortQueries
+                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2B1M1(),
+                    mappings)),
+            mappings),
         "age=0-14");
 
     dsd.addColumn(
@@ -201,10 +199,10 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral CV) durante o mês (Notificação anual!)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2(),
-                    mappingsB1M1)),
-            mappingsB1M1),
+                    dQACohortQueries
+                        .findPatientsWhoAreCurrentlyEnrolledOnArtMOHWithVLResultE2B1M1(),
+                    mappings)),
+            mappings),
         "age=15+");
 
     return dsd;
@@ -218,9 +216,9 @@ public class DQAViralLoadSummuryDataset extends BaseDataSet {
     ColumnParameters dqa4 =
         new ColumnParameters("10-14", "10-14 years mate", "gender=M|age=10-14", "04");
     ColumnParameters dqa5 =
-        new ColumnParameters("15-29", "15-29 years female", "gender=F|age=15-29", "05");
+        new ColumnParameters("15-19", "15-19 years female", "gender=F|age=15-19", "05");
     ColumnParameters dqa6 =
-        new ColumnParameters("15-29", "15-29 years male", "gender=M|age=15-29", "06");
+        new ColumnParameters("15-19", "15-19 years male", "gender=M|age=15-19", "06");
     ColumnParameters dqa7 =
         new ColumnParameters("20+", "20+ years female", "gender=F|age=20+", "07");
     ColumnParameters dqa8 = new ColumnParameters("20+", "20+ years male", "gender=M|age=20+", "08");

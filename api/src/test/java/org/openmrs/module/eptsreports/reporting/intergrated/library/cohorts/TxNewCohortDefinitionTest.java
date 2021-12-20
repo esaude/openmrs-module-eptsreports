@@ -9,7 +9,7 @@ import org.junit.Test;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsFGHLiveTest;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.SurveyDefaultCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.common.DateUtil;
@@ -20,17 +20,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 /** @author Stélio Moiane */
 public class TxNewCohortDefinitionTest extends DefinitionsFGHLiveTest {
 
-  @Autowired private SurveyDefaultCohortQueries surveyDefaultCohortQueries;
+  @Autowired private TxNewCohortQueries surveyDefaultCohortQueries;
 
   @Test
   public void shouldFindPatientsNewlyEnrolledInART() throws EvaluationException {
 
     final Location location = Context.getLocationService().getLocation(221);
-    final Date startDate = DateUtil.getDateTime(2021, 4, 21);
-    final Date endDate = DateUtil.getDateTime(2021, 5, 20);
+    final Date startDate = DateUtil.getDateTime(2021, 5, 21);
+    final Date endDate = DateUtil.getDateTime(2021, 6, 20);
 
     final CohortDefinition txNewCompositionCohort =
-        this.surveyDefaultCohortQueries.getPatientsWhoHaveViralLoadNotSupresed();
+        this.surveyDefaultCohortQueries.getTxNewCompositionCohort("");
 
     final Map<Parameter, Object> parameters = new HashMap<>();
 
