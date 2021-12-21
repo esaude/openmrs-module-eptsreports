@@ -28,6 +28,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
   @Autowired protected GenericCohortQueries genericCohortQueries;
   @Autowired MIDataSet miDataSet;
   @Autowired VLMIDataSet vlMIDataSet;
+  @Autowired private DatinCodeDataSet DatinCodeDataSet;
 
   @Override
   public String getUuid() {
@@ -70,6 +71,10 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
 
     reportDefinition.addDataSetDefinition(
         "VLMI", Mapped.mapStraightThrough(vlMIDataSet.constructVLMiDatset()));
+
+    reportDefinition.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
