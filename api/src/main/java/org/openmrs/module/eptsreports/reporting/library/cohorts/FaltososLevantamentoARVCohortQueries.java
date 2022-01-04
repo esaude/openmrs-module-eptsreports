@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -13,6 +10,10 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class FaltososLevantamentoARVCohortQueries {
@@ -512,6 +513,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                                          JOIN obs o ON e.encounter_id = o.encounter_id "
             + "                                          WHERE  p.voided = 0"
             + "                                            AND e.voided = 0 "
+            + "                                        AND o.voided = 0 "
             + "                                            AND e.encounter_type =  ${52} "
             + "                                            AND e.location_id = :location "
             + "                                            AND o.concept_id =  ${23866} "
@@ -594,6 +596,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                                          JOIN obs o ON e.encounter_id = o.encounter_id "
             + "                                          WHERE  p.voided = 0"
             + "                                            AND e.voided = 0 "
+            + "                                        AND o.voided = 0 "
             + "                                            AND e.encounter_type =  ${52} "
             + "                                            AND e.location_id = :location "
             + "                                            AND o.concept_id =  ${23866} "
@@ -676,7 +679,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                    AND p.voided = 0 "
             + "            ) last_pickup ON last_pickup.patient_id = scheduled_pickup.patient_id "
             + "        WHERE "
-            + "            last_pickup.pickup_date BETWEEN scheduled_pickup.recent_datetime  AND DATE_ADD(:endDate, INTERVAL 7 DAY) "
+            + "            last_pickup.pickup_date BETWEEN DATE_ADD(scheduled_pickup.recent_datetime, INTERVAL -7 DAY)  AND DATE_ADD(:endDate, INTERVAL 7 DAY) "
             + "        GROUP BY "
             + "            scheduled_pickup.patient_id "
             + "    ) first_pickup ON first_pickup.patient_id = denominator.patient_id "
@@ -753,7 +756,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                                      FROM   patient p "
             + "                                             INNER JOIN encounter e ON e.patient_id = p.patient_id "
             + "                                      WHERE  e.encounter_type = ${18} "
-            + "                                             AND e.encounter_datetime BETWEEN pickup_after.pickup_date AND DATE_ADD(:endDate, INTERVAL 7 DAY ) "
+            + "                                             AND e.encounter_datetime > pickup_after.pickup_date AND e.encounter_datetime <= DATE_ADD(:endDate, INTERVAL 7 DAY ) "
             + "                                             AND e.location_id = :location "
             + "                                             AND e.voided = 0 "
             + "                                             AND pickup_after.patient_id = p.patient_id "
@@ -768,7 +771,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                                             AND e.location_id = :location "
             + "                                             AND e.voided = 0 "
             + "                                             AND o.concept_id = ${23866} "
-            + "                                             AND o.value_datetime BETWEEN pickup_after.pickup_date AND DATE_ADD(:endDate, INTERVAL 7 DAY) "
+            + "                                             AND o.value_datetime > pickup_after.pickup_date AND o.value_datetime <= DATE_ADD(:endDate, INTERVAL 7 DAY) "
             + "                                             AND o.voided = 0 "
             + "                                             AND pickup_after.patient_id = p.patient_id "
             + "                                             AND p.voided = 0 "
@@ -1035,7 +1038,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                                                  AND p.voided = 0 "
             + "                                           GROUP  BY p.patient_id) most_recent "
             + "                                   GROUP  BY most_recent.patient_id) recent_vl ON recent_vl.patient_id = p.patient_id "
-            + "                WHERE  o.concept_id IN ( ${856}, ${1305} ) "
+            + "                WHERE  o.concept_id IN ( ${856}, ${1305} ) AND o.voided = 0"
             + "                       AND ( ( e.encounter_type IN( ${6}, ${13}, ${51} ) AND e.encounter_datetime = recent_vl.vl_datetime ) "
             + "                              OR ( e.encounter_type = ${53} AND o.obs_datetime = recent_vl.vl_datetime ) ) "
             + "                GROUP  BY p.patient_id, e.encounter_id) vl_registered "
@@ -1048,7 +1051,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                                              FROM   encounter encounter_6_51_13 "
             + "                                                     INNER JOIN obs o ON o.encounter_id = encounter_6_51_13.encounter_id "
             + "       WHERE  encounter_6_51_13.encounter_type IN ( ${6}, ${51}, ${13} ) "
-            + "       AND o.concept_id IN ( ${856}, ${1305} ) "
+            + "       AND o.concept_id IN ( ${856}, ${1305} ) AND o.voided = 0 "
             + "       AND encounter_6_51_13.encounter_datetime = vl_registered.obs_datetime "
             + "       AND encounter_6_51_13.patient_id = vl_registered.patient_id)) "
             + "       OR EXISTS (SELECT encounter_6.encounter_id "
@@ -1060,7 +1063,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "       FROM   encounter encounter_51_13 "
             + "       INNER JOIN obs o ON o.encounter_id = encounter_51_13.encounter_id "
             + "       WHERE  encounter_51_13.encounter_type IN ( ${51}, ${13}) "
-            + "       AND o.concept_id IN ( ${856}, ${1305} ) "
+            + "       AND o.concept_id IN ( ${856}, ${1305} ) AND o.voided = 0 "
             + "       AND encounter_51_13.encounter_datetime = vl_registered.encounter_datetime "
             + "       AND encounter_51_13.patient_id = vl_registered.patient_id )) "
             + "       OR EXISTS (SELECT encounter_51.encounter_id "
@@ -1072,7 +1075,7 @@ public class FaltososLevantamentoARVCohortQueries {
             + "       FROM   encounter encounter_13 "
             + "       INNER JOIN obs o ON o.encounter_id = encounter_13.encounter_id "
             + "       WHERE  encounter_13.encounter_type = ${13} "
-            + "       AND o.concept_id IN ( ${856}, ${1305} ) "
+            + "       AND o.concept_id IN ( ${856}, ${1305} ) AND o.voided = 0 "
             + "       AND encounter_13.encounter_datetime = vl_registered.encounter_datetime "
             + "       AND encounter_13.patient_id = vl_registered.patient_id)) "
             + "       OR EXISTS (SELECT encounter_13.encounter_id "
