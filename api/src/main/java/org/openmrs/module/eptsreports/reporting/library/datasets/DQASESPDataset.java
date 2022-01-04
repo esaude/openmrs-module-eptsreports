@@ -74,7 +74,7 @@ public class DQASESPDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Número de Activos em TARV no fim do período de revisão (SESP - SISMA)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(true),
+                    resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
                     mappings)),
             mappings),
         getDisaggregations());
@@ -209,20 +209,20 @@ public class DQASESPDataset extends BaseDataSet {
                 .and(DimensionKeyForAge.between10And14Years)
                 .getDimensions(),
             "04");
-    ColumnParameters between15And29YearsF =
+    ColumnParameters between15And19YearsF =
         new ColumnParameters(
-            "between15And29YearsF",
-            "15-29 Female",
+            "between15And19YearsF",
+            "15-19 Female",
             EptsCommonDimensionKey.of(DimensionKeyForGender.female)
-                .and(DimensionKeyForAge.between15And29Years)
+                .and(DimensionKeyForAge.between15And19Years)
                 .getDimensions(),
             "05");
-    ColumnParameters between15And29YearsM =
+    ColumnParameters between15And19YearsM =
         new ColumnParameters(
-            "between15And29YearsM",
-            "15-29 Male",
+            "between15And19YearsM",
+            "15-19 Male",
             EptsCommonDimensionKey.of(DimensionKeyForGender.male)
-                .and(DimensionKeyForAge.between15And29Years)
+                .and(DimensionKeyForAge.between15And19Years)
                 .getDimensions(),
             "06");
     ColumnParameters overOrEqualTo20YearsF =
@@ -247,8 +247,8 @@ public class DQASESPDataset extends BaseDataSet {
         between5And9Years,
         between10And14YearsF,
         between10And14YearsM,
-        between15And29YearsF,
-        between15And29YearsM,
+        between15And19YearsF,
+        between15And19YearsM,
         overOrEqualTo20YearsF,
         overOrEqualTo20YearsM);
   }
