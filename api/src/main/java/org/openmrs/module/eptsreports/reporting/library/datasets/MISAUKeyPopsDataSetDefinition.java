@@ -244,7 +244,7 @@ public class MISAUKeyPopsDataSetDefinition extends BaseDataSet {
         "VLSUPCSW",
         "VLSUP: Female sex workers",
         EptsReportUtils.map(getPatientsARTWithVLSuppressionIndicator, mappings),
-        getColumnForMSM());
+        getColumnForCSW());
 
     // Adult patients with viral load supression - PRI
     addRow(

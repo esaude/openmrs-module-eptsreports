@@ -171,15 +171,28 @@ public class MISAUKeyPopsCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition patientsStartedARTInLast12Months = resumoTrimestralCohortQueries.getA();
+    CohortDefinition a = resumoTrimestralCohortQueries.getA();
+
+    CohortDefinition b = resumoTrimestralCohortQueries.getB();
+
+    CohortDefinition c = resumoTrimestralCohortQueries.getC();
 
     cd.addSearch(
-        "patientsStartedARTInLast12Months",
+        "A",
         EptsReportUtils.map(
-            patientsStartedARTInLast12Months,
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            a, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
-    cd.setCompositionString("patientsStartedARTInLast12Months");
+    cd.addSearch(
+        "B",
+        EptsReportUtils.map(
+            b, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(
+            c, "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.setCompositionString("((A OR B) AND NOT C)");
     return cd;
   }
 
@@ -238,7 +251,7 @@ public class MISAUKeyPopsCohortQueries {
         "B1SIXMONTHS",
         EptsReportUtils.map(
             getPatientsInART(),
-            "startDate=${startDate-7m},endDate=${startDate-4},location=${location}"));
+            "startDate=${startDate-7m},endDate=${startDate-4m},location=${location}"));
     cd.addSearch(
         "ADULTS",
         EptsReportUtils.map(

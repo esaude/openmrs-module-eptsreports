@@ -145,6 +145,7 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("                                       ON e.encounter_id = o.encounter_id ");
     q.append("                         WHERE p.voided = 0 ");
     q.append("                           AND e.voided = 0 ");
+    q.append("                           AND o.voided = 0 ");
     q.append("                           AND e.encounter_type = :mcDrugPickup ");
     q.append("                           AND e.location_id = :location ");
     q.append("                           AND o.concept_id = :drugPickup ");
