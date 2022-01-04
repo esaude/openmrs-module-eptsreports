@@ -133,7 +133,7 @@ public class TxPvlsBySourceDataset extends BaseDataSet {
                 "viral load results on target adults and children based on Lab or FSR",
                 EptsReportUtils.map(
                     txPvlsBySourceLabOrFsrCohortQueries
-                        .getPatientsWhoAreOnTargetForLabAndFsrDenominator(),
+                        .getPatientsWhoAreOnTargetForFsrDenominator(),
                     mappings)),
             mappings),
         getAdultChildrenColumns());

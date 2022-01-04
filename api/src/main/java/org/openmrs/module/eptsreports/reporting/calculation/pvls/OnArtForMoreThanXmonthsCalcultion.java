@@ -118,7 +118,7 @@ public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculatio
   }
 
   private boolean isAtLeastThreeMonthsLater(Date artStartDate, Date lastVlDate) {
-    Date threeMonthsLater = EptsCalculationUtils.addMonths(artStartDate, 3);
+    Date threeMonthsLater = EptsCalculationUtils.addDays(artStartDate, 90);
     return lastVlDate.compareTo(threeMonthsLater) >= 0;
   }
 

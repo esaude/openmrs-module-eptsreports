@@ -58,6 +58,9 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
 
+    List<EncounterType> encounterTypeList =
+        (List<EncounterType>) parameterValues.get("encounterList");
+
     EncounterType adultFollowup = hivMetadata.getAdultoSeguimentoEncounterType();
     EncounterType fichaResumoEncounterType = hivMetadata.getMasterCardEncounterType();
     EncounterType adultInitial = hivMetadata.getARVAdultInitialEncounterType();
@@ -167,10 +170,22 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap lastHivVl =
         ePTSCalculationService.lastObs(
-            null, viralLoadConcept, location, oneYearBefore, onOrBefore, cohort, context);
+            encounterTypeList,
+            viralLoadConcept,
+            location,
+            oneYearBefore,
+            onOrBefore,
+            cohort,
+            context);
     CalculationResultMap lastHivVlQualitative =
         ePTSCalculationService.lastObs(
-            null, hivViraloadQualitative, location, oneYearBefore, onOrBefore, cohort, context);
+            encounterTypeList,
+            hivViraloadQualitative,
+            location,
+            oneYearBefore,
+            onOrBefore,
+            cohort,
+            context);
 
     for (Integer pId : cohort) {
 

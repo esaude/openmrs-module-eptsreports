@@ -161,7 +161,10 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
         "breastfeeding",
         EptsReportUtils.map(
             txPvlsCohortQueries.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
+                EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN,
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -191,7 +194,10 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
         "breastfeeding",
         EptsReportUtils.map(
             txPvlsCohortQueries.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
+                EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN,
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -225,7 +231,10 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
         "pregnant",
         EptsReportUtils.map(
             txPvlsCohortQueries.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
+                EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN,
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("suppression AND pregnant");
     return cd;
@@ -251,7 +260,10 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
         "pregnant",
         EptsReportUtils.map(
             txPvlsCohortQueries.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
+                EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN,
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("results AND pregnant");
     return cd;
@@ -309,14 +321,29 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
     return cd;
   }
 
+  private CohortDefinition getPatientsOnTargetByFsr() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Get patients on target using FSR encounter type");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(
+        TxPvlsBySourceQueries.getPatientsOnTargetWithViralLoadTestsUsingFsr(
+            hivMetadata.getFsrEncounterType().getEncounterTypeId(),
+            hivMetadata.getReasonForRequestingViralLoadConcept().getConceptId(),
+            hivMetadata.getRoutineForRequestingViralLoadConcept().getConceptId(),
+            hivMetadata.getUnkownConcept().getConceptId()));
+    return cd;
+  }
+
   /**
    * <b>Description</b> Get patients who are on target Composition
    *
    * @return CohortDefinition
    */
-  public CohortDefinition getPatientsWhoAreOnTargetForLabAndFsrDenominator() {
+  public CohortDefinition getPatientsWhoAreOnTargetForFsrDenominator() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("All patients on Target");
+    cd.setName("All patients on Target based on FSR form");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
@@ -326,11 +353,11 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
             getPatientsViralLoadWithin12MonthsForLabAndFsrDenominator(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "routine",
+        "target",
         EptsReportUtils.map(
-            getPatientsWithViralLoadResultsAndOnRoutineForLabAndFsrDenominator(),
+            getPatientsOnTargetByFsr(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("results AND NOT routine");
+    cd.setCompositionString("results AND target");
     return cd;
   }
 

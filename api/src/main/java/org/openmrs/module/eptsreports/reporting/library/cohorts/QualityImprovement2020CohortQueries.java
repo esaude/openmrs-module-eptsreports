@@ -6735,13 +6735,13 @@ public class QualityImprovement2020CohortQueries {
         "A1",
         EptsReportUtils.map(
             txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
+                EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "A2",
         EptsReportUtils.map(
             txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
+                EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
     if (flag == 1 || flag == 2) {
       cd.setCompositionString("A AND NOT (A1 OR A2)");
@@ -6800,13 +6800,13 @@ public class QualityImprovement2020CohortQueries {
         "B1",
         EptsReportUtils.map(
             txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
+                EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B2",
         EptsReportUtils.map(
             txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
+                EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
     if (flag == 1 || flag == 2) {
       cd.setCompositionString("B AND NOT (B1 OR B2)");

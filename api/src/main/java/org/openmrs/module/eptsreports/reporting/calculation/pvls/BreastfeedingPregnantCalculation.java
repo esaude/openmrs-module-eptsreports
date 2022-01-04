@@ -2,8 +2,10 @@ package org.openmrs.module.eptsreports.reporting.calculation.pvls;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -27,21 +29,36 @@ public class BreastfeedingPregnantCalculation extends AbstractPatientCalculation
       Collection<Integer> cohort,
       Map<String, Object> parameterValues,
       PatientCalculationContext context) {
+    List<EncounterType> encounterTypeList =
+        (List<EncounterType>) parameterValues.get("encounterTypeList");
+    parameterValues.put("encounterList", encounterTypeList);
 
     // External Dependencies
-    PregnantDateCalculation pregnantDateCalculation =
+    CalculationResultMap pregnantDateMap =
+        calculate(
+            Context.getRegisteredComponents(PregnantDateCalculation.class).get(0),
+            cohort,
+            parameterValues,
+            context);
+    CalculationResultMap breastfeedingDateMap =
+        calculate(
+            Context.getRegisteredComponents(BreastfeedingDateCalculation.class).get(0),
+            cohort,
+            parameterValues,
+            context);
+    /*PregnantDateCalculation pregnantDateCalculation =
         Context.getRegisteredComponents(PregnantDateCalculation.class).get(0);
     BreastfeedingDateCalculation breastfeedingDateCalculation =
-        Context.getRegisteredComponents(BreastfeedingDateCalculation.class).get(0);
+        Context.getRegisteredComponents(BreastfeedingDateCalculation.class).get(0);*/
 
     CalculationResultMap resultMap = new CalculationResultMap();
 
     PregnantOrBreastfeedingWomen state =
         (PregnantOrBreastfeedingWomen) parameterValues.get("state");
 
-    CalculationResultMap pregnantDateMap = calculate(pregnantDateCalculation, cohort, context);
+    /*CalculationResultMap pregnantDateMap = calculate(pregnantDateCalculation, cohort, context);
     CalculationResultMap breastfeedingDateMap =
-        calculate(breastfeedingDateCalculation, cohort, context);
+        calculate(breastfeedingDateCalculation, cohort, context);*/
     // get female patients only
     Set<Integer> femaleCohort = EptsCalculationUtils.female(cohort, context);
     for (Integer ptId : cohort) {

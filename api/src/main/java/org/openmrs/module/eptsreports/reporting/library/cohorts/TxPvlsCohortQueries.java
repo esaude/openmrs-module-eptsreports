@@ -82,7 +82,7 @@ public class TxPvlsCohortQueries {
         "breastfeeding",
         EptsReportUtils.map(
             getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
+                PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -112,7 +112,7 @@ public class TxPvlsCohortQueries {
         "breastfeeding",
         EptsReportUtils.map(
             getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN),
+                PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -393,7 +393,7 @@ public class TxPvlsCohortQueries {
         "pregnant",
         EptsReportUtils.map(
             this.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
+                PregnantOrBreastfeedingWomen.PREGNANTWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("suppression AND pregnant");
     return cd;
@@ -418,7 +418,7 @@ public class TxPvlsCohortQueries {
         "pregnant",
         EptsReportUtils.map(
             this.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                PregnantOrBreastfeedingWomen.PREGNANTWOMEN),
+                PregnantOrBreastfeedingWomen.PREGNANTWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("results AND pregnant");
     return cd;
@@ -431,7 +431,7 @@ public class TxPvlsCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-      PregnantOrBreastfeedingWomen state) {
+      PregnantOrBreastfeedingWomen state, List<EncounterType> encounterTypeList) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             "pregnantBreastfeeding",
@@ -440,6 +440,7 @@ public class TxPvlsCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "On or before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("state", state);
+    cd.addCalculationParameter("encounterTypeList", encounterTypeList);
 
     return cd;
   }

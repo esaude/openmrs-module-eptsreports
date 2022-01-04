@@ -53,6 +53,9 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
     EncounterType fichaResumoEncounterType = hivMetadata.getMasterCardEncounterType();
     EncounterType fsrEncounterType = hivMetadata.getFsrEncounterType();
 
+    List<EncounterType> encounterTypeList =
+        (List<EncounterType>) parameterValues.get("encounterList");
+
     Concept breastfeedingConcept = hivMetadata.getBreastfeeding();
     Concept yes = hivMetadata.getYesConcept();
     Concept criteriaForHivStart = hivMetadata.getCriteriaForArtStart();
@@ -113,10 +116,22 @@ public class BreastfeedingDateCalculation extends AbstractPatientCalculation {
 
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
-            null, viralLoadConcept, location, oneYearBefore, onOrBefore, cohort, context);
+            encounterTypeList,
+            viralLoadConcept,
+            location,
+            oneYearBefore,
+            onOrBefore,
+            cohort,
+            context);
     CalculationResultMap lastHivVlQualitative =
         ePTSCalculationService.lastObs(
-            null, hivViraloadQualitative, location, oneYearBefore, onOrBefore, cohort, context);
+            encounterTypeList,
+            hivViraloadQualitative,
+            location,
+            oneYearBefore,
+            onOrBefore,
+            cohort,
+            context);
 
     CalculationResultMap startArtBeingBpostiveMap =
         ePTSCalculationService.getObs(
