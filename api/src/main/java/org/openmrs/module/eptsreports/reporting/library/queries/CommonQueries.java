@@ -761,7 +761,7 @@ public class CommonQueries {
             + " AND e.location_id = :location "
             + " AND o.value_datetime <= :endDate "
             + " AND e.voided = 0 "
-            + " AND p.voided = 0 "
+            + " AND p.voided = 0 AND o.voided = 0"
             + " GROUP BY p.patient_id "
             + " UNION "
             + " SELECT p.patient_id, ps.start_date AS first_pickup "

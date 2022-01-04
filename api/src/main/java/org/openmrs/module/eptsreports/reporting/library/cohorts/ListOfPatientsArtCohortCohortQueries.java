@@ -51,6 +51,30 @@ public class ListOfPatientsArtCohortCohortQueries {
   }
 
   /**
+   * <b> 4 - Idade </b>
+   *
+   * @return
+   */
+  public DataDefinition getAge() {
+
+    SqlPatientDataDefinition spdd = new SqlPatientDataDefinition();
+
+    spdd.setName("Patient Age at Reporting Evaluation Date");
+    spdd.addParameter(new Parameter("evaluationDate", "evaluationDate", Date.class));
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+
+    String sql =
+        "SELECT p.patient_id, ROUND(DATEDIFF(:evaluationDate,ps.birthdate)/365) AS age FROM patient p "
+            + "    INNER JOIN person ps ON p.patient_id=ps.person_id WHERE p.voided=0 AND ps.voided=0";
+
+    StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
+
+    spdd.setQuery(substitutor.replace(sql));
+    return spdd;
+  }
+
+  /**
    * <b>10 - Last Drug Pick-up Date on Ficha Mestre </b>
    *
    * <blockquote>
@@ -148,6 +172,74 @@ public class ListOfPatientsArtCohortCohortQueries {
   }
 
   /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <p>Print the “Data da próxima consulta” (concept id 1410, value_datetime) of the most recent
+   * clinical consultation registered on Ficha Clínica – MasterCard or Ficha de Seguimento
+   * (encounter type 6 or 9) until report start date (encounter_datetime <= evaluationDate)
+   *
+   * </blockquote>
+   *
+   * @return {@link DataDefinition}
+   */
+  public DataDefinition getPatientsAndNextFollowUpConsultationDate() {
+
+    SqlPatientDataDefinition sqlPatientDataDefinition = new SqlPatientDataDefinition();
+    sqlPatientDataDefinition.setName("Next Follow up Consultation Date");
+    sqlPatientDataDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
+    sqlPatientDataDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put("1410", hivMetadata.getReturnVisitDateConcept().getConceptId());
+
+    String query =
+        "SELECT     p.patient_id, "
+            + "           Max(o.value_datetime) AS next_consultation "
+            + " FROM       patient p "
+            + " INNER JOIN encounter e "
+            + " ON         p.patient_id = e.patient_id "
+            + " INNER JOIN obs o "
+            + " ON         e.encounter_id = o.encounter_id "
+            + " INNER JOIN "
+            + "           ( "
+            + "                      SELECT     p.patient_id, "
+            + "                                 Max(e.encounter_datetime) AS last_consultation_date "
+            + "                      FROM       patient p "
+            + "                      INNER JOIN encounter e "
+            + "                      ON         e.patient_id = p.patient_id "
+            + "                      INNER JOIN obs o "
+            + "                      ON         o.encounter_id = e.encounter_id "
+            + "                      WHERE      e.encounter_type IN(${6}, "
+            + "                                                     ${9}) "
+            + "                      AND        e.encounter_datetime <= :endDate "
+            + "                      AND        e.location_id = :location "
+            + "                      AND        e.voided = 0 "
+            + "                      AND        p.voided = 0 "
+            + "                      AND        o.voided = 0 "
+            + "                      GROUP BY   p.patient_id ) last "
+            + " ON         last.patient_id = p.patient_id "
+            + " WHERE      e.encounter_type IN(${6}, "
+            + "                               ${9}) "
+            + " AND        e.encounter_datetime = last.last_consultation_date "
+            + "AND        e.location_id = :location "
+            + " AND        o.concept_id = ${1410} "
+            + " AND        e.voided = 0 "
+            + " AND        p.voided = 0 "
+            + " AND        o.voided = 0 "
+            + " GROUP BY   p.patient_id";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
+
+    sqlPatientDataDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlPatientDataDefinition;
+  }
+
+  /**
    * <b>14 - Last state on Program Enrollment</b>
    *
    * <p>Select the most recent state for patients enrolled on program ARV (program id =2) and
@@ -191,13 +283,13 @@ public class ListOfPatientsArtCohortCohortQueries {
             + "                          INNER JOIN patient_state ps"
             + "                                  ON pg.patient_program_id ="
             + "                                     ps.patient_program_id"
-            + "                   WHERE  pg.program_id = ${2}"
+            + "                   WHERE  pg.program_id = ${2} AND pg.voided = 0 AND ps.voided = 0 "
             + "                          AND ps.start_date < :startDate"
             + "                      AND pg.location_id= :location "
             + "                   GROUP  BY p.patient_id)most_recent"
             + "               ON most_recent.patient_id = p.patient_id"
             + " WHERE  ps.start_date = most_recent.start_date"
-            + "       AND pg.location_id= :location "
+            + "       AND pg.location_id= :location AND pg.voided = 0 AND ps.voided = 0 "
             + "                          AND ps.state IN ( ${7}, ${8}, ${9}, ${10} )"
             + "       AND pg.program_id = ${2}";
 
@@ -253,13 +345,13 @@ public class ListOfPatientsArtCohortCohortQueries {
             + "                          INNER JOIN patient_state ps"
             + "                                  ON pg.patient_program_id ="
             + "                                     ps.patient_program_id"
-            + "                   WHERE  pg.program_id = ${2}"
+            + "                   WHERE  pg.program_id = ${2} AND pg.voided = 0 AND ps.voided = 0 "
             + "                          AND ps.start_date < :startDate"
             + "                      AND pg.location_id= :location "
             + "                   GROUP  BY p.patient_id)most_recent"
             + "               ON most_recent.patient_id = p.patient_id"
             + " WHERE  ps.start_date = most_recent.start_date"
-            + "       AND pg.location_id= :location "
+            + "       AND pg.location_id= :location AND pg.voided = 0 AND ps.voided = 0 "
             + "                          AND ps.state IN ( ${7}, ${8}, ${9}, ${10} )"
             + "       AND pg.program_id = ${2}";
 

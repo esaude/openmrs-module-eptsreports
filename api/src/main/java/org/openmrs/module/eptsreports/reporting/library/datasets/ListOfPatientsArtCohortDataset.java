@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
@@ -24,6 +21,10 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class ListOfPatientsArtCohortDataset extends BaseDataSet {
@@ -82,7 +83,6 @@ public class ListOfPatientsArtCohortDataset extends BaseDataSet {
     pdd.addRowFilter(
         listOfPatientsArtCohortCohortQueries.getPatientsInitiatedART(),
         "startDate=${startDate},endDate=${endDate},location=${location}");
-
     // 1- NID sheet 1 - Column A
     pdd.addColumn(
         "nid",
@@ -98,8 +98,8 @@ public class ListOfPatientsArtCohortDataset extends BaseDataSet {
     // 4 - Idade - Sheet 1: Column D
     pdd.addColumn(
         "age",
-        listChildrenOnARTandFormulationsDataset.getAge(),
-        "endDate=${evaluationDate}",
+        listOfPatientsArtCohortCohortQueries.getAge(),
+        "evaluationDate=${evaluationDate}",
         new NotApplicableIfNullConverter());
 
     // 5 - Data Inicio Tarv - Sheet 1: Column E
@@ -162,9 +162,8 @@ public class ListOfPatientsArtCohortDataset extends BaseDataSet {
     // 13 - Next Follow up Consultation Date - Sheet 1: Column M
     pdd.addColumn(
         "nextfollowup",
-        listOfPatientsEligibleForVLDataDefinitionQueries
-            .getPatientsAndNextFollowUpConsultationDate(),
-        "startDate=${evaluationDate},location=${location}",
+        listOfPatientsArtCohortCohortQueries.getPatientsAndNextFollowUpConsultationDate(),
+        "endDate=${evaluationDate},location=${location}",
         null);
 
     // 14 - Last state on Program Enrollment - Sheet 1: Column N
