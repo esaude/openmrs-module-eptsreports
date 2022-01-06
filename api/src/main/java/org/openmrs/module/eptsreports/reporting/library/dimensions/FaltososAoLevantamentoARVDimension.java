@@ -2,9 +2,9 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
 import java.util.Date;
 import org.openmrs.Location;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.FaltososAoLevantamentoARVCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.SurveyDefaultCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.queries.SurveyDefaultQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.FaltososAoLevantamentoARVQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.eptsreports.reporting.utils.TypePTV;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
@@ -13,10 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SurveyDefaultDimentions {
+public class FaltososAoLevantamentoARVDimension {
 
   @Autowired GenericCohortQueries genericCohortQueries;
-  @Autowired SurveyDefaultCohortQueries surveyDefaultCohortQueries;
+  @Autowired FaltososAoLevantamentoARVCohortQueries faltososAoLevantamentoARVCohortQueries;
 
   public CohortDefinitionDimension getDefaultersDimentions() {
 
@@ -34,7 +34,7 @@ public class SurveyDefaultDimentions {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "BREASTFEEDING",
-                SurveyDefaultQueries.getPatientsWhoArePregnantOrBreastfeeding(
+                FaltososAoLevantamentoARVQueries.getPatientsWhoArePregnantOrBreastfeeding(
                     TypePTV.BREASTFEEDING)),
             mappings));
 
@@ -43,20 +43,21 @@ public class SurveyDefaultDimentions {
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "PREGNANT",
-                SurveyDefaultQueries.getPatientsWhoArePregnantOrBreastfeeding(TypePTV.PREGNANT)),
+                FaltososAoLevantamentoARVQueries.getPatientsWhoArePregnantOrBreastfeeding(
+                    TypePTV.PREGNANT)),
             mappings));
 
     dimension.addCohortDefinition(
         "CV",
         EptsReportUtils.map(
-            surveyDefaultCohortQueries.getPatientsWithoutSurpressedViralLoad(),
+            faltososAoLevantamentoARVCohortQueries.getPatientsWithoutSurpressedViralLoad(),
             "endDate=${endDate},location=${location}"));
 
     dimension.addCohortDefinition(
         "APSS",
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
-                "APSS", SurveyDefaultQueries.getPatientsWhoHaveAPSSConsultation()),
+                "APSS", FaltososAoLevantamentoARVQueries.getPatientsWhoHaveAPSSConsultation()),
             mappings));
 
     return dimension;

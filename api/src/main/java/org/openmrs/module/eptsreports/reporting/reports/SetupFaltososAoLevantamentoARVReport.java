@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.SurveyDefaultDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.FaltososAoLevantamentoARVDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -20,11 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
+public class SetupFaltososAoLevantamentoARVReport extends EptsDataExportManager {
 
-  @Autowired private SurveyDefaultDataSet SurveyDefaultDataSet;
+  @Autowired private FaltososAoLevantamentoARVDataSet faltososAoLevantamentoARVDataSet;
   @Autowired private GenericCohortQueries genericCohortQueries;
-  @Autowired private DatinCodeDataSet DatinCodeDataSet;
+  @Autowired private DatinCodeDataSet datimCodeDataSet;
 
   @Override
   public String getExcelDesignUuid() {
@@ -59,12 +59,12 @@ public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
     rd.setDescription(getDescription());
     rd.setParameters(this.getDataParameters());
     rd.addDataSetDefinition(
-        "FL", Mapped.mapStraightThrough(SurveyDefaultDataSet.constructDatset()));
+        "FL", Mapped.mapStraightThrough(faltososAoLevantamentoARVDataSet.constructDatset()));
 
     rd.addDataSetDefinition(
         "D",
         Mapped.mapStraightThrough(
-            this.DatinCodeDataSet.constructDataset(this.getDataParameters())));
+            this.datimCodeDataSet.constructDataset(this.getDataParameters())));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -81,8 +81,8 @@ public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "FALTOSOS.xls",
-              "Relatório de Faltosos ao Levantamento de ARV - MISAU",
+              "Faltosos_ao_levantamento_arv.xls",
+              "Relatorio de Faltosos ao Levantamento de ARV - MISAU",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();

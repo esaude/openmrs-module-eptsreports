@@ -2,7 +2,7 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.queries.SurveyDefaultQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.FaltososAoLevantamentoARVQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsQuerysUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -13,11 +13,13 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SurveyDefaultCohortQueries {
+public class FaltososAoLevantamentoARVCohortQueries {
 
-  private static final String DEFAULTERS = "DEFAULTERS/defaulters.sql";
+  private static final String PACIENTES_FALTOSOS_AO_LEVANTAMENTO =
+      "FALTOSOS_LEVANTAMENTO_ARV/pacientes_faltosos_ao_levantamento_arv.sql";
 
-  private static final String PATIENTS_WITHOUT_SURPRESSED_VIRAL_LOAD = "DEFAULTERS/cv.sql";
+  private static final String PACIENTES_SEM_SUPRESSAO_CARGA_VIRAL =
+      "FALTOSOS_LEVANTAMENTO_ARV/pacientes_sem_supressao_viral.sql";
 
   @DocumentedDefinition(value = "findPatientswhoHaveScheduledAppointmentsDuringReportingPeriod")
   public CohortDefinition findPatientswhoHaveScheduledAppointmentsDuringReportingPeriod() {
@@ -29,7 +31,8 @@ public class SurveyDefaultCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     definition.setQuery(
-        SurveyDefaultQueries.findPatientswhoHaveScheduledAppointmentsDuringReportingPeriod());
+        FaltososAoLevantamentoARVQueries
+            .findPatientswhoHaveScheduledAppointmentsDuringReportingPeriod());
 
     return definition;
   }
@@ -44,7 +47,8 @@ public class SurveyDefaultCohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        SurveyDefaultQueries.getPatientsTransferredFromAnotherHealthFacilityUntilEndDate();
+        FaltososAoLevantamentoARVQueries
+            .getPatientsTransferredFromAnotherHealthFacilityUntilEndDate();
     definition.setQuery(query);
 
     return definition;
@@ -59,7 +63,7 @@ public class SurveyDefaultCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query = SurveyDefaultQueries.getPatientsWhoDied();
+    String query = FaltososAoLevantamentoARVQueries.getPatientsWhoDied();
     definition.setQuery(query);
 
     return definition;
@@ -74,7 +78,7 @@ public class SurveyDefaultCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query = SurveyDefaultQueries.getPatientsWhoSuspendTratment();
+    String query = FaltososAoLevantamentoARVQueries.getPatientsWhoSuspendTratment();
     definition.setQuery(query);
 
     return definition;
@@ -90,7 +94,7 @@ public class SurveyDefaultCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query = EptsQuerysUtils.loadQuery(DEFAULTERS);
+    String query = EptsQuerysUtils.loadQuery(PACIENTES_FALTOSOS_AO_LEVANTAMENTO);
     definition.setQuery(query);
 
     return definition;
@@ -107,7 +111,7 @@ public class SurveyDefaultCohortQueries {
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
     String query =
-        SurveyDefaultQueries
+        FaltososAoLevantamentoARVQueries
             .findPatientswhoHaveScheduledAppointmentsDuringReportingPeriodNumeratorC();
     definition.setQuery(query);
 
@@ -144,7 +148,7 @@ public class SurveyDefaultCohortQueries {
     return definition;
   }
 
-  public CohortDefinition getTotalNun() {
+  private CohortDefinition getTotalNun() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
     definition.setName("getTotalNumerator");
@@ -198,7 +202,7 @@ public class SurveyDefaultCohortQueries {
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "Location", Location.class));
 
-    String query = EptsQuerysUtils.loadQuery(PATIENTS_WITHOUT_SURPRESSED_VIRAL_LOAD);
+    String query = EptsQuerysUtils.loadQuery(PACIENTES_SEM_SUPRESSAO_CARGA_VIRAL);
 
     definition.setQuery(query);
 
