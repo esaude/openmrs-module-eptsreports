@@ -2,9 +2,6 @@ package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.calculation.defaulters.SurveyDefaultersCalculation;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.BaseFghCalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.SurveyDefaultQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsQuerysUtils;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -19,6 +16,8 @@ import org.springframework.stereotype.Component;
 public class SurveyDefaultCohortQueries {
 
   private static final String DEFAULTERS = "DEFAULTERS/defaulters.sql";
+
+  private static final String PATIENTS_WITHOUT_SURPRESSED_VIRAL_LOAD = "DEFAULTERS/cv.sql";
 
   @DocumentedDefinition(value = "findPatientswhoHaveScheduledAppointmentsDuringReportingPeriod")
   public CohortDefinition findPatientswhoHaveScheduledAppointmentsDuringReportingPeriod() {
@@ -115,19 +114,6 @@ public class SurveyDefaultCohortQueries {
     return definition;
   }
 
-  @DocumentedDefinition(value = "CV")
-  public CohortDefinition getPatientsWhoHaveViralLoadNotSupresed() {
-
-    BaseFghCalculationCohortDefinition cd =
-        new BaseFghCalculationCohortDefinition(
-            "CV", Context.getRegisteredComponents(SurveyDefaultersCalculation.class).get(0));
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "end Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    return cd;
-  }
-
   public CohortDefinition getTotalDenominator() {
     final CompositionCohortDefinition definition = new CompositionCohortDefinition();
 
@@ -200,6 +186,21 @@ public class SurveyDefaultCohortQueries {
     definition.addSearch("NUMERATOR", EptsReportUtils.map(this.getTotalNun(), mappings));
 
     definition.setCompositionString("(DENOMINATOR AND NUMERATOR");
+
+    return definition;
+  }
+
+  @DocumentedDefinition(value = "patientsWithoutSupressedViralLoad")
+  public CohortDefinition getPatientsWithoutSurpressedViralLoad() {
+
+    final SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientsWithoutSupressedViralLoad");
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String query = EptsQuerysUtils.loadQuery(PATIENTS_WITHOUT_SURPRESSED_VIRAL_LOAD);
+
+    definition.setQuery(query);
 
     return definition;
   }

@@ -49,7 +49,8 @@ public class SurveyDefaultDimentions {
     dimension.addCohortDefinition(
         "CV",
         EptsReportUtils.map(
-            surveyDefaultCohortQueries.getPatientsWhoHaveViralLoadNotSupresed(), mappings));
+            surveyDefaultCohortQueries.getPatientsWithoutSurpressedViralLoad(),
+            "endDate=${endDate},location=${location}"));
 
     dimension.addCohortDefinition(
         "APSS",
