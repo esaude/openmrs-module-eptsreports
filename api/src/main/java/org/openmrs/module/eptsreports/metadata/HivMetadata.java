@@ -4427,4 +4427,132 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.confidentConsentDateUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id =165296 </b>
+   *
+   * <p><b>Name:</b>Initial Status of the PrEP User
+   *
+   * @return {@link Concept}
+   */
+  public Concept getInitialStatusPrepUserConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.initialStatusPrepUserUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =165211 </b>
+   *
+   * <p><b>Name:</b>PREP START DATE Concept
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPrepStartDateConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.prepStartDateUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =1594 </b>
+   *
+   * <p><b>Name:</b>ENTRY POINT INTO HIV CARE, REFERAL TYPE / PROVENIENCIA, TIPO
+   *
+   * @return {@link Concept}
+   */
+  public Concept getReferalTypeConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.referalTypeUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =1369 </b>
+   *
+   * <p><b>Name:</b>TRANSFER FROM OTHER FACILITY
+   *
+   * @return {@link Concept}
+   */
+  public Concept getTransferredFromOtherFacilityConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.transferredFromOtherFacilityUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =76 </b>
+   *
+   * <p><b>Name:</b>State of Stay on PrEP Program
+   *
+   * @return {@link Concept}
+   */
+  public Concept getStateOfStayOnPrepProgram() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.stateOfStayOnPrepProgramUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>program_id = 25 </b>
+   *
+   * <p><b>Name:</b> PREP
+   *
+   * <p><b>Description:</b> Profilaxia Pre Exposicao
+   *
+   * @return {@link Program}
+   */
+  public Program getPrepProgram() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.prepProgramUuid");
+    return getProgram(uuid);
+  }
+
+  /**
+   * <b>encounterType_id = 80</b>
+   *
+   * <p><b>Name:</b> PREP: PROFILAXIA PRE-EXPOSICAO - INICIAL
+   *
+   * <p><b>Description:</b> REGISTO PREP: PROFLAXIA PRÉ-EXPOSIÇÃO
+   *
+   * @return {@link EncounterType}
+   */
+  public EncounterType getPrepInicialEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.prepInicialEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
+
+  /**
+   * <b>encounterType_id = 81</b>
+   *
+   * <p><b>Name:</b> PREP: PROFILAXIA PRE-EXPOSICAO - SEGUIMENTO
+   *
+   * <p><b>Description:</b> REGISTO PREP: PROFLAXIA PRÉ-EXPOSIÇÃO
+   *
+   * @return {@link EncounterType}
+   */
+  public EncounterType getPrepSeguimentoEncounterType() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.prepSeguimentoEncounterTypeUuid");
+    return getEncounterType(uuid);
+  }
+
+  /**
+   * <b>concept_id =165205 </b>
+   *
+   * <p><b>Name:</b>TRANSGENDER
+   *
+   * @return {@link Concept}
+   */
+  public Concept getTransGenderConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.transGenderUuid");
+    return getConcept(uuid);
+  }
 }

@@ -1,18 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.generic;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import org.openmrs.Concept;
-import org.openmrs.EncounterType;
-import org.openmrs.Location;
-import org.openmrs.Obs;
-import org.openmrs.PersonAttribute;
-import org.openmrs.PersonAttributeType;
+import java.util.*;
+import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
@@ -35,14 +24,17 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
   enum KeyPopSource {
     PERSON_ATTRIBUTE,
     APSS_FORM,
-    ADULTO_FORM
+    ADULTO_FORM,
+    REGISTO_PREP_FORM,
+    SEGUIMENTO_PREP_FORM
   }
 
   public enum KeyPop {
     DRUG_USER,
     HOMOSEXUAL,
     PRISONER,
-    SEX_WORKER;
+    SEX_WORKER,
+    TRANSGENDER;
 
     public static KeyPop of(Concept concept) {
       HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
@@ -54,6 +46,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
         return PRISONER;
       } else if (concept.equals(hivMetadata.getSexWorkerConcept())) {
         return SEX_WORKER;
+      } else if (concept.equals(hivMetadata.getTransGenderConcept())) {
+        return TRANSGENDER;
       }
       return null;
     }
@@ -73,7 +67,11 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
         case "TS":
         case "MTS":
         case "FSW":
+        case "MSW":
+        case "HTS":
           return SEX_WORKER;
+        case "TG":
+          return TRANSGENDER;
         default:
       }
       return null;
@@ -117,6 +115,11 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
         getApssPrevencaoPositiva(cohort, context, location, onOrBefore);
     CalculationResultMap personAttribute = getPersonAttribute(cohort, context);
 
+    CalculationResultMap getPrepInicial = getPrepInicial(cohort, context, location, onOrBefore);
+
+    CalculationResultMap getPrepSeguimento =
+        getPrepSeguimento(cohort, context, location, onOrBefore);
+
     KeyPop type = (KeyPop) parameterValues.get(TYPE);
 
     for (Integer pId : cohort) {
@@ -124,7 +127,13 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
 
       KeyPop patientKeyPop =
           getAssignedKeyPop(
-              pId, adultoSeguimento, apssPrevencaoPositiva, personAttribute, onOrBefore);
+              pId,
+              adultoSeguimento,
+              apssPrevencaoPositiva,
+              personAttribute,
+              getPrepInicial,
+              getPrepSeguimento,
+              onOrBefore);
       if (type != null && type.equals(patientKeyPop)) {
         equals = true;
       }
@@ -139,6 +148,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
       CalculationResultMap adultoSeguimento,
       CalculationResultMap apssPrevencaoPositiva,
       CalculationResultMap personAttribute,
+      CalculationResultMap prepInicial,
+      CalculationResultMap prepSeguimento,
       Date endDate) {
 
     ListMap<Date, KeyPopAndSource> keyPopByDate = new ListMap<>(true);
@@ -179,6 +190,35 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
         date = obs.getEncounter().getEncounterDatetime();
         keypop = KeyPop.of(obs.getValueCoded());
         keyPopByDate.putInList(date, new KeyPopAndSource(keypop, KeyPopSource.APSS_FORM));
+      }
+    }
+
+    if (prepInicial != null && prepInicial.containsKey(pId)) {
+      Obs obs = getRequiredObservation(prepInicial, pId, endDate);
+      Date date;
+      KeyPop keypop;
+      if (obs != null
+          && obs.getEncounter() != null
+          && obs.getEncounter().getEncounterDatetime() != null
+          && obs.getValueCoded() != null) {
+        date = obs.getEncounter().getEncounterDatetime();
+        keypop = KeyPop.of(obs.getValueCoded());
+        keyPopByDate.putInList(date, new KeyPopAndSource(keypop, KeyPopSource.REGISTO_PREP_FORM));
+      }
+    }
+
+    if (prepSeguimento != null && prepSeguimento.containsKey(pId)) {
+      Obs obs = getRequiredObservation(prepSeguimento, pId, endDate);
+      Date date;
+      KeyPop keypop;
+      if (obs != null
+          && obs.getEncounter() != null
+          && obs.getEncounter().getEncounterDatetime() != null
+          && obs.getValueCoded() != null) {
+        date = obs.getEncounter().getEncounterDatetime();
+        keypop = KeyPop.of(obs.getValueCoded());
+        keyPopByDate.putInList(
+            date, new KeyPopAndSource(keypop, KeyPopSource.SEGUIMENTO_PREP_FORM));
       }
     }
 
@@ -232,6 +272,36 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
         keyPop, null, encounterTypes, location, cohort, context);
   }
 
+  private CalculationResultMap getPrepInicial(
+      Collection<Integer> cohort,
+      PatientCalculationContext context,
+      Location location,
+      Date endDate) {
+    EPTSCalculationService eptsCalculationService =
+        Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
+    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+    ArrayList<EncounterType> encounterTypes = new ArrayList<>();
+    encounterTypes.add(hivMetadata.getPrepInicialEncounterType());
+    Concept keyPop = hivMetadata.getKeyPopulationConcept();
+    return eptsCalculationService.allObservations(
+        keyPop, null, encounterTypes, location, cohort, context);
+  }
+
+  private CalculationResultMap getPrepSeguimento(
+      Collection<Integer> cohort,
+      PatientCalculationContext context,
+      Location location,
+      Date endDate) {
+    EPTSCalculationService eptsCalculationService =
+        Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
+    HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
+    ArrayList<EncounterType> encounterTypes = new ArrayList<>();
+    encounterTypes.add(hivMetadata.getPrepSeguimentoEncounterType());
+    Concept keyPop = hivMetadata.getKeyPopulationConcept();
+    return eptsCalculationService.allObservations(
+        keyPop, null, encounterTypes, location, cohort, context);
+  }
+
   private List<Obs> sortObsByObsDatetime(List<Obs> obs) {
     Collections.sort(
         obs,
@@ -276,6 +346,9 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
             requiredObs = obs;
 
           } else if (obs.getValueCoded().equals(hivMetadata.getImprisonmentConcept())) {
+            requiredObs = obs;
+
+          } else if (obs.getValueCoded().equals(hivMetadata.getTransGenderConcept())) {
             requiredObs = obs;
           }
         }

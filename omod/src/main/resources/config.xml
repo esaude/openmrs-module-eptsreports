@@ -3031,6 +3031,78 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.initialStatusPrepUserUuid</property>
+		<defaultValue>b22efbd1-902f-408e-9232-158f678731ec</defaultValue>
+		<description>
+			UUID FOR Initial Status of the PrEP User concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.prepStartDateUuid</property>
+		<defaultValue>d835e77a-10c6-40e7-b4f6-2b1d93fbac2a</defaultValue>
+		<description>
+			UUID FOR PREP START DATE concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.referalTypeUuid</property>
+		<defaultValue>e1dca2ea-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID FOR Referal Type Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.transferredFromOtherFacilityUuid</property>
+		<defaultValue>e1da7d3a-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID FOR TRANSFER FROM OTHER FACILITY Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.stateOfStayOnPrepProgramUuid</property>
+		<defaultValue>e1cf1c56-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID FOR State of Stay on Prep Program Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.prepProgramUuid</property>
+		<defaultValue>ac7c5d2b-854a-48c4-a68f-0b8a92e11f4a</defaultValue>
+		<description>
+			UUID FOR PrEP Program
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.prepInicialEncounterTypeUuid</property>
+		<defaultValue>e75b2aa5-8b79-456d-9e65-39e72c03d5e2</defaultValue>
+		<description>
+			UUID FOR PrEP Inicial Encounter Type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.prepSeguimentoEncounterTypeUuid</property>
+		<defaultValue>0bfe5d98-c7f1-49a6-a42f-91289712a900</defaultValue>
+		<description>
+			UUID FOR PrEP Seguimento Encounter Type
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.transGenderUuid</property>
+		<defaultValue>2b68aa87-2fc2-4c72-8c53-55c3fa265e6d</defaultValue>
+		<description>
+			UUID FOR TRANSGENDER Concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
