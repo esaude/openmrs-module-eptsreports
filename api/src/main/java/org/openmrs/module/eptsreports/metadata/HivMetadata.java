@@ -4555,4 +4555,18 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.transGenderUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id =165194 </b>
+   *
+   * <p><b>Name:</b>DATE OF INITIAL HIV TEST
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDateOfInitialHivTestConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateOfInitialHivTestUuid");
+    return getConcept(uuid);
+  }
 }

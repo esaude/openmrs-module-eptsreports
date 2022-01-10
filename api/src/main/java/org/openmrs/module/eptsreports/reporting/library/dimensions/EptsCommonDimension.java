@@ -52,6 +52,8 @@ public class EptsCommonDimension {
 
   private MISAUKeyPopsCohortQueries misauKeyPopsCohortQueries;
 
+  private PrepCtCohortQueries prepCtCohortQueries;
+
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
@@ -69,7 +71,8 @@ public class EptsCommonDimension {
       TxPvlsCohortQueries txPvlsQueries,
       TxCurrCohortQueries txCurrCohortQueries,
       EriDSDCohortQueries eriDSDCohortQueries,
-      MISAUKeyPopsCohortQueries misauKeyPopsCohortQueries) {
+      MISAUKeyPopsCohortQueries misauKeyPopsCohortQueries,
+      PrepCtCohortQueries prepCtCohortQueries) {
     this.genderCohortQueries = genderCohortQueries;
     this.txNewCohortQueries = txNewCohortQueries;
     this.genericCohortQueries = genericCohortQueries;
@@ -82,6 +85,7 @@ public class EptsCommonDimension {
     this.txCurrCohortQueries = txCurrCohortQueries;
     this.eriDSDCohortQueries = eriDSDCohortQueries;
     this.misauKeyPopsCohortQueries = misauKeyPopsCohortQueries;
+    this.prepCtCohortQueries = prepCtCohortQueries;
   }
 
   /**
@@ -611,6 +615,36 @@ public class EptsCommonDimension {
             genericCohortQueries.getPatientAgeBasedOnPrepStartDate(50, 200),
             "endDate=${endDate},location=${location}"));
 
+    return dim;
+  }
+
+  /**
+   * Dimension for returning patients Test Results (Positive, Negative and other) based on reporting
+   * period Prep
+   *
+   * @return @{@link CohortDefinitionDimension}
+   */
+  public CohortDefinitionDimension getPatientTestResultsPrep() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("startDate", "startDate", Date.class));
+    dim.addParameter(new Parameter("endDate", "endDate", Date.class));
+    dim.addParameter(new Parameter("location", "location", Location.class));
+    dim.setName("Patients having Positive Test Results Prep based on reporting period");
+    dim.addCohortDefinition(
+        "positive",
+        EptsReportUtils.map(
+            prepCtCohortQueries.getPositiveTestResults(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        "negative",
+        EptsReportUtils.map(
+            prepCtCohortQueries.getNegativeTestResults(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        "other",
+        EptsReportUtils.map(
+            prepCtCohortQueries.getNegativeTestResults(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     return dim;
   }
 }

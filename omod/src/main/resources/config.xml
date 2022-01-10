@@ -3103,6 +3103,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.dateOfInitialHivTestUuid</property>
+		<defaultValue>38575125-4aff-4894-be3d-7baac37e9ab5</defaultValue>
+		<description>
+			UUID FOR DATE OF INITIAL HIV TEST Concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
