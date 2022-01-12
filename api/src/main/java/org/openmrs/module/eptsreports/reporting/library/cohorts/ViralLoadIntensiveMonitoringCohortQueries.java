@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -15,6 +12,10 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * This Cohort Query makes several unions of variety queries in {@link
@@ -574,6 +575,9 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
     map.put("35", hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("6332", hivMetadata.getBreastfeeding().getConceptId());
+    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
 
     String sql =
         " SELECT p.patient_id FROM   patient p "
@@ -585,6 +589,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                  ON e.patient_id = p.patient_id "
             + "                          INNER JOIN obs o "
             + "                                  ON o.encounter_id = e.encounter_id "
+            + "                               INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                   WHERE  p.voided = 0 "
             + "                          AND e.voided = 0 "
             + "                          AND o.voided = 0 "
@@ -594,7 +599,14 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                          AND e.location_id = :location "
             + "                          AND e.encounter_datetime >= :evaluationPeriodStartDate "
             + "                          AND e.encounter_datetime <= :evaluationPeriodEndDate "
-            + " "
+            + "                            AND obs_preg.concept_id = ${1982} "
+            + "                          AND obs_preg.value_coded = ${1065} "
+            + "                          AND NOT EXISTS ("
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065})     "
             + "                   UNION "
             + " "
             + "                   SELECT p.patient_id, o.obs_datetime AS vl_date "
@@ -603,6 +615,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                  ON e.patient_id = p.patient_id "
             + "                          INNER JOIN obs o "
             + "                                  ON o.encounter_id = e.encounter_id "
+            + "                               INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                   WHERE  p.voided = 0 "
             + "                          AND e.voided = 0 "
             + "                          AND o.voided = 0 "
@@ -611,7 +624,16 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                          AND o.value_numeric >= 1000 "
             + "                          AND e.location_id = :location "
             + "                          AND o.obs_datetime >= :evaluationPeriodStartDate "
-            + "                          AND o.obs_datetime <= :evaluationPeriodEndDate) AS result  "
+            + "                          AND o.obs_datetime <= :evaluationPeriodEndDate"
+            + "                            AND obs_preg.concept_id = ${1982} "
+            + "                          AND obs_preg.value_coded = ${1065} "
+            + "                          AND NOT EXISTS ("
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065})     "
+            + ") AS result  "
             + "                          GROUP BY result.patient_id))AS result_vl "
             + "               ON result_vl.patient_id = p.patient_id "
             + "        WHERE  e.encounter_type = ${35} "
@@ -653,6 +675,9 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
     map.put("35", hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("6332", hivMetadata.getBreastfeeding().getConceptId());
+    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
 
     String sql =
         " SELECT p.patient_id FROM   patient p "
@@ -664,6 +689,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                  ON e.patient_id = p.patient_id "
             + "                          INNER JOIN obs o "
             + "                                  ON o.encounter_id = e.encounter_id "
+            + "                               INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                   WHERE  p.voided = 0 "
             + "                          AND e.voided = 0 "
             + "                          AND o.voided = 0 "
@@ -673,6 +699,14 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                          AND e.location_id = :location "
             + "                          AND e.encounter_datetime >= :evaluationPeriodStartDate "
             + "                          AND e.encounter_datetime <= :evaluationPeriodEndDate "
+            + "                            AND obs_preg.concept_id = ${1982} "
+            + "                          AND obs_preg.value_coded = ${1065} "
+            + "                          AND NOT EXISTS ("
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065})     "
             + " "
             + "                   UNION "
             + " "
@@ -682,6 +716,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                  ON e.patient_id = p.patient_id "
             + "                          INNER JOIN obs o "
             + "                                  ON o.encounter_id = e.encounter_id "
+            + "                               INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                   WHERE  p.voided = 0 "
             + "                          AND e.voided = 0 "
             + "                          AND o.voided = 0 "
@@ -690,7 +725,16 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                          AND o.value_numeric >= 1000 "
             + "                          AND e.location_id = :location "
             + "                          AND o.obs_datetime >= :evaluationPeriodStartDate "
-            + "                          AND o.obs_datetime <= :evaluationPeriodEndDate) AS result  "
+            + "                          AND o.obs_datetime <= :evaluationPeriodEndDate"
+            + "                            AND obs_preg.concept_id = ${1982} "
+            + "                          AND obs_preg.value_coded = ${1065} "
+            + "                          AND NOT EXISTS ("
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065})     "
+            + ") AS result  "
             + "                          GROUP BY result.patient_id))AS result_vl "
             + "               ON result_vl.patient_id = p.patient_id "
             + "        WHERE  e.encounter_type = ${35} "
@@ -725,6 +769,9 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
     map.put("35", hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("6332", hivMetadata.getBreastfeeding().getConceptId());
+    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
 
     String sql =
         " SELECT p.patient_id FROM   patient p "
@@ -738,6 +785,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                                    ON e.patient_id = p.patient_id "
             + "                                            INNER JOIN obs o "
             + "                                                    ON o.encounter_id = e.encounter_id "
+            + "                               INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                                    WHERE  p.voided = 0 "
             + "                                            AND e.voided = 0 "
             + "                                            AND o.voided = 0 "
@@ -747,7 +795,14 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                            AND e.location_id = :location "
             + "                                            AND e.encounter_datetime >= :evaluationPeriodStartDate "
             + "                                            AND e.encounter_datetime <= :evaluationPeriodEndDate "
-            + " "
+            + "                               AND obs_preg.concept_id = ${1982} "
+            + "                                          AND obs_preg.value_coded = ${1065} "
+            + "                                         AND NOT EXISTS ("
+            + "                                                            SELECT e2.encounter_id FROM encounter e2 "
+            + "                                                                                   INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                                                                   WHERE e.encounter_id = e2.encounter_id "
+            + "                                                                                    AND obs_brst.concept_id = ${6332} "
+            + "                                                                                    AND obs_brst.value_coded = ${1065})     "
             + "                                    UNION "
             + " "
             + "                                    SELECT p.patient_id, o.obs_datetime AS vl_date "
@@ -756,6 +811,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                                    ON e.patient_id = p.patient_id "
             + "                                            INNER JOIN obs o "
             + "                                                    ON o.encounter_id = e.encounter_id "
+            + "                               INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                                    WHERE  p.voided = 0 "
             + "                                            AND e.voided = 0 "
             + "                                            AND o.voided = 0 "
@@ -764,7 +820,16 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                            AND o.value_numeric >= 1000 "
             + "                                            AND e.location_id = :location "
             + "                                            AND o.obs_datetime >= :evaluationPeriodStartDate "
-            + "                                            AND o.obs_datetime <= :evaluationPeriodEndDate ) AS result  "
+            + "                                            AND o.obs_datetime <= :evaluationPeriodEndDate "
+            + "                            AND obs_preg.concept_id = ${1982} "
+            + "                          AND obs_preg.value_coded = ${1065} "
+            + "                          AND NOT EXISTS ("
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065})     "
+            + ") AS result  "
             + "                                            GROUP BY result.patient_id))AS result_vl "
             + "                                ON result_vl.patient_id = p.patient_id "
             + "                            WHERE  e.encounter_type = ${35} "
@@ -807,6 +872,9 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
     map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+    map.put("6332", hivMetadata.getBreastfeeding().getConceptId());
+    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
 
     String sql =
         "  SELECT p.patient_id FROM patient p "
@@ -819,6 +887,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                  ON e.patient_id = p.patient_id "
             + "                          INNER JOIN obs o "
             + "                                  ON o.encounter_id = e.encounter_id "
+            + "                               INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                   WHERE  p.voided = 0 "
             + "                          AND e.voided = 0 "
             + "                          AND o.voided = 0 "
@@ -828,7 +897,14 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                          AND e.location_id = :location "
             + "                          AND e.encounter_datetime >= :evaluationPeriodStartDate "
             + "                          AND e.encounter_datetime <= :evaluationPeriodEndDate "
-            + "                           "
+            + "                            AND obs_preg.concept_id = ${1982} "
+            + "                          AND obs_preg.value_coded = ${1065} "
+            + "                          AND NOT EXISTS ("
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065})     "
             + "                   UNION "
             + " "
             + "                   SELECT p.patient_id, o.obs_datetime AS vl_date "
@@ -837,6 +913,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                  ON e.patient_id = p.patient_id "
             + "                          INNER JOIN obs o "
             + "                                  ON o.encounter_id = e.encounter_id "
+            + "                               INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                   WHERE  p.voided = 0 "
             + "                          AND e.voided = 0 "
             + "                          AND o.voided = 0 "
@@ -845,7 +922,16 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                          AND o.value_numeric >= 1000 "
             + "                          AND e.location_id = :location "
             + "                          AND o.obs_datetime >= :evaluationPeriodStartDate "
-            + "                          AND o.obs_datetime <= :evaluationPeriodEndDate) AS result  "
+            + "                          AND o.obs_datetime <= :evaluationPeriodEndDate"
+            + "                            AND obs_preg.concept_id = ${1982} "
+            + "                          AND obs_preg.value_coded = ${1065} "
+            + "                          AND NOT EXISTS ("
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065})     "
+            + ") AS result  "
             + "                          GROUP BY result.patient_id))AS result_vl "
             + "               ON result_vl.patient_id = p.patient_id "
             + "        WHERE  e.encounter_type = ${6} "
@@ -1149,9 +1235,30 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
     compositionCohortDefinition.addSearch(
         "viralLoadResultMasterCard", EptsReportUtils.map(getViralLoadResultMasterCard(), MAPPING));
 
+    compositionCohortDefinition.addSearch(
+            "transferredIn",
+            EptsReportUtils.map(
+                    this.commonCohortQueries.getMohTransferredInPatients(),
+                    "onOrBefore=${evaluationPeriodEndDate-4m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+            "transferredOut",
+            EptsReportUtils.map(
+                    this.commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod(),
+                    "onOrBefore=${evaluationPeriodEndDate-4m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+            "dead",
+            EptsReportUtils.map(this.getDeadPatients(), "endDate=${evaluationPeriodEndDate-4m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+            "linhaTerapeutica", EptsReportUtils.map(getFirstLineArt(), "startDate=${evaluationPeriodStartDate-5m+1},endDate=${evaluationPeriodEndDate-4m},location=${location}"));
+
+
+
     if (den) {
       compositionCohortDefinition.setCompositionString(
-          "firstApss AND secondApss AND thirdApss AND viralLoadRequest");
+          "((firstApss AND secondApss AND thirdApss AND viralLoadRequest) AND linhaTerapeutica) AND NOT (transferredIn OR transferredOut OR dead)");
     } else {
       compositionCohortDefinition.setCompositionString(
           "firstApss AND secondApss AND thirdApss AND viralLoadRequest AND recordSecondVL AND viralLoadResultMasterCard");
