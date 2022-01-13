@@ -58,7 +58,7 @@ public class PrepCtDataset extends BaseDataSet {
         "results", EptsReportUtils.map(eptsCommonDimension.getPatientTestResultsPrep(), mappings));
 
     dsd.addColumn(
-        "TOTAL",
+        "TOTAL-CT",
         "Total PrEP CT Numerator",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -69,11 +69,11 @@ public class PrepCtDataset extends BaseDataSet {
 
     addRow(
         dsd,
-        "P2",
-        "Age and Gender",
+        "PREPCT",
+        "Age, Gender, Key Population and Test Results",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "Age and Gender",
+                "Age, Gender, Key Population and Test Results",
                 EptsReportUtils.map(prepCtCohortQueries.getPREPCTNumerator(), mappings)),
             mappings),
         getColumnsForAgeAndGenderAndKeyPop());
