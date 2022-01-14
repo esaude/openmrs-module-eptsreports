@@ -182,28 +182,28 @@ public class ViralLoadIntensiveMonitoringDataSet extends BaseDataSet {
             "DEN10TOTAL",
             EptsReportUtils.map(
                 this.viralLoadIntensiveMonitoringCohortQueries.getDenominator10(),
-                "startDate=${endDate-5m-1d},endDate=${endDate-4m},location=${location}"));
+                "startDate=${endDate-5m+1d},endDate=${endDate-4m},location=${location}"));
 
     CohortIndicator indicatorNUm10Total =
         this.eptsGeneralIndicator.getIndicator(
             "NUM10TOTAL",
             EptsReportUtils.map(
                 this.viralLoadIntensiveMonitoringCohortQueries.getNumerator10(),
-                "startDate=${endDate-5m-1d},endDate=${endDate-4m},location=${location}"));
+                "startDate=${endDate-5m+1d},endDate=${endDate-4m},location=${location}"));
 
     CohortIndicator indicatorDen11Total =
         this.eptsGeneralIndicator.getIndicator(
             "DEN11TOTAL",
             EptsReportUtils.map(
                 this.viralLoadIntensiveMonitoringCohortQueries.getDenominator11(),
-                "startDate=${endDate-5m-1d},endDate=${endDate-4m},location=${location}"));
+                "startDate=${endDate-5m+1d},endDate=${endDate-4m},location=${location}"));
 
     CohortIndicator indicatorNUm11Total =
         this.eptsGeneralIndicator.getIndicator(
             "NUM11TOTAL",
             EptsReportUtils.map(
                 this.viralLoadIntensiveMonitoringCohortQueries.getNumerator11(),
-                "startDate=${endDate-12m-1d},endDate=${endDate-11m},location=${location}"));
+                "startDate=${endDate-12m+1d},endDate=${endDate-11m},location=${location}"));
 
     CohortIndicator indicatorDen12 =
         this.eptsGeneralIndicator.getIndicator(

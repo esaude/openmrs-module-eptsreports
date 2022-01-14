@@ -970,6 +970,9 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
     map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
+    map.put("6332", hivMetadata.getBreastfeeding().getConceptId());
+    map.put("1065", hivMetadata.getYesConcept().getConceptId());
 
     String sql =
         " SELECT p.patient_id FROM   patient p "
@@ -982,6 +985,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                  ON e.patient_id = p.patient_id "
             + "                          INNER JOIN obs o "
             + "                                  ON o.encounter_id = e.encounter_id "
+            + "                      INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id "
             + "                   WHERE  p.voided = 0 "
             + "                          AND e.voided = 0 "
             + "                          AND o.voided = 0 "
@@ -991,7 +995,14 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                          AND e.location_id = :location "
             + "                          AND e.encounter_datetime >= :evaluationPeriodStartDate "
             + "                          AND e.encounter_datetime <= :evaluationPeriodEndDate "
-            + " "
+            + "                           AND obs_preg.concept_id = ${1982} "
+            + "                          AND obs_preg.value_coded = ${1065} "
+            + "                          AND NOT EXISTS ("
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065} ) "
             + "                   UNION "
             + " "
             + "                   SELECT p.patient_id, o.obs_datetime AS vl_date "
@@ -1000,6 +1011,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                  ON e.patient_id = p.patient_id "
             + "                          INNER JOIN obs o "
             + "                                  ON o.encounter_id = e.encounter_id "
+            + "                        INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                   WHERE  p.voided = 0 "
             + "                          AND e.voided = 0 "
             + "                          AND o.voided = 0 "
@@ -1008,7 +1020,16 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                          AND o.value_numeric >= 1000 "
             + "                          AND e.location_id = :location "
             + "                          AND o.obs_datetime >= :evaluationPeriodStartDate "
-            + "                          AND o.obs_datetime <= :evaluationPeriodEndDate) AS result  "
+            + "                          AND o.obs_datetime <= :evaluationPeriodEndDate"
+            + "                         AND obs_preg.concept_id = ${1982} "
+            + "                          AND obs_preg.value_coded = ${1065} "
+            + "                          AND NOT EXISTS ( "
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065})"
+            + ") AS result  "
             + "                          GROUP BY result.patient_id))AS result_vl "
             + "               ON result_vl.patient_id = p.patient_id "
             + "        WHERE  e.encounter_type = ${6} "
@@ -1046,6 +1067,9 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
     map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
+    map.put("6332", hivMetadata.getBreastfeeding().getConceptId());
+    map.put("1065", hivMetadata.getYesConcept().getConceptId());
 
     String sql =
         " SELECT p.patient_id FROM patient p "
@@ -1058,6 +1082,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                  ON e.patient_id = p.patient_id "
             + "                          INNER JOIN obs o "
             + "                                  ON o.encounter_id = e.encounter_id "
+            + "                      INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                   WHERE  p.voided = 0 "
             + "                          AND e.voided = 0 "
             + "                          AND o.voided = 0 "
@@ -1067,7 +1092,14 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                          AND e.location_id = :location "
             + "                          AND e.encounter_datetime >= :evaluationPeriodStartDate "
             + "                          AND e.encounter_datetime <= :evaluationPeriodEndDate "
-            + "                           "
+            + "                      AND obs_preg.concept_id = ${1982} "
+            + "                        AND obs_preg.value_coded = ${1065} "
+            + "                        AND NOT EXISTS ( "
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065}) "
             + "                   UNION "
             + " "
             + "                   SELECT p.patient_id, o.obs_datetime AS vl_date "
@@ -1076,6 +1108,7 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                                  ON e.patient_id = p.patient_id "
             + "                          INNER JOIN obs o "
             + "                                  ON o.encounter_id = e.encounter_id "
+            + "                       INNER JOIN obs obs_preg  ON obs_preg.encounter_id = e.encounter_id"
             + "                   WHERE  p.voided = 0 "
             + "                          AND e.voided = 0 "
             + "                          AND o.voided = 0 "
@@ -1084,7 +1117,16 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             + "                          AND o.value_numeric >= 1000 "
             + "                          AND e.location_id = :location "
             + "                          AND o.obs_datetime >= :evaluationPeriodStartDate "
-            + "                          AND o.obs_datetime <= :evaluationPeriodEndDate) AS result  "
+            + "                          AND o.obs_datetime <= :evaluationPeriodEndDate"
+            + "                        AND obs_preg.concept_id = ${1982} "
+            + "                        AND obs_preg.value_coded = ${1065} "
+            + "                        AND NOT EXISTS ( "
+            + "                                           SELECT e2.encounter_id FROM encounter e2 "
+            + "                                             INNER JOIN obs obs_brst ON obs_brst.encounter_id = e2.encounter_id "
+            + "                                           WHERE e.encounter_id = e2.encounter_id "
+            + "                                           AND obs_brst.concept_id = ${6332} "
+            + "                                           AND obs_brst.value_coded = ${1065})"
+            + ") AS result  "
             + "                          GROUP BY result.patient_id))AS result_vl "
             + "               ON result_vl.patient_id = p.patient_id "
             + "        WHERE  e.encounter_type = ${53} "
@@ -1236,25 +1278,28 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
         "viralLoadResultMasterCard", EptsReportUtils.map(getViralLoadResultMasterCard(), MAPPING));
 
     compositionCohortDefinition.addSearch(
-            "transferredIn",
-            EptsReportUtils.map(
-                    this.commonCohortQueries.getMohTransferredInPatients(),
-                    "onOrBefore=${evaluationPeriodEndDate-4m},location=${location}"));
+
+        "transferredIn",
+        EptsReportUtils.map(
+            this.commonCohortQueries.getMohTransferredInPatients(),
+            "onOrBefore=${evaluationPeriodEndDate-4m},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-            "transferredOut",
-            EptsReportUtils.map(
-                    this.commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod(),
-                    "onOrBefore=${evaluationPeriodEndDate-4m},location=${location}"));
+        "transferredOut",
+        EptsReportUtils.map(
+            this.commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod(),
+            "onOrBefore=${evaluationPeriodEndDate-4m},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-            "dead",
-            EptsReportUtils.map(this.getDeadPatients(), "endDate=${evaluationPeriodEndDate-4m},location=${location}"));
+        "dead",
+        EptsReportUtils.map(
+            this.getDeadPatients(), "endDate=${evaluationPeriodEndDate-4m},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-            "linhaTerapeutica", EptsReportUtils.map(getFirstLineArt(), "startDate=${evaluationPeriodStartDate-5m+1},endDate=${evaluationPeriodEndDate-4m},location=${location}"));
-
-
+        "linhaTerapeutica",
+        EptsReportUtils.map(
+            getFirstLineArt(),
+            "startDate=${evaluationPeriodStartDate-5m+1},endDate=${evaluationPeriodEndDate-4m},location=${location}"));
 
     if (den) {
       compositionCohortDefinition.setCompositionString(
@@ -1295,12 +1340,35 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
     compositionCohortDefinition.addSearch(
         "secondVlNum15", EptsReportUtils.map(getRecordSecondVlNum15(), MAPPING));
 
+    compositionCohortDefinition.addSearch(
+        "transferredIn",
+        EptsReportUtils.map(
+            this.commonCohortQueries.getMohTransferredInPatients(),
+            "onOrBefore=${evaluationPeriodEndDate-11m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "transferredOut",
+        EptsReportUtils.map(
+            this.commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod(),
+            "onOrBefore=${evaluationPeriodEndDate-11m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            this.getDeadPatients(), "endDate=${evaluationPeriodEndDate-11m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "linhaTerapeutica",
+        EptsReportUtils.map(
+            getFirstLineArt(),
+            "startDate=${evaluationPeriodStartDate-12m+1},endDate=${evaluationPeriodEndDate-11m},location=${location}"));
+
     if (den) {
       compositionCohortDefinition.setCompositionString(
-          "recordSecondVL AND viralLoadResultMasterCard");
+          "recordSecondVL AND viralLoadResultMasterCard AND linhaTerapeutica AND NOT (transferredIn OR transferredOut OR dead)");
     } else {
       compositionCohortDefinition.setCompositionString(
-          "recordSecondVL AND viralLoadResultMasterCard AND secondVlNum15");
+          "recordSecondVL AND viralLoadResultMasterCard AND secondVlNum15 AND linhaTerapeutica AND NOT (transferredIn OR transferredOut OR dead)");
     }
 
     return compositionCohortDefinition;
@@ -2120,11 +2188,35 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
             getNum12(),
             "evaluationPeriodStartDate=${evaluationPeriodStartDate-12m+1d},evaluationPeriodEndDate=${evaluationPeriodEndDate-11m},location=${location}"));
 
+    compositionCohortDefinition.addSearch(
+        "transferredIn",
+        EptsReportUtils.map(
+            this.commonCohortQueries.getMohTransferredInPatients(),
+            "onOrBefore=${evaluationPeriodEndDate-11m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "transferredOut",
+        EptsReportUtils.map(
+            this.commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod(),
+            "onOrBefore=${evaluationPeriodEndDate-11m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "dead",
+        EptsReportUtils.map(
+            this.getDeadPatients(), "endDate=${evaluationPeriodEndDate-11m},location=${location}"));
+
+    compositionCohortDefinition.addSearch(
+        "linhaTerapeutica",
+        EptsReportUtils.map(
+            getFirstLineArt(),
+            "startDate=${evaluationPeriodStartDate-12m+1},endDate=${evaluationPeriodEndDate-11m},location=${location}"));
+
     if (den) {
-      compositionCohortDefinition.setCompositionString("secondVlResult AND vlResult");
+      compositionCohortDefinition.setCompositionString(
+          "secondVlResult AND vlResult AND linhaTerapeutica AND NOT (transferredIn OR transferredOut OR dead)");
     } else {
       compositionCohortDefinition.setCompositionString(
-          "secondVlResult AND vlResult AND secondLineResult");
+          "secondVlResult AND vlResult AND secondLineResult AND linhaTerapeutica AND NOT (transferredIn OR transferredOut OR dead)");
     }
 
     return compositionCohortDefinition;
