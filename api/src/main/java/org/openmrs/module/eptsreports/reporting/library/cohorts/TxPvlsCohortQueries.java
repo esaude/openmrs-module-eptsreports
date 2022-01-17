@@ -19,7 +19,7 @@ import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingPregnantCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PregnantOrBreastfeedingWomen;
@@ -57,7 +57,7 @@ public class TxPvlsCohortQueries {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
             "On ART for at least 3 months for pvls",
-            Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0));
+            Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalculation.class).get(0));
     cd.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("listOfEncounters", encounterTypeList);

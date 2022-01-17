@@ -801,4 +801,124 @@ public class CommonQueries {
 
     return stringSubstitutor.replace(sql);
   }
+
+  public String InitialArtStartDateOverallQuery(String endDate, Integer location) {
+
+    Map<String, Integer> valuesMap = new HashMap<>();
+    valuesMap.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    valuesMap.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    valuesMap.put("1256", hivMetadata.getStartDrugs().getConceptId());
+    valuesMap.put("1255", hivMetadata.getARVPlanConcept().getConceptId());
+    valuesMap.put("2", hivMetadata.getARTProgram().getProgramId());
+    valuesMap.put("1190", hivMetadata.getHistoricalDrugStartDateConcept().getConceptId());
+    valuesMap.put("1369", hivMetadata.getTransferFromOtherFacilityConcept().getConceptId());
+    valuesMap.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    valuesMap.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    valuesMap.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
+    valuesMap.put("1065", hivMetadata.getYesConcept().getConceptId());
+
+    String sql =
+        "SELECT art.patient_id AS patient_id, MIN(art.first_pickup) AS first_pickup FROM("
+            + " SELECT p.patient_id, MIN(e.encounter_datetime) first_pickup FROM patient p "
+            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + " WHERE e.encounter_type = ${18} "
+            + " AND e.encounter_datetime <='"
+            + endDate
+            + "'"
+            + " AND e.voided = 0 "
+            + " AND p.voided = 0 "
+            + " AND e.location_id = "
+            + location
+            + " GROUP BY p.patient_id "
+            + " UNION "
+            + " SELECT p.patient_id, Min(e.encounter_datetime) first_pickup  "
+            + "                                 FROM patient p  "
+            + "                           INNER JOIN encounter e  "
+            + "                               ON p.patient_id = e.patient_id  "
+            + "                           INNER JOIN obs o  "
+            + "                               ON e.encounter_id = o.encounter_id  "
+            + "                       WHERE  p.voided = 0  "
+            + "                           AND e.voided = 0  "
+            + "                           AND o.voided = 0  "
+            + "                           AND e.encounter_type IN (${6}, ${9}, ${18})  "
+            + "                           AND o.concept_id = ${1255}  "
+            + "                           AND o.value_coded= ${1256}  "
+            + "                           AND e.encounter_datetime <= '"
+            + endDate
+            + "'"
+            + "                           AND e.location_id =  "
+            + location
+            + "                       GROUP  BY p.patient_id  "
+            + " UNION "
+            + " SELECT p.patient_id, ps.start_date AS first_pickup "
+            + "     FROM   patient p   "
+            + "           INNER JOIN patient_program pg  "
+            + "                ON p.patient_id = pg.patient_id  "
+            + "        INNER JOIN patient_state ps  "
+            + "                   ON pg.patient_program_id = ps.patient_program_id  "
+            + "     WHERE  pg.location_id = "
+            + location
+            + " AND pg.voided = 0"
+            + "    AND pg.program_id = ${2} and ps.start_date <='"
+            + endDate
+            + "'"
+            + " UNION "
+            + " SELECT p.patient_id, MIN(ob.value_datetime) first_pickup  "
+            + "                                 FROM patient p  "
+            + "                           INNER JOIN obs ob  "
+            + "                               ON p.patient_id = ob.person_id  "
+            + "                       WHERE  p.voided = 0  "
+            + "                           AND ob.voided = 0  "
+            + "                           AND ob.concept_id = ${1190}  "
+            + "                           AND ob.obs_datetime <= '"
+            + endDate
+            + "'"
+            + "                           AND ob.location_id =  "
+            + location
+            + "                       GROUP  BY p.patient_id  "
+            + " UNION "
+            + " SELECT p.patient_id, Min(e.encounter_datetime) first_pickup  "
+            + "                                 FROM patient p  "
+            + "                           INNER JOIN encounter e  "
+            + "                               ON p.patient_id = e.patient_id  "
+            + "                           INNER JOIN obs o  "
+            + "                               ON e.encounter_id = o.encounter_id  "
+            + "                       WHERE  p.voided = 0  "
+            + "                           AND e.voided = 0  "
+            + "                           AND o.voided = 0  "
+            + "                           AND o.concept_id = ${1255}  "
+            + "                           AND o.value_coded= ${1369}  "
+            + "                           AND e.encounter_datetime <= '"
+            + endDate
+            + "'"
+            + "                           AND e.location_id =  "
+            + location
+            + "                       GROUP  BY p.patient_id  "
+            + "    UNION "
+            + " SELECT p.patient_id,  MIN(o.value_datetime) AS first_pickup FROM patient p "
+            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + " INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + " INNER JOIN obs oyes ON oyes.encounter_id = e.encounter_id  "
+            + "   AND o.person_id = oyes.person_id "
+            + "   WHERE e.encounter_type = ${52} "
+            + "   AND o.concept_id = ${23866} "
+            + "   AND o.value_datetime <= '"
+            + endDate
+            + "'"
+            + "   AND o.voided = 0 "
+            + "                 AND oyes.concept_id = ${23865} "
+            + "                 AND oyes.value_coded = ${1065} "
+            + "                 AND oyes.voided = 0 "
+            + "   AND e.location_id = "
+            + location
+            + "   AND e.voided = 0 "
+            + "   AND p.voided = 0 "
+            + " GROUP BY p.patient_id "
+            + ") art GROUP BY patient_id";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
+
+    return stringSubstitutor.replace(sql);
+  }
 }

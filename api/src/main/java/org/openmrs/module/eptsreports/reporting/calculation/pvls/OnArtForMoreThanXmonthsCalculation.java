@@ -43,7 +43,7 @@ import org.springframework.stereotype.Component;
  * </blockquote>
  */
 @Component
-public class OnArtForMoreThanXmonthsCalcultion extends AbstractPatientCalculation {
+public class OnArtForMoreThanXmonthsCalculation extends AbstractPatientCalculation {
 
   @Autowired private HivMetadata hivMetadata;
 

@@ -12,7 +12,7 @@ import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalcultion;
+import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
 
 @Ignore
@@ -20,7 +20,7 @@ public class OnArtForMoreThanXmonthsCalcultionTest extends BasePatientCalculatio
 
   @Override
   public PatientCalculation getCalculation() {
-    return Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalcultion.class).get(0);
+    return Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalculation.class).get(0);
   }
 
   @Override

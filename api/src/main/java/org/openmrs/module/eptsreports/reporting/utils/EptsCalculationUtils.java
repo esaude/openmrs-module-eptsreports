@@ -414,4 +414,20 @@ public class EptsCalculationUtils {
     }
     return false;
   }
+
+  public static CalculationResultMap latestCalculationMapDateValuePerPatient(
+      CalculationResultMap artDates) {
+    CalculationResultMap ret = new CalculationResultMap();
+    for (Map.Entry<Integer, CalculationResult> e : artDates.entrySet()) {
+      Integer ptId = e.getKey();
+      SimpleResult result = (SimpleResult) e.getValue();
+      Date latest = null;
+
+      if (result != null) {
+        latest = ((Date) result.getValue());
+      }
+      ret.put(ptId, latest == null ? null : new SimpleResult(latest, null));
+    }
+    return ret;
+  }
 }
