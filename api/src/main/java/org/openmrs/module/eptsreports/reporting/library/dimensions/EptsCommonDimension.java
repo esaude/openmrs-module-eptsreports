@@ -11,9 +11,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
-
-import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.*;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -24,6 +21,10 @@ import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimensio
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 @Component
 public class EptsCommonDimension {
@@ -613,6 +614,12 @@ public class EptsCommonDimension {
         DimensionKeyForAge.overOrEqualTo50Years.getKey(),
         EptsReportUtils.map(
             genericCohortQueries.getPatientAgeBasedOnPrepStartDate(50, 200),
+            "endDate=${endDate},location=${location}"));
+
+    dim.addCohortDefinition(
+        DimensionKeyForAge.overOrEqualTo15Years.getKey(),
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnPrepStartDate(15, 200),
             "endDate=${endDate},location=${location}"));
 
     return dim;

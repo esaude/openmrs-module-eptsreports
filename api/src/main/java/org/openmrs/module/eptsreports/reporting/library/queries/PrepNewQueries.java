@@ -1,12 +1,13 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class PrepNewQueries {
 
@@ -46,14 +47,14 @@ public class PrepNewQueries {
 
     String query =
         "SELECT patient_id FROM ( "
-            + "    SELECT p.patient_id, min(o.value_datetime) AS  earliest_date "
+            + "    SELECT p.patient_id, min(tbl.earliest_date) AS  earliest_date_ever "
             + "FROM   patient p "
             + "           INNER JOIN encounter e "
             + "                      ON p.patient_id = e.patient_id "
             + "           INNER JOIN obs o "
             + "                      ON e.encounter_id = o.encounter_id "
             + "           INNER JOIN (SELECT p.patient_id, "
-            + "                              o.value_datetime AS earliest_date "
+            + "                              o.obs_datetime AS earliest_date "
             + "                       FROM   patient p "
             + "                                  INNER JOIN encounter e "
             + "                                             ON p.patient_id = e.patient_id "
@@ -66,7 +67,7 @@ public class PrepNewQueries {
             + "                         AND o.concept_id = ${165296} "
             + "                         AND o.value_coded = ${1256}"
             + "                         AND e.location_id = :location "
-            + "                         AND o.value_datetime < :endDate "
+            + "                         AND o.obs_datetime <= :endDate "
             + "                       GROUP  BY p.patient_id "
             + "                       UNION "
             + "                       SELECT p.patient_id, "
@@ -82,18 +83,17 @@ public class PrepNewQueries {
             + "                         AND e.encounter_type = ${80} "
             + "                         AND o.concept_id = ${165211} "
             + "                         AND e.location_id = :location "
-            + "                         AND o.value_datetime < :endDate "
+            + "                         AND o.value_datetime <= :endDate "
             + "                       GROUP  BY p.patient_id) tbl "
             + "                      ON tbl.patient_id = p.patient_id "
             + "WHERE  p.voided = 0 "
             + "  AND e.voided = 0 "
             + "  AND o.voided = 0 "
-            + "  AND o.value_datetime = tbl.earliest_date "
             + "  AND e.location_id = :location "
             + "GROUP  BY p.patient_id "
             + "    ) clients "
             + "WHERE "
-            + "      clients.earliest_date BETWEEN :startDate AND :endDate";
+            + "      clients.earliest_date_ever BETWEEN :startDate AND :endDate";
 
     StringSubstitutor sb = new StringSubstitutor(valuesMap);
     return sb.replace(query);
@@ -213,18 +213,18 @@ public class PrepNewQueries {
     String query =
         "SELECT patient_id "
             + "FROM   (SELECT pat.patient_id, "
-            + "               TIMESTAMPDIFF(year, pn.birthdate, clients.earliest_date) AS age "
+            + "               TIMESTAMPDIFF(year, pn.birthdate, clients.earliest_date_ever) AS age "
             + "        FROM   patient pat "
             + "               INNER JOIN person pn "
             + "                       ON pat.patient_id = pn.person_id "
-            + "               INNER JOIN ( SELECT p.patient_id, min(o.value_datetime) AS  earliest_date "
+            + "               INNER JOIN ( SELECT p.patient_id, min(tbl.earliest_date) AS  earliest_date_ever "
             + "FROM   patient p "
             + "           INNER JOIN encounter e "
             + "                      ON p.patient_id = e.patient_id "
             + "           INNER JOIN obs o "
             + "                      ON e.encounter_id = o.encounter_id "
             + "           INNER JOIN (SELECT p.patient_id, "
-            + "                              o.value_datetime AS earliest_date "
+            + "                              o.obs_datetime AS earliest_date "
             + "                       FROM   patient p "
             + "                                  INNER JOIN encounter e "
             + "                                             ON p.patient_id = e.patient_id "
@@ -237,7 +237,7 @@ public class PrepNewQueries {
             + "                         AND o.concept_id = ${165296} "
             + "                         AND o.value_coded = ${1256}"
             + "                         AND e.location_id = :location "
-            + "                         AND o.value_datetime < :endDate "
+            + "                         AND o.obs_datetime < :endDate "
             + "                       GROUP  BY p.patient_id "
             + "                       UNION "
             + "                       SELECT p.patient_id, "
@@ -259,7 +259,6 @@ public class PrepNewQueries {
             + "WHERE  p.voided = 0 "
             + "  AND e.voided = 0 "
             + "  AND o.voided = 0 "
-            + "  AND o.value_datetime = tbl.earliest_date "
             + "  AND e.location_id = :location "
             + "GROUP  BY p.patient_id ) clients "
             + "                       ON pat.patient_id = clients.patient_id) fin "

@@ -1,7 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.PrepNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.DimensionKeyForAge;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.DimensionKeyForGender;
@@ -13,6 +11,9 @@ import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDef
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class PrepNewDataset extends BaseDataSet {
@@ -165,7 +166,9 @@ public class PrepNewDataset extends BaseDataSet {
         new ColumnParameters(
             "totalM",
             "Total of Males",
-            EptsCommonDimensionKey.of(DimensionKeyForGender.male).getDimensions(),
+            EptsCommonDimensionKey.of(DimensionKeyForGender.male)
+                .and(DimensionKeyForAge.overOrEqualTo15Years)
+                .getDimensions(),
             "20");
 
     ColumnParameters fifteenTo19F =
@@ -244,7 +247,9 @@ public class PrepNewDataset extends BaseDataSet {
         new ColumnParameters(
             "totalF",
             "Total of Females",
-            EptsCommonDimensionKey.of(DimensionKeyForGender.female).getDimensions(),
+            EptsCommonDimensionKey.of(DimensionKeyForGender.female)
+                .and(DimensionKeyForAge.overOrEqualTo15Years)
+                .getDimensions(),
             "19");
 
     // Key population

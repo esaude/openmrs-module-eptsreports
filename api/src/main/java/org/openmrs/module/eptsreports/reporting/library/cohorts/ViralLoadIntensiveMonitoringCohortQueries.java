@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
@@ -12,10 +15,6 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * This Cohort Query makes several unions of variety queries in {@link
@@ -1278,7 +1277,6 @@ public class ViralLoadIntensiveMonitoringCohortQueries {
         "viralLoadResultMasterCard", EptsReportUtils.map(getViralLoadResultMasterCard(), MAPPING));
 
     compositionCohortDefinition.addSearch(
-
         "transferredIn",
         EptsReportUtils.map(
             this.commonCohortQueries.getMohTransferredInPatients(),
