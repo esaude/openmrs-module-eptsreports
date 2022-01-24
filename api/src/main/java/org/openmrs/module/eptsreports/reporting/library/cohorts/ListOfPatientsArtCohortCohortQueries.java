@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -14,6 +11,10 @@ import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefini
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class ListOfPatientsArtCohortCohortQueries {
@@ -65,7 +66,7 @@ public class ListOfPatientsArtCohortCohortQueries {
     Map<String, Integer> valuesMap = new HashMap<>();
 
     String sql =
-        "SELECT p.patient_id, ROUND(DATEDIFF(:evaluationDate,ps.birthdate)/365) AS age FROM patient p "
+        "SELECT p.patient_id, FLOOR(DATEDIFF(:evaluationDate,ps.birthdate)/365) AS age FROM patient p "
             + "    INNER JOIN person ps ON p.patient_id=ps.person_id WHERE p.voided=0 AND ps.voided=0";
 
     StringSubstitutor substitutor = new StringSubstitutor(valuesMap);
@@ -508,7 +509,6 @@ public class ListOfPatientsArtCohortCohortQueries {
             + "          AND        e.encounter_type = ${53} "
             + "          AND        e.location_id = :location "
             + "          AND        o.concept_id = ${6272} "
-            + "          AND        o.value_coded IN (${1706}, ${1709}, ${1707}, ${1366}) "
             + "          and        o.obs_datetime <= :startDate "
             + "          GROUP BY   p.patient_id ) recent_state ON recent_state.patient_id = p.patient_id "
             + "WHERE      p.voided = 0 "
@@ -554,7 +554,12 @@ public class ListOfPatientsArtCohortCohortQueries {
     valuesMap.put("1709", hivMetadata.getSuspendedTreatmentConcept().getConceptId());
 
     String query =
-        " SELECT     p.patient_id, max(o.obs_datetime) AS most_recent "
+        "SELECT     p.patient_id, o.obs_datetime "
+            + "FROM patient p INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "          INNER JOIN obs o ON  e.encounter_id = o.encounter_id "
+            + "INNER JOIN( "
+            + "          SELECT     p.patient_id, "
+            + "                     max(o.obs_datetime) AS most_recent "
             + "          FROM       patient p "
             + "          INNER JOIN encounter e "
             + "          ON         p.patient_id = e.patient_id "
@@ -566,9 +571,16 @@ public class ListOfPatientsArtCohortCohortQueries {
             + "          AND        e.encounter_type = ${53} "
             + "          AND        e.location_id = :location "
             + "          AND        o.concept_id = ${6272} "
-            + "          AND        o.value_coded IN (${1706}, ${1709}, ${1707}, ${1366}) "
             + "          and        o.obs_datetime <= :startDate "
-            + "          GROUP BY   p.patient_id ";
+            + "          GROUP BY   p.patient_id ) recent_state ON recent_state.patient_id = p.patient_id "
+            + "WHERE      p.voided = 0 "
+            + "AND        e.voided = 0 "
+            + "AND        o.voided = 0 "
+            + "AND        e.location_id = :location "
+            + "AND        e.encounter_type = ${53} "
+            + "AND        o.concept_id = ${6272} "
+            + "AND        o.value_coded IN (${1706}, ${1709}, ${1707}, ${1366}) "
+            + "AND        o.obs_datetime = recent_state.most_recent";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
