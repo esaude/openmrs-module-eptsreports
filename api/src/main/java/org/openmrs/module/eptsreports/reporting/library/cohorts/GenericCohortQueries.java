@@ -24,10 +24,12 @@ import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.api.context.Context;
+import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.*;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.PrepCtQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PrepNewQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.reporting.cohort.definition.*;
@@ -46,6 +48,8 @@ public class GenericCohortQueries {
   @Autowired private HivMetadata hivMetadata;
 
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
+
+  @Autowired private CommonMetadata commonMetadata;
 
   /**
    * Generic Coded Observation cohort
@@ -806,5 +810,50 @@ public class GenericCohortQueries {
             hivMetadata.getPrepStartDateConcept().getConceptId(),
             minAge,
             maxAge));
+  }
+
+  /**
+   * @param minAge minimum age of patient based on PrEP End date
+   * @param maxAge maximum age of patient based on PrEP End date
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getPatientAgeBasedOnPrepEndDate(int minAge, int maxAge) {
+    return generalSql(
+        "getPatientAgeBasedOnPrepEndDate",
+        PrepCtQueries.patientAgeBasedOnPrepEndDate(minAge, maxAge));
+  }
+
+  /**
+   * <b>Description:</b> Pregnant patients based on Prep
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getPregnantPatientsBasedOnPrep() {
+    return generalSql(
+        "getPregnantPatientsBasedOnPrep",
+        PrepCtQueries.pregnantPatientsBasedOnPrep(
+            hivMetadata.getPrepInicialEncounterType().getEncounterTypeId(),
+            hivMetadata.getPrepSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getCurrentStateOfTheWomanUuidConcept().getConceptId(),
+            commonMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            commonMetadata.getBreastfeeding().getConceptId()));
+  }
+
+  /**
+   * <b>Description:</b> Breastfeeding patients based on Prep
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getBreastfeedingPatientsBasedOnPrep() {
+    return generalSql(
+        "getPregnantPatientsBasedOnPrep",
+        PrepCtQueries.breastfeedingPatientsBasedOnPrep(
+            hivMetadata.getPrepInicialEncounterType().getEncounterTypeId(),
+            hivMetadata.getPrepSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getCurrentStateOfTheWomanUuidConcept().getConceptId(),
+            commonMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            commonMetadata.getBreastfeeding().getConceptId()));
   }
 }

@@ -4569,4 +4569,32 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.dateOfInitialHivTestUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id =165223 </b>
+   *
+   * <p><b>Name:</b>CURRENT STATE OF THE WOMAN
+   *
+   * @return {@link Concept}
+   */
+  public Concept getCurrentStateOfTheWomanUuidConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.currentStateOfTheWomanUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =165293 </b>
+   *
+   * <p><b>Name:</b>Date of HIV Test with Negative result (PrEP)
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDateOfHivTestWithNegativeResultsPrepUuidConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateOfHivTestWithNegativeResultsPrepUuid");
+    return getConcept(uuid);
+  }
 }

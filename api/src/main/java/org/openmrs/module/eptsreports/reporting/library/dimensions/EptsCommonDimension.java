@@ -11,6 +11,9 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
+import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.*;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -21,10 +24,6 @@ import org.openmrs.module.reporting.indicator.dimension.CohortDefinitionDimensio
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 @Component
 public class EptsCommonDimension {
@@ -650,7 +649,94 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "other",
         EptsReportUtils.map(
-            prepCtCohortQueries.getNegativeTestResults(),
+            prepCtCohortQueries.getOtherTestResults(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    return dim;
+  }
+
+  /**
+   * Dimension to calculate patient age based on the PrEP End Date
+   *
+   * @return @{@link CohortDefinitionDimension}
+   */
+  public CohortDefinitionDimension getPatientAgeBasedOnPrepEndDate() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("endDate", "endDate", Date.class));
+    dim.addParameter(new Parameter("location", "location", Location.class));
+    dim.setName("Patients having age based on PrEP End Date");
+
+    dim.addCohortDefinition(
+        DimensionKeyForAge.unknown.getKey(), ageDimensionCohort.createUnknownAgeCohort());
+    dim.addCohortDefinition(
+        DimensionKeyForAge.between15And19Years.getKey(),
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnPrepEndDate(15, 19),
+            "endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        DimensionKeyForAge.between20And24Years.getKey(),
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnPrepEndDate(20, 24),
+            "endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        DimensionKeyForAge.between25And29Years.getKey(),
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnPrepEndDate(25, 29),
+            "endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        DimensionKeyForAge.between30And34Years.getKey(),
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnPrepEndDate(30, 34),
+            "endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        DimensionKeyForAge.between35And39Years.getKey(),
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnPrepEndDate(35, 39),
+            "endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        DimensionKeyForAge.between40And44Years.getKey(),
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnPrepEndDate(40, 44),
+            "endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        DimensionKeyForAge.between45and49Years.getKey(),
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnPrepEndDate(45, 49),
+            "endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        DimensionKeyForAge.overOrEqualTo50Years.getKey(),
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnPrepEndDate(50, 200),
+            "endDate=${endDate},location=${location}"));
+
+    dim.addCohortDefinition(
+        DimensionKeyForAge.overOrEqualTo15Years.getKey(),
+        EptsReportUtils.map(
+            genericCohortQueries.getPatientAgeBasedOnPrepEndDate(15, 200),
+            "endDate=${endDate},location=${location}"));
+
+    return dim;
+  }
+
+  /**
+   * Dimension for returning patients Maternity (Pregnant, breastfeeding) based on Prep
+   *
+   * @return @{@link CohortDefinitionDimension}
+   */
+  public CohortDefinitionDimension getPregnantAndBreastfeedingPatientsBasedOnPrep() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("startDate", "startDate", Date.class));
+    dim.addParameter(new Parameter("endDate", "endDate", Date.class));
+    dim.addParameter(new Parameter("location", "location", Location.class));
+    dim.setName("Patients Pregnant or Breastfeeding based on Prep");
+    dim.addCohortDefinition(
+        "pregnant",
+        EptsReportUtils.map(
+            genericCohortQueries.getPregnantPatientsBasedOnPrep(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    dim.addCohortDefinition(
+        "breastfeeding",
+        EptsReportUtils.map(
+            genericCohortQueries.getBreastfeedingPatientsBasedOnPrep(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     return dim;
   }

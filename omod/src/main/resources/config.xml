@@ -3111,6 +3111,22 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.currentStateOfTheWomanUuid</property>
+		<defaultValue>f9d3e8d1-99f0-48f2-82cc-8bae6c72a023</defaultValue>
+		<description>
+			UUID FOR CURRENT STATE OF THE WOMAN Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.dateOfHivTestWithNegativeResultsPrepUuid</property>
+		<defaultValue>eef8b142-283a-4f63-9da6-0bb7df2744f9</defaultValue>
+		<description>
+			UUID FOR Date of HIV Test with Negative result (PrEP) Concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

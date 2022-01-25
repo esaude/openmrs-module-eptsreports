@@ -1,13 +1,12 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 public class PrepNewQueries {
 

@@ -46,7 +46,7 @@ public class PrepCtCohortQueries {
     cd.addSearch(
         "B",
         EptsReportUtils.map(
-            getPatientsTransferredInFromAnotherHFByEndOfReportingPeriod(),
+            getPatientsTransferredInFromAnotherHFByEndOfPreviousReportingPeriod(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "C",
@@ -69,12 +69,12 @@ public class PrepCtCohortQueries {
             prepNewCohortQueries.getClientsWhoNewlyInitiatedPrep(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("A or B or C or D or E AND NOT F");
+    cd.setCompositionString("(A or B or C or D or E) AND NOT F");
 
     return cd;
   }
 
-  public CohortDefinition getNegativeTestResults() {
+  public CohortDefinition getPatientsTransferredInFromAnotherHFByEndOfPreviousReportingPeriod() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients with Negative test Results on PrEP during the reporting period");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -84,46 +84,16 @@ public class PrepCtCohortQueries {
     cd.addSearch(
         "1",
         EptsReportUtils.map(
-            getNegativeTestResultsPart1(),
+            getPatientsTransferredInFromAnotherHFByEndOfPreviousReportingPeriod1(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "2",
         EptsReportUtils.map(
-            getNegativeTestResultsPart2(),
+            getPatientsTransferredInFromAnotherHFByEndOfPreviousReportingPeriod2(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("1 OR 2");
-
-    return cd;
-  }
-
-  public CohortDefinition getOtherTestResults() {
-    CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Patients with Other test Results on PrEP during the reporting period");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-
-    cd.addSearch(
-        "1",
-        EptsReportUtils.map(
-            getOtherTestResultsPart1(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.addSearch(
-        "2",
-        EptsReportUtils.map(
-            getOtherTestResultsPart2(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.addSearch(
-        "3",
-        EptsReportUtils.map(
-            getOtherTestResultsPart3(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("(1 OR 2) AND 3");
 
     return cd;
   }
@@ -132,10 +102,7 @@ public class PrepCtCohortQueries {
    * <b>Description:</b> Number of patients who initiated PREP by end of previous reporting period
    * date as follows: All clients who have “O utente esta iniciar pela 1a vez a PrEP Data” (Concept
    * id 165296 from encounter type 80) and value coded equal to “Start drugs” (concept id 1256) and
-   * value_datetime < start date; or All clients with “Data de Inicio PrEP” (Concept id 165211 from
-   * encounter type 80) and value datetime < start date; And had at least one follow-up visit
-   * registered in Ficha de Consulta de Seguimento PrEP (encounter type 81, encounter datetime)
-   * during the reporting period
+   * value_datetime < start date;
    *
    * @return
    */
@@ -145,11 +112,11 @@ public class PrepCtCohortQueries {
 
     definition.setQuery(
         PrepCtQueries.getPatientsListInitiatedOnPREP(
-            hivMetadata.getPrepInicialEncounterType().getEncounterTypeId(),
-            hivMetadata.getPrepSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getInitialStatusPrepUserConcept().getConceptId(),
+            hivMetadata.getPrepInicialEncounterType().getEncounterTypeId(),
             hivMetadata.getStartDrugs().getConceptId(),
-            hivMetadata.getPrepStartDateConcept().getConceptId()));
+            hivMetadata.getPrepStartDateConcept().getConceptId(),
+            hivMetadata.getPrepSeguimentoEncounterType().getEncounterTypeId()));
 
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -162,25 +129,45 @@ public class PrepCtCohortQueries {
    * <b>Description:</b> Number of patients who were transferred-in from another HF by end of the
    * previous reporting period: All clients who are enrolled in PrEP Program (PREP) (program id 25)
    * and have the first historical state as “Transferido de outra US” (patient state id= 76) in the
-   * client chart by start of the reporting period; or All clients who have marked “Transferido de
-   * outra US”(concept id 1594 value coded 1369) in the first Ficha de Consulta Inicial
-   * PrEP(encounter type 80, Min(encounter datetime)) registered in the system by the start of the
-   * reporting period.
+   * client chart by start of the reporting period;
    *
    * @return
    */
-  public CohortDefinition getPatientsTransferredInFromAnotherHFByEndOfReportingPeriod() {
+  public CohortDefinition getPatientsTransferredInFromAnotherHFByEndOfPreviousReportingPeriod1() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName(
-        "Patients who were transferred-in from another HF by end of the previous reporting period");
+        "Patients who were transferred-in from another HF by end of the previous reporting period part 1");
 
     definition.setQuery(
-        PrepCtQueries.getPatientsTransferredInFromAnotherHFByEndOfReportingPeriod(
-            hivMetadata.getReferalTypeConcept().getConceptId(),
-            hivMetadata.getTransferredFromOtherFacilityConcept().getConceptId(),
-            hivMetadata.getPrepInicialEncounterType().getEncounterTypeId(),
+        PrepCtQueries.getPatientsTransferredInFromAnotherHFByEndOfPreviousReportingPeriod1(
             hivMetadata.getPrepProgram().getProgramId(),
             hivMetadata.getStateOfStayOnPrepProgram().getConceptId()));
+
+    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    definition.addParameter(new Parameter("location", "Location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * <b>Description:</b> Number of patients who were transferred-in from another HF by end of the
+   * previous reporting period: or All clients who have marked “Transferido de outra US”(concept id
+   * 1594 value coded 1369) in the first Ficha de Consulta Inicial PrEP(encounter type 80,
+   * Min(encounter datetime)) registered in the system by the start of the reporting period.
+   *
+   * @return
+   */
+  public CohortDefinition getPatientsTransferredInFromAnotherHFByEndOfPreviousReportingPeriod2() {
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName(
+        "Patients who were transferred-in from another HF by end of the previous reporting period part 2");
+
+    definition.setQuery(
+        PrepCtQueries.getPatientsTransferredInFromAnotherHFByEndOfPreviousReportingPeriod2(
+            hivMetadata.getReferalTypeConcept().getConceptId(),
+            hivMetadata.getTransferredFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPrepInicialEncounterType().getEncounterTypeId()));
 
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -297,40 +284,17 @@ public class PrepCtCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getNegativeTestResultsPart1() {
+  public CohortDefinition getNegativeTestResults() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName(
-        "Patients with Negative test Results Part 1 on PrEP during the reporting period");
+    definition.setName("Patients with Negative test Results on PrEP during the reporting period");
 
     definition.setQuery(
-        PrepCtQueries.getNegativeTestResultsPart1(
+        PrepCtQueries.getNegativeTestResults(
             hivMetadata.getHivRapidTest1QualitativeConcept().getConceptId(),
             commonMetadata.getNegative().getConceptId(),
-            hivMetadata.getPrepSeguimentoEncounterType().getEncounterTypeId()));
-
-    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    return definition;
-  }
-
-  /**
-   * <b>Description:</b> Negative Test Results: Clients with the field “Data do Teste de HIV com
-   * resultado negativo no Inicio da PrEP” (concept id 165194, value datetime) marked with date that
-   * falls during the reporting period on Ficha de Consulta Inicial PrEP (encounter type 80)
-   *
-   * @return
-   */
-  public CohortDefinition getNegativeTestResultsPart2() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName(
-        "Patients with Negative test Results Part 2 on PrEP during the reporting period");
-
-    definition.setQuery(
-        PrepCtQueries.getNegativeTestResultsPart2(
-            commonMetadata.getIndeterminate().getConceptId(),
-            hivMetadata.getPrepInicialEncounterType().getEncounterTypeId()));
+            hivMetadata.getPrepSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPrepSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getDateOfInitialHivTestConcept().getConceptId()));
 
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
@@ -346,61 +310,17 @@ public class PrepCtCohortQueries {
    *
    * @return
    */
-  public CohortDefinition getOtherTestResultsPart1() {
+  public CohortDefinition getOtherTestResults() {
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName("Patients with Other test Results Part 1 Prep");
 
     definition.setQuery(
-        PrepCtQueries.getOtherTestResultsPart1(
+        PrepCtQueries.getOtherTestResults(
             hivMetadata.getHivRapidTest1QualitativeConcept().getConceptId(),
             commonMetadata.getIndeterminate().getConceptId(),
-            hivMetadata.getPrepSeguimentoEncounterType().getEncounterTypeId()));
-
-    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    return definition;
-  }
-
-  /**
-   * <b>Description:</b> Other Test Results: Clients without the field “Resultado do Teste” (concept
-   * id not in 1040, null) marked with any value on Ficha de Consulta de Seguimento PrEP (encounter
-   * type 81) registered during the reporting period;
-   *
-   * @return
-   */
-  public CohortDefinition getOtherTestResultsPart2() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("Patients with Other test Results Part 2 Prep");
-
-    definition.setQuery(
-        PrepCtQueries.getOtherTestResultsPart2(
-            hivMetadata.getHivRapidTest1QualitativeConcept().getConceptId(),
-            hivMetadata.getPrepSeguimentoEncounterType().getEncounterTypeId()));
-
-    definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-
-    return definition;
-  }
-
-  /**
-   * <b>Description:</b> Other Test Results: Clients without “Data do teste HIV com resultado
-   * Negativo no Inicio da PrEP” (concept id 165194, value datetime null) filled on Ficha de
-   * Consulta Inicial PrEP (encounter type 80) registered during the reporting period;
-   *
-   * @return
-   */
-  public CohortDefinition getOtherTestResultsPart3() {
-    SqlCohortDefinition definition = new SqlCohortDefinition();
-    definition.setName("Patients with Other test Results Part 3 Prep");
-
-    definition.setQuery(
-        PrepCtQueries.getOtherTestResultsPart3(
-            hivMetadata.getDateOfInitialHivTestConcept().getConceptId(),
-            hivMetadata.getPrepInicialEncounterType().getEncounterTypeId()));
+            hivMetadata.getPrepSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getPrepInicialEncounterType().getEncounterTypeId(),
+            hivMetadata.getDateOfHivTestWithNegativeResultsPrepUuidConcept().getConceptId()));
 
     definition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));

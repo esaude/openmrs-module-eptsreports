@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import java.util.Arrays;
+import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.PrepNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.DimensionKeyForAge;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.DimensionKeyForGender;
@@ -11,9 +13,6 @@ import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDef
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.List;
 
 @Component
 public class PrepNewDataset extends BaseDataSet {
