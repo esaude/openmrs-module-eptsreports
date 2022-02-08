@@ -43,7 +43,7 @@ public class QueryDisaggregationProcessor {
         new SqlQueryBuilder(
             String.format(
                 IQueryDisaggregationProcessor.QUERY
-                    .findMaxPatientStateDateByProgramAndPatientStateAndPatientStateInReportingPeriod,
+                    .findMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullInReportingPeriod,
                 program.getProgramId(),
                 state.getProgramWorkflowStateId()),
             context.getParameterValues());
