@@ -3127,6 +3127,102 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.acceptStartMedicationUuid</property>
+		<defaultValue>a2f72a54-20b3-47a8-882b-d0deb6f77d4e</defaultValue>
+		<description>
+			UUID FOR Accept to Start the Medication Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.prepRegimeUuid</property>
+		<defaultValue>0bfae0d8-e2aa-48e4-b4a4-c157021b4f15</defaultValue>
+		<description>
+			UUID FOR PrEP REGIME Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.tdfAnd3tcUuid</property>
+		<defaultValue>8c8d5c95-bd54-4fe9-a544-30277396e903</defaultValue>
+		<description>
+			UUID FOR TDF/3TC Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.tdfAnd3tcUuid</property>
+		<defaultValue>8c8d5c95-bd54-4fe9-a544-30277396e903</defaultValue>
+		<description>
+			UUID FOR TDF/3TC Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.otherDrugForPrepUuid</property>
+		<defaultValue>37789777-a352-472c-be11-13f661d4a94c</defaultValue>
+		<description>
+			UUID FOR OTHER DRUG PREP Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.numberOfBottlesUuid</property>
+		<defaultValue>18d4175b-df7c-4659-a266-38e9ff60278e</defaultValue>
+		<description>
+			UUID FOR NUMBER OF BOTTLES Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.adolescentsAndYouthAtRiskUuid</property>
+		<defaultValue>37a091fb-9a34-4c08-b53d-63298243acbe</defaultValue>
+		<description>
+			UUID FOR Adolescents and Youth at Risk Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.militaryOrPoliceUuid</property>
+		<defaultValue>e1df1f20-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID FOR MILITARY/POLICE Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.driverUuid</property>
+		<defaultValue>e1df209c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID FOR DRIVER Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.minerUuid</property>
+		<defaultValue>e1df3a8c-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID FOR MINER Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.coupleResultsAreDifferentUuid</property>
+		<defaultValue>e1e06ac4-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<description>
+			UUID FOR THE COUPLES RESULTS ARE DIFFERENT / Casais Serodiscordantes Concept
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.prepTargetGroupUuid</property>
+		<defaultValue>279a7f80-b3cd-45c2-b16b-4706212416fd</defaultValue>
+		<description>
+			UUID FOR PREP TARGET GROUP Concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

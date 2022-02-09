@@ -36,7 +36,7 @@ public class SetupMISAUResumoMensalPrepReport extends EptsDataExportManager {
 
   @Override
   public String getExcelDesignUuid() {
-    return "265497dc-7d00-11ec-8e46-9b35bfff7f12";
+    return "2ac4826a-805b-11ec-8529-af582b961358";
   }
 
   @Override

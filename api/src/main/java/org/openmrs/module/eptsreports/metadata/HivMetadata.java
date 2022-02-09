@@ -4597,4 +4597,147 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.dateOfHivTestWithNegativeResultsPrepUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id =165289 </b>
+   *
+   * <p><b>Name:</b>Accept to Start the Medication
+   *
+   * @return {@link Concept}
+   */
+  public Concept getAcceptStartMedicationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.acceptStartMedicationUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165213 </b>
+   *
+   * <p><b>Name:</b>PREP REGIME
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPrepRegimeConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.prepRegimeUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165214 </b>
+   *
+   * <p><b>Name:</b>TDF/3TC
+   *
+   * @return {@link Concept}
+   */
+  public Concept getTdfAnd3tcConcept() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.tdfAnd3tcUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =165216 </b>
+   *
+   * <p><b>Name:</b>OTHER DRUG PREP
+   *
+   * @return {@link Concept}
+   */
+  public Concept getOtherDrugForPrepConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.otherDrugForPrepUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =165217 </b>
+   *
+   * <p><b>Name:</b>NUMBER OF BOTTLES
+   *
+   * @return {@link Concept}
+   */
+  public Concept getNumberOfBottlesConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.numberOfBottlesUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =165287 </b>
+   *
+   * <p><b>Name:</b>Adolescents and Youth at Risk
+   *
+   * @return {@link Concept}
+   */
+  public Concept getAdolescentsAndYouthAtRiskConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.adolescentsAndYouthAtRiskUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =1902 </b>
+   *
+   * <p><b>Name:</b>MILITARY/POLICE
+   *
+   * @return {@link Concept}
+   */
+  public Concept getMilitaryOrPoliceConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.militaryOrPoliceUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =1903 </b>
+   *
+   * <p><b>Name:</b>DRIVER
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDriverConcept() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.driverUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =1908 </b>
+   *
+   * <p><b>Name:</b>MINER
+   *
+   * @return {@link Concept}
+   */
+  public Concept getMinerConcept() {
+    String uuid = Context.getAdministrationService().getGlobalProperty("eptsreports.minerUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =1995 </b>
+   *
+   * <p><b>Name:</b>THE COUPLES RESULTS ARE DIFFERENT / Casais Serodiscordantes
+   *
+   * @return {@link Concept}
+   */
+  public Concept getCoupleResultsAreDifferentConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.coupleResultsAreDifferentUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id =165196 </b>
+   *
+   * <p><b>Name:</b>PREP TARGET GROUP
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPrepTargetGroupConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.prepTargetGroupUuid");
+    return getConcept(uuid);
+  }
 }
