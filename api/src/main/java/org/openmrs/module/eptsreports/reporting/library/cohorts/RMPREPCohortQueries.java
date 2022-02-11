@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.library.queries.RMPREPQueries;
@@ -10,8 +11,6 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
 
 @Component
 public class RMPREPCohortQueries {
@@ -26,7 +25,7 @@ public class RMPREPCohortQueries {
     this.prepNewCohortQueries = prepNewCohortQueries;
   }
 
-    /**
+  /**
    * <b>A1: Nº de Utentes elegíveis a PrEP durante o período de reporte </b>
    *
    * <p>Select all clients who are eligible for prep during the reporting period as follows: have

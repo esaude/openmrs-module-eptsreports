@@ -15,11 +15,13 @@
 	<description>PEPFAR reports for EPTS project in Mozambique</description>
 
 	<properties>
-		<openmrsPlatformVersion>1.11.5</openmrsPlatformVersion>
+		<openmrsPlatformVersion>2.3.3</openmrsPlatformVersion>
 		<reportingVersion>1.13.0</reportingVersion>
-		<serializationVersion>0.2.12</serializationVersion>
+		<serializationVersion>0.2.14</serializationVersion>
 		<calculationVersion>1.2</calculationVersion>
 		<htmlWidgetsVersion>1.9.0</htmlWidgetsVersion>
+		<reportingcompatibilityVersion>2.0.7</reportingcompatibilityVersion>
+		<legacyUiVersion>1.5.0</legacyUiVersion>
 	</properties>
 
 	<url>https://wiki.openmrs.org/x/FQ4z</url>
@@ -57,6 +59,25 @@
 				<groupId>org.openmrs.module</groupId>
 				<artifactId>calculation-api</artifactId>
 				<version>${calculationVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>reportingcompatibility-api</artifactId>
+				<version>${reportingcompatibilityVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>legacyui-api</artifactId>
+				<version>${legacyUiVersion}</version>
+				<scope>provided</scope>
+			</dependency>
+
+			<dependency>
+				<groupId>org.openmrs.module</groupId>
+				<artifactId>legacyui-omod</artifactId>
+				<version>${legacyUiVersion}</version>
 				<scope>provided</scope>
 			</dependency>
 			<!--End of module dependacy -->

@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import java.util.List;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.reporting.dataset.DataSet;
 import org.openmrs.module.reporting.dataset.DataSetColumn;
@@ -9,8 +10,6 @@ import org.openmrs.module.reporting.dataset.definition.EvaluatableDataSetDefinit
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.querybuilder.SqlQueryBuilder;
 import org.openmrs.module.reporting.evaluation.service.EvaluationService;
-
-import java.util.List;
 
 /**
  * Simple dataset of location_attribute properties. Actually supported:

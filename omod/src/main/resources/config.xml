@@ -18,7 +18,7 @@
 	<!-- <updateURL>https://modules.openmrs.org/modules/download/@MODULE_ID@/update.rdf</updateURL> -->
 	<!-- /Base Module Properties -->
 
-	<require_version>1.11.5</require_version>
+	<require_version>${openmrsPlatformVersion}</require_version>
 
 	<!-- Extensions -->
 	<extension>
@@ -35,6 +35,7 @@
 		</require_module>
 		<require_module version="${htmlWidgetsVersion}">org.openmrs.module.htmlwidgets
 		</require_module>
+		<require_module version="${reportingcompatibilityVersion}">org.openmrs.module.reportingcompatibility</require_module>
 	</require_modules>
 
 	<aware_of_modules>

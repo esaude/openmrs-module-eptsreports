@@ -11,10 +11,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Spy;
-import org.openmrs.Cohort;
 import org.openmrs.Location;
 import org.openmrs.api.PatientService;
-import org.openmrs.api.PatientSetService;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.patient.PatientCalculationService;
@@ -22,6 +20,7 @@ import org.openmrs.calculation.patient.PatientCalculationServiceImpl;
 import org.openmrs.calculation.patient.PatientIdCalculation;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
+import org.openmrs.cohort.Cohort;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.evaluator.CalculationCohortDefinitionEvaluator;
 import org.openmrs.module.eptsreports.reporting.helper.TestsHelper;
@@ -31,6 +30,7 @@ import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.PatientIdSet;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reportingcompatibility.service.ReportService;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 
@@ -40,7 +40,7 @@ public class CalculationCohortDefinitionEvaluatorTest extends PowerMockBaseConte
   @Spy
   private PatientCalculationService patientCalculationService = new PatientCalculationServiceImpl();
 
-  @Mock private PatientSetService patientSetService;
+  @Mock private ReportService patientSetService;
 
   private CalculationCohortDefinition definition;
 
@@ -56,7 +56,7 @@ public class CalculationCohortDefinitionEvaluatorTest extends PowerMockBaseConte
   public void setUp() {
     PowerMockito.mockStatic(Context.class, EptsCalculationUtils.class, PatientService.class);
     when(Context.getService(PatientCalculationService.class)).thenReturn(patientCalculationService);
-    when(Context.getPatientSetService()).thenReturn(patientSetService);
+    when(Context.getService(ReportService.class)).thenReturn(patientSetService);
     PatientIdCalculation calculation = new PatientIdCalculation();
     definition = new CalculationCohortDefinition(calculation);
     evaluator = new CalculationCohortDefinitionEvaluator();
