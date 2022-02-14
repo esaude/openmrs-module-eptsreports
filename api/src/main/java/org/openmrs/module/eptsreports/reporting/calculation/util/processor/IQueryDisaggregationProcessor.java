@@ -20,7 +20,7 @@ public interface IQueryDisaggregationProcessor {
                 + "max_estado                                                                                                                         	"
                 + "	inner join patient_program pp on pp.patient_id = max_estado.patient_id															 	"
                 + "	inner join patient_state ps on ps.patient_program_id = pp.patient_program_id and ps.start_date = max_estado.data_estado	         	"
-                + "where pp.program_id = %s and ps.state in =%s and pp.voided = 0 and ps.voided = 0 and pp.location_id = :location 						";
+                + "where pp.program_id = %s and ps.state = %s and pp.voided = 0 and ps.voided = 0 and pp.location_id = :location 						";
 
     public static final String findMaxObsDatetimeByEncounterTypeAndConceptsAndAnsweresInPeriod =
         "select p.patient_id, max(baseObs.obs_datetime) data_estado from patient p "
