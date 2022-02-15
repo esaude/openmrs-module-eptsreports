@@ -93,7 +93,7 @@ public class TXCurrQueries {
             + " inner join patient_program pg on p.patient_id=pg.patient_id "
             + " inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
             + " where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d "
-            + " and ps.state in (%d,%d,%d) and ps.end_date is null and ps.start_date<=:onOrBefore "
+            + " and ps.state in (%d,%d,%d) and ps.start_date<=:onOrBefore "
             + "and pg.location_id=:location group by p.patient_id ";
 
     return String.format(
@@ -665,7 +665,6 @@ public class TXCurrQueries {
             + "    AND        p.voided=0 "
             + "    AND        pg.program_id= ${2}"
             + "    AND        ps.state IN (${7},${8},${10}) "
-            + "    AND        ps.end_date IS NULL "
             + "    AND        ps.start_date<= :onOrBefore "
             + "    AND        pg.location_id= :location "
             + "    GROUP BY   pg.patient_id "
