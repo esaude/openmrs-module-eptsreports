@@ -78,7 +78,7 @@
 
 	<globalProperty>
 		<property>@MODULE_ID@.yesConceptUuid</property>
-		<defaultValue>e1d81b62-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<defaultValue>1065AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</defaultValue>
 		<description>
 			UUID for the SIM concept
 		</description>
@@ -915,7 +915,7 @@
 	</globalProperty>
 	<globalProperty>
 		<property>eptsreports.noConceptUuid</property>
-		<defaultValue>e1d81c70-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<defaultValue>1066AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</defaultValue>
 		<description>Concept uuid for NO</description>
 	</globalProperty>
 	<globalProperty>
@@ -1699,7 +1699,7 @@
 	<!-- 1067 -->
 	<globalProperty>
 		<property>eptsreports.unknownConceptUuid</property>
-		<defaultValue>e1d81d7e-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<defaultValue>1067AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</defaultValue>
 		<description>
 			UUID for the UNKNOWN concept
 		</description>
@@ -1805,7 +1805,7 @@
 
 	<globalProperty>
 		<property>eptsreports.monthlyConceptUuid</property>
-		<defaultValue>e1d848f8-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<defaultValue>1098AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</defaultValue>
 		<description>
 			UUID for the MONTHLY concept
 		</description>
@@ -2835,7 +2835,7 @@
 
 	<globalProperty>
 		<property>eptsreports.weightConceptUuid</property>
-		<defaultValue>e1e2e826-1d5f-11e0-b929-000c29ad1d07</defaultValue>
+		<defaultValue>5089AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA</defaultValue>
 		<description>
 			WEIGHT (KG) concept
 		</description>
