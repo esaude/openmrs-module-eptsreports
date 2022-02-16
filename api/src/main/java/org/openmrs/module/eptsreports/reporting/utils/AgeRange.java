@@ -37,6 +37,10 @@ public enum AgeRange {
 
   SIXTY_TO_SIXTY_FOUR("sixtyT064", 60, 64),
 
+  ABOVE_FIFTEEN("above15", 0, 15),
+
+  ABOVE_TWENTY_FIVE("above25", 0, 25),
+
   ABOVE_SIXTY_FIVE("above65", 0, 65),
 
   ABOVE_FIFTY("above50", 0, 50),

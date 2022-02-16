@@ -9,17 +9,17 @@
 
 	<groupId>org.openmrs.module</groupId>
 	<artifactId>eptsreports</artifactId>
-	<version>1.15.1-SNAPSHOT</version>
+	<version>1.15.1-Beta</version>
 	<packaging>pom</packaging>
 	<name>EPTS reports</name>
 	<description>PEPFAR reports for EPTS project in Mozambique</description>
 
 	<properties>
-		<openmrsPlatformVersion>1.11.5</openmrsPlatformVersion>
-		<reportingVersion>1.13.0</reportingVersion>
-		<serializationVersion>0.2.12</serializationVersion>
-		<calculationVersion>1.2</calculationVersion>
-		<htmlWidgetsVersion>1.9.0</htmlWidgetsVersion>
+		<openmrsPlatformVersion>2.3.2</openmrsPlatformVersion>
+		<reportingVersion>1.21.0</reportingVersion>
+		<serializationVersion>0.2.14</serializationVersion>
+		<calculationVersion>1.2.1</calculationVersion>
+		<htmlWidgetsVersion>1.10.0</htmlWidgetsVersion>
 		<tests.skip>true</tests.skip>
 	</properties>
 
