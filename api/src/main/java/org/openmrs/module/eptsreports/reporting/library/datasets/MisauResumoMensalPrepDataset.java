@@ -69,36 +69,6 @@ public class MisauResumoMensalPrepDataset extends BaseDataSet {
         EptsReportUtils.map(
             prepPregnantBreastfeedingDimension.getPregnantAndBreastfeedingDimensios(), mappings));
 
-    final CohortIndicator indicatorA1 =
-        this.eptsGeneralIndicator.getIndicator(
-            "Number of Clients Who Initiated Prep For the firts Time",
-            EptsReportUtils.map(
-                this.misauResumoMensalPrepCohortQueries.getIndicatorA1(), mappings));
-
-    dataSetDefinition.addColumn(
-        "A1-total",
-        "A1: N° de Utentes elegíveis a PrEP durante o período de reporte",
-        EptsReportUtils.map(indicatorA1, mappings),
-        "");
-
-    this.addRow(
-        dataSetDefinition,
-        "A1",
-        "Age and Gender",
-        EptsReportUtils.map(indicatorA1, mappings),
-        getColumnsForAgeAndGender());
-
-    dataSetDefinition.addColumn(
-        "A1-TotalMale",
-        "A1 - Age and Gender (Totals male) ",
-        EptsReportUtils.map(indicatorA1, mappings),
-        "gender=M");
-    dataSetDefinition.addColumn(
-        "A1-TotalFemale",
-        "A1 - Age and Gender (Totals female) ",
-        EptsReportUtils.map(indicatorA1, mappings),
-        "gender=F");
-
     dataSetDefinition.addDimension(
         "homosexual",
         EptsReportUtils.map(
@@ -123,33 +93,187 @@ public class MisauResumoMensalPrepDataset extends BaseDataSet {
         EptsReportUtils.map(
             this.prepKeyPopulationDimension.findPatientsWhoAreTransGender(), mappings));
 
-    dataSetDefinition.addColumn(
-        "A1-TotalPregnant",
-        "Age and Gender (Totals female) ",
-        EptsReportUtils.map(indicatorA1, mappings),
-        "gender=F|pregnant-breastfeeding=PREGNANT");
+    final CohortIndicator indicatorA1 =
+        this.eptsGeneralIndicator.getIndicator(
+            "Number of Clients Who Initiated Prep For the firts Time",
+            EptsReportUtils.map(
+                this.misauResumoMensalPrepCohortQueries.getIndicatorA1(), mappings));
 
-    dataSetDefinition.addColumn(
-        "A1-TotalBreastfeeding",
-        "Age and Gender (Totals female) ",
+    final CohortIndicator indicatorB1 =
+        this.eptsGeneralIndicator.getIndicator(
+            "N° de Utentes que iniciaram a PrEP pela 1ª vez durante o período de reporte",
+            EptsReportUtils.map(
+                this.misauResumoMensalPrepCohortQueries.getIndicatorB1(), mappings));
+
+    final CohortIndicator indicatorB2 =
+        this.eptsGeneralIndicator.getIndicator(
+            "N° de Utentes que iniciaram a PrEP pela 1ª vez durante o período de reporte",
+            EptsReportUtils.map(
+                this.misauResumoMensalPrepCohortQueries.getIndicatorB2(), mappings));
+
+    final CohortIndicator indicatorC1 =
+        this.eptsGeneralIndicator.getIndicator(
+            "N° de Utentes que receberam a PrEP durante o período de reporte",
+            EptsReportUtils.map(
+                this.misauResumoMensalPrepCohortQueries.getIndicatorC1(), mappings));
+
+    final CohortIndicator indicatorD1 =
+        this.eptsGeneralIndicator.getIndicator(
+            "N° de Utentes em PrEP  por 3 meses consecutivos após terem iniciado a PrEP",
+            EptsReportUtils.map(
+                this.misauResumoMensalPrepCohortQueries.getIndicatorD1(), mappings));
+
+    this.addRow(
+        dataSetDefinition,
+        "A1",
+        "N° de Utentes elegíveis a PrEP durante o período de reporte",
         EptsReportUtils.map(indicatorA1, mappings),
-        "gender=F|pregnant-breastfeeding=BREASTFEEDING");
+        getColumnsForAgeAndGender(),
+        mappings);
+
+    this.addRow(
+        dataSetDefinition,
+        "B1",
+        "N° de Utentes que iniciaram a PrEP pela 1ª vez durante o período de reporte",
+        EptsReportUtils.map(indicatorB1, mappings),
+        getColumnsForAgeAndGender(),
+        mappings);
+
+    this.addRow(
+        dataSetDefinition,
+        "B2",
+        "N° de Novos inícios que retornaram a PrEP durante  o período de reporte",
+        EptsReportUtils.map(indicatorB2, mappings),
+        getColumnsForAgeAndGender(),
+        mappings);
+
+    this.addRow(
+        dataSetDefinition,
+        "C1",
+        "N° de Utentes que receberam a PrEP durante o período de reporte",
+        EptsReportUtils.map(indicatorC1, mappings),
+        getColumnsForAgeAndGender(),
+        mappings);
+
+    this.addRow(
+        dataSetDefinition,
+        "D1",
+        "N° de Utentes em PrEP  por 3 meses consecutivos após terem iniciado a PrEP",
+        EptsReportUtils.map(indicatorD1, mappings),
+        getColumnsForAgeAndGender(),
+        mappings);
 
     return dataSetDefinition;
   }
 
   public void addRow(
-      CohortIndicatorDataSetDefinition cohortDsd,
-      String baseName,
+      CohortIndicatorDataSetDefinition dataSetDefinition,
+      String indicatorPrefix,
       String baseLabel,
-      Mapped<CohortIndicator> indicator,
-      List<ColumnParameters> columns) {
+      Mapped<CohortIndicator> mappedIndicator,
+      List<ColumnParameters> columns,
+      String mappings) {
+
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-total", indicatorPrefix + ": " + baseLabel, mappedIndicator, "");
+
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-TotalMale",
+        indicatorPrefix + " - Age and Gender (Totals male) ",
+        mappedIndicator,
+        "gender=M");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-TotalFemale",
+        indicatorPrefix + " - Age and Gender (Totals female) ",
+        mappedIndicator,
+        "gender=F");
 
     for (ColumnParameters column : columns) {
-      String name = baseName + "-" + column.getName();
+      String name = indicatorPrefix + "-" + column.getName();
       String label = baseLabel + " (" + column.getLabel() + ")";
-      cohortDsd.addColumn(name, label, indicator, column.getDimensions());
+      dataSetDefinition.addColumn(name, label, mappedIndicator, column.getDimensions());
     }
+
+    this.addPregnantBreastFeedingColumns(
+        dataSetDefinition, mappedIndicator, indicatorPrefix, mappings);
+    this.addKeyPopColumns(dataSetDefinition, mappedIndicator, indicatorPrefix, mappings);
+  }
+
+  private void addPregnantBreastFeedingColumns(
+      CohortIndicatorDataSetDefinition dataSetDefinition,
+      Mapped<CohortIndicator> mappedIndicator,
+      String indicatorPrefix,
+      String mappings) {
+
+    // Pregnant
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-pregnant-tenTo14",
+        indicatorPrefix + " - Pregnant 10 - 14",
+        mappedIndicator,
+        "gender=F|age=10-14|pregnant-breastfeeding=PREGNANT");
+
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-pregnant-above15",
+        indicatorPrefix + " - Pregnant 15+ ",
+        mappedIndicator,
+        "gender=F|age=25+|pregnant-breastfeeding=PREGNANT");
+
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-TotalPregnant",
+        indicatorPrefix + " - Totals Pregnant",
+        mappedIndicator,
+        "gender=F|pregnant-breastfeeding=PREGNANT");
+
+    // Breastfeeding
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-breastfeeding-tenTo14",
+        indicatorPrefix + " - Breastfeeding 10 - 14",
+        mappedIndicator,
+        "gender=F|age=10-14|pregnant-breastfeeding=BREASTFEEDING");
+
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-breastfeeding-above15",
+        indicatorPrefix + "- Breastfeeding 15+",
+        mappedIndicator,
+        "gender=F|age=15+|pregnant-breastfeeding=BREASTFEEDING");
+
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-TotalBreastfeeding",
+        indicatorPrefix + "- Total Breastfeeding ",
+        mappedIndicator,
+        "gender=F|pregnant-breastfeeding=BREASTFEEDING");
+  }
+
+  private void addKeyPopColumns(
+      CohortIndicatorDataSetDefinition dataSetDefinition,
+      Mapped<CohortIndicator> mappedIndicator,
+      String indicatorPrefix,
+      String mappings) {
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-homosexual",
+        indicatorPrefix + " - Homens que Fazem Sexo com Homens ",
+        mappedIndicator,
+        "homosexual=homosexual");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-drug-user",
+        indicatorPrefix + " - Pessoas que Injectam Drogas",
+        mappedIndicator,
+        "drug-user=drug-user");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-sex-worker",
+        indicatorPrefix + " - Trabalhador(a) de Sexo",
+        mappedIndicator,
+        "sex-worker=sex-worker");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-prisioner",
+        indicatorPrefix + " - Reclusos",
+        mappedIndicator,
+        "prisioner=prisioner");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-transgender",
+        indicatorPrefix + " - Transgéneros",
+        mappedIndicator,
+        "transgender=transgender");
   }
 
   private List<ColumnParameters> getColumnsForAgeAndGender() {
