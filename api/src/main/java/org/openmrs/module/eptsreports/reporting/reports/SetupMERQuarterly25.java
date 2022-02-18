@@ -18,11 +18,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.*;
+import org.openmrs.module.eptsreports.reporting.library.datasets.CXCASCRNDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.CXCASCRNPositiveDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TXCXCADataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TransferredInDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset25;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TxRTTPLHIVDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -31,9 +35,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+@Deprecated
 public class SetupMERQuarterly25 extends EptsDataExportManager {
 
   private TxPvlsDataset txPvlsDataset;
