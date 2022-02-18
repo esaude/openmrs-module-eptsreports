@@ -93,6 +93,42 @@ public class MisauResumoMensalPrepDataset extends BaseDataSet {
         EptsReportUtils.map(
             this.prepKeyPopulationDimension.findPatientsWhoAreTransGender(), mappings));
 
+    dataSetDefinition.addDimension(
+        "serodiscordants",
+        EptsReportUtils.map(
+            this.prepKeyPopulationDimension.findPatientsWhoAreSeroDiscordants(), mappings));
+
+    dataSetDefinition.addDimension(
+        "trucker",
+        EptsReportUtils.map(this.prepKeyPopulationDimension.findPatientsWhoAreTrucker(), mappings));
+
+    dataSetDefinition.addDimension(
+        "miner",
+        EptsReportUtils.map(this.prepKeyPopulationDimension.findPatientsWhoAreMiner(), mappings));
+
+    dataSetDefinition.addDimension(
+        "military",
+        EptsReportUtils.map(
+            this.prepKeyPopulationDimension.findPatientsWhoAreMilitary(), mappings));
+
+    dataSetDefinition.addDimension(
+        "breastfeeding",
+        EptsReportUtils.map(
+            this.prepKeyPopulationDimension
+                .findPatientsWhoAreBreastfeedingAgeGreaterOrEqualThan15(),
+            mappings));
+
+    dataSetDefinition.addDimension(
+        "pregnants",
+        EptsReportUtils.map(
+            this.prepKeyPopulationDimension.findPatientsWhoArePregnantAgeGreaterOrEqualThan15(),
+            mappings));
+
+    dataSetDefinition.addDimension(
+        "youths",
+        EptsReportUtils.map(
+            this.prepKeyPopulationDimension.findAdolescentsAndYouthsPatientsInRisk(), mappings));
+
     final CohortIndicator indicatorA1 =
         this.eptsGeneralIndicator.getIndicator(
             "Number of Clients Who Initiated Prep For the firts Time",
@@ -274,6 +310,38 @@ public class MisauResumoMensalPrepDataset extends BaseDataSet {
         indicatorPrefix + " - Transgéneros",
         mappedIndicator,
         "transgender=transgender");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-serodiscordants",
+        indicatorPrefix + " - Casais serodiscordantes ",
+        mappedIndicator,
+        "serodiscordants=serodiscordants");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-trucker",
+        indicatorPrefix + " - Camionista de Longo Curso",
+        mappedIndicator,
+        "trucker=trucker");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-miner", indicatorPrefix + " - Mineiro", mappedIndicator, "miner=miner");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-military",
+        indicatorPrefix + " - Militar",
+        mappedIndicator,
+        "military=military");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-breastfeeding",
+        indicatorPrefix + " - Mulheres Lactantes 15+ em Risco",
+        mappedIndicator,
+        "gender=F|age=15+|breastfeeding=breastfeeding");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-pregnants",
+        indicatorPrefix + " - Mulheres Grávidas 15+ em Risco",
+        mappedIndicator,
+        "gender=F|age=15+|pregnants=pregnants");
+    dataSetDefinition.addColumn(
+        indicatorPrefix + "-youths",
+        indicatorPrefix + " - Adolescentes e Jovens em Risco",
+        mappedIndicator,
+        "youths=youths");
   }
 
   private List<ColumnParameters> getColumnsForAgeAndGender() {
