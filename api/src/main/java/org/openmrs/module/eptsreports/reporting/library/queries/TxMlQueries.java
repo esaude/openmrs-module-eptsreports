@@ -969,7 +969,7 @@ public class TxMlQueries {
             + " inner join patient_program pg on p.patient_id=pg.patient_id "
             + " inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
             + " where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=${program} "
-            + " and ps.state =${stateOfProgram} and ps.end_date is null and ps.start_date<=:onOrBefore "
+            + " and ps.state =${stateOfProgram} and ps.start_date<=:onOrBefore "
             + "and pg.location_id=:location group by p.patient_id  ";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
