@@ -13,8 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
-import java.util.HashSet;
-import java.util.Set;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -29,6 +27,9 @@ import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinition
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reportingcompatibility.service.ReportService;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /** Evaluator for calculation based cohorts */
 @Handler(supports = CalculationCohortDefinition.class)
