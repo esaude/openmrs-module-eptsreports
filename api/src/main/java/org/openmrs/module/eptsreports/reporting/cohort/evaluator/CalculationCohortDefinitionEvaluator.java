@@ -13,6 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
+import java.util.HashSet;
 import java.util.Set;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
@@ -70,10 +71,16 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
 
     Cohort cohort = context.getBaseCohort();
     if (cohort == null) {
-      cohort = (Cohort) Context.getService(ReportService.class).getAllPatients().getMemberIds();
+      cohort = getAllPatientsCohort();
     }
 
     return pcs.evaluate(
         cohort.getMemberIds(), cd.getCalculation(), cd.getCalculationParameters(), calcContext);
+  }
+
+  private Cohort getAllPatientsCohort() {
+    ReportService reportService = Context.getService(ReportService.class);
+    Set<Integer> ids = new HashSet<Integer>(reportService.getAllPatients().getMemberIds());
+    return new Cohort("All patients", "All Patients returned from the DB", ids);
   }
 }
