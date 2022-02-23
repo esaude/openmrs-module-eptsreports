@@ -125,5 +125,21 @@ public interface IQueryDisaggregationProcessor {
             + "where p.voided=0 and e.voided=0 and e.encounter_type=53 and                        "
             + "		obsInscricao.value_datetime <= :realEndDate and e.location_id=:location      "
             + "		group by p.patient_id ) transferidosde group by patient_id                        ";
+
+    public static final String findLastTransferredOutInHomVistCardByReportingEndDate =
+        "																				"
+            + "select lastHomeVisitCard.patient_id, lastHomeVisitCard.data_estado 																						"
+            + "from ( 																																					"
+            + "	select p.patient_id, max(e.encounter_datetime) data_estado from patient p  																				"
+            + "		inner join encounter e on p.patient_id=e.patient_id  																								"
+            + "	where e.voided=0 and p.voided=0  																														"
+            + "		and e.encounter_type = 21   																														"
+            + "		and e.encounter_datetime <= :endDate and e.location_id = :location group by p.patient_id 															"
+            + "	) 																																						"
+            + "lastHomeVisitCard 																																		"
+            + "	inner join encounter e on e.patient_id = lastHomeVisitCard.patient_id 																					"
+            + "	inner join obs o on e.encounter_id = o.encounter_id  																									"
+            + "where e.voided = 0 and o.voided = 0 and e.encounter_type = 21 and e.encounter_datetime = lastHomeVisitCard.data_estado    								"
+            + "	and o.concept_id in (%s) and o.value_coded in (%s) and  e.location_id = :location 																		";
   }
 }

@@ -208,4 +208,21 @@ public class QueryDisaggregationProcessor {
         .get(0)
         .evaluateToMap(qb, Integer.class, Date.class, context);
   }
+
+  public Map<Integer, Date> findMapfindLastTransferredOutInHomVistCardByReportingEndDate(
+      EvaluationContext context, List<Integer> questions, List<Integer> answers) {
+
+    SqlQueryBuilder qb =
+        new SqlQueryBuilder(
+            String.format(
+                IQueryDisaggregationProcessor.QUERY
+                    .findLastTransferredOutInHomVistCardByReportingEndDate,
+                StringUtils.join(questions, ","),
+                StringUtils.join(answers, ",")),
+            context.getParameterValues());
+
+    return Context.getRegisteredComponents(EvaluationService.class)
+        .get(0)
+        .evaluateToMap(qb, Integer.class, Date.class, context);
+  }
 }
