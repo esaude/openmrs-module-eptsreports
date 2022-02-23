@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>org.openmrs.module</groupId>
 			<artifactId>eptsreports-api</artifactId>
-			<version>1.14.0-Beta</version>
+			<version>1.15.0-Beta</version>
 		</dependency>
 		<dependency>
 			<groupId>org.openmrs.web</groupId>
