@@ -80,7 +80,12 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
 
   private Cohort getAllPatientsCohort() {
     ReportService reportService = Context.getService(ReportService.class);
-    Set<Integer> ids = new HashSet<Integer>(reportService.getAllPatients().getMemberIds());
+    Set<Integer> ids = new HashSet<Integer>();
+    for (Integer values : reportService.getAllPatients().getMemberIds()) {
+      if (values != null) {
+        ids.add(values);
+      }
+    }
     return new Cohort("All patients", "All Patients returned from the DB", ids);
   }
 }
