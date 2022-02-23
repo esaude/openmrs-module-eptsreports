@@ -13,11 +13,14 @@
  */
 package org.openmrs.module.eptsreports.reporting.reports;
 
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
+
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.MisauResumoMensalPrepDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
@@ -80,6 +83,9 @@ public class SetupMisauResumoMensalPrepReport extends EptsDataExportManager {
     reportDefinition.addDataSetDefinition(
         "D",
         Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
+
+    reportDefinition.addDataSetDefinition(
+        "HF", mapStraightThrough(new LocationDataSetDefinition()));
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(

@@ -252,7 +252,7 @@ public class MisauResumoMensalPrepDataset extends BaseDataSet {
         indicatorPrefix + "-pregnant-above15",
         indicatorPrefix + " - Pregnant 15+ ",
         mappedIndicator,
-        "gender=F|age=25+|pregnant-breastfeeding=PREGNANT");
+        "gender=F|age=15+|pregnant-breastfeeding=PREGNANT");
 
     dataSetDefinition.addColumn(
         indicatorPrefix + "-TotalPregnant",
