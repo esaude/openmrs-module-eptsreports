@@ -6,21 +6,21 @@ public interface IQueryDisaggregationProcessor {
 
     public static final String
         findMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullInReportingPeriod =
-            "select pg.patient_id, max(ps.start_date) data_estado from patient p "
-                + "	   inner join patient_program pg on p.patient_id=pg.patient_id "
-                + "	   inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-                + "  where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s "
-                + "    and ps.state= %s and ps.end_date is null and ps.start_date<= :endDate "
-                + "    and location_id= :location group by pg.patient_id";
-
-    public static final String
-        findMaxPatientStateDateByProgramAndPatientStateAndPatientStateInReportingPeriod =
-            "select pg.patient_id, max(ps.start_date) data_estado from patient p "
-                + "	   inner join patient_program pg on p.patient_id=pg.patient_id "
-                + "	   inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
-                + "  where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%s "
-                + "    and ps.state= %s and ps.start_date<= :endDate "
-                + "    and location_id= :location group by pg.patient_id";
+            "						"
+                + "select distinct max_estado.patient_id, max_estado.data_estado  																		"
+                + "from (                                          						 																"
+                + "		select pg.patient_id,																											"
+                + "			max(ps.start_date) data_estado																							 	"
+                + "		from	patient p																												"
+                + "			inner join patient_program pg on p.patient_id = pg.patient_id																"
+                + "			inner join patient_state ps on pg.patient_program_id = ps.patient_program_id												"
+                + "		where pg.voided=0 and ps.voided = 0 and p.voided = 0  																			"
+                + "			and ps.start_date<= :endDate and location_id =:location group by pg.patient_id                                              "
+                + "	)  																																	"
+                + "max_estado                                                                                                                         	"
+                + "	inner join patient_program pp on pp.patient_id = max_estado.patient_id															 	"
+                + "	inner join patient_state ps on ps.patient_program_id = pp.patient_program_id and ps.start_date = max_estado.data_estado	         	"
+                + "where pp.program_id = %s and ps.state = %s and pp.voided = 0 and ps.voided = 0 and pp.location_id = :location 						";
 
     public static final String findMaxObsDatetimeByEncounterTypeAndConceptsAndAnsweresInPeriod =
         "select p.patient_id, max(baseObs.obs_datetime) data_estado from patient p "
@@ -125,5 +125,21 @@ public interface IQueryDisaggregationProcessor {
             + "where p.voided=0 and e.voided=0 and e.encounter_type=53 and                        "
             + "		obsInscricao.value_datetime <= :realEndDate and e.location_id=:location      "
             + "		group by p.patient_id ) transferidosde group by patient_id                        ";
+
+    public static final String findLastTransferredOutInHomVistCardByReportingEndDate =
+        "																				"
+            + "select lastHomeVisitCard.patient_id, lastHomeVisitCard.data_estado 																						"
+            + "from ( 																																					"
+            + "	select p.patient_id, max(e.encounter_datetime) data_estado from patient p  																				"
+            + "		inner join encounter e on p.patient_id=e.patient_id  																								"
+            + "	where e.voided=0 and p.voided=0  																														"
+            + "		and e.encounter_type = 21   																														"
+            + "		and e.encounter_datetime <= :endDate and e.location_id = :location group by p.patient_id 															"
+            + "	) 																																						"
+            + "lastHomeVisitCard 																																		"
+            + "	inner join encounter e on e.patient_id = lastHomeVisitCard.patient_id 																					"
+            + "	inner join obs o on e.encounter_id = o.encounter_id  																									"
+            + "where e.voided = 0 and o.voided = 0 and e.encounter_type = 21 and e.encounter_datetime = lastHomeVisitCard.data_estado    								"
+            + "	and o.concept_id in (%s) and o.value_coded in (%s) and  e.location_id = :location 																		";
   }
 }

@@ -56,22 +56,20 @@ public class TxRTTPatientsWhoAreTransferedOutCalculation extends BaseFghCalculat
                     hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
                 hivMetadata.getTransferOutToAnotherFacilityConcept());
 
-    Map<Integer, Date> transferrdOutInHomeVisitCard =
-        queryDisaggregation
-            .findMapMaxEncounterDatetimeByEncountersAndQuestionsAndAnswerAndEndOfReportingPeriod(
-                context,
-                hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId(),
-                Arrays.asList(hivMetadata.getDefaultingMotiveConcept().getConceptId()),
-                Arrays.asList(
-                    hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId(),
-                    AUTO_TRANSFER));
+    Map<Integer, Date> lastTransferrdOutInHomeVisitCard =
+        queryDisaggregation.findMapfindLastTransferredOutInHomVistCardByReportingEndDate(
+            context,
+            Arrays.asList(hivMetadata.getDefaultingMotiveConcept().getConceptId()),
+            Arrays.asList(
+                hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId(),
+                AUTO_TRANSFER));
 
     Map<Integer, Date> maxResultFromAllSources =
         CalculationProcessorUtils.getMaxMapDateByPatient(
             transferedOutByProgram,
             transferrdOutInFichaClinica,
             transferredOutInFichaResumo,
-            transferrdOutInHomeVisitCard);
+            lastTransferrdOutInHomeVisitCard);
 
     // Excluir todos pacientes com consulta ou levantamento apos terem sido marcados
     // como transferidos para

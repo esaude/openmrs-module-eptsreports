@@ -113,25 +113,26 @@ public class TxMLPatientsWhoMissedNextApointmentCalculation extends TxMLPatientC
                     this.hivMetadata.getStateOfStayPriorArtPatient().getConceptId(),
                     this.hivMetadata.getStateOfStayOfArtPatient().getConceptId()),
                 this.hivMetadata.getTransferOutToAnotherFacilityConcept());
-
-    Map<Integer, Date> transferredOutInHomeVisitForm =
-        this.disaggregationProcessor.findMapMaxObsDatetimeByEncounterAndQuestionsAndAnswersInPeriod(
-            context,
-            this.hivMetadata.getBuscaActivaEncounterType(),
-            Arrays.asList(this.hivMetadata.getDefaultingMotiveConcept().getConceptId()),
-            Arrays.asList(
-                this.hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId(),
-                this.hivMetadata.getAutoTransfer().getConceptId()));
-
-    transferredOutInHomeVisitForm =
-        TxMLPatientCalculation.excludeEarlyHomeVisitDatesFromNextExpectedDateNumerator(
-            numerator, transferredOutInHomeVisitForm);
+    //
+    //    Map<Integer, Date> transferredOutInHomeVisitForm =
+    //
+    // this.disaggregationProcessor.findMapMaxObsDatetimeByEncounterAndQuestionsAndAnswersInPeriod(
+    //            context,
+    //            this.hivMetadata.getBuscaActivaEncounterType(),
+    //            Arrays.asList(this.hivMetadata.getDefaultingMotiveConcept().getConceptId()),
+    //            Arrays.asList(
+    //                this.hivMetadata.getTransferOutToAnotherFacilityConcept().getConceptId(),
+    //                this.hivMetadata.getAutoTransfer().getConceptId()));
+    //
+    //    transferredOutInHomeVisitForm =
+    //        TxMLPatientCalculation.excludeEarlyHomeVisitDatesFromNextExpectedDateNumerator(
+    //            numerator, transferredOutInHomeVisitForm);
 
     @SuppressWarnings("unchecked")
     Map<Integer, Date> maxResultFromAllSources =
         CalculationProcessorUtils.getMaxMapDateByPatient(
             transferedOutByProgram,
-            transferredOutInHomeVisitForm,
+            //            transferredOutInHomeVisitForm,
             transferrdOutInFichaClinica,
             transferredOutInFichaResumo);
 
