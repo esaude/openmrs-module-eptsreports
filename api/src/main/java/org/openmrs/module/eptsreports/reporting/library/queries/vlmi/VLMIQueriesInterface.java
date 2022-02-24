@@ -55,7 +55,7 @@ public interface VLMIQueriesInterface {
             + " inner join patient_program pg2 on pg2.patient_id = maxEstado.patient_id "
             + " inner join patient_state ps2 on pg2.patient_program_id = ps2.patient_program_id "
             + " where pg2.voided = 0 and ps2.voided = 0 and pg2.program_id = 2 and "
-            + " ps2.start_date = maxEstado.data_obito and pg2.location_id = :location and ps2.state = 10 and ps2.end_date is null "
+            + " ps2.start_date = maxEstado.data_obito and pg2.location_id = :location and ps2.state = 10 "
             + " union "
             + " select p.patient_id, max(e.encounter_datetime) data_obito from "
             + " patient p "
