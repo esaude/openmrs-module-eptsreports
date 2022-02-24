@@ -14,14 +14,12 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.queries.BreastfeedingQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PregnantQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxNewQueries;
 import org.openmrs.module.eptsreports.reporting.utils.AgeRange;
@@ -32,8 +30,6 @@ import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinitio
 import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.RangeComparator;
-import org.openmrs.module.reporting.common.SetComparator;
-import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -102,76 +98,6 @@ public class TxNewCohortQueries {
             this.hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             this.hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             this.hivMetadata.getPtvEtvProgram().getProgramId()));
-    return cd;
-  }
-
-  /**
-   * Women who gave birth 2 years ago These patients are enrolled in the PMTCT program and have been
-   * updated as a childbirth within 2 years of the reference date
-   *
-   * @return CohortDefinition
-   */
-  public CohortDefinition getPatientsWhoGaveBirthWithinReportingPeriod() {
-    final SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("patientsWhoGaveBirthWithinReportingPeriod");
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.setQuery(
-        BreastfeedingQueries.getPatientsWhoGaveBirthWithinReportingPeriod(
-            this.hivMetadata.getPtvEtvProgram().getProgramId(), 27));
-
-    return cd;
-  }
-
-  /**
-   * TxNew Breastfeeding Compisition Cohort
-   *
-   * @return CohortDefinition
-   */
-  @DocumentedDefinition(value = "txNewBreastfeedingComposition")
-  public CohortDefinition getTxNewBreastfeedingComposition() {
-    final CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setDescription("breastfeedingComposition");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    cd.addSearch(
-        "DATAPARTO",
-        EptsReportUtils.map(
-            this.getPatientsWithUpdatedDepartureInART(),
-            "value1=${onOrAfter},value2=${onOrBefore},locationList=${location}"));
-    cd.addSearch(
-        "INICIOLACTANTE",
-        EptsReportUtils.map(
-            this.genericCohorts.hasCodedObs(
-                this.hivMetadata.getCriteriaForArtStart(),
-                BaseObsCohortDefinition.TimeModifier.FIRST,
-                SetComparator.IN,
-                Arrays.asList(this.hivMetadata.getAdultoSeguimentoEncounterType()),
-                Arrays.asList(this.commonMetadata.getBreastfeeding())),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
-    cd.addSearch(
-        "LACTANTEPROGRAMA",
-        EptsReportUtils.map(
-            this.getPatientsWhoGaveBirthWithinReportingPeriod(),
-            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
-    cd.addSearch(
-        "LACTANTE",
-        EptsReportUtils.map(
-            this.genericCohorts.hasCodedObs(
-                this.commonMetadata.getBreastfeeding(),
-                BaseObsCohortDefinition.TimeModifier.LAST,
-                SetComparator.IN,
-                Arrays.asList(this.hivMetadata.getAdultoSeguimentoEncounterType()),
-                Arrays.asList(this.commonMetadata.getYesConcept())),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
-
-    final String compositionString =
-        "(DATAPARTO OR INICIOLACTANTE OR LACTANTEPROGRAMA OR LACTANTE)";
-
-    cd.setCompositionString(compositionString);
     return cd;
   }
 

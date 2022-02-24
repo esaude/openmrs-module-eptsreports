@@ -1,7 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 
 import java.util.Arrays;
 import java.util.Date;
@@ -194,36 +193,15 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
         new HashSet<>(
             Arrays.asList(
                 /* with either adult on ped initial encounters: */ 2,
-                6,
-                /* in hiv care program: */ 7,
-                /* in hiv care program at 28 state: */ 100,
-                /* in art program at 29 state: */ 101)),
+                6, /*
+                    * in hiv
+                    * care
+                    * program:
+                    */
+                7, /* in hiv care program at 28 state: */
+                100, /* in art program at 29 state: */
+                101)),
         evaluateCohortDefinition(genericCohortQueries.getBaseCohort(), parameters).getMemberIds());
-  }
-
-  @Test
-  public void getPatientsBasedOnPatientStatesShouldRetrieveAllMatchingPatients()
-      throws EvaluationException {
-    Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(
-        new Parameter("startDate", "start date", Date.class),
-        testsHelper.getDate("2016-05-06 12:26:00.0"));
-    parameters.put(
-        new Parameter("endDate", "end date", Date.class),
-        testsHelper.getDate("2019-05-06 12:26:00.0"));
-    parameters.put(
-        new Parameter("location", "Location", Location.class), locationService.getLocation(1));
-
-    assertEquals(
-        new HashSet<>(Arrays.asList(100)),
-        evaluateCohortDefinition(
-                genericCohortQueries.getPatientsBasedOnPatientStates(10, 28), parameters)
-            .getMemberIds());
-    assertEquals(
-        new HashSet<>(Arrays.asList(101)),
-        evaluateCohortDefinition(
-                genericCohortQueries.getPatientsBasedOnPatientStates(11, 29), parameters)
-            .getMemberIds());
   }
 
   @Test
@@ -261,21 +239,6 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
     assertEquals(
         new HashSet<>(Arrays.asList(/* person dead: */ 100, /* exited by death */ 101)),
         evaluateCohortDefinition(cohortDefinition, parameters).getMemberIds());
-  }
-
-  @Test
-  public void getDeceasedPatientsShouldRetrieveAllMatchingPatients() throws EvaluationException {
-    CohortDefinition deceased = genericCohortQueries.getDeceasedPatients();
-    assertNotNull(deceased);
-    testDeathCohort(deceased);
-  }
-
-  @Test
-  public void getDeceasedPatientsBeforeDateShouldRetrieveAllMatchingPatients()
-      throws EvaluationException {
-    CohortDefinition deceased = genericCohortQueries.getDeceasedPatientsBeforeDate();
-    assertNotNull(deceased);
-    testDeathCohort(deceased);
   }
 
   @Test

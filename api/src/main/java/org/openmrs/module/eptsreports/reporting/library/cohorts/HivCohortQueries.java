@@ -101,7 +101,8 @@ public class HivCohortQueries {
    */
   @DocumentedDefinition(value = "transferredFromOtherHealthFacility")
   public CohortDefinition getPatientsTransferredFromOtherHealthFacility() {
-    // TODO refactor this method, use #getPatientsInProgramWithStateDuringPeriod(Program,
+    // TODO refactor this method, use
+    // #getPatientsInProgramWithStateDuringPeriod(Program,
     // ProgramWorkflowState)
     SqlCohortDefinition transferredFromOtherHealthFacility = new SqlCohortDefinition();
     transferredFromOtherHealthFacility.setName("transferredFromOtherHealthFacility");
@@ -128,14 +129,6 @@ public class HivCohortQueries {
     transferredFromOtherHealthFacility.addParameter(
         new Parameter("location", "location", Location.class));
     return transferredFromOtherHealthFacility;
-  }
-
-  public CohortDefinition getPatientsInArtCareTransferredFromOtherHealthFacility() {
-    Program hivCareProgram = hivMetadata.getHIVCareProgram();
-    ProgramWorkflowState transferredFrom =
-        hivMetadata.getArtCareTransferredFromOtherHealthFacilityWorkflowState();
-    return genericCohortQueires.getPatientsBasedOnPatientStates(
-        hivCareProgram.getProgramId(), transferredFrom.getProgramWorkflowStateId());
   }
 
   public CohortDefinition getPatientsInArtCareTransferredOutToAnotherHealthFacility() {

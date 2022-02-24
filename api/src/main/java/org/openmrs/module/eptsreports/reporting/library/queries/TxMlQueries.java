@@ -55,19 +55,6 @@ public class TxMlQueries {
         acceptContactConcept);
   }
 
-  public static String getTransferredOutPatients(int program, int state) {
-    String query =
-        "SELECT pg.patient_id"
-            + " FROM patient p"
-            + " INNER JOIN patient_program pg ON p.patient_id=pg.patient_id"
-            + " INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
-            + " WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 AND"
-            + " pg.program_id=%d"
-            + " AND ps.state=%d"
-            + " AND ps.start_date BETWEEN (:endDate - INTERVAL 183 DAY) AND  :endDate AND pg.location_id=:location AND ps.end_date is null";
-    return String.format(query, program, state);
-  }
-
   // All Patients marked as Dead in the patient home visit card
   public static String getPatientsMarkedDeadInHomeVisitCard(
       int homeVisitCardEncounterTypeId,
@@ -98,9 +85,9 @@ public class TxMlQueries {
   }
 
   /*
-   Untraced Patients Criteria 2
-   Patients without Patient Visit Card without a set of observations
-  */
+   * Untraced Patients Criteria 2 Patients without Patient Visit Card without a
+   * set of observations
+   */
   public static String getPatientsWithVisitCardAndWithoutObs(
       int pharmacyEncounterTypeId,
       int adultoSequimentoEncounterTypeId,
@@ -177,11 +164,12 @@ public class TxMlQueries {
         whoGaveInformationConcept,
         cardDeliveryDate);
   }
+
   /*
-       All Patients without “Patient Visit Card” (Encounter type 21 or 36 or 37) registered between
-       ◦ the last scheduled appointment or drugs pick up (the most recent one) by reporting end date and
-       ◦ the reporting end date
-  */
+   * All Patients without “Patient Visit Card” (Encounter type 21 or 36 or 37)
+   * registered between ◦ the last scheduled appointment or drugs pick up (the
+   * most recent one) by reporting end date and ◦ the reporting end date
+   */
   public static String getPatientsWithVisitCardRegisteredBtwnLastAppointmentOrDrugPickupAndEnddate(
       int pharmacyEncounterTypeId,
       int adultoSequimentoEncounterTypeId,
