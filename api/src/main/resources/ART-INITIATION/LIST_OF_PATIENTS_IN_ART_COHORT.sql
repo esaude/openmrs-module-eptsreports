@@ -25,7 +25,7 @@
 
                        from 
                        ( 
-                          Select 
+                          select 
                           inicio_real.patient_id,
                           pid.identifier,
                           concat(ifnull(pn.given_name,''),' ',ifnull(pn.middle_name,''),' ',ifnull(pn.family_name,'')) as NomeCompleto,
@@ -41,14 +41,14 @@
                           seguimento.data_seguimento,
                           obsProximaConsulta.value_datetime data_proximo_seguimento,
                           case 
-                          when ps.state = 9 then 'ABANDONO' 
+                          when last_state.state = 9 then 'ABANDONO' 
                           -- when ps.state = 6 then 'ACTIVO NO PROGRAMA' 
-                          when ps.state = 10 then 'OBITO' 
-                          when ps.state = 8 then 'SUSPENSO' 
-                          when ps.state = 7 then 'TRANSFERIDO PARA' 
+                          when last_state.state = 10 then 'OBITO' 
+                          when last_state.state = 8 then 'SUSPENSO' 
+                          when last_state.state = 7 then 'TRANSFERIDO PARA' 
                           -- when ps.state = 29 then 'TRANSFERIDO DE' 
                           end AS state,
-                          ps.start_date,
+                          last_state.start_date,
                           homeCardVisit.state_home_card,
                           homeCardVisit.encounter_datetime as home_card_date,
                           FC.state_fc,
@@ -359,11 +359,25 @@
                            group by p.patient_id 
                            )seguimento 
                         ) seguimento on seguimento.patient_id=inicio_real.patient_id
-
-                        left join  patient_program pg ON p.person_id = pg.patient_id and pg.program_id = 2 and pg.location_id=:location
-                        left join  patient_state ps ON pg.patient_program_id = ps.patient_program_id and ps.start_date IS NOT NULL AND ps.end_date IS NULL and ps.start_date<=:evaluationDate and ps.state in(9,10,8,7) and ps.voided=0
+                        
+                        left join 
+                        (
+		                        select distinct max_estado.patient_id, max_estado.data_estado, ps.state, ps.start_date 
+								from (                                          						
+										select pg.patient_id,																											
+											max(ps.start_date) data_estado																							
+										from	patient p																												
+											inner join patient_program pg on p.patient_id = pg.patient_id																
+											inner join patient_state ps on pg.patient_program_id = ps.patient_program_id												
+										where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id = 2  																				
+											and ps.start_date<= :evaluationDate and pg.location_id =:location group by pg.patient_id                                              
+									) 
+								max_estado                                                                                                                        
+									inner join patient_program pp on pp.patient_id = max_estado.patient_id															
+									inner join patient_state ps on ps.patient_program_id = pp.patient_program_id and ps.start_date = max_estado.data_estado	        
+								where pp.program_id = 2 and ps.state in (9,10,8,7) and pp.voided = 0 and ps.voided = 0 and pp.location_id = :location 
+						)last_state on last_state.patient_id = inicio_real.patient_id
                         left join  obs obsProximaConsulta  on obsProximaConsulta.person_id=seguimento.patient_id and obsProximaConsulta.concept_id=1410 and  obsProximaConsulta.obs_datetime=seguimento.data_seguimento and obsProximaConsulta.voided=0
-
                         left join
 
                         (
