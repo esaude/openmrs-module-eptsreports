@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.reports;
 
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.CXCASCRNDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.CXCASCRNPositiveDataset;
@@ -39,6 +35,11 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 @Component
 public class SetupMERQuarterly26 extends EptsDataExportManager {
@@ -124,8 +125,8 @@ public class SetupMERQuarterly26 extends EptsDataExportManager {
     rd.setParameters(txPvlsDataset.getParameters());
     //    rd.addDataSetDefinition("N",
     // Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
-    // rd.addDataSetDefinition(
-    //   "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
+    rd.addDataSetDefinition(
+        "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
     //    rd.addDataSetDefinition("P",
     // Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
     rd.addDataSetDefinition(
