@@ -33,7 +33,6 @@ public class TrfInPatientsWhoAreSilentTransferedInCalculation extends BaseFghCal
     Date startDate = (Date) context.getParameterValues().get("startDate");
     Map<String, Object> parameters = new HashMap<>();
 
-    parameters.put("startDate", DateUtil.adjustDate(startDate, -1, DurationUnit.DAYS));
     parameters.put("endDate", DateUtil.adjustDate(startDate, -1, DurationUnit.DAYS));
     parameters.put("location", location);
 
