@@ -1,8 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import org.apache.commons.text.StringSubstitutor;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.text.StringSubstitutor;
 
 public class TXCurrQueries {
 
@@ -136,7 +137,7 @@ public class TXCurrQueries {
       int reasonPatientNotFoundByActivist3rdVisit,
       int patientIsDead) {
     String query =
-        "  SELECT  last_result.patient_id FROM ( "
+        "  SELECT  max_date.patient_id FROM "
             + "    (SELECT  "
             + "      p.patient_id,  "
             + "      MAX(e.encounter_datetime) last   "
@@ -160,7 +161,7 @@ public class TXCurrQueries {
             + "        )  "
             + "    AND o.voided=0 "
             + "    AND ee.voided = 0 "
-            + "    AND ee.encounter_datetime=max_date.last) last_result";
+            + "    AND ee.encounter_datetime=max_date.last";
 
     Map<String, Integer> map = new HashMap<>();
     map.put("buscaActiva", buscaActivaEncounterType);
