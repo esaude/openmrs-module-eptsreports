@@ -30,6 +30,7 @@ import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportMa
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
+import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
@@ -43,6 +44,8 @@ public class SetupDQAReport extends EptsDataExportManager {
   @Autowired private DQAViralLoadSummuryDataset viralLoadSummuryDataset;
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
+
+  @Autowired private DatinCodeDataSet datimCodeDataSet;
 
   @Override
   public String getExcelDesignUuid() {
@@ -78,6 +81,10 @@ public class SetupDQAReport extends EptsDataExportManager {
 
     rd.addDataSetDefinition("DQ", mapStraightThrough(viralLoadSummuryDataset.constructDatset()));
 
+    rd.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(this.datimCodeDataSet.constructDataset(this.getParameters())));
+
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
@@ -104,7 +111,7 @@ public class SetupDQAReport extends EptsDataExportManager {
               null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
-      props.put("repeatingSections", "sheet:1,row:7,dataset:DQA");
+      props.put("repeatingSections", "sheet:1,row:8,dataset:DQA");
       reportDesign.setProperties(props);
     } catch (IOException e) {
       throw new ReportingException(e.toString());
