@@ -68,9 +68,9 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
     calcContext.addToCache("onOrBefore", cd.getOnOrBefore());
 
     Cohort cohort = context.getBaseCohort();
-    if (cohort == null) {
-      cohort = Context.getPatientSetService().getAllPatients();
-    }
+    //    if (cohort == null) {
+    //      cohort = Context.getPatientSetService().getAllPatients();
+    //    }
 
     return pcs.evaluate(
         cohort.getMemberIds(), cd.getCalculation(), cd.getCalculationParameters(), calcContext);

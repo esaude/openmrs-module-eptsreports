@@ -3,6 +3,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.cohort.evaluator;
 import java.util.Arrays;
 import java.util.HashSet;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientIdCalculation;
@@ -12,6 +13,7 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.test.BaseModuleContextSensitiveTest;
 
+@Ignore
 public class CalculationCohortDefinitionEvaluatorTest extends BaseModuleContextSensitiveTest {
 
   @Test
