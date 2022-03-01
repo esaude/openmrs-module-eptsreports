@@ -1,4 +1,4 @@
-        select
+    select
         (@cnt := @cnt + 1) as ID,
         coorte12meses_final.patient_id,
         coorte12meses_final.data_usar,
@@ -7,12 +7,10 @@
         round(datediff(:endDate,pe.birthdate)/365) as AGE ,
         DATE_FORMAT(coorte12meses_final.data_inicio, '%d-%m-%Y') DATA_INICIO_TARV,
         L.encounter_datetime DATA_CV,
-        L.valor_quantitativo CV_Quantitativa,
-        L.valor_qualitativo CV_Qualitativa
-
+        MAX(if(L.concept_qualitativa=1305,L.valor_qualitativo,null)) AS CV_Qualitativa,
+        MAX(if(L.concept_quantitativa=856,L.valor_quantitativo,null) ) AS CV_Quantitativa
         from (
-
-        	select  inicio_fila_seg_prox.*,GREATEST(COALESCE(data_fila,data_seguimento,data_recepcao_levantou),COALESCE(data_seguimento,data_fila,data_recepcao_levantou),COALESCE(data_recepcao_levantou,data_seguimento,data_fila))  data_usar_c, 
+          select  inicio_fila_seg_prox.*,GREATEST(COALESCE(data_fila,data_seguimento,data_recepcao_levantou),COALESCE(data_seguimento,data_fila,data_recepcao_levantou),COALESCE(data_recepcao_levantou,data_seguimento,data_fila))  data_usar_c, 
             GREATEST(COALESCE(data_proximo_lev,data_recepcao_levantou30),COALESCE(data_recepcao_levantou30,data_proximo_lev)) data_usar from (select inicio_fila_seg.*, 
             max(obs_fila.value_datetime) data_proximo_lev, 
             max(obs_seguimento.value_datetime) data_proximo_seguimento, 
@@ -33,7 +31,7 @@
             where pg.voided=0 and p.voided=0 and program_id=2 and date_enrolled<=:endDate and location_id=:location 
             group by pg.patient_id 
             union 
-            SELECT e.patient_id, MIN(e.encounter_datetime) AS data_inicio  FROM 	patient p 
+            SELECT e.patient_id, MIN(e.encounter_datetime) AS data_inicio  FROM   patient p 
             inner join encounter e on p.patient_id=e.patient_id 
             WHERE p.voided=0 and e.encounter_type=18 AND e.voided=0 and e.encounter_datetime<=:endDate and e.location_id=:location 
             GROUP BY p.patient_id 
@@ -70,7 +68,7 @@
             Select p.patient_id,max(encounter_datetime) data_fila from patient p  
             inner join encounter e on e.patient_id=p.patient_id 
             where p.voided=0 and e.voided=0 and e.encounter_type=18 and e.location_id=:location and date(e.encounter_datetime)<=:endDate 
-            group by p.patient_id) max_fila on inicio.patient_id=max_fila.patient_id	
+            group by p.patient_id) max_fila on inicio.patient_id=max_fila.patient_id  
             left join (Select p.patient_id,max(encounter_datetime) data_seguimento from patient p 
             inner join encounter e on e.patient_id=p.patient_id 
             where p.voided=0 and e.voided=0 and e.encounter_type in (6,9) and  e.location_id=:location and e.encounter_datetime<=:endDate group by p.patient_id) max_consulta on inicio.patient_id=max_consulta.patient_id 
@@ -88,212 +86,209 @@
             group by patient_id 
 
             ) coorte12meses_final 
-			
-			inner join person pe on pe.person_id=coorte12meses_final.patient_id
+      
+      inner join person pe on pe.person_id=coorte12meses_final.patient_id
             
             left join 
             (   select pid1.* 
-            	from patient_identifier pid1 
-            	inner join 
-            	( 
-            		select patient_id,min(patient_identifier_id) id 
-            		from patient_identifier 
-            		where voided=0 
-            		group by patient_id 
-            	) pid2 
-            	where pid1.patient_id=pid2.patient_id and pid1.patient_identifier_id=pid2.id 
+              from patient_identifier pid1 
+              inner join 
+              ( 
+                select patient_id,min(patient_identifier_id) id 
+                from patient_identifier 
+                where voided=0 
+                group by patient_id 
+              ) pid2 
+              where pid1.patient_id=pid2.patient_id and pid1.patient_identifier_id=pid2.id 
             ) pid on pid.patient_id=coorte12meses_final.patient_id 
 
-        	inner join 
-        	(
-        		select L.patient_id,
-        			L.encounter_datetime, 
-        			L.valor_quantitativo,
-        			L.valor_qualitativo
-        	from(
-        		select 
-        		cv_quantitativa.patient_id,
-        		cv_quantitativa.encounter_datetime,
-        		if(cv_quantitativa.concept_id = 856 ,cv_quantitativa.value_numeric, null) valor_quantitativo,
-        		cv_qualitativo.valor_qualitativo
-        		
-        		from (
-	        	
-	        	 SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric 
-				 FROM 	patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id 
-	        	 JOIN 	obs ob ON enc.encounter_id=ob.encounter_id 
-	             WHERE 	pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location 
-						AND enc.encounter_datetime BETWEEN :startDate AND :startDate + interval 1 month - interval 1 day 
-						AND ob.concept_id = 856 AND enc.encounter_type=6
-	             AND pat.patient_id not in 
-	             (
-					 SELECT p.patient_id 
-					 FROM 	patient p 
-							JOIN encounter e ON p.patient_id=e.patient_id 
-							JOIN obs o ON e.encounter_id=o.encounter_id 
-							JOIN 
-							(	SELECT 	pat.patient_id AS patient_id, 
-										enc.encounter_datetime AS endDate 
-								FROM 	patient pat 
-								JOIN 	encounter enc ON pat.patient_id=enc.patient_id 
-								JOIN 	obs ob ON enc.encounter_id=ob.encounter_id 
-								WHERE 	pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location 
-										AND enc.encounter_datetime BETWEEN :startDate AND :startDate + interval 1 month - interval 1 day AND ob.concept_id = 856 AND enc.encounter_type=6 
-							) ed ON p.patient_id=ed.patient_id 
-							WHERE 	p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
-									AND e.encounter_datetime BETWEEN IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) AND (:startDate -interval 1 day) 
-					 AND o.concept_id = 856
-					 AND e.encounter_type=6
-	             
-	             )
-
-	             union
-
-	             SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
-	             WHERE 
-	             pat.voided=0 
-	             AND enc.voided=0 
-	             AND ob.voided=0 
-	             AND enc.location_id=:location 
-	             AND enc.encounter_datetime BETWEEN :startDate + interval 1 month AND :startDate + interval 2 month - interval 1 day AND ob.concept_id = 856 
-	             AND enc.encounter_type=6
-	             AND pat.patient_id not in 
-	             (
-	             SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id 
-	             JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob 
-	             ON enc.encounter_id=ob.encounter_id 
-	             WHERE pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location AND enc.encounter_datetime 
-	             BETWEEN :startDate + interval 1 month AND :startDate + interval 2 month - interval 1 day AND ob.concept_id = 856 AND enc.encounter_type=6 
-	             ) ed 
-	             ON p.patient_id=ed.patient_id 
-	             WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
-	             AND e.encounter_datetime BETWEEN IF(MONTH(:startDate + interval 1 month) = 12  && DAY(:startDate + interval 1 month) = 21, :startDate + interval 1 month, CONCAT(YEAR(:startDate + interval 1 month)-1, '-12','-21')) AND ((:startDate + interval 1 month) -interval 1 day) 
-	             AND o.concept_id = 856
-	             AND e.encounter_type=6
-	             )
-	             union
-	             SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
-	             WHERE 
-	             pat.voided=0 
-	             AND enc.voided=0 
-	             AND ob.voided=0 
-	             AND enc.location_id=:location 
-	             AND enc.encounter_datetime BETWEEN :startDate + interval 2 month AND :endDate AND ob.concept_id = 856
-	             AND enc.encounter_type=6
-	             AND pat.patient_id not in 
-	             (
-	             SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id 
-	             JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob 
-	             ON enc.encounter_id=ob.encounter_id 
-	             WHERE pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location AND enc.encounter_datetime 
-	             BETWEEN :startDate + interval 2 month AND :endDate AND ob.concept_id = 856 AND enc.encounter_type=6 
-	             ) ed 
-	             ON p.patient_id=ed.patient_id 
-	             WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
-	             AND e.encounter_datetime BETWEEN IF(MONTH(:startDate + interval 2 month) = 12  && DAY(:startDate + interval 2 month) = 21, :startDate + interval 2 month, CONCAT(YEAR(:startDate + interval 2 month)-1, '-12','-21')) AND ((:startDate + interval 2 month) -interval 1 day) 
-	             AND o.concept_id = 856
-	             AND e.encounter_type=6
-	             )
-        	)cv_quantitativa
-        	left join
-        	(
-        		select 
-        		cv_qualitativo.patient_id,
-        		cv_qualitativo.encounter_datetime,
-			if(cv_qualitativo.concept_id=1305,
-					case cv_qualitativo.value_coded 
-						when 1306  then 'NIVEL BAIXO DE DETECÇÃO' 
-						when 1304  then 'MA QUALIDADE DA AMOSTRA' 
-						when 23814 then 'INDETECTAVEL'
-						when 23905 then 'MENOR QUE 10 COPIAS/ML'
-						when 23906 then 'MENOR QUE 20 COPIAS/ML'
-						when 23907 then 'MENOR QUE 40 COPIAS/ML'
-						when 23908 then 'MENOR QUE 400 COPIAS/ML'
-						when 23904 then 'MENOR QUE 839 COPIAS/ML'
-						else null end, null) valor_qualitativo
-        		from (
-	        	
-	        	 SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric 
-				 FROM 	patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id 
-	        	 JOIN 	obs ob ON enc.encounter_id=ob.encounter_id 
-	             WHERE 	pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location 
-						AND enc.encounter_datetime BETWEEN :startDate AND :startDate + interval 1 month - interval 1 day 
-						AND ob.concept_id = 1305 AND enc.encounter_type=6
-	             AND pat.patient_id not in 
-	             (
-					 SELECT p.patient_id 
-					 FROM 	patient p 
-							JOIN encounter e ON p.patient_id=e.patient_id 
-							JOIN obs o ON e.encounter_id=o.encounter_id 
-							JOIN 
-							(	SELECT 	pat.patient_id AS patient_id, 
-										enc.encounter_datetime AS endDate 
-								FROM 	patient pat 
-								JOIN 	encounter enc ON pat.patient_id=enc.patient_id 
-								JOIN 	obs ob ON enc.encounter_id=ob.encounter_id 
-								WHERE 	pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location 
-										AND enc.encounter_datetime BETWEEN :startDate AND :startDate + interval 1 month - interval 1 day AND ob.concept_id = 1305 AND enc.encounter_type=6 
-							) ed ON p.patient_id=ed.patient_id 
-							WHERE 	p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
-									AND e.encounter_datetime BETWEEN IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) AND (:startDate -interval 1 day) 
-					 AND o.concept_id = 1305
-					 AND e.encounter_type=6
-	             
-	             )
-
-	             union
-
-	             SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
-	             WHERE 
-	             pat.voided=0 
-	             AND enc.voided=0 
-	             AND ob.voided=0 
-	             AND enc.location_id=:location 
-	             AND enc.encounter_datetime BETWEEN :startDate + interval 1 month AND :startDate + interval 2 month - interval 1 day AND ob.concept_id = 1305 
-	             AND enc.encounter_type=6
-	             AND pat.patient_id not in 
-	             (
-	             SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id 
-	             JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob 
-	             ON enc.encounter_id=ob.encounter_id 
-	             WHERE pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location AND enc.encounter_datetime 
-	             BETWEEN :startDate + interval 1 month AND :startDate + interval 2 month - interval 1 day AND ob.concept_id = 1305 AND enc.encounter_type=6 
-	             ) ed 
-	             ON p.patient_id=ed.patient_id 
-	             WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
-	             AND e.encounter_datetime BETWEEN IF(MONTH(:startDate + interval 1 month) = 12  && DAY(:startDate + interval 1 month) = 21, :startDate + interval 1 month, CONCAT(YEAR(:startDate + interval 1 month)-1, '-12','-21')) AND ((:startDate + interval 1 month) -interval 1 day) 
-	             AND o.concept_id = 1305
-	             AND e.encounter_type=6
-	             )
-	             union
-	             SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
-	             WHERE 
-	             pat.voided=0 
-	             AND enc.voided=0 
-	             AND ob.voided=0 
-	             AND enc.location_id=:location 
-	             AND enc.encounter_datetime BETWEEN :startDate + interval 2 month AND :endDate AND ob.concept_id = 1305
-	             AND enc.encounter_type=6
-	             AND pat.patient_id not in 
-	             (
-	             SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id 
-	             JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob 
-	             ON enc.encounter_id=ob.encounter_id 
-	             WHERE pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location AND enc.encounter_datetime 
-	             BETWEEN :startDate + interval 2 month AND :endDate AND ob.concept_id = 1305 AND enc.encounter_type=6 
-	             ) ed 
-	             ON p.patient_id=ed.patient_id 
-	             WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
-	             AND e.encounter_datetime BETWEEN IF(MONTH(:startDate + interval 2 month) = 12  && DAY(:startDate + interval 2 month) = 21, :startDate + interval 2 month, CONCAT(YEAR(:startDate + interval 2 month)-1, '-12','-21')) AND ((:startDate + interval 2 month) -interval 1 day) 
-	             AND o.concept_id = 1305
-	             AND e.encounter_type=6
-	             )
-        	)cv_qualitativo
-        )cv_qualitativo on cv_quantitativa.patient_id = cv_qualitativo.patient_id
-        ) L
+          inner join 
+          (
+            select L.patient_id,
+              L.encounter_datetime, 
+              L.valor_quantitativo,
+              L.valor_qualitativo,
+              L.concept_quantitativa,
+              L.concept_qualitativa
+          from(
+            select 
+      cv_quantitativa.patient_id,
+      cv_quantitativa.encounter_datetime,
+      cv_quantitativa.concept_id as concept_quantitativa,
+            if(cv_quantitativa.concept_id = 856 ,cv_quantitativa.value_numeric, null) as valor_quantitativo,
+            cv_qualitativo.valor_qualitativo,
+            cv_qualitativo.concept_id concept_qualitativa
+            
+            from (
+            
+             SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric 
+         FROM   patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id 
+             JOIN   obs ob ON enc.encounter_id=ob.encounter_id 
+               WHERE  pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location 
+            AND enc.encounter_datetime BETWEEN :startDate AND :startDate + interval 1 month - interval 1 day 
+            AND ob.concept_id in (856,1305) AND enc.encounter_type=6
+               AND pat.patient_id not in 
+               (
+           SELECT p.patient_id 
+           FROM   patient p 
+              JOIN encounter e ON p.patient_id=e.patient_id 
+              JOIN obs o ON e.encounter_id=o.encounter_id 
+              JOIN 
+              ( SELECT  pat.patient_id AS patient_id, 
+                    enc.encounter_datetime AS endDate 
+                FROM  patient pat 
+                JOIN  encounter enc ON pat.patient_id=enc.patient_id 
+                JOIN  obs ob ON enc.encounter_id=ob.encounter_id 
+                WHERE   pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location 
+                    AND enc.encounter_datetime BETWEEN :startDate AND :startDate + interval 1 month - interval 1 day AND ob.concept_id in (856,1305) AND enc.encounter_type=6 
+              ) ed ON p.patient_id=ed.patient_id 
+              WHERE   p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
+                  AND e.encounter_datetime BETWEEN IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) AND (:startDate -interval 1 day) 
+           AND o.concept_id in (856,1305)
+           AND e.encounter_type=6
+               )
+               union
+               SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
+               WHERE 
+               pat.voided=0 
+               AND enc.voided=0 
+               AND ob.voided=0 
+               AND enc.location_id=:location 
+               AND enc.encounter_datetime BETWEEN :startDate + interval 1 month AND :startDate + interval 2 month - interval 1 day AND ob.concept_id in (856,1305) 
+               AND enc.encounter_type=6
+               AND pat.patient_id not in 
+               (
+               SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id 
+               JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob 
+               ON enc.encounter_id=ob.encounter_id 
+               WHERE pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location AND enc.encounter_datetime 
+               BETWEEN :startDate + interval 1 month AND :startDate + interval 2 month - interval 1 day AND ob.concept_id in (856,1305) AND enc.encounter_type=6 
+               ) ed 
+               ON p.patient_id=ed.patient_id 
+               WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
+               AND e.encounter_datetime BETWEEN IF(MONTH(:startDate + interval 1 month) = 12  && DAY(:startDate + interval 1 month) = 21, :startDate + interval 1 month, CONCAT(YEAR(:startDate + interval 1 month)-1, '-12','-21')) AND ((:startDate + interval 1 month) -interval 1 day) 
+               AND o.concept_id in (856,1305)
+               AND e.encounter_type=6
+               )
+               union
+               SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
+               WHERE 
+               pat.voided=0 
+               AND enc.voided=0 
+               AND ob.voided=0 
+               AND enc.location_id=:location 
+               AND enc.encounter_datetime BETWEEN :startDate + interval 2 month AND :endDate AND ob.concept_id in (856,1305)
+               AND enc.encounter_type=6
+               AND pat.patient_id not in 
+               (
+               SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id 
+               JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob 
+               ON enc.encounter_id=ob.encounter_id 
+               WHERE pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location AND enc.encounter_datetime 
+               BETWEEN :startDate + interval 2 month AND :endDate AND ob.concept_id in (856,1305) AND enc.encounter_type=6 
+               ) ed 
+               ON p.patient_id=ed.patient_id 
+               WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
+               AND e.encounter_datetime BETWEEN IF(MONTH(:startDate + interval 2 month) = 12  && DAY(:startDate + interval 2 month) = 21, :startDate + interval 2 month, CONCAT(YEAR(:startDate + interval 2 month)-1, '-12','-21')) AND ((:startDate + interval 2 month) -interval 1 day) 
+               AND o.concept_id in (856,1305)
+               AND e.encounter_type=6
+               )
+          )cv_quantitativa
+          left join
+          (
+            select 
+            cv_qualitativo.patient_id,
+            cv_qualitativo.encounter_datetime,
+            cv_qualitativo.concept_id ,
+      if(cv_qualitativo.concept_id=1305,
+          case cv_qualitativo.value_coded 
+            when 1306  then 'NIVEL BAIXO DE DETECÇÃO' 
+            when 1304  then 'MA QUALIDADE DA AMOSTRA' 
+            when 23814 then 'INDETECTAVEL'
+            when 23905 then 'MENOR QUE 10 COPIAS/ML'
+            when 23906 then 'MENOR QUE 20 COPIAS/ML'
+            when 23907 then 'MENOR QUE 40 COPIAS/ML'
+            when 23908 then 'MENOR QUE 400 COPIAS/ML'
+            when 23904 then 'MENOR QUE 839 COPIAS/ML'
+            else null end, null) valor_qualitativo
+            from (
+             SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric 
+         FROM   patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id 
+             JOIN   obs ob ON enc.encounter_id=ob.encounter_id 
+               WHERE  pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location 
+            AND enc.encounter_datetime BETWEEN :startDate AND :startDate + interval 1 month - interval 1 day 
+            AND ob.concept_id in (856,1305) AND enc.encounter_type=6
+               AND pat.patient_id not in 
+               (
+           SELECT p.patient_id 
+           FROM   patient p 
+              JOIN encounter e ON p.patient_id=e.patient_id 
+              JOIN obs o ON e.encounter_id=o.encounter_id 
+              JOIN 
+              ( SELECT  pat.patient_id AS patient_id, 
+                    enc.encounter_datetime AS endDate 
+                FROM  patient pat 
+                JOIN  encounter enc ON pat.patient_id=enc.patient_id 
+                JOIN  obs ob ON enc.encounter_id=ob.encounter_id 
+                WHERE   pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location 
+                    AND enc.encounter_datetime BETWEEN :startDate AND :startDate + interval 1 month - interval 1 day AND ob.concept_id AND enc.encounter_type=6 
+              ) ed ON p.patient_id=ed.patient_id 
+              WHERE   p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
+                  AND e.encounter_datetime BETWEEN IF(MONTH(:startDate) = 12  && DAY(:startDate) = 21, :startDate, CONCAT(YEAR(:startDate)-1, '-12','-21')) AND (:startDate -interval 1 day) 
+           AND o.concept_id in (856,1305)
+           AND e.encounter_type=6
+               
+               )
+               union
+               SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
+               WHERE 
+               pat.voided=0 
+               AND enc.voided=0 
+               AND ob.voided=0 
+               AND enc.location_id=:location 
+               AND enc.encounter_datetime BETWEEN :startDate + interval 1 month AND :startDate + interval 2 month - interval 1 day AND ob.concept_id = 1305 
+               AND enc.encounter_type=6
+               AND pat.patient_id not in 
+               (
+               SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id 
+               JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob 
+               ON enc.encounter_id=ob.encounter_id 
+               WHERE pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location AND enc.encounter_datetime 
+               BETWEEN :startDate + interval 1 month AND :startDate + interval 2 month - interval 1 day AND ob.concept_id in (856,1305) AND enc.encounter_type=6 
+               ) ed 
+               ON p.patient_id=ed.patient_id 
+               WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
+               AND e.encounter_datetime BETWEEN IF(MONTH(:startDate + interval 1 month) = 12  && DAY(:startDate + interval 1 month) = 21, :startDate + interval 1 month, CONCAT(YEAR(:startDate + interval 1 month)-1, '-12','-21')) AND ((:startDate + interval 1 month) -interval 1 day) 
+               AND o.concept_id in (856,1305)
+               AND e.encounter_type=6
+               )
+               union
+               SELECT pat.patient_id,enc.encounter_datetime encounter_datetime,ob.concept_id,ob.value_coded,ob.value_numeric FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob ON enc.encounter_id=ob.encounter_id 
+               WHERE 
+               pat.voided=0 
+               AND enc.voided=0 
+               AND ob.voided=0 
+               AND enc.location_id=:location 
+               AND enc.encounter_datetime BETWEEN :startDate + interval 2 month AND :endDate AND ob.concept_id in (856,1305)
+               AND enc.encounter_type=6
+               AND pat.patient_id not in 
+               (
+               SELECT p.patient_id FROM patient p JOIN encounter e ON p.patient_id=e.patient_id JOIN obs o ON e.encounter_id=o.encounter_id 
+               JOIN (SELECT pat.patient_id AS patient_id, enc.encounter_datetime AS endDate FROM patient pat JOIN encounter enc ON pat.patient_id=enc.patient_id JOIN obs ob 
+               ON enc.encounter_id=ob.encounter_id 
+               WHERE pat.voided=0 AND enc.voided=0 AND ob.voided=0 AND enc.location_id=:location AND enc.encounter_datetime 
+               BETWEEN :startDate + interval 2 month AND :endDate AND ob.concept_id in (856,1305) AND enc.encounter_type=6 
+               ) ed 
+               ON p.patient_id=ed.patient_id 
+               WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.location_id=:location 
+               AND e.encounter_datetime BETWEEN IF(MONTH(:startDate + interval 2 month) = 12  && DAY(:startDate + interval 2 month) = 21, :startDate + interval 2 month, CONCAT(YEAR(:startDate + interval 2 month)-1, '-12','-21')) AND ((:startDate + interval 2 month) -interval 1 day) 
+               AND o.concept_id in (856,1305)
+               AND e.encounter_type=6
+               )
+          )cv_qualitativo
+        )cv_qualitativo on cv_quantitativa.patient_id = cv_qualitativo.patient_id 
+        ) L 
         )L on L.patient_id=coorte12meses_final.patient_id
-
         CROSS JOIN (SELECT @cnt := 0) as DEMMY
-            
             where (coorte12meses_final.data_estado is null or (coorte12meses_final.data_estado is not null and  coorte12meses_final.data_usar_c>coorte12meses_final.data_estado)) and date_add(coorte12meses_final.data_usar, interval 60 day) >=:endDate
-            
+            group by coorte12meses_final.patient_id
