@@ -94,7 +94,7 @@ public interface MisauResumoMensalPRepQueries {
             + "			inner join patient_program pg on p.patient_id = pg.patient_id																 			"
             + "			inner join patient_state ps on pg.patient_program_id = ps.patient_program_id												 			"
             + "		where pg.voided=0 and ps.voided = 0 and p.voided = 0  																			 			"
-            + "			and pg.program_id =25 and ps.start_date<= '2021-12-31' and location_id =:location group by pg.patient_id                        		"
+            + "			and pg.program_id =25 and ps.start_date <= :endDate and location_id =:location group by pg.patient_id                        		"
             + "		)  																																			"
             + "	max_estado                                                                                                                         	 			"
             + "		inner join patient_program pp on pp.patient_id = max_estado.patient_id															 			"
@@ -209,23 +209,5 @@ public interface MisauResumoMensalPRepQueries {
             + "	) 																																											"
             + "seguimento_prep on seguimento_prep.patient_id = inicio_prep.patient_id 																										"
             + "where seguimento_prep.encounter_datetime between inicio_prep.data_inicio and (inicio_prep.data_inicio + INTERVAL 33 DAY) 													";
-
-    public static final String findUsersOfTargetGroup =
-        "																																	"
-            + "select p.patient_id from patient p      																								 										"
-            + "		inner join encounter e on e.patient_id = p.patient_id   																												"
-            + "		inner join obs o on o.encounter_id = e.encounter_id 																													"
-            + "		inner join patient_program pp on pp.patient_id = p.patient_id 																											"
-            + "where p.voided = 0 and e.voided = 0 and o.voided = 0 																														"
-            + "		and e.encounter_type = 80 and o.concept_id = 165196 and o.value_coded =	%s													 											"
-            + "		and e.encounter_datetime between :startDate and :endDate and pp.program_id = 25 and pp.voided is false and e.location_id = :location 	 								"
-            + "union 																																										"
-            + "select p.patient_id from patient p      																								 										"
-            + "		inner join encounter e on e.patient_id = p.patient_id   																												"
-            + "		inner join obs o on o.encounter_id = e.encounter_id 																													"
-            + "		inner join patient_program pp on pp.patient_id = p.patient_id 																											"
-            + "where p.voided = 0 and e.voided = 0 and o.voided = 0 																														"
-            + "		and e.encounter_type = 80 and o.concept_id = 23703 and o.value_coded = %s																								"
-            + "		and e.encounter_datetime between :startDate and :endDate and pp.program_id = 25 and pp.voided is false and e.location_id = :location									";
   }
 }
