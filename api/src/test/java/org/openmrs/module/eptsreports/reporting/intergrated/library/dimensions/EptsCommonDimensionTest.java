@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library.dimensions;
 
-import static org.junit.Assert.assertEquals;
-
-import java.util.*;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
@@ -13,6 +10,10 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+
+import java.util.*;
+
+import static org.junit.Assert.assertEquals;
 
 public class EptsCommonDimensionTest extends DefinitionsTest {
   private @Autowired EptsCommonDimension eptsCommonDimension;
@@ -45,18 +46,18 @@ public class EptsCommonDimensionTest extends DefinitionsTest {
             .getOptionCohorts();
 
     assertEquals(new HashSet<>(Arrays.asList(432, 8, 999)), ageOptions.get("UK").getMemberIds());
-    assertEquals(new HashSet<>(Arrays.asList()), ageOptions.get("<1").getMemberIds());
-    assertEquals(new HashSet<>(Arrays.asList()), ageOptions.get("1-4").getMemberIds());
-    assertEquals(new HashSet<>(Arrays.asList()), ageOptions.get("5-9").getMemberIds());
-    assertEquals(new HashSet<>(Arrays.asList(6)), ageOptions.get("<15").getMemberIds());
-    assertEquals(new HashSet<>(Arrays.asList(6)), ageOptions.get("10-14").getMemberIds());
-    assertEquals(new HashSet<>(Arrays.asList(2, 7)), ageOptions.get("15+").getMemberIds());
+    assertEquals(new HashSet<>(), ageOptions.get("<1").getMemberIds());
+    assertEquals(new HashSet<>(), ageOptions.get("1-4").getMemberIds());
+    assertEquals(new HashSet<>(), ageOptions.get("5-9").getMemberIds());
+    assertEquals(new HashSet<>(), ageOptions.get("<15").getMemberIds());
+    assertEquals(new HashSet<>(), ageOptions.get("10-14").getMemberIds());
+    assertEquals(new HashSet<>(Arrays.asList(2, 6, 7)), ageOptions.get("15+").getMemberIds());
     assertEquals(new HashSet<>(Arrays.asList()), ageOptions.get("15-19").getMemberIds());
     assertEquals(new HashSet<>(Arrays.asList()), ageOptions.get("20-24").getMemberIds());
     assertEquals(new HashSet<>(Arrays.asList()), ageOptions.get("25-29").getMemberIds());
     assertEquals(new HashSet<>(Arrays.asList()), ageOptions.get("30-34").getMemberIds());
     assertEquals(new HashSet<>(Arrays.asList()), ageOptions.get("35-39").getMemberIds());
-    assertEquals(new HashSet<>(Arrays.asList(2, 7)), ageOptions.get("40-44").getMemberIds());
+    assertEquals(new HashSet<>(Arrays.asList(2, 6, 7)), ageOptions.get("40-44").getMemberIds());
     assertEquals(new HashSet<>(Arrays.asList()), ageOptions.get("45-49").getMemberIds());
     assertEquals(new HashSet<>(Arrays.asList()), ageOptions.get("50+").getMemberIds());
   }
