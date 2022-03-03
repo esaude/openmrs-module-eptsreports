@@ -477,24 +477,24 @@
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
                uuid="081c1d39-c634-4ac5-8b5e-b387871b0179" location_id="4"/>
 
-    <obs obs_id="274088" person_id="6" concept_id="6263" encounter_id="32673" obs_datetime="2013-06-17 00:00:00"
+    <obs obs_id="274088" person_id="6" concept_id="6263" encounter_id="32673" obs_datetime="2013-06-17 00:00:00" status = "FINAL"
          value_coded="6260" creator="1" date_created="2013-06-19 12:55:48" voided="0"
          uuid="28297084-dd14-4a4c-9e85-4b0bf149795b" location_id="1"/>
 
-    <obs obs_id="273788" person_id="8" concept_id="6264" encounter_id="32643" obs_datetime="2013-05-03 00:00:00"
+    <obs obs_id="273788" person_id="8" concept_id="6264" encounter_id="32643" obs_datetime="2013-05-03 00:00:00" status = "FINAL"
          value_coded="6261" creator="1" date_created="2013-06-19 10:03:01" voided="0"
          uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1"/>
     uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1"/>
 
-    <obs obs_id="276198" person_id="1005" concept_id="6257" encounter_id="32647" obs_datetime="2013-05-03 00:00:00"
+    <obs obs_id="276198" person_id="1005" concept_id="6257" encounter_id="32647" obs_datetime="2013-05-03 00:00:00" status = "FINAL"
          value_coded="1066" creator="1" date_created="2013-06-19 10:03:01" voided="0"
          uuid="9f3e7d16-6480-4f11-aa25-1103fc78ff4e" location_id="2"/>
 
-    <obs obs_id="161895" person_id="1007" concept_id="1410" encounter_id="11666" obs_datetime="2013-01-09 00:00:00"
+    <obs obs_id="161895" person_id="1007" concept_id="1410" encounter_id="11666" obs_datetime="2013-01-09 00:00:00" status = "FINAL"
          location_id="3" value_datetime="2013-01-23 00:00:00" creator="1" date_created="2013-06-15 00:36:54" voided="0"
          uuid="cc1c4b86-5257-4d80-8a4c-909e363055ba"/>
 
-    <obs obs_id="161897" person_id="1008" concept_id="6258" encounter_id="11668" obs_datetime="2013-06-17 00:00:00"
+    <obs obs_id="161897" person_id="1008" concept_id="6258" encounter_id="11668" obs_datetime="2013-06-17 00:00:00" status = "FINAL"
          value_coded="1066" creator="1" date_created="2013-06-19 12:55:48" voided="0"
          uuid="5d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="4"/>
 
