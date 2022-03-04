@@ -42,7 +42,7 @@ public class TXTBDenominatorForTBMontlyCascadeQueries {
   @Autowired private TxCurrCohortQueries txCurrCohortQueries;
 
   private String generalParameterMapping =
-      "startDate=${endDate-6m},endDate=${endDate-1d},location=${location}";
+      "startDate=${endDate-6m},endDate=${endDate},location=${location}";
 
   @DocumentedDefinition(value = "TxTBDenominatorForPreviuosPeriod")
   public CohortDefinition getTxTBDenominator() {
@@ -56,7 +56,7 @@ public class TXTBDenominatorForTBMontlyCascadeQueries {
         "art-list",
         EptsReportUtils.map(
             this.genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${endDate-1d},location=${location}"));
+            "onOrBefore=${endDate},location=${location}"));
     definition.addSearch(
         "tb-screening",
         EptsReportUtils.map(
@@ -90,7 +90,7 @@ public class TXTBDenominatorForTBMontlyCascadeQueries {
         "transferred-out",
         EptsReportUtils.map(
             txtbCohortQueries.getPatientsWhoAreTransferredOut(),
-            "startDate=${endDate-6m},endDate=${endDate-1d},location=${location}"));
+            "startDate=${endDate-6m},endDate=${endDate},location=${location}"));
 
     definition.addSearch(
         "A-PREVIOUS-PERIOD",
@@ -235,7 +235,7 @@ public class TXTBDenominatorForTBMontlyCascadeQueries {
         "A",
         EptsReportUtils.map(
             txtbCohortQueries.codedYesTbScreening(),
-            "onOrAfter=${endDate-6},onOrBefore=${endDate-1d},locationList=${location}"));
+            "onOrAfter=${endDate-6},onOrBefore=${endDate},locationList=${location}"));
     cd.addSearch(
         "B",
         EptsReportUtils.map(
@@ -406,7 +406,7 @@ public class TXTBDenominatorForTBMontlyCascadeQueries {
         "started-on-period",
         EptsReportUtils.map(
             this.genericCohortQueries.getStartedArtOnPeriod(false, true),
-            "onOrAfter=${endDate-6m},onOrBefore=${endDate-1d},location=${location}"));
+            "onOrAfter=${endDate-6m},onOrBefore=${endDate},location=${location}"));
     definition.setCompositionString("started-on-period");
     return definition;
   }
