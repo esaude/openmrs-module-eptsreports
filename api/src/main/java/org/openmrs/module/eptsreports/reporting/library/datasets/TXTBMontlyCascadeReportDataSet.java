@@ -65,18 +65,14 @@ public class TXTBMontlyCascadeReportDataSet extends BaseDataSet {
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
     dataSetDefinition.addDimension(
-        "txcurrNewlyOnArt",
+        "artStartState",
         EptsReportUtils.map(
-            this.montlyCascadeReportDimensions.getTxCurrNewlyOnArtDimension(), mappings));
-    dataSetDefinition.addDimension(
-        "txcurrPreviouslyOnArt",
-        EptsReportUtils.map(
-            this.montlyCascadeReportDimensions.getTxCurrPreviouslyOnArtDimension(), mappings));
+            this.montlyCascadeReportDimensions.getArtStartRangeDimension(), mappings));
 
     dataSetDefinition.addDimension(
-        "clinicalConsultationNewly",
+        "clinicalConsultation",
         EptsReportUtils.map(
-            this.montlyCascadeReportDimensions.getConsultationsInLastSixMonths(), mappings));
+            this.montlyCascadeReportDimensions.getClinicalConsultationDimension(), mappings));
 
     dataSetDefinition.addDimension(
         "diagnostictest",
@@ -102,51 +98,51 @@ public class TXTBMontlyCascadeReportDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "TC",
-        "TX_CURR: Currently on ART - Total",
+        "1. TX_CURR: Number of patients currently receiving ART - Total",
         EptsReportUtils.map(txCurrIndicator, mappings),
         "");
 
     this.addRow(
         dataSetDefinition,
         "TCN",
-        "TX_CURR: Number of patients currently receiving ART In the Last 6 Months",
+        "1. TX_CURR: Number of patients currently receiving ART (New on ART)",
         EptsReportUtils.map(txCurrIndicator, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrNewlyOnArt=txcurrNewlyOnArt");
+        "artStartState=txcurrNewlyOnArt");
 
     this.addRow(
         dataSetDefinition,
         "TCP",
-        "TX_CURR: Number of patients currently receiving ART For More than 6 Months",
+        "1. TX_CURR: Number of patients currently receiving ART (Previously on ART)",
         EptsReportUtils.map(txCurrIndicator, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrPreviouslyOnArt=txcurrPreviouslyOnArt");
+        "artStartState=txcurrPreviouslyOnArt");
 
     dataSetDefinition.addColumn(
         "TC-CC",
-        "TX_CURR: Currently on ART with Clinical Consultations - Total",
+        "2. TX_CURR with clinical consultation in last 6 months - Total",
         EptsReportUtils.map(txCurrIndicator, mappings),
-        "clinicalConsultationNewly=clinicalConsultationNewly");
+        "clinicalConsultation=clinicalConsultationNewly");
 
     this.addRow(
         dataSetDefinition,
         "TC-CC-N",
-        "Number of patients currently receiving ART For More than 6 Months with Clinical Consultations",
+        "2. TX_CURR with clinical consultation in last 6 months (New on ART) ",
         EptsReportUtils.map(txCurrIndicator, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrNewlyOnArt=txcurrNewlyOnArt|clinicalConsultationNewly=clinicalConsultationNewly");
+        "artStartState=txcurrNewlyOnArt|clinicalConsultation=clinicalConsultationNewly");
 
     this.addRow(
         dataSetDefinition,
         "TC-CC-P",
-        "Number of patients currently receiving ART For More than 6 Months With Clinical Consultations",
+        "2. TX_CURR with clinical consultation in last 6 months (Previously on ART) ",
         EptsReportUtils.map(txCurrIndicator, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrPreviouslyOnArt=txcurrPreviouslyOnArt|clinicalConsultationNewly=clinicalConsultationNewly");
+        "artStartState=txcurrPreviouslyOnArt|clinicalConsultation=clinicalConsultationNewly");
   }
 
   private void addSection3(CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
@@ -156,56 +152,56 @@ public class TXTBMontlyCascadeReportDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "TC-TB",
-        "TX-TB: Number of patients on ART who were screened for TB in the last 6 months -Total",
+        "3.a TX_TB denominator - Total",
         EptsReportUtils.map(txTBDenominatorPreviousPeriod, mappings),
         "");
 
     this.addRow(
         dataSetDefinition,
         "TC-TB-N",
-        "Number of patients on ART who were screened for TB in the last 6 months (New On ART)",
+        "3.a TX_TB denominator (New On ART)",
         EptsReportUtils.map(txTBDenominatorPreviousPeriod, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrNewlyOnArt=txcurrNewlyOnArt");
+        "artStartState=txcurrNewlyOnArt");
 
     this.addRow(
         dataSetDefinition,
         "TC-TB-P",
-        "Number of patients on ART who were screened for TB in the last 6 months (Previously on ART)",
+        "3.a TX_TB denominator (Previously on ART)",
         EptsReportUtils.map(txTBDenominatorPreviousPeriod, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrPreviouslyOnArt=txcurrPreviouslyOnArt");
-  }
-
-  private void addSEction4(CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
+        "artStartState=txcurrPreviouslyOnArt");
 
     CohortIndicator tbDenominatorAndTxCurr =
         this.getIndicator(this.txtbMontlyCascadeReporCohortQueries.getTxBTDenominatorAndTxCurr());
     dataSetDefinition.addColumn(
         "TBD-TC",
-        " TX_TB denominator not died not transferred-out -Total",
+        "3.b.TX_TB denominator not died not transferred-out - Total",
         EptsReportUtils.map(tbDenominatorAndTxCurr, mappings),
         "");
 
     this.addRow(
         dataSetDefinition,
         "TBD-TC-N",
-        "TX_TB denominator not died not transferred-out (New On ART)",
+        "3.b.TX_TB denominator not died not transferred-out (New On ART)",
         EptsReportUtils.map(tbDenominatorAndTxCurr, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrNewlyOnArt=txcurrNewlyOnArt");
+        "artStartState=txcurrNewlyOnArt");
 
     this.addRow(
         dataSetDefinition,
         "TBD-TC-P",
-        "TX_TB denominator not died not transferred-out (Previously on ART)",
+        "3.b.TX_TB denominator not died not transferred-out (Previously on ART)",
         EptsReportUtils.map(tbDenominatorAndTxCurr, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrPreviouslyOnArt=txcurrPreviouslyOnArt");
+        "artStartState=txcurrPreviouslyOnArt");
+  }
+
+  private void addSEction4(CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
 
     CohortIndicator denominatorAndPosetiveScreening =
         getIndicator(
@@ -213,27 +209,27 @@ public class TXTBMontlyCascadeReportDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "TBD-PS",
-        " TX_TB: Number of ART patients who were screened positive for TB in the last six months -Total",
+        "4a. Positive TB screening or specimen sent or notified with TB - Total",
         EptsReportUtils.map(denominatorAndPosetiveScreening, mappings),
         "");
 
     this.addRow(
         dataSetDefinition,
         "TBD-PS-N",
-        "TX_TB: Number of ART patients who were screened positive for TB (New On ART)",
+        "4a. Positive TB screening or specimen sent or notified with TB (New On ART)",
         EptsReportUtils.map(denominatorAndPosetiveScreening, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrNewlyOnArt=txcurrNewlyOnArt");
+        "artStartState=txcurrNewlyOnArt");
 
     this.addRow(
         dataSetDefinition,
         "TBD-PS-P",
-        "TX_TB: Number of ART patients who were screened positive for TB (Previously on ART)",
+        "4a. Positive TB screening or specimen sent or notified with TB (Previously on ART)",
         EptsReportUtils.map(denominatorAndPosetiveScreening, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrPreviouslyOnArt=txcurrPreviouslyOnArt");
+        "artStartState=txcurrPreviouslyOnArt");
 
     CohortIndicator denominatorAndNegativeScreening =
         this.getIndicator(
@@ -241,27 +237,27 @@ public class TXTBMontlyCascadeReportDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "TBD-NS",
-        " TX_TB: Number of ART patients who were screened negative for TB in the last six months -Total",
+        "4b. Negative TB screening or specimen sent or notified with TB - Total",
         EptsReportUtils.map(denominatorAndNegativeScreening, mappings),
         "");
 
     this.addRow(
         dataSetDefinition,
         "TBD-NS-N",
-        "TX_TB: Number of ART patients who were screened negative for TB (New On ART)",
+        "4b. Negative TB screening or specimen sent or notified with TB (New On ART)",
         EptsReportUtils.map(denominatorAndNegativeScreening, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrNewlyOnArt=txcurrNewlyOnArt");
+        "artStartState=txcurrNewlyOnArt");
 
     this.addRow(
         dataSetDefinition,
         "TBD-NS-P",
-        "TX_TB: Number of ART patients who were screened negative for TB (Previously on ART)",
+        "4b. Negative TB screening or specimen sent or notified with TB (Previously on ART)",
         EptsReportUtils.map(denominatorAndNegativeScreening, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrPreviouslyOnArt=txcurrPreviouslyOnArt");
+        "artStartState=txcurrPreviouslyOnArt");
   }
 
   private void addSection5(CohortIndicatorDataSetDefinition dataSetDefinition, String mappings) {
@@ -403,7 +399,7 @@ public class TXTBMontlyCascadeReportDataSet extends BaseDataSet {
         EptsReportUtils.map(screenedAndStartedTB, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrNewlyOnArt=txcurrNewlyOnArt");
+        "artStartState=txcurrNewlyOnArt");
 
     this.addRow(
         dataSetDefinition,
@@ -412,7 +408,7 @@ public class TXTBMontlyCascadeReportDataSet extends BaseDataSet {
         EptsReportUtils.map(screenedAndStartedTB, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrPreviouslyOnArt=txcurrPreviouslyOnArt");
+        "artStartState=txcurrPreviouslyOnArt");
 
     CohortIndicator txTBAndTXCurr =
         this.getIndicator(
@@ -432,7 +428,7 @@ public class TXTBMontlyCascadeReportDataSet extends BaseDataSet {
         EptsReportUtils.map(txTBAndTXCurr, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrNewlyOnArt=txcurrNewlyOnArt");
+        "artStartState=txcurrNewlyOnArt");
 
     this.addRow(
         dataSetDefinition,
@@ -441,7 +437,7 @@ public class TXTBMontlyCascadeReportDataSet extends BaseDataSet {
         EptsReportUtils.map(txTBAndTXCurr, mappings),
         this.getColumnsForAgeDesaggregation(),
         mappings,
-        "txcurrPreviouslyOnArt=txcurrPreviouslyOnArt");
+        "artStartState=txcurrPreviouslyOnArt");
   }
 
   private void addRow(

@@ -17,125 +17,47 @@ public class TXTBMontlyCascadeReportDimensions {
 
   @Autowired private TXTBDenominatorForTBMontlyCascadeQueries txtbDenominatorForTBMontlyCascade;
 
-  public CohortDefinitionDimension getTxCurrNewlyOnArtDimension() {
-    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+  public CohortDefinitionDimension getClinicalConsultationDimension() {
     final String mappings = "endDate=${endDate},location=${location}";
-    dimension.setName("TX_CURR In The Last 6 Months Dimension");
-    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dimension.addParameter(new Parameter("location", "location", Location.class));
-    dimension.addCohortDefinition(
-        "txcurrNewlyOnArt",
-        EptsReportUtils.map(
-            this.montlyCascadeReporCohortQueries.getPatientsEnrollendOnARTForTheLastSixMonths(),
-            mappings));
+    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("clinicalConsultation");
+    dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dim.addParameter(new Parameter("location", "location", Location.class));
 
-    return dimension;
-  }
-
-  public CohortDefinitionDimension getTxCurrPreviouslyOnArtDimension() {
-    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
-    final String mappings = "endDate=${endDate},location=${location}";
-    dimension.setName("TX_CURR For More Than 6 Months Dimension");
-    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dimension.addParameter(new Parameter("location", "location", Location.class));
-
-    dimension.addCohortDefinition(
-        "txcurrPreviouslyOnArt",
-        EptsReportUtils.map(
-            this.montlyCascadeReporCohortQueries.getPatientsEnrolledOnArtForMoreThanSixMonths(),
-            mappings));
-
-    return dimension;
-  }
-
-  public CohortDefinitionDimension getConsultationsInLastSixMonths() {
-    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
-    final String mappings = "endDate=${endDate},location=${location}";
-    dimension.setName("Clinical Consultation in Last 6 Months Dimension");
-    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dimension.addParameter(new Parameter("location", "location", Location.class));
-
-    dimension.addCohortDefinition(
+    dim.addCohortDefinition(
         "clinicalConsultationNewly",
         EptsReportUtils.map(
-            this.montlyCascadeReporCohortQueries.getClinicalConsultationsInLastSixMonths(),
-            mappings));
+            montlyCascadeReporCohortQueries.getClinicalConsultationsInLastSixMonths(), mappings));
 
-    return dimension;
-  }
-
-  public CohortDefinitionDimension getConsultationsForMoreThanSixMonths() {
-    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
-    final String mappings = "endDate=${endDate},location=${location}";
-    dimension.setName("Clinical Consultation For More Than 6 Months Dimension");
-    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dimension.addParameter(new Parameter("location", "location", Location.class));
-
-    dimension.addCohortDefinition(
+    dim.addCohortDefinition(
         "clinicalConsultationPreviously",
         EptsReportUtils.map(
             this.montlyCascadeReporCohortQueries
                 .gePatientsWithClinicalConsultationsForMoreThanSixMonths(),
             mappings));
 
-    return dimension;
+    return dim;
   }
 
-  public CohortDefinitionDimension getDiagnosticGenexpertTest() {
-    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+  public CohortDefinitionDimension getArtStartRangeDimension() {
     final String mappings = "endDate=${endDate},location=${location}";
-    dimension.setName("GeneExpert Diagnositc Test Dimension");
-    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dimension.addParameter(new Parameter("location", "location", Location.class));
+    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("artStartState");
+    dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dim.addParameter(new Parameter("location", "location", Location.class));
 
-    dimension.addCohortDefinition(
-        "genexpert",
-        EptsReportUtils.map(this.txtbDenominatorForTBMontlyCascade.getGenExpertTests(), mappings));
-
-    return dimension;
-  }
-
-  public CohortDefinitionDimension getDiagnosticBaciloscopiaTest() {
-    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
-    final String mappings = "endDate=${endDate},location=${location}";
-    dimension.setName("Baciloscopia Test Dimension");
-    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dimension.addParameter(new Parameter("location", "location", Location.class));
-
-    dimension.addCohortDefinition(
-        "baciloscopia",
+    dim.addCohortDefinition(
+        "txcurrNewlyOnArt",
         EptsReportUtils.map(
-            this.txtbDenominatorForTBMontlyCascade.getBaciloscopiaTests(), mappings));
+            montlyCascadeReporCohortQueries.getPatientsEnrollendOnARTForTheLastSixMonths(),
+            mappings));
+    dim.addCohortDefinition(
+        "txcurrPreviouslyOnArt",
+        EptsReportUtils.map(
+            this.montlyCascadeReporCohortQueries.getPatientsEnrolledOnArtForMoreThanSixMonths(),
+            mappings));
 
-    return dimension;
-  }
-
-  public CohortDefinitionDimension getDiagnosticTBLAMTest() {
-    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
-    final String mappings = "endDate=${endDate},location=${location}";
-    dimension.setName("TBLAM Test Dimension");
-    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dimension.addParameter(new Parameter("location", "location", Location.class));
-
-    dimension.addCohortDefinition(
-        "tblam",
-        EptsReportUtils.map(this.txtbDenominatorForTBMontlyCascade.getTBLAMTests(), mappings));
-
-    return dimension;
-  }
-
-  public CohortDefinitionDimension getDiagnosticAdditionalOthersTests() {
-    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
-    final String mappings = "endDate=${endDate},location=${location}";
-    dimension.setName("Additional Other Diagnostic Test Dimension");
-    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dimension.addParameter(new Parameter("location", "location", Location.class));
-
-    dimension.addCohortDefinition(
-        "additonalDiagnostic",
-        EptsReportUtils.map(this.txtbDenominatorForTBMontlyCascade.getAdditionalTests(), mappings));
-
-    return dimension;
+    return dim;
   }
 
   public CohortDefinitionDimension DiagnosticTest() {
