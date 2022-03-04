@@ -525,32 +525,32 @@
 		
 	<!-- obs -->
 	<obs obs_id="100" person_id="1001" concept_id="1255"
-		encounter_id="9001" obs_datetime="2018-07-08 00:00:00"
+		encounter_id="9001" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
 		value_coded="1256" creator="1" date_created="2018-07-08 12:55:48"
 		voided="0" uuid="3d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="6" />
 		
 	<obs obs_id="101" person_id="1002" concept_id="23866"
 		encounter_id="9003" obs_datetime="2018-07-08 00:00:00" value_datetime="2018-07-08 00:00:00"
-		value_coded="1256" creator="1" date_created="2018-07-08 12:55:48"
+		value_coded="1256" creator="1" date_created="2018-07-08 12:55:48" status = "FINAL"
 		voided="0" uuid="7aa27d18-ffc6-11e9-b8ec-4339aa98358b" location_id="6" />
 		
 		<obs obs_id="102" person_id="1005" concept_id="2003"
-		encounter_id="9005" obs_datetime="2018-07-08 00:00:00"
+		encounter_id="9005" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
 		value_coded="1066" creator="1" date_created="2018-07-08 12:55:48"
 		voided="0" uuid="d2131ee8-ffd2-11e9-93d3-634e34fa1937" location_id="6" />
 		
 		<obs obs_id="103" person_id="1005" concept_id="2031"
-		encounter_id="9005" obs_datetime="2018-07-08 00:00:00"
+		encounter_id="9005" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
 		value_coded="1383" creator="1" date_created="2018-07-08 12:55:48"
 		voided="0" uuid="7f733e90-0205-11ea-b85d-93d5cd2cbe5e" location_id="6" />
 		
 		<obs obs_id="104" person_id="12593" concept_id="1410"
-		encounter_id="9006" obs_datetime="2018-07-08 00:00:00"
+		encounter_id="9006" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
 		creator="1" date_created="2018-07-08 12:55:48"
 		voided="0" uuid="d6796536-ffd8-11e9-8a8a-177367cdb83a" location_id="6" />
 		
 	   <obs obs_id="105" person_id="12594" concept_id="2031"
-		encounter_id="9007" obs_datetime="2018-07-08 00:00:00"
+		encounter_id="9007" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
 		creator="1" date_created="2018-07-08 12:55:48" value_coded="1366"
 		voided="0" uuid="39883c90-472f-11ea-8508-17dd56388f73" location_id="6" />
 		
