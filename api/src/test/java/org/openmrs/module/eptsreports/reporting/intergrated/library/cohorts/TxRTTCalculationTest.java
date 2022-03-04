@@ -38,7 +38,7 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
 
     System.out.println(location.getName());
     final Date startDate = DateUtil.getDateTime(2020, 6, 21);
-    final Date endDate = DateUtil.getDateTime(2020, 12, 20);
+    final Date endDate = DateUtil.getDateTime(2021, 12, 31);
 
     System.out.println(startDate);
     System.out.println(endDate);
@@ -48,19 +48,9 @@ public class TxRTTCalculationTest extends DefinitionsFGHLiveTest {
     parameters.put(new Parameter("endDate", "End Date", Date.class), endDate);
     parameters.put(new Parameter("location", "Location", Location.class), location);
 
-    CohortDefinition patientsWhoExperiencedIIT = txRTTCohortQueries.getPatientsOnRTT();
-    CohortDefinition cohortDefinitionC1 =
-        this.resumoMensalAPSSCohortQueries
-            .findPatientsWhoAreCurrentlyEnrolledOnArtWithPrevencaoPosetivaD1();
-
-    CohortDefinition numeratorPreviosPeriod =
-        this.txTBCohortQueries.getSpecimenSentCohortDefinition();
-
-    CohortDefinition txCurrWithTPTCompletation =
-        this.tptCompletationCohortQueries.findTxCurrWithTPTCompletation();
-
+    CohortDefinition definition = txRTTCohortQueries.getPatientsOnRTT();
     final EvaluatedCohort evaluateCohortDefinition =
-        this.evaluateCohortDefinition(txCurrWithTPTCompletation, parameters);
+        this.evaluateCohortDefinition(definition, parameters);
 
     System.out.println(evaluateCohortDefinition.getMemberIds().size());
     assertFalse(evaluateCohortDefinition.getMemberIds().isEmpty());

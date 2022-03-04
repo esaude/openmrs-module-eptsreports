@@ -61,7 +61,9 @@ public class SetupTxTBMontlyCascadeReport extends EptsDataExportManager {
     reportDefinition.setDescription(getDescription());
     reportDefinition.setParameters(this.getParameters());
     reportDefinition.addDataSetDefinition(
-        "TBM", Mapped.mapStraightThrough(txtbMontlyCascadeReportDataSet.constructDatset()));
+        "TBM",
+        Mapped.mapStraightThrough(
+            txtbMontlyCascadeReportDataSet.constructDatset(this.getParameters())));
 
     reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(

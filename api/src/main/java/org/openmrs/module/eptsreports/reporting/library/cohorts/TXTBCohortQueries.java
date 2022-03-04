@@ -187,7 +187,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getGenExpertOrCulturaOnFichaLaboratorio() {
+  public CohortDefinition getGenExpertOrCulturaOnFichaLaboratorio() {
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "GenExpertOrCultura",
@@ -203,7 +203,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getTbLamOnFichaLaboratorio() {
+  public CohortDefinition getTbLamOnFichaLaboratorio() {
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "TbLamOnFichaLaboratorio",
@@ -218,7 +218,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getXpertMTBOnFichaLaboratorio() {
+  public CohortDefinition getXpertMTBOnFichaLaboratorio() {
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "XpertMTBOnFichaLaboratorio",
@@ -232,7 +232,7 @@ public class TXTBCohortQueries {
     return definition;
   }
 
-  private CohortDefinition getTbRaioXTorax() {
+  public CohortDefinition getTbRaioXTorax() {
     CohortDefinition definition =
         this.genericCohortQueries.generalSql(
             "tbRaioXTorax",
@@ -430,17 +430,16 @@ public class TXTBCohortQueries {
                 true));
     final CohortDefinition ii = this.getInTBProgram();
     this.addGeneralParameters(i);
-    cd.addSearch("i", this.map(i, this.generalParameterMapping));
-    cd.addSearch("ii", this.map(ii, this.generalParameterMapping));
+    cd.addSearch("i", this.map(i, generalParameterMapping));
+    cd.addSearch("ii", this.map(ii, generalParameterMapping));
     cd.addSearch(
-        "iii", this.map(this.getPulmonaryTBWithinReportingDate(), this.generalParameterMapping));
+        "iii", this.map(this.getPulmonaryTBWithinReportingDate(), generalParameterMapping));
     cd.addSearch(
         "iv",
-        this.map(
-            this.getTuberculosisTreatmentPlanWithinReportingDate(), this.generalParameterMapping));
+        this.map(this.getTuberculosisTreatmentPlanWithinReportingDate(), generalParameterMapping));
 
     final CohortDefinition artList = this.artList();
-    cd.addSearch("artList", this.map(artList, this.generalParameterMapping));
+    cd.addSearch("artList", this.map(artList, generalParameterMapping));
     cd.setCompositionString("(i OR ii OR iii OR iv) AND artList");
     this.addGeneralParameters(cd);
     return cd;
