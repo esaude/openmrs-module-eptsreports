@@ -298,5 +298,43 @@ public interface TXTBMontlyCascadeReportQueries {
       }
       return query;
     }
+
+    public static final String findDiagnosticTestsWithPositiveTestResults(
+        DiagnosticTestTypes diagnosticTestType) {
+      String query =
+          "																														"
+              + "select distinct obs.person_id 																																"
+              + "from obs 																																					"
+              + "		inner join encounter on encounter.encounter_id = obs.encounter_id 																						"
+              + "where encounter.encounter_type in (6,9) 																														"
+              + "		and obs.concept_id in(#) and obs.value_coded =703																			 							"
+              + "		and encounter.voided = 0 and obs.voided =0 and obs.location_id =:location 																				"
+              + "		and encounter.encounter_datetime >=:startDate and encounter.encounter_datetime <= :endDate																"
+              + "union																																						"
+              + "select distinct obs.person_id 																																"
+              + "from obs 																																					"
+              + "		inner join encounter on encounter.encounter_id = obs.encounter_id 																						"
+              + "where encounter.encounter_type = 13 																															"
+              + "		and obs.concept_id in (#)and obs.value_coded in (703,1065) and encounter.voided = 0 and obs.voided =0 and obs.location_id =:location 					"
+              + "  	and encounter.encounter_datetime >=:startDate  and encounter.encounter_datetime <=:endDate																";
+
+      switch (diagnosticTestType) {
+        case GENEXPERT:
+          query =
+              StringUtils.replace(query, "#", StringUtils.join(Arrays.asList(23723, 165189), ","));
+          break;
+
+        case BACILOSCOPIA:
+          query = StringUtils.replace(query, "#", "307");
+          break;
+        case TBLAM:
+          query = StringUtils.replace(query, "#", "23951");
+          break;
+        case CULTURA:
+          query = StringUtils.replace(query, "#", "23774");
+          break;
+      }
+      return query;
+    }
   }
 }

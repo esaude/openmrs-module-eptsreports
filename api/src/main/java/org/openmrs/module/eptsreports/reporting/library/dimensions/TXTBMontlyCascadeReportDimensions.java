@@ -83,20 +83,55 @@ public class TXTBMontlyCascadeReportDimensions {
     return dim;
   }
 
-  public CohortDefinitionDimension getGenExpertTests() {
-    final CohortDefinitionDimension dimension = new CohortDefinitionDimension();
+  public CohortDefinitionDimension getPositiveTestResults() {
     final String mappings = "endDate=${endDate},location=${location}";
-    dimension.setName("GeneXpert MTB/RIF Dimension");
-    dimension.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dimension.addParameter(new Parameter("location", "location", Location.class));
+    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("posetiveTestResult");
+    dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dim.addParameter(new Parameter("location", "location", Location.class));
 
-    dimension.addCohortDefinition(
-        "genexpert",
+    dim.addCohortDefinition(
+        "positiveGenexpert",
         EptsReportUtils.map(
-            this.montlyCascadeReporCohortQueries
-                .gePatientsWithClinicalConsultationsForMoreThanSixMonths(),
-            mappings));
+            this.txtbDenominatorForTBMontlyCascade.getGenExpertPositiveTestResults(), mappings));
+    dim.addCohortDefinition(
+        "positiveBaciloscopia",
+        EptsReportUtils.map(
+            this.txtbDenominatorForTBMontlyCascade.getBaciloscopiaPositiveTestResults(), mappings));
+    dim.addCohortDefinition(
+        "positiveTblam",
+        EptsReportUtils.map(
+            this.txtbDenominatorForTBMontlyCascade.getTBLAMPositiveTestResults(), mappings));
+    dim.addCohortDefinition(
+        "positiveAdditonalDiagnostic",
+        EptsReportUtils.map(
+            this.txtbDenominatorForTBMontlyCascade.getAdditionalPositiveTestResults(), mappings));
+    return dim;
+  }
 
-    return dimension;
+  public CohortDefinitionDimension getNegativeTestResults() {
+    final String mappings = "endDate=${endDate},location=${location}";
+    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("negativeTestResult");
+    dim.addParameter(new Parameter("endDate", "End Date", Date.class));
+    dim.addParameter(new Parameter("location", "location", Location.class));
+
+    dim.addCohortDefinition(
+        "negativeGenexpert",
+        EptsReportUtils.map(
+            this.txtbDenominatorForTBMontlyCascade.getGenExpertNegativeTestResults(), mappings));
+    dim.addCohortDefinition(
+        "negativeBaciloscopia",
+        EptsReportUtils.map(
+            this.txtbDenominatorForTBMontlyCascade.getBaciloscopiaNegativeTestResults(), mappings));
+    dim.addCohortDefinition(
+        "negativeTblam",
+        EptsReportUtils.map(
+            this.txtbDenominatorForTBMontlyCascade.getTBLAMNegativeTestResults(), mappings));
+    dim.addCohortDefinition(
+        "negativeAdditonalDiagnostic",
+        EptsReportUtils.map(
+            this.txtbDenominatorForTBMontlyCascade.getAdditionalNegativeTestResults(), mappings));
+    return dim;
   }
 }
