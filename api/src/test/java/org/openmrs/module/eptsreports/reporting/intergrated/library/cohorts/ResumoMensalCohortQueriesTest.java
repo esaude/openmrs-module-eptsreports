@@ -1,8 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -401,7 +399,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
 
-    assertEquals(3, evaluatedCohort.getMemberIds().size());
+    assertEquals(8, evaluatedCohort.getMemberIds().size());
     assertTrue(evaluatedCohort.getMemberIds().contains(86526));
   }
 
