@@ -6,7 +6,6 @@ public interface TPTCompletationQueries {
 
   class QUERY {
 
-
     public static final String findPatientsWhoStarted3HPTherapyBeforeReportingEndDate =
         "																		"
             + "select patient_id  																																"
