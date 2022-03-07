@@ -122,25 +122,22 @@ public class SetupMERQuarterly26 extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.setParameters(txPvlsDataset.getParameters());
-    //    rd.addDataSetDefinition("N",
-    // Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
+    rd.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
     rd.addDataSetDefinition(
         "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
-    //    rd.addDataSetDefinition("P",
-    // Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
+    rd.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
     rd.addDataSetDefinition(
         "TXML", Mapped.mapStraightThrough(txMlDataset25.constructtxMlDataset()));
-    // rd.addDataSetDefinition("R",
-    // Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
-    //    rd.addDataSetDefinition(
-    //        "T", Mapped.mapStraightThrough(transferredInDataset.constructTransferInDataset()));
-    //    rd.addDataSetDefinition(
-    //        "PL", Mapped.mapStraightThrough(txRTTPLHIVDateset.constructTxRTTPLHIVDateset()));
-    // rd.addDataSetDefinition(
-    // "PREP", Mapped.mapStraightThrough(prepNewDataset.constructPrepNewDataset()));
+    rd.addDataSetDefinition("R", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
+    rd.addDataSetDefinition(
+        "T", Mapped.mapStraightThrough(transferredInDataset.constructTransferInDataset()));
+    rd.addDataSetDefinition(
+        "PL", Mapped.mapStraightThrough(txRTTPLHIVDateset.constructTxRTTPLHIVDateset()));
+    rd.addDataSetDefinition(
+        "PREP", Mapped.mapStraightThrough(prepNewDataset.constructPrepNewDataset()));
     rd.addDataSetDefinition("DT", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));
-    // rd.addDataSetDefinition(
-    // "PREPNUM", Mapped.mapStraightThrough(prepCtDataset.constructPrepCtDataset()));
+    rd.addDataSetDefinition(
+        "PREPNUM", Mapped.mapStraightThrough(prepCtDataset.constructPrepCtDataset()));
 
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(

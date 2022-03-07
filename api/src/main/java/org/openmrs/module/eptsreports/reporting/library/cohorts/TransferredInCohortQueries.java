@@ -92,8 +92,7 @@ public class TransferredInCohortQueries {
     cd.addSearch("homeVisitTrfOut", EptsReportUtils.map(homeVisitTrfOut, mappingsHomeVisitTrfOut));
     cd.addSearch("clinicalVisit", EptsReportUtils.map(clinicalVisit, mappingsClinicalVisit));
 
-    cd.setCompositionString(
-        "(transferredIn OR transferredOut OR homeVisitTrfOut) AND clinicalVisit AND NOT txCurr");
+    cd.setCompositionString("(transferredIn OR transferredOut) AND clinicalVisit AND NOT txCurr");
 
     return cd;
   }
