@@ -35,7 +35,7 @@ public class TPTCompletationCohortQueries {
 
   private static final String TPT_CASCADE_INICIO_INH = "TPTCOMPLETION/TPT_CASCADE_INICIO_INH.sql";
 
-  private static final String TPT_CASCADE_INICIO_3HP = "TPTCOMPLETION/TPT_CASCADE_INICIO_INH.sql";
+  private static final String TPT_CASCADE_INICIO_3HP = "TPTCOMPLETION/TPT_CASCADE_INICIO_3HP.sql";
 
   private static final String FIND_PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD =
       "TPTCOMPLETION/PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD.sql";
@@ -238,8 +238,7 @@ public class TPTCompletationCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "Patients Who have Started 3HP Therapy before Report End Date",
-                TPTCompletationQueries.QUERY
-                    .findPatientsWhoStarted3HPTherapyBeforeReportingEndDate),
+                EptsQuerysUtils.loadQuery(TPT_CASCADE_INICIO_3HP)),
             mappings));
 
     dsd.addSearch(
