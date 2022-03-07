@@ -1,6 +1,7 @@
  select patient_id from 														                                        						         
              (																					        												 
-             	select inicio_3HP.patient_id,	min(inicio_3HP.data_inicio_tpi) data_inicio_tpi from (										        		 
+             	
+             	select inicio_3HP.patient_id,min(inicio_3HP.data_inicio_tpi) data_inicio_tpi from (										        		 
              		select inicio.patient_id,inicio.data_inicio_tpi from 																					 
              		(	select p.patient_id,min(e.encounter_datetime) data_inicio_tpi from patient p														 
              				inner join encounter e on p.patient_id=e.patient_id																				 
@@ -8,6 +9,7 @@
              			where e.voided=0 and p.voided=0 and e.encounter_datetime between (:endDate - interval 7 month) and :endDate 	 
              				and o.voided=0 and o.concept_id=1719 and o.value_coded=23954 and e.encounter_type in (6,9) and  e.location_id=:location			 
              			group by p.patient_id																												 
+             		
              		) inicio 																																 
              		left join 																																 
              		(	select p.patient_id,e.encounter_datetime data_inicio_tpi from patient p																 
@@ -25,7 +27,9 @@
              		) inicioAnterior on inicio.patient_id=inicioAnterior.patient_id  																		 
              			and inicioAnterior.data_inicio_tpi between (inicio.data_inicio_tpi - INTERVAL 4 MONTH) and (inicio.data_inicio_tpi - INTERVAL 1 day) 
              		where inicioAnterior.patient_id is null	 																								 
+			
 			union 																																			 
+			
 			 select p.patient_id,min(e.encounter_datetime) data_inicio_tpi from patient p														 			 
 				inner join encounter e on p.patient_id=e.patient_id																				 			 
 				inner join obs o on o.encounter_id=e.encounter_id		 																					 
