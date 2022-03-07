@@ -95,6 +95,7 @@ from
             ) inicio_inh  																																	
 	
 	inner join        																																
+		
 		(  select patient_id, data_final_inh         																								
 			from 																																	
 				(	select p.patient_id, o.value_datetime data_final_inh    																		
