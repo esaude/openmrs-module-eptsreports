@@ -32,6 +32,15 @@ public class TPTCompletationCohortQueries {
   @Autowired private TbMetadata tbMetadata;
 
   @Autowired private HivMetadata hivMetadata;
+  
+  
+  private static final String TPT_CASCADE_INICIO_INH =
+	      "TPTCOMPLETION/TPT_CASCADE_INICIO_INH.sql";
+  
+  private static final String TPT_CASCADE_INICIO_3HP =
+	      "TPTCOMPLETION/TPT_CASCADE_INICIO_INH.sql";
+
+
 
   private static final String FIND_PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD =
       "TPTCOMPLETION/PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD.sql";
@@ -214,10 +223,11 @@ public class TPTCompletationCohortQueries {
 
     definition.setName("get Patients Who have started INH Therapy Before Reporting endDate");
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
-    definition.addParameter(new Parameter("location", "location", Location.class));
-
+    definition.addParameter(new Parameter("location", "location", Location.class));    
     definition.setQuery(
-        TPTCompletationQueries.QUERY.findPatientsWhoStartedINHTherapyBeforeReportingEndDate);
+            EptsQuerysUtils.loadQuery(
+            		TPT_CASCADE_INICIO_INH));
+
 
     return definition;
   }
