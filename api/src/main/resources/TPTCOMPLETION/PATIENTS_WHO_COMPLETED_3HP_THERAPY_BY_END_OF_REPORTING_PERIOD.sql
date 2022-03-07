@@ -90,7 +90,8 @@
             		and e.encounter_datetime between inicio_3HP.data_inicio_3HP and (inicio_3HP.data_inicio_3HP + INTERVAL 4 month) and e.location_id= :location    
             		group by inicio_3HP.patient_id, e.encounter_datetime having count(*)>=3   
 
-            union      																
+            union 
+                 																
                 select inicio.patient_id, inicio.data_inicio_3HP                                                                                                
                     from                                                                                                                                            
                         (   
