@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.library.dimensions;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.*;
 import org.junit.Test;
 import org.openmrs.Cohort;
 import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTest;
@@ -10,10 +13,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-
-import java.util.*;
-
-import static org.junit.Assert.assertEquals;
 
 public class EptsCommonDimensionTest extends DefinitionsTest {
   private @Autowired EptsCommonDimension eptsCommonDimension;
