@@ -72,16 +72,14 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
     rd.addDataSetDefinition("T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
 
-    //    rd.addDataSetDefinition("TBPREV",
-    // Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
-    //    rd.addDataSetDefinition("CX",
-    // Mapped.mapStraightThrough(cxCaSCRNDataSet.constructDatset()));
-    //    rd.addDataSetDefinition("CXT",
-    // Mapped.mapStraightThrough(CxCaTXDataSet.constructDatset()));
-    //    rd.addDataSetDefinition(
-    //        "D",
-    //
-    // Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
+    rd.addDataSetDefinition("TBPREV", Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
+
+    rd.addDataSetDefinition("CX", Mapped.mapStraightThrough(cxCaSCRNDataSet.constructDatset()));
+
+    rd.addDataSetDefinition("CXT", Mapped.mapStraightThrough(CxCaTXDataSet.constructDatset()));
+    rd.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
