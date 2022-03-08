@@ -1,50 +1,41 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaSCRNDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaTXDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TbPrevDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TXTBMontlyCascadeReportDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupMERSemiAnnualReport extends EptsDataExportManager {
-
-  @Autowired private TxMlDataset txMlDataset;
+public class SetupTxTBMontlyCascadeReport extends EptsDataExportManager {
 
   @Autowired private GenericCohortQueries genericCohortQueries;
 
-  @Autowired private TxTBDataset txTBDataset;
+  @Autowired private TXTBMontlyCascadeReportDataSet txtbMontlyCascadeReportDataSet;
 
-  @Autowired private TbPrevDataset tbPrevDataset;
-
-  @Autowired private CxCaSCRNDataSet cxCaSCRNDataSet;
-
-  @Autowired private CxCaTXDataSet CxCaTXDataSet;
-
-  @Autowired private DatinCodeDataSet DatinCodeDataSet;
+  @Autowired private DatinCodeDataSet datimCodeDataSet;
 
   @Override
   public String getExcelDesignUuid() {
-    return "61fea06a-472b-11e9-8b42-876961a472ef";
+    return "b42abe33-1d23-42ed-bd19-a44b31aa33dc";
   }
 
   @Override
   public String getUuid() {
-    return "6febad76-472b-11e9-a41e-db8c77c788cd";
+    return "31bd56b3-e65c-44f9-88b8-4f1449c71511";
   }
 
   @Override
@@ -54,41 +45,36 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.6 Semi-Annual";
+    return "TX TB Montly Cascade Report";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR MER 2.6 Semi-Annual Report";
+    return "TX TB Montly Cascade Report";
   }
 
   @Override
   public ReportDefinition constructReportDefinition() {
-    ReportDefinition rd = new ReportDefinition();
-    rd.setUuid(getUuid());
-    rd.setName(getName());
-    rd.setDescription(getDescription());
-    rd.setParameters(txMlDataset.getParameters());
+    ReportDefinition reportDefinition = new ReportDefinition();
+    reportDefinition.setUuid(getUuid());
+    reportDefinition.setName(getName());
+    reportDefinition.setDescription(getDescription());
+    reportDefinition.setParameters(this.getParameters());
+    reportDefinition.addDataSetDefinition(
+        "TBM",
+        Mapped.mapStraightThrough(
+            txtbMontlyCascadeReportDataSet.constructDatset(this.getParameters())));
 
-    rd.addDataSetDefinition("T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
-
-    //    rd.addDataSetDefinition("TBPREV",
-    // Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
-    //    rd.addDataSetDefinition("CX",
-    // Mapped.mapStraightThrough(cxCaSCRNDataSet.constructDatset()));
-    //    rd.addDataSetDefinition("CXT",
-    // Mapped.mapStraightThrough(CxCaTXDataSet.constructDatset()));
-    //    rd.addDataSetDefinition(
-    //        "D",
-    //
-    // Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
-
-    rd.setBaseCohortDefinition(
+    reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
             "endDate=${endDate},location=${location}"));
-    return rd;
+
+    reportDefinition.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(this.datimCodeDataSet.constructDataset(this.getParameters())));
+    return reportDefinition;
   }
 
   @Override
@@ -98,8 +84,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.6_Semiannual.xls",
-              "PEPFAR MER 2.6 Semi-Annual Report",
+              "TX_TB_Montly_Cascade_Report.xls",
+              "TX TB Montly Cascade Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
@@ -110,5 +96,12 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     }
 
     return Arrays.asList(reportDesign);
+  }
+
+  public List<Parameter> getParameters() {
+    List<Parameter> parameters = new ArrayList<Parameter>();
+    parameters.add(ReportingConstants.END_DATE_PARAMETER);
+    parameters.add(ReportingConstants.LOCATION_PARAMETER);
+    return parameters;
   }
 }
