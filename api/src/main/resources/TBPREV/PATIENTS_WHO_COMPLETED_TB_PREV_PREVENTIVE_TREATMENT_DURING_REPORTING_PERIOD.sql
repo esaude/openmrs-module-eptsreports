@@ -13,13 +13,15 @@ from
 							group by p.patient_id
 
 						union
+						
+--						Neste bloco vamos adicionar o inicio 3hp usando novas fontes
 
 					    select p.patient_id,min(obsInicio3HP.value_datetime) data_inicio_tpi from  patient p 
 			            inner join encounter e on p.patient_id = e.patient_id 
 			            inner join obs o on o.encounter_id = e.encounter_id 
 			            inner join obs obsInicio3HP on obsInicio3HP.encounter_id = e.encounter_id 
 				        where e.voided=0  and p.voided=0  and obsInicio3HP.value_datetime between (:startDate - interval 6 month) and (:endDate - interval 6 month) and 
-				            o.voided=0  and o.concept_id = 23985  and o.value_coded = 23954 and obsInicio3HP.concept_id=6128 and obsInicio3HP.voided=0 and 
+				            o.voided=0  and o.concept_id = 23985  and o.value_coded = 23954 and obsInicio3HP.concept_id=165326 and obsInicio3HP.voided=0 and 
 				            e.encounter_type in (53) and e.location_id=:location 
 				        group by p.patient_id 
 			      
@@ -75,13 +77,15 @@ from
 				        and obsInicio3HP.voided = 0 
 
 				   union
+				   
+--						Neste bloco vamos adicionar o inicio 3hp usando novas fontes
 
 				   select p.patient_id,obsInicio3HP.value_datetime data_inicio_tpi from patient p																 
          				inner join encounter e on p.patient_id=e.patient_id																				 
          				inner join obs o on o.encounter_id=e.encounter_id
          				inner join obs obsInicio3HP on obsInicio3HP.encounter_id = e.encounter_id 																				 
          			where e.voided=0 and p.voided=0 and p.voided = 0 and obsInicio3HP.value_datetime between (:startDate - INTERVAL 10 MONTH) and (:endDate - interval 6 month)  and 
-         				  o.voided=0 and o.concept_id=23985 and o.value_coded=23954 and obsInicio3HP.concept_id=6128  and obsInicio3HP.voided=0 and 
+         				  o.voided=0 and o.concept_id=23985 and o.value_coded=23954 and obsInicio3HP.concept_id=165326  and obsInicio3HP.voided=0 and 
          				  e.encounter_type in (53) and e.location_id=:location 
 
          		    union 	
@@ -119,12 +123,14 @@ from
 
 						union
 
+						--						Neste bloco vamos adicionar o inicio 3hp usando novas fontes
+
 					    select p.patient_id,min(obsInicio3HP.value_datetime) data_inicio_tpi from  patient p 
 			            inner join encounter e on p.patient_id = e.patient_id 
 			            inner join obs o on o.encounter_id = e.encounter_id 
 			            inner join obs obsInicio3HP on obsInicio3HP.encounter_id = e.encounter_id 
 				        where e.voided=0  and p.voided=0  and obsInicio3HP.value_datetime between (:startDate - interval 6 month) and (:endDate - interval 6 month) and 
-				            o.voided=0  and o.concept_id = 23985  and o.value_coded = 23954 and obsInicio3HP.concept_id=6128 and obsInicio3HP.voided=0 and 
+				            o.voided=0  and o.concept_id = 23985  and o.value_coded = 23954 and obsInicio3HP.concept_id=165326 and obsInicio3HP.voided=0 and 
 				            e.encounter_type in (53) and e.location_id=:location 
 				        group by p.patient_id 
 			      
@@ -180,13 +186,15 @@ from
 				        and obsInicio3HP.voided = 0 
 
 				   union
+		
+--				   Adicionando novas fontes fichas cliinica e ficha resumo
 
 				   select p.patient_id,obsInicio3HP.value_datetime data_inicio_tpi from patient p																 
          				inner join encounter e on p.patient_id=e.patient_id																				 
          				inner join obs o on o.encounter_id=e.encounter_id
          				inner join obs obsInicio3HP on obsInicio3HP.encounter_id = e.encounter_id 																				 
          			where e.voided=0 and p.voided=0 and p.voided = 0 and obsInicio3HP.value_datetime between (:startDate - INTERVAL 10 MONTH) and (:endDate - interval 6 month)  and 
-         				  o.voided=0 and o.concept_id=23985 and o.value_coded=23954 and obsInicio3HP.concept_id=6128  and obsInicio3HP.voided=0 and 
+         				  o.voided=0 and o.concept_id=23985 and o.value_coded=23954 and obsInicio3HP.concept_id=165326  and obsInicio3HP.voided=0 and 
          				  e.encounter_type in (53) and e.location_id=:location 
 
          		    union 	
@@ -314,13 +322,15 @@ from
 								        and obsInicio3HP.voided = 0 
 
 								   union
+								
+--								   Adicionando novas fontes ficha clinica e ficha resumo
 
 								   select p.patient_id,obsInicio3HP.value_datetime data_inicio_tpi from patient p																 
 				         				inner join encounter e on p.patient_id=e.patient_id																				 
 				         				inner join obs o on o.encounter_id=e.encounter_id
 				         				inner join obs obsInicio3HP on obsInicio3HP.encounter_id = e.encounter_id 																				 
 				         			where e.voided=0 and p.voided=0 and p.voided = 0 and obsInicio3HP.value_datetime between (:startDate - INTERVAL 10 MONTH) and (:endDate - interval 6 month)  and 
-				         				  o.voided=0 and o.concept_id=23985 and o.value_coded=23954 and obsInicio3HP.concept_id=6128  and obsInicio3HP.voided=0 and 
+				         				  o.voided=0 and o.concept_id=23985 and o.value_coded=23954 and obsInicio3HP.concept_id=165326  and obsInicio3HP.voided=0 and 
 				         				  e.encounter_type in (53) and e.location_id=:location 
 
 				         		    union 	 																															 
@@ -423,13 +433,15 @@ from
 								        and obsInicio3HP.voided = 0 
 
 								   union
+								
+--								   Adicionando novas fontes ficha clinica e ficha resumo
 
 								   select p.patient_id,obsInicio3HP.value_datetime data_inicio_tpi from patient p																 
 				         				inner join encounter e on p.patient_id=e.patient_id																				 
 				         				inner join obs o on o.encounter_id=e.encounter_id
 				         				inner join obs obsInicio3HP on obsInicio3HP.encounter_id = e.encounter_id 																				 
 				         			where e.voided=0 and p.voided=0 and p.voided = 0 and obsInicio3HP.value_datetime between (:startDate - INTERVAL 10 MONTH) and (:endDate - interval 6 month)  and 
-				         				  o.voided=0 and o.concept_id=23985 and o.value_coded=23954 and obsInicio3HP.concept_id=6128  and obsInicio3HP.voided=0 and 
+				         				  o.voided=0 and o.concept_id=23985 and o.value_coded=23954 and obsInicio3HP.concept_id=165326  and obsInicio3HP.voided=0 and 
 				         				  e.encounter_type in (53) and e.location_id=:location 
 
 				         			union
@@ -512,7 +524,7 @@ from
 								        inner join obs o on o.encounter_id = e.encounter_id 
 								        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 								      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-								      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+								      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 								      	    and obsInicioINH.value_datetime between (:startDate - interval 13 month) and (:endDate - interval 6 month)
 
 								     union
@@ -577,7 +589,7 @@ from
 							        inner join obs o on o.encounter_id = e.encounter_id 
 							        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 							      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-							      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+							      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 							      	    and obsInicioINH.value_datetime between (:startDate - interval 6 month) and (:endDate - interval 6 month)
 							     group by p.patient_id
 
@@ -720,7 +732,7 @@ from
 								        inner join obs o on o.encounter_id = e.encounter_id 
 								        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 								      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-								      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+								      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 								      	    and obsInicioINH.value_datetime between (:startDate - interval 13 month) and (:endDate - interval 6 month)
 
 								     union
@@ -781,7 +793,7 @@ from
 							        inner join obs o on o.encounter_id = e.encounter_id 
 							        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 							      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-							      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+							      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 							      	    and obsInicioINH.value_datetime between (:startDate - interval 6 month) and (:endDate - interval 6 month)
 							     group by p.patient_id
 
@@ -875,7 +887,7 @@ from
 								        inner join obs o on o.encounter_id = e.encounter_id 
 								        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 								      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-								      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+								      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 								      	    and obsInicioINH.value_datetime between (:startDate - interval 13 month) and (:endDate - interval 6 month)
 
 								     union
@@ -936,7 +948,7 @@ from
 							        inner join obs o on o.encounter_id = e.encounter_id 
 							        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 							      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-							      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+							      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 							      	    and obsInicioINH.value_datetime between (:startDate - interval 6 month) and (:endDate - interval 6 month)
 							     group by p.patient_id
 
@@ -1028,7 +1040,7 @@ from
 								        inner join obs o on o.encounter_id = e.encounter_id 
 								        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 								      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-								      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+								      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 								      	    and obsInicioINH.value_datetime between (:startDate - interval 13 month) and (:endDate - interval 6 month)
 
 								     union
@@ -1090,7 +1102,7 @@ from
 							        inner join obs o on o.encounter_id = e.encounter_id 
 							        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 							      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-							      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+							      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 							      	    and obsInicioINH.value_datetime between (:startDate - interval 6 month) and (:endDate - interval 6 month)
 							     group by p.patient_id
 
@@ -1186,7 +1198,7 @@ from
 								        inner join obs o on o.encounter_id = e.encounter_id 
 								        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 								      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-								      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+								      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 								      	    and obsInicioINH.value_datetime between (:startDate - interval 13 month) and (:endDate - interval 6 month)
 
 								     union
@@ -1247,7 +1259,7 @@ from
 							        inner join obs o on o.encounter_id = e.encounter_id 
 							        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 							      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-							      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+							      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 							      	    and obsInicioINH.value_datetime between (:startDate - interval 6 month) and (:endDate - interval 6 month)
 							     group by p.patient_id
 
@@ -1357,7 +1369,7 @@ from
 								        inner join obs o on o.encounter_id = e.encounter_id 
 								        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 								      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-								      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+								      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 								      	    and obsInicioINH.value_datetime between (:startDate - interval 13 month) and (:endDate - interval 6 month)
 
 								     union
@@ -1417,7 +1429,7 @@ from
 							        inner join obs o on o.encounter_id = e.encounter_id 
 							        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 							      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-							      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+							      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 							      	    and obsInicioINH.value_datetime between (:startDate - interval 6 month) and (:endDate - interval 6 month)
 							     group by p.patient_id
 
@@ -1524,7 +1536,7 @@ from
 								        inner join obs o on o.encounter_id = e.encounter_id 
 								        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 								      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-								      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+								      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 								      	    and obsInicioINH.value_datetime between (:startDate - interval 13 month) and (:endDate - interval 6 month)
 
 								     union
@@ -1584,7 +1596,7 @@ from
 							        inner join obs o on o.encounter_id = e.encounter_id 
 							        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 							      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-							      	    and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+							      	    and obsInicioINH.concept_id=165326 and obsInicioINH.voided=0
 							      	    and obsInicioINH.value_datetime between (:startDate - interval 6 month) and (:endDate - interval 6 month)
 							     group by p.patient_id
 
