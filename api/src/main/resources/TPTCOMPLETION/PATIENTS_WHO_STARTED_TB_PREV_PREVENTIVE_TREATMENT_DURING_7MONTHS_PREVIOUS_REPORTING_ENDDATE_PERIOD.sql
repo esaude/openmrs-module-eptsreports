@@ -257,7 +257,7 @@
 				        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 				      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
 				      	    and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
-				      	    and obsInicioINH.value_datetime between (:endDate - interval 20 month) and :endDate 
+				      	    and obsInicioINH.value_datetime between (:endDate - interval 20 month) and :endDate and e.location_id=:location
 
 				     union
 
@@ -267,7 +267,7 @@
 				        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 				      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=6 and o.concept_id=23985 and o.value_coded=656
 				      	    and obsInicioINH.concept_id=165308 and obsInicioINH.value_coded=1256 and obsInicioINH.voided=0
-				      	    and e.encounter_datetime between (:endDate - interval 20 month) and :endDate 
+				      	    and e.encounter_datetime between (:endDate - interval 20 month) and :endDate and e.location_id=:location
 		 		                                 
 	             		
              		) inicioAnterior on inicioAnterior.patient_id=inicio.patient_id  																		 
@@ -314,7 +314,7 @@
 				        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 				      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
 				      	    and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
-				      	    and obsInicioINH.value_datetime between (:endDate - interval 7 month) and :endDate
+				      	    and obsInicioINH.value_datetime between (:endDate - interval 7 month) and :endDate and e.location_id=:location
 				     group by p.patient_id
 
 				     union
@@ -327,7 +327,7 @@
 				        inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 				      where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=6 and o.concept_id=23985 and o.value_coded=656
 				      	    and obsInicioINH.concept_id=165308 and obsInicioINH.value_coded=1256 and obsInicioINH.voided=0
-				      	    and e.encounter_datetime between (:endDate - interval 7 month) and :endDate
+				      	    and e.encounter_datetime between (:endDate - interval 7 month) and :endDate and e.location_id=:location
 				      group by p.patient_id 	    
 
 
