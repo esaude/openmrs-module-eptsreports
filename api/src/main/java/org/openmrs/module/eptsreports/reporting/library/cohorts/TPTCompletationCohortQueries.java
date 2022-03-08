@@ -33,8 +33,16 @@ public class TPTCompletationCohortQueries {
 
   @Autowired private HivMetadata hivMetadata;
 
+  private static final String TPT_CASCADE_INICIO_INH = "TPTCOMPLETION/TPT_CASCADE_INICIO_INH.sql";
+
+  private static final String TPT_CASCADE_INICIO_3HP = "TPTCOMPLETION/TPT_CASCADE_INICIO_3HP.sql";
+
   private static final String FIND_PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD =
       "TPTCOMPLETION/PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD.sql";
+  
+  private static final String FIND_PATIENTS_WHO_COMPLETED_3HP_THERAPY_BY_END_OF_REPORTING_PERIOD =
+	      "TPTCOMPLETION/PATIENTS_WHO_COMPLETED_3HP_THERAPY_BY_END_OF_REPORTING_PERIOD.sql";
+
 
   private static final String
       FIND_PATIENTS_WHO_STARTED_TB_PREV_PREVENTIVE_TREATMENT_DURING_7MONTHS_PREVIOUS_REPORTING_ENDDATE_PERIOD =
@@ -215,9 +223,7 @@ public class TPTCompletationCohortQueries {
     definition.setName("get Patients Who have started INH Therapy Before Reporting endDate");
     definition.addParameter(new Parameter("endDate", "End Date", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
-
-    definition.setQuery(
-        TPTCompletationQueries.QUERY.findPatientsWhoStartedINHTherapyBeforeReportingEndDate);
+    definition.setQuery(EptsQuerysUtils.loadQuery(TPT_CASCADE_INICIO_INH));
 
     return definition;
   }
@@ -236,8 +242,7 @@ public class TPTCompletationCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "Patients Who have Started 3HP Therapy before Report End Date",
-                TPTCompletationQueries.QUERY
-                    .findPatientsWhoStarted3HPTherapyBeforeReportingEndDate),
+                EptsQuerysUtils.loadQuery(TPT_CASCADE_INICIO_3HP)),
             mappings));
 
     dsd.addSearch(
@@ -260,7 +265,7 @@ public class TPTCompletationCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "get Patients Who Completed 3HP Therapy",
-                TPTCompletationQueries.QUERY.findPatientsWhoCompleted3HPTherapy),
+                EptsQuerysUtils.loadQuery(FIND_PATIENTS_WHO_COMPLETED_3HP_THERAPY_BY_END_OF_REPORTING_PERIOD)),
             mappings));
     dsd.addSearch(
         "COMPLETED-INH", EptsReportUtils.map(this.findPatientsWhoCompletedINHTherapy(), mappings));
