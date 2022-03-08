@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.QualityImprovementCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.mqdatasets.MQDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
@@ -23,8 +22,6 @@ import org.springframework.stereotype.Component;
 public class SetupQualityImprovementReport extends EptsDataExportManager {
 
   @Autowired protected GenericCohortQueries genericCohortQueries;
-
-  @Autowired QualityImprovementCohortQueries qualityImprovementCohortQueries;
 
   @Autowired MQDataSet mqDataSet;
 

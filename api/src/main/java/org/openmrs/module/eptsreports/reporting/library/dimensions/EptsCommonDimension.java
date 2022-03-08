@@ -13,10 +13,6 @@ package org.openmrs.module.eptsreports.reporting.library.dimensions;
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
@@ -45,14 +41,6 @@ public class EptsCommonDimension {
   @Autowired private TxNewCohortQueries txNewCohortQueries;
 
   @Autowired private GenericCohortQueries genericCohortQueries;
-
-  @Autowired private HivMetadata hivMetadata;
-
-  @Autowired private Eri4MonthsCohortQueries eri4MonthsCohortQueries;
-
-  @Autowired private Eri2MonthsCohortQueries eri2MonthsCohortQueries;
-
-  @Autowired private EriCohortQueries eriCohortQueries;
 
   @Autowired private TbPrevCohortQueries tbPrevCohortQueries;
 
@@ -305,142 +293,6 @@ public class EptsCommonDimension {
         "0-14",
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 0 and 14 years", 0, 14));
 
-    return dim;
-  }
-
-  /** @return CohortDefinitionDimension */
-  public CohortDefinitionDimension maternityDimension() {
-    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
-    dim.addParameter(new Parameter("startDate", "Start Date", Date.class));
-    dim.addParameter(new Parameter("endDate", "End Date", Date.class));
-    dim.addParameter(new Parameter("location", "location", Location.class));
-    dim.setName("Maternity Dimension");
-
-    dim.addCohortDefinition(
-        "breastfeeding",
-        EptsReportUtils.map(
-            this.txNewCohortQueries.getTxNewBreastfeedingComposition(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    dim.addCohortDefinition(
-        "pregnant",
-        EptsReportUtils.map(
-            this.txNewCohortQueries.getPatientsPregnantEnrolledOnART(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    return dim;
-  }
-
-  /**
-   * Get the dimensions based on the patient states for ERI-4 months
-   *
-   * @return CohortDefinitionDimension
-   */
-  public CohortDefinitionDimension getEri4MonthsDimension() {
-    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
-    dim.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
-    dim.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
-    dim.addParameter(new Parameter("reportingStartDate", "Report Start Date", Date.class));
-    dim.addParameter(new Parameter("reportingEndDate", "Report End Date", Date.class));
-    dim.addParameter(new Parameter("location", "location", Location.class));
-    dim.setName("Get patient states");
-
-    dim.addCohortDefinition(
-        "IART",
-        EptsReportUtils.map(
-            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "AIT",
-        EptsReportUtils.map(
-            this.eri4MonthsCohortQueries.getPatientsWhoAreAliveAndOnTreatment(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "DP",
-        EptsReportUtils.map(
-            this.genericCohortQueries.getDeceasedPatients(),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "LTFU",
-        EptsReportUtils.map(
-            this.eri4MonthsCohortQueries.getAllPatientsWhoAreLostToFollowUpDuringPeriod(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "TOP",
-        EptsReportUtils.map(
-            this.genericCohortQueries.getPatientsBasedOnPatientStates(
-                this.hivMetadata.getARTProgram().getProgramId(),
-                this.hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "STP",
-        EptsReportUtils.map(
-            this.genericCohortQueries.getPatientsBasedOnPatientStates(
-                this.hivMetadata.getARTProgram().getProgramId(),
-                this.hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()),
-            "startDate=${cohortStartDate},endDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "ANIT",
-        EptsReportUtils.map(
-            this.eri4MonthsCohortQueries.getPatientsWhoAreAliveAndNotOnTreatment(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
-    return dim;
-  }
-
-  /**
-   * Get the dimensions based on the patient states for ERI-4 months
-   *
-   * @return CohortDefinitionDimension
-   */
-  public CohortDefinitionDimension getEri2MonthsDimension() {
-    final CohortDefinitionDimension dim = new CohortDefinitionDimension();
-    dim.addParameter(new Parameter("cohortStartDate", "Cohort Start Date", Date.class));
-    dim.addParameter(new Parameter("cohortEndDate", "Cohort End Date", Date.class));
-    dim.addParameter(new Parameter("reportingEndDate", "Reporting End Date", Date.class));
-    dim.addParameter(new Parameter("location", "location", Location.class));
-    dim.setName("Get patients dimensions for Eri2Months");
-
-    dim.addCohortDefinition(
-        "IART",
-        EptsReportUtils.map(
-            this.eriCohortQueries.getAllPatientsWhoInitiatedArt(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "DNPUD",
-        EptsReportUtils.map(
-            this.eri2MonthsCohortQueries.getPatientsWhoDidNotPickDrugsOnTheirSecondVisit(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "PUD",
-        EptsReportUtils.map(
-            this.eri2MonthsCohortQueries.getPatientsWhoPickedUpDrugsOnTheirSecondVisit(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "DP",
-        EptsReportUtils.map(
-            this.eri2MonthsCohortQueries.getPatientsWhoInitiatedArtAndDead(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "TOP",
-        EptsReportUtils.map(
-            this.eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButTransferredOut(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
-
-    dim.addCohortDefinition(
-        "STP",
-        EptsReportUtils.map(
-            this.eri2MonthsCohortQueries.getPatientsWhoInitiatedArtButSuspendedTreatment(),
-            "cohortStartDate=${cohortStartDate},cohortEndDate=${cohortEndDate},reportingEndDate=${reportingEndDate},location=${location}"));
     return dim;
   }
 

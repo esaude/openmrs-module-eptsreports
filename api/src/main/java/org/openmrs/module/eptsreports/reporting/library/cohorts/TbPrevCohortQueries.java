@@ -117,41 +117,6 @@ public class TbPrevCohortQueries {
     return definition;
   }
 
-  public CohortDefinition getDenominator() {
-    CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("TB-PREV Denominator Query");
-    definition.addParameter(new Parameter("onOrAfter", "After Date", Date.class));
-    definition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    definition.addParameter(new Parameter("location", "Location", Location.class));
-    definition.addSearch(
-        "started-by-end-previous-reporting-period",
-        EptsReportUtils.map(
-            genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${onOrBefore-6m},location=${location}"));
-    definition.addSearch(
-        "started-isoniazid",
-        EptsReportUtils.map(
-            getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
-            "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
-    definition.addSearch(
-        "transferred-out",
-        EptsReportUtils.map(
-            genericCohortQueries.getPatientsBasedOnPatientStates(
-                hivMetadata.getARTProgram().getProgramId(),
-                hivMetadata
-                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
-                    .getProgramWorkflowStateId()),
-            "startDate=${onOrAfter-200y},endDate=${onOrBefore},location=${location}"));
-    definition.addSearch(
-        "completed-isoniazid",
-        EptsReportUtils.map(
-            getPatientsThatCompletedIsoniazidProphylacticTreatment(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
-    definition.setCompositionString(
-        "started-by-end-previous-reporting-period AND (started-isoniazid NOT (transferred-out NOT completed-isoniazid))");
-    return definition;
-  }
-
   public CohortDefinition getPatientsThatCompletedIsoniazidProphylacticTreatment() {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(

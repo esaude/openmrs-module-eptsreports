@@ -28,6 +28,7 @@ public class QueryDisaggregationProcessor {
                 IQueryDisaggregationProcessor.QUERY
                     .findMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullInReportingPeriod,
                 program.getProgramId(),
+                program.getProgramId(),
                 state.getProgramWorkflowStateId()),
             context.getParameterValues());
 
@@ -44,6 +45,7 @@ public class QueryDisaggregationProcessor {
             String.format(
                 IQueryDisaggregationProcessor.QUERY
                     .findMaxPatientStateDateByProgramAndPatientStateAndPatientStateEndDateNullInReportingPeriod,
+                program.getProgramId(),
                 program.getProgramId(),
                 state.getProgramWorkflowStateId()),
             context.getParameterValues());
