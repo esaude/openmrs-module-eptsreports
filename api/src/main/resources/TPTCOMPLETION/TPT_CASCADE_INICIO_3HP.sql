@@ -21,7 +21,7 @@
                                 inner join obs obsInicio3hp on  obsInicio3hp.encounter_id=e.encounter_id                                                                          
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =53 and o.concept_id=23985 and o.value_coded=23954          
                                 and e.encounter_datetime < :endDate and e.location_id= :location
-                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=6128
+                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165328
 
                                 union
 
@@ -64,7 +64,7 @@
                                 inner join obs obsInicio3hp on  obsInicio3hp.encounter_id=e.encounter_id                                                                          
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =53 and o.concept_id=23985 and o.value_coded=23954          
                                 and e.encounter_datetime < :endDate and e.location_id= :location
-                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=6128
+                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165328
 
                                 union
 
@@ -149,7 +149,7 @@
                                 inner join obs obsInicio3hp on  obsInicio3hp.encounter_id=e.encounter_id                                                                          
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =53 and o.concept_id=23985 and o.value_coded=23954          
                                 and e.encounter_datetime < :endDate and e.location_id= :location
-                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=6128
+                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165328
 
                                 union
 

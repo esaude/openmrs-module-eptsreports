@@ -20,8 +20,8 @@
                                 inner join obs o on o.encounter_id=e.encounter_id    
                                 inner join obs obsInicio3hp on  obsInicio3hp.encounter_id=e.encounter_id                                                                          
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =53 and o.concept_id=23985 and o.value_coded=23954          
-                                and e.encounter_datetime < :endDate and e.location_id= :location
-                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=6128
+                                and obsInicio3hp.value_datetime < :endDate and e.location_id= :location
+                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165328
 
                                 union
 
@@ -64,8 +64,8 @@
                                 inner join obs o on o.encounter_id=e.encounter_id    
                                 inner join obs obsInicio3hp on  obsInicio3hp.encounter_id=e.encounter_id                                                                          
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =53 and o.concept_id=23985 and o.value_coded=23954          
-                                and e.encounter_datetime < :endDate and e.location_id= :location
-                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=6128
+                                and obsInicio3hp.value_datetime < :endDate and e.location_id= :location
+                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165328
 
                                 union
 
@@ -91,7 +91,10 @@
             		group by inicio_3HP.patient_id, e.encounter_datetime having count(*)>=3   
 
             union 
-                 																
+                 	
+           select inicio_3HP.patient_id  																														
+            from																												 									
+            	(
                 select inicio.patient_id, inicio.data_inicio_3HP                                                                                                
                     from                                                                                                                                            
                         (   
@@ -112,8 +115,8 @@
                                 inner join obs o on o.encounter_id=e.encounter_id    
                                 inner join obs obsInicio3hp on  obsInicio3hp.encounter_id=e.encounter_id                                                                          
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =53 and o.concept_id=23985 and o.value_coded=23954          
-                                and e.encounter_datetime < :endDate and e.location_id= :location
-                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=6128
+                                and obsInicio3hp.value_datetime < :endDate and e.location_id= :location
+                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165328
 
                                 union
 
@@ -156,8 +159,8 @@
                                 inner join obs o on o.encounter_id=e.encounter_id    
                                 inner join obs obsInicio3hp on  obsInicio3hp.encounter_id=e.encounter_id                                                                          
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =53 and o.concept_id=23985 and o.value_coded=23954          
-                                and e.encounter_datetime < :endDate and e.location_id= :location
-                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=6128
+                                and obsInicio3hp.value_datetime < :endDate and e.location_id= :location
+                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165328
 
                                 union
 
@@ -169,35 +172,33 @@
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =6 and o.concept_id=23985 and o.value_coded=23954          
                                 and e.encounter_datetime < :endDate and e.location_id= :location
                                 and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165308 and obsInicio3hp.value_coded=1256
-
-                        
                   ) inicio_anterior                                                                                                                                 
                         on inicio_anterior.patient_id = inicio.patient_id                                                                                           
                         and inicio_anterior.data_inicio_3HP between (inicio.data_inicio_3HP - INTERVAL 4 MONTH) and (inicio.data_inicio_3HP - INTERVAL 1 day)       
-                    where inicio_anterior.patient_id is null                                                                                                        
-                ) inicio_3HP   
+                    where inicio_anterior.patient_id is null
+			
+                  )inicio_3HP
+               
+                  inner join 
 
-                inner join 
-
-                (   select patient_id, max(data_final_3hp) data_final_3hp   
+                (   select patient_id, data_final_3hp data_final_3hp   
                     from 
                         (   
                             -- Determinando o FIM 3HP Na Ficha Resumo e Ficha Clinica
                         
-                     select p.patient_id,max(obsfim3HP.value_datetime) data_final_3hp 
+                     select p.patient_id,obsfim3HP.value_datetime data_final_3hp 
                       from 
                         patient p 
                         inner join encounter e on p.patient_id = e.patient_id 
                         inner join obs o on o.encounter_id = e.encounter_id 
                         inner join obs obsfim3HP on obsfim3HP.encounter_id = e.encounter_id 
                       where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=23954
-                            and obsfim3HP.concept_id=6129 and  obsfim3HP.voided=0
-                            and obsfim3HP.value_datetime between (:startDate - interval 6 month) and :endDate
-                      group by p.patient_id     
+                            and obsfim3HP.concept_id=165327 and  obsfim3HP.voided=0
+                            and obsfim3HP.value_datetime < :endDate
 
                       union
 
-                     select p.patient_id,max(e.encounter_datetime) data_final_3hp 
+                     select p.patient_id,e.encounter_datetime data_final_3hp 
                       from 
                         patient p 
                         inner join encounter e on p.patient_id = e.patient_id 
@@ -205,13 +206,12 @@
                         inner join obs obsfim3HP on obsfim3HP.encounter_id = e.encounter_id 
                       where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=6 and o.concept_id=23985 and o.value_coded=23954
                             and obsfim3HP.concept_id=165308 and obsfim3HP.value_coded=1267 and  obsfim3HP.voided=0
-                            and e.encounter_datetime between (:startDate - interval 6 month) and :endDate
-                      group by p.patient_id         
+                            and e.encounter_datetime < :endDate
          
                     ) endTPI group by patient_id 
                 
-                ) termino_3hp on inicio3hp.patient_id=termino_3hp.patient_id 
-            where termino_3hp.data_final_3hp between inicio3hp.data_inicio_tpi + interval 86 day  and  inicio3hp.data_inicio_tpi + interval 365 day
+                ) termino_3hp on inicio_3HP.patient_id=termino_3hp.patient_id 
+            where termino_3hp.data_final_3hp between inicio_3HP.data_inicio_3HP + interval 86 day  and  inicio_3HP.data_inicio_3HP + interval 365 day
 
 
             union 																																				
@@ -274,7 +274,8 @@
             			where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=60  and o.concept_id=23985 and o.value_coded in (23954,23984)  			
             				and	e.encounter_datetime < :endDate and e.location_id= :location
 
-                    union
+                        union
+
                     -- Acreicentando novas fontes para o inicio 3HP na ficha resumo e ficha clinica
 
                         select p.patient_id, obsInicio3hp.value_datetime data_inicio_3HP                                                                           
@@ -283,8 +284,8 @@
                                 inner join obs o on o.encounter_id=e.encounter_id    
                                 inner join obs obsInicio3hp on  obsInicio3hp.encounter_id=e.encounter_id                                                                          
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =53 and o.concept_id=23985 and o.value_coded=23954          
-                                and e.encounter_datetime < :endDate and e.location_id= :location
-                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=6128
+                                and obsInicio3hp.value_datetime < :endDate and e.location_id= :location
+                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165328
 
                                 union
 
@@ -384,8 +385,8 @@
                                 inner join obs o on o.encounter_id=e.encounter_id    
                                 inner join obs obsInicio3hp on  obsInicio3hp.encounter_id=e.encounter_id                                                                          
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =53 and o.concept_id=23985 and o.value_coded=23954          
-                                and e.encounter_datetime < :endDate and e.location_id= :location
-                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=6128
+                                and obsInicio3hp.value_datetime < :endDate and e.location_id= :location
+                                and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165328
 
                                 union
 
@@ -395,7 +396,7 @@
                                 inner join obs o on o.encounter_id=e.encounter_id    
                                 inner join obs obsInicio3hp on  obsInicio3hp.encounter_id=e.encounter_id                                                                          
                             where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type =6 and o.concept_id=23985 and o.value_coded=23954          
-                                and e.encounter_datetime < :endDate and e.location_id= :location
+                                and obsInicio3hp.value_datetime < :endDate and e.location_id= :location
                                 and obsInicio3hp.voided=0 and obsInicio3hp.concept_id=165308 and obsInicio3hp.value_coded=1256
 
 

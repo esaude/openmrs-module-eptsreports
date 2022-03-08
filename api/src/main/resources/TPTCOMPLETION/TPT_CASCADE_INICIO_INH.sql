@@ -68,20 +68,19 @@
 
                     -- Acreicentando as novas fontes da ficha clinica e ficha resumo para determinar o inicio INH
 
-                        select p.patient_id,min(obsInicioINH.value_datetime) data_inicio_inh 
+                        select p.patient_id,obsInicioINH.value_datetime data_inicio_inh 
                           from 
                             patient p 
                             inner join encounter e on p.patient_id = e.patient_id 
                             inner join obs o on o.encounter_id = e.encounter_id 
                             inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
                           where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
-                                and obsInicioINH.value_datetime < :endDate
-                         group by p.patient_id
+                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
+                                and obsInicioINH.value_datetime < :endDate and e.location_id=:location
 
                          union
 
-                        select p.patient_id,min(e.encounter_datetime) data_inicio_inh 
+                        select p.patient_id,e.encounter_datetime data_inicio_inh 
                           from 
                             patient p 
                             inner join encounter e on p.patient_id = e.patient_id 
@@ -89,7 +88,6 @@
                             inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
                           where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=6 and o.concept_id=23985 and o.value_coded=656
                                 and obsInicioINH.concept_id=165308 and obsInicioINH.value_coded=1256 and obsInicioINH.voided=0
-                                and e.encounter_datetime between < :endDate
-                          group by p.patient_id         
+                                and e.encounter_datetime < :endDate and e.location_id=:location
                          
                       ) inicio_inh                                                                                                                                         ;
