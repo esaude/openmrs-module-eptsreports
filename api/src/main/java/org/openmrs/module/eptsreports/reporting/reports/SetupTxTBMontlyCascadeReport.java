@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.SurveyDefaultDataSet;
+import org.openmrs.module.eptsreports.reporting.library.datasets.TXTBMontlyCascadeReportDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -20,20 +20,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
+public class SetupTxTBMontlyCascadeReport extends EptsDataExportManager {
 
-  @Autowired private SurveyDefaultDataSet SurveyDefaultDataSet;
   @Autowired private GenericCohortQueries genericCohortQueries;
-  @Autowired private DatinCodeDataSet DatinCodeDataSet;
+
+  @Autowired private TXTBMontlyCascadeReportDataSet txtbMontlyCascadeReportDataSet;
+
+  @Autowired private DatinCodeDataSet datimCodeDataSet;
 
   @Override
   public String getExcelDesignUuid() {
-    return "d4caee44-0a99-11ec-a947-0f3e772973da";
+    return "b42abe33-1d23-42ed-bd19-a44b31aa33dc";
   }
 
   @Override
   public String getUuid() {
-    return "cac66234-0a99-11ec-94d2-f35432fbd63a";
+    return "31bd56b3-e65c-44f9-88b8-4f1449c71511";
   }
 
   @Override
@@ -43,35 +45,36 @@ public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "Relatório de Faltosos ao Levantamento de ARV - MISAU";
+    return "TX TB Montly Cascade Report";
   }
 
   @Override
   public String getDescription() {
-    return "Relatório de Faltosos ao Levantamento de ARV - MISAU";
+    return "TX TB Montly Cascade Report";
   }
 
   @Override
   public ReportDefinition constructReportDefinition() {
-    ReportDefinition rd = new ReportDefinition();
-    rd.setUuid(getUuid());
-    rd.setName(getName());
-    rd.setDescription(getDescription());
-    rd.setParameters(this.getDataParameters());
-    rd.addDataSetDefinition(
-        "FL", Mapped.mapStraightThrough(SurveyDefaultDataSet.constructDatset()));
-
-    rd.addDataSetDefinition(
-        "D",
+    ReportDefinition reportDefinition = new ReportDefinition();
+    reportDefinition.setUuid(getUuid());
+    reportDefinition.setName(getName());
+    reportDefinition.setDescription(getDescription());
+    reportDefinition.setParameters(this.getParameters());
+    reportDefinition.addDataSetDefinition(
+        "TBM",
         Mapped.mapStraightThrough(
-            this.DatinCodeDataSet.constructDataset(this.getDataParameters())));
+            txtbMontlyCascadeReportDataSet.constructDatset(this.getParameters())));
 
-    rd.setBaseCohortDefinition(
+    reportDefinition.setBaseCohortDefinition(
         EptsReportUtils.map(
             this.genericCohortQueries.generalSql(
                 "baseCohortQuery", BaseQueries.getBaseCohortQuery()),
             "endDate=${endDate},location=${location}"));
-    return rd;
+
+    reportDefinition.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(this.datimCodeDataSet.constructDataset(this.getParameters())));
+    return reportDefinition;
   }
 
   @Override
@@ -81,8 +84,8 @@ public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "FALTOSOS.xls",
-              "Relatório de Faltosos ao Levantamento de ARV - MISAU",
+              "TX_TB_Montly_Cascade_Report.xls",
+              "TX TB Montly Cascade Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
@@ -95,9 +98,8 @@ public class SetupARVSurveyDefaultReport extends EptsDataExportManager {
     return Arrays.asList(reportDesign);
   }
 
-  private List<Parameter> getDataParameters() {
+  public List<Parameter> getParameters() {
     List<Parameter> parameters = new ArrayList<Parameter>();
-    parameters.add(ReportingConstants.START_DATE_PARAMETER);
     parameters.add(ReportingConstants.END_DATE_PARAMETER);
     parameters.add(ReportingConstants.LOCATION_PARAMETER);
     return parameters;

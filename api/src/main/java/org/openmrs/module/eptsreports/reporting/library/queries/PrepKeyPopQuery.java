@@ -8,7 +8,7 @@ public class PrepKeyPopQuery {
         "select patient_id from ( "
             + "select * from (select * from  ( "
             + "select maxkp.patient_id, o.value_coded,o.obs_datetime,1 ordemSource,if(o.value_coded=20454,1,5) ordemKp from "
-            + "(Select 	p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
+            + "(Select p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on e.encounter_id=o.encounter_id "
             + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=23703 and  e.encounter_type=81 and e.encounter_datetime<=:endDate and  e.location_id=:location "
@@ -80,7 +80,7 @@ public class PrepKeyPopQuery {
             + "and pe.voided=0 "
             + "AND o.value_coded=1901 "
             + "union "
-            + " select maxkp.patient_id, o.value_coded,o.obs_datetime,2 ordemSource,3 ordemKp from ( "
+            + "select maxkp.patient_id, o.value_coded,o.obs_datetime,2 ordemSource,3 ordemKp from ( "
             + "Select p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on e.encounter_id=o.encounter_id "
@@ -91,7 +91,7 @@ public class PrepKeyPopQuery {
             + "inner join obs o on o.encounter_id=e.encounter_id and maxkp.maxkpdate=o.obs_datetime "
             + "where o.concept_id=23703 and o.voided=0 and o.value_coded=165205 and e.encounter_type = 80 and e.voided=0 and e.location_id=:location "
             + "union "
-            + " select maxkp.patient_id, o.value_coded,o.obs_datetime,2 ordemSource,4 ordemKp from ( "
+            + "select maxkp.patient_id, o.value_coded,o.obs_datetime,2 ordemSource,4 ordemKp from ( "
             + "Select p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
             + "inner join encounter e on p.patient_id=e.patient_id "
             + "inner join obs o on e.encounter_id=o.encounter_id "
@@ -103,6 +103,97 @@ public class PrepKeyPopQuery {
             + "inner join person pe on pe.person_id=maxkp.patient_id "
             + "where o.concept_id=23703 and o.voided=0 and e.encounter_type = 80 and e.voided=0 and e.location_id=:location "
             + "and pe.voided=0 and (pe.gender='M' and o.value_coded=1377) "
+            + "UNION "
+            + "select maxkp.patient_id, o.value_coded,o.obs_datetime,1 ordemSource,6 ordemKp from ( "
+            + "Select p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=165196 and  e.encounter_type=80 and e.encounter_datetime<=:endDate and  e.location_id=:location "
+            + "group by p.patient_id "
+            + ") maxkp "
+            + "inner join encounter e on e.patient_id=maxkp.patient_id and maxkp.maxkpdate=e.encounter_datetime "
+            + "inner join obs o on o.encounter_id=e.encounter_id and maxkp.maxkpdate=o.obs_datetime "
+            + "inner join person pe on pe.person_id=maxkp.patient_id "
+            + "where o.concept_id=165196 and o.voided=0  and e.encounter_type=80 and e.voided=0 and e.location_id=:location and pe.voided=0 "
+            + "AND o.value_coded=1995 "
+            + "UNION "
+            + "select maxkp.patient_id, o.value_coded,o.obs_datetime,1 ordemSource,7 ordemKp from ( "
+            + "Select p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=165196 and  e.encounter_type=80 and e.encounter_datetime<=:endDate and  e.location_id=:location "
+            + "group by p.patient_id "
+            + ") maxkp "
+            + "inner join encounter e on e.patient_id=maxkp.patient_id and maxkp.maxkpdate=e.encounter_datetime "
+            + "inner join obs o on o.encounter_id=e.encounter_id and maxkp.maxkpdate=o.obs_datetime "
+            + "inner join person pe on pe.person_id=maxkp.patient_id "
+            + "where o.concept_id=165196 and o.voided=0  and e.encounter_type=80 and e.voided=0 and e.location_id=:location and pe.voided=0 "
+            + "AND o.value_coded=1903 "
+            + "UNION "
+            + "select maxkp.patient_id, o.value_coded,o.obs_datetime,1 ordemSource,8 ordemKp from ( "
+            + "Select p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=165196 and  e.encounter_type=80 and e.encounter_datetime<=:endDate and  e.location_id=:location "
+            + "group by p.patient_id "
+            + ") maxkp "
+            + "inner join encounter e on e.patient_id=maxkp.patient_id and maxkp.maxkpdate=e.encounter_datetime "
+            + "inner join obs o on o.encounter_id=e.encounter_id and maxkp.maxkpdate=o.obs_datetime "
+            + "inner join person pe on pe.person_id=maxkp.patient_id "
+            + "where o.concept_id=165196 and o.voided=0  and e.encounter_type=80 and e.voided=0 and e.location_id=:location and pe.voided=0 "
+            + "AND o.value_coded=1908 "
+            + "UNION "
+            + "select maxkp.patient_id, o.value_coded,o.obs_datetime,1 ordemSource,9 ordemKp from ( "
+            + "Select p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=165196 and  e.encounter_type=80 and e.encounter_datetime<=:endDate and  e.location_id=:location "
+            + "group by p.patient_id "
+            + ") maxkp "
+            + "inner join encounter e on e.patient_id=maxkp.patient_id and maxkp.maxkpdate=e.encounter_datetime "
+            + "inner join obs o on o.encounter_id=e.encounter_id and maxkp.maxkpdate=o.obs_datetime "
+            + "inner join person pe on pe.person_id=maxkp.patient_id "
+            + "where o.concept_id=165196 and o.voided=0  and e.encounter_type=80 and e.voided=0 and e.location_id=:location and pe.voided=0 "
+            + "AND o.value_coded=1902 "
+            + "UNION "
+            + "select maxkp.patient_id, o.value_coded,o.obs_datetime,1 ordemSource,10 ordemKp from ( "
+            + "Select p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=165196 and  e.encounter_type=80 and e.encounter_datetime<=:endDate and  e.location_id=:location "
+            + "group by p.patient_id "
+            + ") maxkp "
+            + "inner join encounter e on e.patient_id=maxkp.patient_id and maxkp.maxkpdate=e.encounter_datetime "
+            + "inner join obs o on o.encounter_id=e.encounter_id and maxkp.maxkpdate=o.obs_datetime "
+            + "inner join person pe on pe.person_id=maxkp.patient_id "
+            + "where o.concept_id=165196 and o.voided=0  and e.encounter_type=80 and e.voided=0 and e.location_id=:location and pe.voided=0 "
+            + "AND o.value_coded=6332 "
+            + "UNION "
+            + "select maxkp.patient_id, o.value_coded,o.obs_datetime,1 ordemSource,11 ordemKp from ( "
+            + "Select p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=165196 and  e.encounter_type=80 and e.encounter_datetime<=:endDate and  e.location_id=:location "
+            + "group by p.patient_id "
+            + ") maxkp "
+            + "inner join encounter e on e.patient_id=maxkp.patient_id and maxkp.maxkpdate=e.encounter_datetime "
+            + "inner join obs o on o.encounter_id=e.encounter_id and maxkp.maxkpdate=o.obs_datetime "
+            + "inner join person pe on pe.person_id=maxkp.patient_id "
+            + "where o.concept_id=165196 and o.voided=0  and e.encounter_type=80 and e.voided=0 and e.location_id=:location and pe.voided=0 "
+            + "AND o.value_coded=1982 "
+            + "UNION "
+            + "select maxkp.patient_id, o.value_coded,o.obs_datetime,1 ordemSource,12 ordemKp from ( "
+            + "Select p.patient_id,max(e.encounter_datetime) maxkpdate from patient p "
+            + "inner join encounter e on p.patient_id=e.patient_id "
+            + "inner join obs o on e.encounter_id=o.encounter_id "
+            + "where p.voided=0 and e.voided=0 and o.voided=0 and concept_id=165196 and  e.encounter_type=80 and e.encounter_datetime<=:endDate and  e.location_id=:location "
+            + "group by p.patient_id "
+            + ") maxkp "
+            + "inner join encounter e on e.patient_id=maxkp.patient_id and maxkp.maxkpdate=e.encounter_datetime "
+            + "inner join obs o on o.encounter_id=e.encounter_id and maxkp.maxkpdate=o.obs_datetime "
+            + "inner join person pe on pe.person_id=maxkp.patient_id "
+            + "where o.concept_id=165196 and o.voided=0  and e.encounter_type=80 and e.voided=0 and e.location_id=:location and pe.voided=0 "
+            + "AND o.value_coded=165287 "
             + ") allkpsource "
             + "order by patient_id,obs_datetime desc,ordemSource,ordemKp "
             + ") allkpsorcetakefirst "
@@ -128,6 +219,34 @@ public class PrepKeyPopQuery {
 
       case TRANSGENDER:
         query = query + "where value_coded=165205 ";
+        break;
+
+      case SERODISCORDANTS:
+        query = query + "where value_coded=1995 ";
+        break;
+
+      case TRUCKER:
+        query = query + "where value_coded=1903 ";
+        break;
+
+      case MINER:
+        query = query + "where value_coded=1908 ";
+        break;
+
+      case MILITARY:
+        query = query + "where value_coded=1902 ";
+        break;
+
+      case BREASTFEEDING:
+        query = query + "where value_coded=6332 ";
+        break;
+
+      case PREGNANT:
+        query = query + "where value_coded=1982 ";
+        break;
+
+      case YOUTHS:
+        query = query + "where value_coded=165287 ";
         break;
     }
 

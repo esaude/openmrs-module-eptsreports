@@ -2,10 +2,10 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 
 import java.util.Arrays;
 import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.SurveyDefaultCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.FaltososAoLevantamentoARVCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.SurveyDefaultDimentions;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.FaltososAoLevantamentoARVDimension;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -15,12 +15,12 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SurveyDefaultDataSet extends BaseDataSet {
+public class FaltososAoLevantamentoARVDataSet extends BaseDataSet {
 
   @Autowired private EptsCommonDimension eptsCommonDimension;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
-  @Autowired private SurveyDefaultCohortQueries surveyDefaultCohortQueries;
-  @Autowired private SurveyDefaultDimentions surveyDefaultDimentions;
+  @Autowired private FaltososAoLevantamentoARVCohortQueries faltososAoLevantamentoARVCohortQueries;
+  @Autowired private FaltososAoLevantamentoARVDimension faltososAoLevantamentoARVDimension;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -40,7 +40,9 @@ public class SurveyDefaultDataSet extends BaseDataSet {
 
     dataSetDefinition.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dataSetDefinition.addDimension(
-        "df", EptsReportUtils.map(surveyDefaultDimentions.getDefaultersDimentions(), mappings));
+        "df",
+        EptsReportUtils.map(
+            faltososAoLevantamentoARVDimension.getDefaultersDimentions(), mappings));
 
     dataSetDefinition.addColumn(
         "FD-TOTAL",
@@ -49,7 +51,7 @@ public class SurveyDefaultDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Denominador: Nº de pacientes marcados para levantamento de ARV durante o período  (total)",
                 EptsReportUtils.map(
-                    this.surveyDefaultCohortQueries.getTotalDenominator(), mappings)),
+                    this.faltososAoLevantamentoARVCohortQueries.getTotalDenominator(), mappings)),
             mappings),
         "");
 
@@ -61,7 +63,7 @@ public class SurveyDefaultDataSet extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Denominador: Nº de pacientes marcados para levantamento de ARV durante o período",
                 EptsReportUtils.map(
-                    this.surveyDefaultCohortQueries.getTotalDenominator(), mappings)),
+                    this.faltososAoLevantamentoARVCohortQueries.getTotalDenominator(), mappings)),
             mappings),
         getColumns());
 
@@ -71,7 +73,8 @@ public class SurveyDefaultDataSet extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Denominador: Nº de pacientes marcados para levantamento de ARV durante o período  (total)",
-                EptsReportUtils.map(this.surveyDefaultCohortQueries.getTotalNumerator(), mappings)),
+                EptsReportUtils.map(
+                    this.faltososAoLevantamentoARVCohortQueries.getTotalNumerator(), mappings)),
             mappings),
         "");
 
@@ -82,7 +85,8 @@ public class SurveyDefaultDataSet extends BaseDataSet {
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Denominador: Nº de pacientes marcados para levantamento de ARV durante o período",
-                EptsReportUtils.map(this.surveyDefaultCohortQueries.getTotalNumerator(), mappings)),
+                EptsReportUtils.map(
+                    this.faltososAoLevantamentoARVCohortQueries.getTotalNumerator(), mappings)),
             mappings),
         getColumns());
 

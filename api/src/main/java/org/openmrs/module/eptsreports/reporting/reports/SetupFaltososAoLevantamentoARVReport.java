@@ -1,50 +1,39 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaSCRNDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.CxCaTXDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TbPrevDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxTBDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.FaltososAoLevantamentoARVDataSet;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
+import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SetupMERSemiAnnualReport extends EptsDataExportManager {
+public class SetupFaltososAoLevantamentoARVReport extends EptsDataExportManager {
 
-  @Autowired private TxMlDataset txMlDataset;
-
+  @Autowired private FaltososAoLevantamentoARVDataSet faltososAoLevantamentoARVDataSet;
   @Autowired private GenericCohortQueries genericCohortQueries;
-
-  @Autowired private TxTBDataset txTBDataset;
-
-  @Autowired private TbPrevDataset tbPrevDataset;
-
-  @Autowired private CxCaSCRNDataSet cxCaSCRNDataSet;
-
-  @Autowired private CxCaTXDataSet CxCaTXDataSet;
-
-  @Autowired private DatinCodeDataSet DatinCodeDataSet;
+  @Autowired private DatinCodeDataSet datimCodeDataSet;
 
   @Override
   public String getExcelDesignUuid() {
-    return "61fea06a-472b-11e9-8b42-876961a472ef";
+    return "d4caee44-0a99-11ec-a947-0f3e772973da";
   }
 
   @Override
   public String getUuid() {
-    return "6febad76-472b-11e9-a41e-db8c77c788cd";
+    return "cac66234-0a99-11ec-94d2-f35432fbd63a";
   }
 
   @Override
@@ -54,12 +43,12 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.6 Semi-Annual";
+    return "Relatório de Faltosos ao Levantamento de ARV - MISAU";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR MER 2.6 Semi-Annual Report";
+    return "Relatório de Faltosos ao Levantamento de ARV - MISAU";
   }
 
   @Override
@@ -68,20 +57,14 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     rd.setUuid(getUuid());
     rd.setName(getName());
     rd.setDescription(getDescription());
-    rd.setParameters(txMlDataset.getParameters());
+    rd.setParameters(this.getDataParameters());
+    rd.addDataSetDefinition(
+        "FL", Mapped.mapStraightThrough(faltososAoLevantamentoARVDataSet.constructDatset()));
 
-    rd.addDataSetDefinition("T", Mapped.mapStraightThrough(txTBDataset.constructTxTBDataset()));
-
-    //    rd.addDataSetDefinition("TBPREV",
-    // Mapped.mapStraightThrough(tbPrevDataset.constructDatset()));
-    //    rd.addDataSetDefinition("CX",
-    // Mapped.mapStraightThrough(cxCaSCRNDataSet.constructDatset()));
-    //    rd.addDataSetDefinition("CXT",
-    // Mapped.mapStraightThrough(CxCaTXDataSet.constructDatset()));
-    //    rd.addDataSetDefinition(
-    //        "D",
-    //
-    // Mapped.mapStraightThrough(this.DatinCodeDataSet.constructDataset(this.getParameters())));
+    rd.addDataSetDefinition(
+        "D",
+        Mapped.mapStraightThrough(
+            this.datimCodeDataSet.constructDataset(this.getDataParameters())));
 
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -98,8 +81,8 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.6_Semiannual.xls",
-              "PEPFAR MER 2.6 Semi-Annual Report",
+              "Faltosos_ao_levantamento_arv.xls",
+              "Relatorio de Faltosos ao Levantamento de ARV - MISAU",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
@@ -110,5 +93,13 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     }
 
     return Arrays.asList(reportDesign);
+  }
+
+  private List<Parameter> getDataParameters() {
+    List<Parameter> parameters = new ArrayList<Parameter>();
+    parameters.add(ReportingConstants.START_DATE_PARAMETER);
+    parameters.add(ReportingConstants.END_DATE_PARAMETER);
+    parameters.add(ReportingConstants.LOCATION_PARAMETER);
+    return parameters;
   }
 }
