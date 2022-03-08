@@ -77,7 +77,7 @@ from
                             inner join obs o on o.encounter_id = e.encounter_id 
                             inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
                           where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
                                 and obsInicioINH.value_datetime < :endDate
 
                          union
@@ -118,12 +118,14 @@ from
 				    
 		     -- Acreicentando as novas fontes da ficha clinica e ficha resumo  para determinar o fim INH
 
-				   select p.patient_id, e.encounter_datetime data_final_inh               														
+				   select p.patient_id, obsFimINH.value_datetime  data_final_inh               														
 				     from patient p    																												
 				     	inner join encounter e on p.patient_id=e.patient_id        																	
-				        inner join obs o on o.encounter_id=e.encounter_id                															
+				        inner join obs o on o.encounter_id=e.encounter_id 
+				        inner join obs obsFimINH on obsFimINH.encounter_id=e.encounter_id
 				      where p.voided=0 and e.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656            
 				      	and e.encounter_datetime<= :endDate and e.location_id= :location 
+				      	and obsFimINH.voided=0 and obsFimINH.concept_id=165329
 
                union
 
@@ -172,7 +174,7 @@ from
                             inner join obs o on o.encounter_id = e.encounter_id 
                             inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
                           where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
                                 and obsInicioINH.value_datetime < :endDate
 
                          union
@@ -235,7 +237,7 @@ from
                             inner join obs o on o.encounter_id = e.encounter_id 
                             inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
                           where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
                                 and obsInicioINH.value_datetime < :endDate
 
                          union
@@ -301,7 +303,7 @@ from
 		                            inner join obs o on o.encounter_id = e.encounter_id 
 		                            inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 		                          where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-		                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+		                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
 		                                and obsInicioINH.value_datetime < :endDate
 
 		                         union
@@ -346,7 +348,7 @@ from
 		                            inner join obs o on o.encounter_id = e.encounter_id 
 		                            inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 		                          where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-		                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+		                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
 		                                and obsInicioINH.value_datetime < :endDate
 
 		                         union
@@ -397,7 +399,7 @@ from
 		                            inner join obs o on o.encounter_id = e.encounter_id 
 		                            inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 		                          where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-		                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+		                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
 		                                and obsInicioINH.value_datetime < :endDate
 
 		                         union
@@ -482,7 +484,7 @@ from
 		                            inner join obs o on o.encounter_id = e.encounter_id 
 		                            inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 		                          where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-		                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+		                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
 		                                and obsInicioINH.value_datetime < :endDate
 
 		                         union
@@ -566,7 +568,7 @@ from
 		                            inner join obs o on o.encounter_id = e.encounter_id 
 		                            inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 		                          where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-		                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+		                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
 		                                and obsInicioINH.value_datetime < :endDate
 
 		                         union
@@ -652,7 +654,7 @@ from
 		                            inner join obs o on o.encounter_id = e.encounter_id 
 		                            inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 		                          where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-		                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+		                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
 		                                and obsInicioINH.value_datetime < :endDate
 
 		                         union
@@ -739,7 +741,7 @@ inner join
 		                            inner join obs o on o.encounter_id = e.encounter_id 
 		                            inner join obs obsInicioINH on obsInicioINH.encounter_id = e.encounter_id 
 		                          where e.voided=0 and p.voided=0 and o.voided=0 and e.encounter_type=53 and o.concept_id=23985 and o.value_coded=656
-		                                and obsInicioINH.concept_id=6128 and obsInicioINH.voided=0
+		                                and obsInicioINH.concept_id=165328 and obsInicioINH.voided=0
 		                                and obsInicioINH.value_datetime < :endDate
 
 		                         union
