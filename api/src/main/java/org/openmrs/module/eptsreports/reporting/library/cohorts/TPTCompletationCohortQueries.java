@@ -39,10 +39,9 @@ public class TPTCompletationCohortQueries {
 
   private static final String FIND_PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD =
       "TPTCOMPLETION/PATIENTS_WHO_COMPLETED_INH_THERAPY_BY_END_OF_REPORTING_PERIOD.sql";
-  
-  private static final String FIND_PATIENTS_WHO_COMPLETED_3HP_THERAPY_BY_END_OF_REPORTING_PERIOD =
-	      "TPTCOMPLETION/PATIENTS_WHO_COMPLETED_3HP_THERAPY_BY_END_OF_REPORTING_PERIOD.sql";
 
+  private static final String FIND_PATIENTS_WHO_COMPLETED_3HP_THERAPY_BY_END_OF_REPORTING_PERIOD =
+      "TPTCOMPLETION/PATIENTS_WHO_COMPLETED_3HP_THERAPY_BY_END_OF_REPORTING_PERIOD.sql";
 
   private static final String
       FIND_PATIENTS_WHO_STARTED_TB_PREV_PREVENTIVE_TREATMENT_DURING_7MONTHS_PREVIOUS_REPORTING_ENDDATE_PERIOD =
@@ -265,7 +264,8 @@ public class TPTCompletationCohortQueries {
         EptsReportUtils.map(
             this.genericCohorts.generalSql(
                 "get Patients Who Completed 3HP Therapy",
-                EptsQuerysUtils.loadQuery(FIND_PATIENTS_WHO_COMPLETED_3HP_THERAPY_BY_END_OF_REPORTING_PERIOD)),
+                EptsQuerysUtils.loadQuery(
+                    FIND_PATIENTS_WHO_COMPLETED_3HP_THERAPY_BY_END_OF_REPORTING_PERIOD)),
             mappings));
     dsd.addSearch(
         "COMPLETED-INH", EptsReportUtils.map(this.findPatientsWhoCompletedINHTherapy(), mappings));
