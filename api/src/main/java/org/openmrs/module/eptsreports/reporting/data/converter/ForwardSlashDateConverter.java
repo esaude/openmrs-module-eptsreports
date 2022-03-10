@@ -13,7 +13,7 @@ public class ForwardSlashDateConverter implements DataConverter {
     if (obj != null && obj instanceof Date) {
       return formatDate((Date) obj);
     }
-    return "";
+    return "N/A";
   }
 
   @Override

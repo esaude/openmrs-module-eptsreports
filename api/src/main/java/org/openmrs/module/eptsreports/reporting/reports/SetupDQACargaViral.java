@@ -63,12 +63,12 @@ public class SetupDQACargaViral extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "DQA Carga Viral - MISAU";
+    return "DQA - MISAU";
   }
 
   @Override
   public String getDescription() {
-    return "DQA Carga Viral - MISAU Report";
+    return "DQA - MISAU Report";
   }
 
   @Override
@@ -95,12 +95,12 @@ public class SetupDQACargaViral extends EptsDataExportManager {
       rd =
           createXlsReportDesign(
               reportDefinition,
-              "DQA_Viral_Load_v1.1.xls",
-              "DQA Carga Viral - MISAU",
+              "DQA_Viral_Load_v1.4.1.xls",
+              "DQA - MISAU",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
-      props.put("repeatingSections", "sheet:1,row:7,dataset:CV");
+      props.put("repeatingSections", "sheet:1,row:8,dataset:CV");
       props.put("sortWeight", "5000");
       rd.setProperties(props);
     } catch (IOException e) {

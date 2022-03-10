@@ -1,5 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.*;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
@@ -10,11 +14,6 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
 
 @Component
 public class SetupMERSemiAnnualReport extends EptsDataExportManager {
