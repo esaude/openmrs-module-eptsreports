@@ -1,10 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
@@ -31,6 +26,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.*;
+
 @Component
 public class QualityImprovement2020CohortQueries {
 
@@ -53,6 +50,8 @@ public class QualityImprovement2020CohortQueries {
   private TxPvlsCohortQueries txPvls;
 
   private TxMlCohortQueries txMlCohortQueries;
+
+  private IntensiveMonitoringCohortQueries intensiveMonitoringCohortQueries;
 
   private final String MAPPING = "startDate=${startDate},endDate=${endDate},location=${location}";
   private final String MAPPING1 =
@@ -98,6 +97,11 @@ public class QualityImprovement2020CohortQueries {
     this.txPvls = txPvls;
     this.ageCohortQueries = ageCohortQueries;
     this.txMlCohortQueries = txMlCohortQueries;
+  }
+
+  public void setIntensiveMonitoringCohortQueries(
+      IntensiveMonitoringCohortQueries intensiveMonitoringCohortQueries) {
+    this.intensiveMonitoringCohortQueries = intensiveMonitoringCohortQueries;
   }
 
   /**
@@ -7340,6 +7344,215 @@ public class QualityImprovement2020CohortQueries {
     return cd;
   }
 
+  public CohortDefinition getMQ15DenMDS() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Denominator 15 - Pacientes elegíveis a MDS");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "Revision End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition Mq15A = intensiveMonitoringCohortQueries.getMI15A();
+    CohortDefinition Mq15B1 = intensiveMonitoringCohortQueries.getMI15B1();
+    CohortDefinition Mq15B2 = intensiveMonitoringCohortQueries.getMI15B2(24);
+    CohortDefinition E1 = intensiveMonitoringCohortQueries.getMI15E(30, 1);
+    CohortDefinition E2 = intensiveMonitoringCohortQueries.getMI15E(60, 31);
+    CohortDefinition E3 = intensiveMonitoringCohortQueries.getMI15E(90, 61);
+    CohortDefinition Mq15C = getMQ15CPatientsMarkedAsPregnant();
+    CohortDefinition Mq15D = getMQ15DPatientsMarkedAsBreastfeeding();
+    CohortDefinition Mq15F = intensiveMonitoringCohortQueries.getMI15F();
+    CohortDefinition Mq15G = intensiveMonitoringCohortQueries.getMI15G();
+    CohortDefinition Mq15J = intensiveMonitoringCohortQueries.getMI15J();
+    CohortDefinition Mq15AGE2 =
+        intensiveMonitoringCohortQueries.getAgeOnLastConsultationMoreThan2Years();
+
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            Mq15A, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "B1",
+        EptsReportUtils.map(
+            Mq15B1, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "B2",
+        EptsReportUtils.map(
+            Mq15B2, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "E1",
+        EptsReportUtils.map(
+            E1, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "E2",
+        EptsReportUtils.map(
+            E2, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "E3",
+        EptsReportUtils.map(
+            E2, "startDate=${startDate},endDate={revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(
+            Mq15C,
+            "startDate=${revisionEndDate-14m+1d},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            Mq15D,
+            "startDate=${revisionEndDate-14m+1d},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "F",
+        EptsReportUtils.map(
+            Mq15F, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "G",
+        EptsReportUtils.map(
+            Mq15G, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "J",
+        EptsReportUtils.map(
+            Mq15J, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "AGE2",
+        EptsReportUtils.map(
+            Mq15AGE2, "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "A AND B1 AND (E1 AND E2 AND E3) AND NOT (C OR D OR F OR G OR J) AND AGE2");
+
+    return cd;
+  }
+
+  public CohortDefinition getMQ15NumeratorMDS() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Numerator MQ 15 - Pacientes elegíveis a MDS");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "Revision End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition Mq15DenMDS = getMQ15DenMDS();
+    CohortDefinition MqK = intensiveMonitoringCohortQueries.getMI15K();
+    cd.addSearch(
+        "MQ15DenMDS",
+        EptsReportUtils.map(
+            Mq15DenMDS,
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "K",
+        EptsReportUtils.map(
+            MqK, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    cd.setCompositionString("MQ15DenMDS AND K");
+    return cd;
+  }
+
+  public CohortDefinition getMQ15MdsDen14() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("15.14 - % de inscritos em MDS que receberam CV");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "Revision End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition Mq15A = intensiveMonitoringCohortQueries.getMI15A();
+    CohortDefinition Mq15J = intensiveMonitoringCohortQueries.getMI15J();
+    CohortDefinition Mq15AGE2 =
+        intensiveMonitoringCohortQueries.getAgeOnLastConsultationMoreThan2Years();
+    CohortDefinition Mq15H = intensiveMonitoringCohortQueries.getMI15H();
+
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            Mq15A, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "J",
+        EptsReportUtils.map(
+            Mq15J, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "H",
+        EptsReportUtils.map(
+            Mq15H, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "AGE2",
+        EptsReportUtils.map(
+            Mq15AGE2, "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("A AND J AND H AGE2");
+    return cd;
+  }
+
+  public CohortDefinition getMQ15MdsNum14() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Numerator 15.14: # de pacientes inscritos em MDS ");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "Revision End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition Mq15DenMds14 = getMQ15MdsDen14();
+    CohortDefinition Mq15L = intensiveMonitoringCohortQueries.getMI15L();
+
+    cd.addSearch(
+        "Mq15DenMds14",
+        EptsReportUtils.map(
+            Mq15DenMds14,
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "MQ15L",
+        EptsReportUtils.map(
+            Mq15L, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    cd.setCompositionString("Mq15DenMds14 AND MQ15L");
+
+    return cd;
+  }
+
+  public CohortDefinition getMQ15MdsDen15() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("15.15 % de pacientes inscritos em MDS em TARV há mais de 21 meses ");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "Revision End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition Mq15A = intensiveMonitoringCohortQueries.getMI15A();
+    CohortDefinition Mq15J = intensiveMonitoringCohortQueries.getMI15J();
+    CohortDefinition Mq15P = intensiveMonitoringCohortQueries.getMI15P();
+    CohortDefinition Mq15Age2 =
+        intensiveMonitoringCohortQueries.getAgeOnLastConsultationMoreThan2Years();
+    CohortDefinition Mq15B2 = intensiveMonitoringCohortQueries.getMI15B2(24);
+
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            Mq15A, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "J",
+        EptsReportUtils.map(
+            Mq15J, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "B2",
+        EptsReportUtils.map(
+            Mq15B2, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "P",
+        EptsReportUtils.map(
+            Mq15P, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "AGE2",
+        EptsReportUtils.map(
+            Mq15Age2, "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("A AND J AND B2 AND NOT P AND AGE2");
+    return cd;
+  }
+
   private CohortDefinition getAgeOnObsDatetime(Integer minAge, Integer maxAge) {
     CalculationCohortDefinition cd =
         new CalculationCohortDefinition(
@@ -7351,6 +7564,156 @@ public class QualityImprovement2020CohortQueries {
     cd.addCalculationParameter("minAgeOnObsDatetime", minAge);
     cd.addCalculationParameter("maxAgeOnObsDatetime", maxAge);
     return cd;
+  }
+
+  public CohortDefinition getMQ15MdsNum15() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("15.15 % de pacientes inscritos em MDS em TARV há mais de 21 meses ");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "Revision End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition Mq15MdsDen15 = getMQ15MdsDen15();
+    CohortDefinition Mq15I = intensiveMonitoringCohortQueries.getMI15I(24, 18);
+
+    cd.addSearch(
+        "Mq15MdsDen15",
+        EptsReportUtils.map(
+            Mq15MdsDen15,
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "Mq15I",
+        EptsReportUtils.map(
+            Mq15I, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    cd.setCompositionString("Mq15MdsDen15 AND Mq15I");
+
+    return cd;
+  }
+
+  /**
+   * <b>C - All female patients registered as “Pregnant” on Ficha Clinica during the revision period (startDateInclusion = endDateRevision - 14 months and endDateRevision):</b>
+   * <ul>
+   *     <li>all patients registered in Ficha Clínica (encounter type=6) with “Gestante”(concept_id  1982) value_coded equal to “Yes” (concept_id 1065) and sex=Female and encounter_datetime >= startDateInclusion (endDateRevision - 14 months) and encounter_datetime <= endDateRevision.</li>
+   *     <i>NOTE: IF the patient has both states pregnant and breastfeeding, the system will consider the most recent registry. If the patient has both states on the same day, the system will consider the patient as pregnant.</i>
+   * </ul>
+   * */
+  public CohortDefinition getMQ15CPatientsMarkedAsPregnant() {
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("All female patients registered as pregnant but not breastfeeding");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("6332", hivMetadata.getBreastfeeding().getConceptId());
+    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
+
+    String query =
+        "SELECT pregnant.patient_id "
+            + "FROM   (SELECT p.patient_id, MAX(e.encounter_datetime) AS pregnancy_date "
+            + "        FROM   patient p "
+            + "               INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "               INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "               INNER JOIN person ps ON ps.person_id = p.patient_id "
+            + "        WHERE  e.encounter_type = ${6} "
+            + "               AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "               AND e.location_id = :location "
+            + "               AND e.voided = 0 "
+            + "               AND o.concept_id = ${1982} "
+            + "               AND o.value_coded = ${1065} "
+            + "               AND o.voided = 0 "
+            + "               AND ps.gender = 'F' "
+            + "               AND ps.voided = 0 "
+            + "        GROUP  BY p.patient_id) pregnant "
+            + "       LEFT JOIN (SELECT p.patient_id, MAX(e.encounter_datetime) breastfeed_date "
+            + "                  FROM   patient p "
+            + "                         INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                         INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "                         INNER JOIN person ps ON ps.person_id = p.patient_id "
+            + "                  WHERE  e.encounter_type = ${6} "
+            + "                         AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "                         AND e.location_id = :location "
+            + "                         AND e.voided = 0 "
+            + "                         AND o.concept_id = ${6332} "
+            + "                         AND o.value_coded = ${1065} "
+            + "                         AND o.voided = 0 "
+            + "                         AND ps.gender = 'F' "
+            + "                         AND ps.voided = 0 "
+            + "                  GROUP  BY p.patient_id) AS breastfeeding "
+            + "              ON breastfeeding.patient_id = pregnant.patient_id "
+            + "WHERE  pregnant.pregnancy_date >= breastfeeding.breastfeed_date OR breastfeeding.breastfeed_date IS NULL "
+            + "GROUP  BY pregnant.patient_id";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>D - All female patients registered as “Breastfeeding” on Ficha Clinica during the revision period (startDateInclusion = endDateRevision - 14 months and endDateRevision):</b>
+   * <ul>
+   *     <li>all patients registered in Ficha Clínica (encounter type=6) with “Lactante”(concept_id  6332) value_coded equal to “Yes” (concept_id 1065) and sex=Female and encounter_datetime >= startDateInclusion (endDateRevision - 14 months) and encounter_datetime <= endDateRevision</li>
+   *     <i>NOTE: IF the patient has both states pregnant and breastfeeding, the system will consider the most recent registry. If the patient has both states on the same day, the system will consider the patient as pregnant.</i>
+   * </ul>
+   * */
+  public CohortDefinition getMQ15DPatientsMarkedAsBreastfeeding() {
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("All female patients registered as Breastfeeding but not pregnant");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("6332", hivMetadata.getBreastfeeding().getConceptId());
+    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
+
+    String query =
+        "SELECT breastfeeding.patient_id "
+            + "FROM  (SELECT p.patient_id, MAX(e.encounter_datetime) breastfeed_date "
+            + "       FROM   patient p INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "              INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "              INNER JOIN person ps ON ps.person_id = p.patient_id "
+            + "       WHERE  e.encounter_type = ${6} "
+            + "              AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "              AND e.location_id = :location "
+            + "              AND e.voided = 0 "
+            + "              AND o.concept_id = ${6332} "
+            + "              AND o.value_coded = ${1065} "
+            + "              AND o.voided = 0 "
+            + "              AND ps.gender = 'F' "
+            + "              AND ps.voided = 0 "
+            + "       GROUP  BY p.patient_id) breastfeeding "
+            + "      LEFT JOIN (SELECT p.patient_id, MAX(e.encounter_datetime) pregnancy_date "
+            + "                 FROM   patient p "
+            + "                        INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                        INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "                        INNER JOIN person ps ON ps.person_id = p.patient_id "
+            + "                 WHERE  e.encounter_type = ${6} "
+            + "                        AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "                        AND e.location_id = :location "
+            + "                        AND e.voided = 0 "
+            + "                        AND o.concept_id = ${1982} "
+            + "                        AND o.value_coded = ${1065} "
+            + "                        AND o.voided = 0 "
+            + "                        AND ps.gender = 'F' "
+            + "                        AND ps.voided = 0 "
+            + "                 GROUP  BY p.patient_id) pregnant "
+            + "             ON pregnant.patient_id = breastfeeding.patient_id "
+            + "WHERE  breastfeeding.breastfeed_date > pregnant.pregnancy_date "
+            + "        OR pregnant.pregnancy_date IS NULL "
+            + "GROUP  BY breastfeeding.patient_id";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+    return sqlCohortDefinition;
   }
 
   /**
