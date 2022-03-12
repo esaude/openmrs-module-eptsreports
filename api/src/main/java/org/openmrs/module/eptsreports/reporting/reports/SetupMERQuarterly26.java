@@ -18,19 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.CXCASCRNDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.CXCASCRNPositiveDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.DatimCodeDatasetDefinition;
-import org.openmrs.module.eptsreports.reporting.library.datasets.PrepCtDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.PrepNewDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TXCXCADataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TransferredInDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxCurrDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxMlDataset25;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxNewDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxPvlsDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxRTTPLHIVDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TxRttDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.*;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
@@ -122,24 +110,22 @@ public class SetupMERQuarterly26 extends EptsDataExportManager {
     rd.setName(getName());
     rd.setDescription(getDescription());
     rd.setParameters(txPvlsDataset.getParameters());
-    //    rd.addDataSetDefinition("N",
-    // Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
+    rd.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
     rd.addDataSetDefinition(
         "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
-    //    rd.addDataSetDefinition("P",
-    // Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
+    rd.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
     rd.addDataSetDefinition(
         "TXML", Mapped.mapStraightThrough(txMlDataset25.constructtxMlDataset()));
     rd.addDataSetDefinition("R", Mapped.mapStraightThrough(txRttDataset.constructTxRttDataset()));
-    //    rd.addDataSetDefinition(
-    //        "T", Mapped.mapStraightThrough(transferredInDataset.constructTransferInDataset()));
-    //    rd.addDataSetDefinition(
-    //        "PL", Mapped.mapStraightThrough(txRTTPLHIVDateset.constructTxRTTPLHIVDateset()));
-    // rd.addDataSetDefinition(
-    // "PREP", Mapped.mapStraightThrough(prepNewDataset.constructPrepNewDataset()));
+    rd.addDataSetDefinition(
+        "T", Mapped.mapStraightThrough(transferredInDataset.constructTransferInDataset()));
+    rd.addDataSetDefinition(
+        "PL", Mapped.mapStraightThrough(txRTTPLHIVDateset.constructTxRTTPLHIVDateset()));
+    rd.addDataSetDefinition(
+        "PREP", Mapped.mapStraightThrough(prepNewDataset.constructPrepNewDataset()));
     rd.addDataSetDefinition("DT", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));
-    // rd.addDataSetDefinition(
-    // "PREPNUM", Mapped.mapStraightThrough(prepCtDataset.constructPrepCtDataset()));
+    rd.addDataSetDefinition(
+        "PREPNUM", Mapped.mapStraightThrough(prepCtDataset.constructPrepCtDataset()));
 
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(

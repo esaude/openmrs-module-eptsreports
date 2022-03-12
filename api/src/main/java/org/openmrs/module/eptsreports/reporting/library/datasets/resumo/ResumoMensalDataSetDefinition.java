@@ -22,7 +22,6 @@ import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionC
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.disaggregations.ResumoMensalAandBdisaggregations;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -69,7 +68,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     dsd.addDimension(
         "age", map(eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
-    // indicators for section A1
+    /* // indicators for section A1
     addRow(
         dsd,
         "A1TC",
@@ -435,7 +434,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                         .getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed(false),
                     mappings)),
             mappings),
-        resumoMensalAandBdisaggregations.disAggForE());
+        resumoMensalAandBdisaggregations.disAggForE());*/
     // E2
     addRow(
         dsd,
@@ -451,7 +450,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
             mappings),
         resumoMensalAandBdisaggregations.disAggForE());
 
-    // E3
+    /*// E3
     addRow(
         dsd,
         "E3",
@@ -504,7 +503,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                         .getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYearF3(),
                     mappings)),
             mappings),
-        "");
+        "");*/
 
     return dsd;
   }

@@ -320,7 +320,7 @@ public class RMPREPQueries {
             + "     AND o.value_numeric >= 1 "
             + "     AND e.encounter_datetime BETWEEN b.previous_date AND DATE_ADD(b.previous_date, INTERVAL 33 DAY) "
             + "    GROUP BY p.patient_id "
-            + "  ) last WHERE last.pickups >=2";
+            + "  ) last WHERE last.pickups =2";
 
     StringSubstitutor sb = new StringSubstitutor(valuesMap);
     return sb.replace(query);

@@ -136,7 +136,7 @@ public class TXCurrQueries {
       int reasonPatientNotFoundByActivist3rdVisit,
       int patientIsDead) {
     String query =
-        "  SELECT  max_date.patient_id FROM  "
+        "  SELECT  max_date.patient_id FROM "
             + "    (SELECT  "
             + "      p.patient_id,  "
             + "      MAX(e.encounter_datetime) last   "
@@ -160,7 +160,7 @@ public class TXCurrQueries {
             + "        )  "
             + "    AND o.voided=0 "
             + "    AND ee.voided = 0 "
-            + "    GROUP BY  max_date.patient_id";
+            + "    AND ee.encounter_datetime=max_date.last";
 
     Map<String, Integer> map = new HashMap<>();
     map.put("buscaActiva", buscaActivaEncounterType);

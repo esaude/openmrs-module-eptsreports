@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.calculation.generic;
 
-import java.util.*;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -14,6 +13,8 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
 
 @Component
 public class KeyPopulationCalculation extends AbstractPatientCalculation {
@@ -318,6 +319,10 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
 
     HivMetadata hivMetadata = Context.getRegisteredComponents(HivMetadata.class).get(0);
     List<Obs> obsWithinReportingPeriod = new ArrayList<>();
+    List<Obs> keyPopForMen = new ArrayList<>();
+    List<Obs> keyPopForWomen = new ArrayList<>();
+    Patient patient = Context.getPatientService().getPatient(pId);
+
     Obs requiredObs = null;
     ListResult listResult = (ListResult) map.get(pId);
     List<Obs> obsList = EptsCalculationUtils.extractResultValues(listResult);
@@ -329,27 +334,75 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
     List<Obs> sortedObs;
     if (obsWithinReportingPeriod.size() > 0) {
       sortedObs = sortObsByObsDatetime(obsWithinReportingPeriod);
+      for (Obs menObs : sortedObs) {
+        if (menObs.getValueCoded() != null
+            && (menObs.getValueCoded().equals(hivMetadata.getHomosexualConcept())
+                || menObs.getValueCoded().equals(hivMetadata.getDrugUseConcept())
+                || menObs.getValueCoded().equals(hivMetadata.getImprisonmentConcept())
+                || menObs.getValueCoded().equals(hivMetadata.getTransGenderConcept()))) {
+          keyPopForMen.add(menObs);
+        }
+      }
+
+      for (Obs femaleObs : sortedObs) {
+        if (femaleObs.getValueCoded() != null
+            && (femaleObs.getValueCoded().equals(hivMetadata.getSexWorkerConcept())
+                || femaleObs.getValueCoded().equals(hivMetadata.getDrugUseConcept())
+                || femaleObs.getValueCoded().equals(hivMetadata.getImprisonmentConcept())
+                || femaleObs.getValueCoded().equals(hivMetadata.getTransGenderConcept()))) {
+          keyPopForWomen.add(femaleObs);
+        }
+      }
       // get the last obs in the list
-      requiredObs = sortedObs.get(sortedObs.size() - 1);
+      requiredObs = null;
+      List<Obs> lasRequiredObsForMaleSorted = sortObsByObsDatetime(keyPopForMen);
+      List<Obs> lasRequiredObsForFemaleSorted = sortObsByObsDatetime(keyPopForWomen);
+      Obs lastObsForMenKP = null;
+      if (lasRequiredObsForMaleSorted.size() > 0) {
+        lastObsForMenKP = lasRequiredObsForMaleSorted.get(lasRequiredObsForMaleSorted.size() - 1);
+      }
+      Obs lastObsForWomenKP = null;
+      if (lasRequiredObsForFemaleSorted.size() > 0) {
+        lastObsForWomenKP =
+            lasRequiredObsForFemaleSorted.get(lasRequiredObsForFemaleSorted.size() - 1);
+      }
+
       // loop through all the obs collected for each patient per the encounter type and check if
       // there is any that occurred on same date
-      for (Obs obs : sortedObs) {
-        if (requiredObs != null
-            && obs.getObsDatetime().compareTo(requiredObs.getObsDatetime()) >= 0) {
-          if (obs.getValueCoded().equals(hivMetadata.getDrugUseConcept())) {
-            requiredObs = obs;
+      if (patient.getGender().equals("M")) {
+        for (Obs obs : lasRequiredObsForMaleSorted) {
+          if (lastObsForMenKP != null
+              && obs.getObsDatetime().compareTo(lastObsForMenKP.getObsDatetime()) >= 0) {
+            if (obs.getValueCoded().equals(hivMetadata.getDrugUseConcept())) {
+              requiredObs = obs;
 
-          } else if (obs.getValueCoded().equals(hivMetadata.getHomosexualConcept())) {
-            requiredObs = obs;
+            } else if (obs.getValueCoded().equals(hivMetadata.getHomosexualConcept())) {
+              requiredObs = obs;
 
-          } else if (obs.getValueCoded().equals(hivMetadata.getSexWorkerConcept())) {
-            requiredObs = obs;
+            } else if (obs.getValueCoded().equals(hivMetadata.getImprisonmentConcept())) {
+              requiredObs = obs;
 
-          } else if (obs.getValueCoded().equals(hivMetadata.getImprisonmentConcept())) {
-            requiredObs = obs;
+            } else if (obs.getValueCoded().equals(hivMetadata.getTransGenderConcept())) {
+              requiredObs = obs;
+            }
+          }
+        }
+      } else if (patient.getGender().equals("F")) {
+        for (Obs obs : lasRequiredObsForFemaleSorted) {
+          if (lastObsForWomenKP != null
+              && obs.getObsDatetime().compareTo(lastObsForWomenKP.getObsDatetime()) >= 0) {
+            if (obs.getValueCoded().equals(hivMetadata.getDrugUseConcept())) {
+              requiredObs = obs;
 
-          } else if (obs.getValueCoded().equals(hivMetadata.getTransGenderConcept())) {
-            requiredObs = obs;
+            } else if (obs.getValueCoded().equals(hivMetadata.getSexWorkerConcept())) {
+              requiredObs = obs;
+
+            } else if (obs.getValueCoded().equals(hivMetadata.getImprisonmentConcept())) {
+              requiredObs = obs;
+
+            } else if (obs.getValueCoded().equals(hivMetadata.getTransGenderConcept())) {
+              requiredObs = obs;
+            }
           }
         }
       }

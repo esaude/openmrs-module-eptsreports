@@ -352,12 +352,11 @@ public class FaltososLevantamentoARVCohortQueries {
             + "        WHERE  pg.program_id = ${2} "
             + "               AND pg.location_id = :location "
             + "               AND ps.state = ${7} "
-            + "               AND ps.end_date IS NULL "
+            + "               AND ps.start_date <=:endDate "
             + "               AND p.voided = 0 "
             + "               AND pg.voided = 0 "
             + "               AND ps.voided = 0 "
-            + "        GROUP  BY p.patient_id "
-            + "        HAVING recent_date <= :endDate) transfered_out "
+            + "        GROUP  BY p.patient_id) transfered_out "
             + "GROUP  BY patient_id ";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
@@ -1124,7 +1123,6 @@ public class FaltososLevantamentoARVCohortQueries {
             + "   INNER JOIN patient_state ps ON pg.patient_program_id=ps.patient_program_id "
             + "   WHERE pg.voided=0 AND ps.voided=0 AND p.voided=0 "
             + "   AND pg.program_id=${2} AND ps.state IN (${10}, ${8})"
-            + " AND ps.end_date is null "
             + "   AND ps.start_date <= :endDate "
             + "AND location_id=:location "
             + "GROUP BY pg.patient_id";
