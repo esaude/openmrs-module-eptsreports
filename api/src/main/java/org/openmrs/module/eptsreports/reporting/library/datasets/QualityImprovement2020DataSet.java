@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.QualityImprovement2020CohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
@@ -18,6 +15,10 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class QualityImprovement2020DataSet extends BaseDataSet {
@@ -2044,105 +2045,105 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         "age=10-14");
 
     // Category 15 Denominator MDS
-    CohortIndicator MQ15DenMds =
+    CohortIndicator MQ15DEN13  =
         eptsGeneralIndicator.getIndicator(
-            "MQ15DenMds",
+            "MQ15NUM13",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ15DenMDS(),
                 "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ15DenMds.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MQ15DEN13.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ15DenMds",
+        "MQ15DEN13",
         "15.13 - % de pacientes elegíveis a MDS, que foram inscritos em MDS",
         EptsReportUtils.map(
-            MQ15DenMds,
+                MQ15DEN13,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ15NumMds13 =
+    CohortIndicator MQ15NUM13 =
         eptsGeneralIndicator.getIndicator(
-            "MQ15NumMds13",
+            " MQ15NUM13",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ15NumeratorMDS(),
                 "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ15NumMds13.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MQ15NUM13.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ15DenMds13",
+        "MQ15NUM13",
         "Numerator:  “# de pacientes elegíveis a MDS ",
         EptsReportUtils.map(
-            MQ15NumMds13,
+            MQ15NUM13,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ15DenMds14 =
+    CohortIndicator MQ15DEN14 =
         eptsGeneralIndicator.getIndicator(
-            "MQ15DenMds14",
+            "MQ15DEN14",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ15MdsDen14(),
                 "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ15DenMds14.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MQ15DEN14.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ15DenMds14",
+        "MQ15DEN14",
         "15.14 - % de inscritos em MDS que receberam CV acima de 1000 cópias  ",
         EptsReportUtils.map(
-            MQ15DenMds14,
+            MQ15DEN14,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ15NumMds14 =
+    CohortIndicator MQ15NUM14 =
         eptsGeneralIndicator.getIndicator(
-            "MQ15NumMds14",
+            " MQ15NUM14",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ15MdsNum14(),
                 "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ15NumMds14.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MQ15NUM14.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ15NumMds14",
+        " MQ15NUM14",
         "Numerator: # de pacientes inscritos em MDS para pacientes estáveis ",
         EptsReportUtils.map(
-            MQ15NumMds14,
+            MQ15NUM14,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ15DenMds15 =
+    CohortIndicator MQ15DEN15 =
         eptsGeneralIndicator.getIndicator(
-            "MQ15DenMds15",
+            "MQ15DEN15",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ15MdsDen15(),
                 "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ15DenMds15.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MQ15DEN15.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ15DenMds15",
+        "MQ15DEN15",
         "Numerator 15.15 : # de pacientes inscritos em MDS para pacientes estáveis - 21 meses",
         EptsReportUtils.map(
-            MQ15DenMds15,
+            MQ15DEN15,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
-    CohortIndicator MQ15NumMds15 =
+    CohortIndicator MQ15NUM15 =
         eptsGeneralIndicator.getIndicator(
-            "MQ15NumMds15",
+            "MQ15NUM15",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ15MdsNum15(),
                 "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    MQ15NumMds15.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    MQ15NUM15.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
     dataSetDefinition.addColumn(
-        "MQ15NumMds15",
+        "MQ15NUM15",
         "Numerator: # de pacientes inscritos em MDS para pacientes estáveis ",
         EptsReportUtils.map(
-            MQ15NumMds15,
+            MQ15NUM15,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
         "");
 
