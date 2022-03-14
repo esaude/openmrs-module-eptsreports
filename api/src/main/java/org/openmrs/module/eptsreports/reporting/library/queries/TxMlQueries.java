@@ -1,8 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
+import org.apache.commons.text.StringSubstitutor;
+
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.text.StringSubstitutor;
 
 public class TxMlQueries {
 
@@ -965,7 +966,9 @@ public class TxMlQueries {
     map.put("program", program);
     map.put("stateOfProgram", stateOfProgram);
     String query =
-        " select p.patient_id, Max(ps.start_date) "
+        "select patient_id "
+            + "from ("
+            + " select p.patient_id, Max(ps.start_date) "
             + " from patient p "
             + " inner join patient_program pg on p.patient_id=pg.patient_id "
             + " inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
@@ -976,7 +979,8 @@ public class TxMlQueries {
             + " and ps.state =${stateOfProgram} "
             + " and ps.start_date<=:onOrBefore "
             + " and pg.location_id=:location "
-            + " group by p.patient_id  ";
+            + " group by p.patient_id  "
+            + "       ) last_state";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     return stringSubstitutor.replace(query);
   }
