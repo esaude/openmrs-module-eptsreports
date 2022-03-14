@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.generic;
 
+import java.util.*;
 import org.openmrs.*;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -13,8 +14,6 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.ListMap;
 import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 @Component
 public class KeyPopulationCalculation extends AbstractPatientCalculation {

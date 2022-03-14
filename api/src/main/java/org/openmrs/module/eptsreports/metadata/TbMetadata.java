@@ -583,4 +583,35 @@ public class TbMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.treatmentFollowUpTPTConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 165307</b>
+   *
+   * <p><b>Name:</b> DT-3HP
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDT3HPConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.DT3HPConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165308</b>
+   *
+   * <p><b>Name:</b> ESTADO DA PROFLAXIA
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDataEstadoDaProfilaxiaConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dataEstadoDaProfilaxiaConceptUuid");
+    return getConcept(uuid);
+  }
 }

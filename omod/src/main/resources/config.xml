@@ -3232,6 +3232,22 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.DT3HPConceptUuid</property>
+		<defaultValue>3d126efc-631b-436f-9e4b-db728071c8d0</defaultValue>
+		<description>
+			UUID FOR DT-3HP
+		</description>
+	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.dataEstadoDaProfilaxiaConceptUuid</property>
+		<defaultValue>b6c4d473-2af5-4c4d-a9bb-ad3779fa5579</defaultValue>
+		<description>
+			UUID FOR PROFLAXIS STATUS Concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
