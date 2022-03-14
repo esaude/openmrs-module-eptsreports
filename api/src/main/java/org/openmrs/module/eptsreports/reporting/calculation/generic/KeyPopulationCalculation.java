@@ -339,7 +339,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
             && (menObs.getValueCoded().equals(hivMetadata.getHomosexualConcept())
                 || menObs.getValueCoded().equals(hivMetadata.getDrugUseConcept())
                 || menObs.getValueCoded().equals(hivMetadata.getImprisonmentConcept())
-                || menObs.getValueCoded().equals(hivMetadata.getTransGenderConcept()))) {
+                || menObs.getValueCoded().equals(hivMetadata.getTransGenderConcept())
+                || menObs.getValueCoded().equals(hivMetadata.getOtherOrNonCodedConcept()))) {
           keyPopForMen.add(menObs);
         }
       }
@@ -349,7 +350,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
             && (femaleObs.getValueCoded().equals(hivMetadata.getSexWorkerConcept())
                 || femaleObs.getValueCoded().equals(hivMetadata.getDrugUseConcept())
                 || femaleObs.getValueCoded().equals(hivMetadata.getImprisonmentConcept())
-                || femaleObs.getValueCoded().equals(hivMetadata.getTransGenderConcept()))) {
+                || femaleObs.getValueCoded().equals(hivMetadata.getTransGenderConcept())
+                || femaleObs.getValueCoded().equals(hivMetadata.getOtherOrNonCodedConcept()))) {
           keyPopForWomen.add(femaleObs);
         }
       }
@@ -384,6 +386,9 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
 
             } else if (obs.getValueCoded().equals(hivMetadata.getTransGenderConcept())) {
               requiredObs = obs;
+              
+            } else if (obs.getValueCoded().equals(hivMetadata.getOtherOrNonCodedConcept())) {
+              requiredObs = obs;
             }
           }
         }
@@ -401,6 +406,9 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
               requiredObs = obs;
 
             } else if (obs.getValueCoded().equals(hivMetadata.getTransGenderConcept())) {
+              requiredObs = obs;
+              
+            } else if (obs.getValueCoded().equals(hivMetadata.getOtherOrNonCodedConcept())) {
               requiredObs = obs;
             }
           }

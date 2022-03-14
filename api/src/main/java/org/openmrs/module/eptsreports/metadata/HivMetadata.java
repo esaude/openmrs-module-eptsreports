@@ -4740,4 +4740,17 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.prepTargetGroupUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id =5622 </b>
+   *
+   * <p><b>Name:</b>OTHER NON-CODED
+   *
+   * @return {@link Concept}
+   */
+  public Concept getOtherOrNonCodedConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.otherOrNonCodedUuid");
+    return getConcept(uuid);
+  }
 }
