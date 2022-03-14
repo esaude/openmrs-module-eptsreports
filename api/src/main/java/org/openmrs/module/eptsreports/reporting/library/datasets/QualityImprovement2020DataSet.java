@@ -2047,7 +2047,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
     // Category 15 Denominator MDS
     CohortIndicator MQ15DEN13  =
         eptsGeneralIndicator.getIndicator(
-            "MQ15NUM13",
+            "MQ15DEN13",
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQ15DenMDS(),
                 "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
