@@ -10,7 +10,6 @@ import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSet
 import org.openmrs.module.eptsreports.reporting.library.datasets.MISAUResumoMensalPrepDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.SismaCodeDatasetDefinition;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -68,9 +67,9 @@ public class SetupMISAUResumoMensalPrepReport extends EptsDataExportManager {
         Mapped.mapStraightThrough(misauResumoMensalPrepDataset.constructResumoMensalPrepDataset()));
 
     // add a base cohort here to help in calculations running
-    rd.setBaseCohortDefinition(
-        EptsReportUtils.map(
-            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
+    //    rd.setBaseCohortDefinition(
+    //        EptsReportUtils.map(
+    //            genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
 
     return rd;
   }

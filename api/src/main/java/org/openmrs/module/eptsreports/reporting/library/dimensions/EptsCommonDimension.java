@@ -798,6 +798,7 @@ public class EptsCommonDimension {
     dim.setName("Target Group Dimension");
 
     dim.addParameter(new Parameter("onOrBefore", "orOrBefore", Date.class));
+    dim.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     dim.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition adolescentsAndYouthTargetGroupCohort =

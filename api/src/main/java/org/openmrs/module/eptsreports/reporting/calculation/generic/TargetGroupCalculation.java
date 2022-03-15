@@ -116,13 +116,14 @@ public class TargetGroupCalculation extends AbstractPatientCalculation {
 
     Location location = (Location) context.getFromCache("location");
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+    Date onOrAfter = (Date) context.getFromCache("onOrAfter");
 
     CalculationResultMap personAttribute = getPersonAttribute(cohort, context);
 
     CalculationResultMap getPrepInicial = getPrepInicial(cohort, context, location, onOrBefore);
 
     CalculationResultMap getPrepSeguimento =
-        getPrepSeguimento(cohort, context, location, onOrBefore);
+        getPrepSeguimento(cohort, context, location, onOrAfter, onOrBefore);
 
     TargetGroup type = (TargetGroup) parameterValues.get(TIPO);
 
@@ -231,6 +232,7 @@ public class TargetGroupCalculation extends AbstractPatientCalculation {
       Collection<Integer> cohort,
       PatientCalculationContext context,
       Location location,
+      Date startDate,
       Date endDate) {
     EPTSCalculationService eptsCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);

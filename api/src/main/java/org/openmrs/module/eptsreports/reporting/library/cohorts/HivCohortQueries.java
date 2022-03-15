@@ -730,6 +730,7 @@ public class HivCohortQueries {
     cd.setCalculation(Context.getRegisteredComponents(TargetGroupCalculation.class).get(0));
     cd.setName("Adolescents and Youth at Risk Target Group");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+//    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addCalculationParameter(TIPO, ADOLESCENT_AND_YOUTH);
     return cd;
@@ -740,6 +741,7 @@ public class HivCohortQueries {
     cd.setCalculation(Context.getRegisteredComponents(TargetGroupCalculation.class).get(0));
     cd.setName("Pregnant Woman at Risk");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addCalculationParameter(TIPO, PREGNANT);
     return cd;
@@ -750,6 +752,7 @@ public class HivCohortQueries {
     cd.setCalculation(Context.getRegisteredComponents(TargetGroupCalculation.class).get(0));
     cd.setName("Breastfeeding woman at Risk Target Group");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addCalculationParameter(TIPO, BREASTFEEDING);
     return cd;
@@ -765,11 +768,13 @@ public class HivCohortQueries {
     CompositionCohortDefinition comp = new CompositionCohortDefinition();
     comp.setName("Only Pregnant Woman at Risk Target Group");
     comp.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    comp.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     comp.addParameter(new Parameter("location", "location", Location.class));
     comp.addSearch(
         "pregnant",
         EptsReportUtils.map(
-            getPregnantWomanTargetGroupCohort(), "onOrBefore=${onOrBefore},location=${location}"));
+            getPregnantWomanTargetGroupCohort(),
+            "onOrBefore=${onOrBefore},onOrAfter=${onOrAfter},location=${location}"));
     comp.addSearch("F", EptsReportUtils.map(genderCohortQueries.femaleCohort(), ""));
     comp.setCompositionString("pregnant AND F");
     return comp;
@@ -785,11 +790,13 @@ public class HivCohortQueries {
     CompositionCohortDefinition comp = new CompositionCohortDefinition();
     comp.setName("Only Breastfeeding Woman at Risk Target Group");
     comp.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    comp.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     comp.addParameter(new Parameter("location", "location", Location.class));
     comp.addSearch(
         "breastfeeding",
         EptsReportUtils.map(
-            getBreastfeedingTargetGroupCohort(), "onOrBefore=${onOrBefore},location=${location}"));
+            getBreastfeedingTargetGroupCohort(),
+            "onOrBefore=${onOrBefore},onOrAfter=${onOrAfter},location=${location}"));
     comp.addSearch("F", EptsReportUtils.map(genderCohortQueries.femaleCohort(), ""));
     comp.setCompositionString("breastfeeding AND F");
     return comp;
@@ -800,6 +807,7 @@ public class HivCohortQueries {
     cd.setCalculation(Context.getRegisteredComponents(TargetGroupCalculation.class).get(0));
     cd.setName("Military Target Group");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addCalculationParameter(TIPO, MILITARY);
     return cd;
@@ -810,6 +818,7 @@ public class HivCohortQueries {
     cd.setCalculation(Context.getRegisteredComponents(TargetGroupCalculation.class).get(0));
     cd.setName("Miner Target Group");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addCalculationParameter(TIPO, MINER);
     return cd;
@@ -820,6 +829,7 @@ public class HivCohortQueries {
     cd.setCalculation(Context.getRegisteredComponents(TargetGroupCalculation.class).get(0));
     cd.setName("Long Course Truck Driver Target Group");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addCalculationParameter(TIPO, TRUCK_DRIVER);
     return cd;
@@ -830,6 +840,7 @@ public class HivCohortQueries {
     cd.setCalculation(Context.getRegisteredComponents(TargetGroupCalculation.class).get(0));
     cd.setName("Serodiscordant Couples Target Group");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addCalculationParameter(TIPO, SERODISCORDANT);
     return cd;
