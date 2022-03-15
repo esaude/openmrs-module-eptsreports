@@ -638,7 +638,7 @@ public class TXTBCohortQueries {
         "started-art-before-startDate-including-transferred-in",
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtBeforeDate(true),
-            "onOrBefore=${startDate-1d},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.setCompositionString(
         "started-art-on-period-including-transferred-in OR started-art-before-startDate-including-transferred-in");
@@ -800,9 +800,14 @@ public class TXTBCohortQueries {
         EptsReportUtils.map(
             getMarkedAsTratamentoTBInicio(),
             "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
+    cd.addSearch(
+        "in-tb-program",
+        EptsReportUtils.map(
+            getInTBProgram(),
+            "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
 
     cd.setCompositionString(
-        "A NOT (started-tb-treatment-previous-period OR pulmonary-tb-date OR marked-as-tratamento-tb-inicio)");
+        "A AND NOT(started-tb-treatment-previous-period OR pulmonary-tb-date OR marked-as-tratamento-tb-inicio OR in-tb-program)");
     addGeneralParameters(cd);
     return cd;
   }
@@ -1127,7 +1132,7 @@ public class TXTBCohortQueries {
         "started-before-start-reporting-period",
         EptsReportUtils.map(
             genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${startDate-1d},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("NUM AND started-before-start-reporting-period");
     addGeneralParameters(cd);
     return cd;
