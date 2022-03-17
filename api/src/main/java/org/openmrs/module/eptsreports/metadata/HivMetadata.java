@@ -4753,4 +4753,52 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.otherOrNonCodedUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 165174</b>
+   *
+   * <p><b>Name:</b> LAST RECORD OF DISPENSING MODE
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getLastRecordOfDispensingModeConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lastRecordOfDispensingModeConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165177</b>
+   *
+   * <p><b>Name:</b> LAST RECORD OF FARMAC
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getLastRecordOfFarmacConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.lastRecordOfFarmacConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165179</b>
+   *
+   * <p><b>Name:</b> DISPENSA COMUNITÁRIA VIA APE
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDispensaComunitariaViaApeConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dispensaComunitariaViaApeConceptUuid");
+    return getConcept(uuid);
+  }
 }
