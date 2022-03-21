@@ -1,9 +1,12 @@
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
+import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsQuarterlyCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
@@ -13,6 +16,7 @@ import org.openmrs.module.reporting.cohort.definition.service.CohortDefinitionSe
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
+import org.openmrs.module.reportingcompatibility.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Handler(supports = EptsQuarterlyCohortDefinition.class)
@@ -38,8 +42,11 @@ public class EptsQuarterlyCohortDefinitionEvaluator implements CohortDefinitionE
     EptsQuarterlyCohortDefinition.Month month = cd.getMonth();
     Map<String, Date> range = getRange(year, quarter, month);
     context.getParameterValues().putAll(range);
-    context.setBaseCohort(evaluateBaseCohort(context));
+    context.setBaseCohort(context.getBaseCohort());
     Cohort c = cohortDefinitionService.evaluate(cd.getCohortDefinition(), context);
+    if (c == null) {
+      c = getAllPatientsCohort();
+    }
     ret.getMemberIds().addAll(c.getMemberIds());
     return ret;
   }
@@ -76,5 +83,16 @@ public class EptsQuarterlyCohortDefinitionEvaluator implements CohortDefinitionE
     periodDates.put("endDate", end);
     periodDates.put("onOrBefore", end);
     return periodDates;
+  }
+
+  private Cohort getAllPatientsCohort() {
+    ReportService reportService = Context.getService(ReportService.class);
+    Set<Integer> ids = new HashSet<Integer>();
+    for (Integer values : reportService.getAllPatients().getMemberIds()) {
+      if (values != null) {
+        ids.add(values);
+      }
+    }
+    return new Cohort("All patients", "All Patients returned from the DB", ids);
   }
 }

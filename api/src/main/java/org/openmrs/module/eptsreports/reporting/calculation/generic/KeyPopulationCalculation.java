@@ -385,7 +385,7 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
 
             } else if (obs.getValueCoded().equals(hivMetadata.getTransGenderConcept())) {
               requiredObs = obs;
-              
+
             } else if (obs.getValueCoded().equals(hivMetadata.getOtherOrNonCodedConcept())) {
               requiredObs = obs;
             }
@@ -406,7 +406,7 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
 
             } else if (obs.getValueCoded().equals(hivMetadata.getTransGenderConcept())) {
               requiredObs = obs;
-              
+
             } else if (obs.getValueCoded().equals(hivMetadata.getOtherOrNonCodedConcept())) {
               requiredObs = obs;
             }

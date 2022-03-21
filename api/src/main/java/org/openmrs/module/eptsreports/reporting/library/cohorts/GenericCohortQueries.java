@@ -38,6 +38,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.ArtDateMinus
 import org.openmrs.module.eptsreports.reporting.calculation.generic.NewlyOrPreviouslyEnrolledOnARTCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculationMOH;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateForTxTbCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
@@ -470,6 +471,17 @@ public class GenericCohortQueries {
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(StartedArtBeforeDateCalculation.class).get(0));
     cd.setName("Art start date");
+    cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
+    return cd;
+  }
+
+  public CohortDefinition getStartedArtBeforeDateTxTb(boolean considerTransferredIn) {
+    CalculationCohortDefinition cd =
+        new CalculationCohortDefinition(
+            Context.getRegisteredComponents(StartedArtBeforeDateForTxTbCalculation.class).get(0));
+    cd.setName("Art start date TX TB");
     cd.addCalculationParameter("considerTransferredIn", considerTransferredIn);
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));

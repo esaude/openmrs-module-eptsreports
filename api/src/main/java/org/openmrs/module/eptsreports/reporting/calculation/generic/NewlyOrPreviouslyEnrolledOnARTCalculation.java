@@ -141,8 +141,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             hivMetadata.getMasterCardEncounterType(),
             cohort,
             location,
-            Arrays.asList(
-                tbMetadata.getIsoniazidConcept()),
+            Arrays.asList(tbMetadata.getIsoniazidConcept()),
             TimeQualifier.ANY,
             startDate,
             endDate,
@@ -362,7 +361,7 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
             endDate,
             EPTSMetadataDatetimeQualifier.ENCOUNTER_DATETIME,
             context);
-      CalculationResultMap anyEstadoProfilaxiaDateMap =
+    CalculationResultMap anyEstadoProfilaxiaDateMap =
         ePTSCalculationService.getObs(
             tbMetadata.getDataEstadoDaProfilaxiaConcept(),
             hivMetadata.getAdultoSeguimentoEncounterType(),
@@ -393,7 +392,8 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
         List<Obs> anyINHDateObsList2 = getObsListFromResultMap(anyINHDateMap2, patientId);
         List<Obs> anyIsoniazida = getObsListFromResultMap(anyIsoniazidaPiridoxina, patientId);
         List<Obs> anyIsoniazida2 = getObsListFromResultMap(anyIsoniazidaPiridoxina2, patientId);
-        List<Obs> anyEstadoProfilaxiaObsList = getObsListFromResultMap(anyEstadoProfilaxiaDateMap, patientId);
+        List<Obs> anyEstadoProfilaxiaObsList =
+            getObsListFromResultMap(anyEstadoProfilaxiaDateMap, patientId);
         List<Obs> in3HPor3HPPiridoxina =
             getObsListFromResultMap(in3HPor3HPPiridoxinaMap, patientId);
         List<Obs> notInINHDateObs = getObsListFromResultMap(notInINHDateMap, patientId);
@@ -451,13 +451,13 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
         if (anyINHDateObsList2 != null
             && !anyINHDateObsList2.isEmpty()
             && anyINHDateObsList2.size() > 0) {
-            anyINHDateObs2 = anyINHDateObsList2.get(0);
+          anyINHDateObs2 = anyINHDateObsList2.get(0);
         }
         Obs anyEstadoProfilaxiaObs = null;
         if (anyEstadoProfilaxiaObsList != null
             && !anyEstadoProfilaxiaObsList.isEmpty()
             && anyEstadoProfilaxiaObsList.size() > 0) {
-            anyEstadoProfilaxiaObs = anyEstadoProfilaxiaObsList.get(0);
+          anyEstadoProfilaxiaObs = anyEstadoProfilaxiaObsList.get(0);
         }
 
         DateTime artStartDateTime = new DateTime(artStartDate.getTime());
@@ -528,16 +528,14 @@ public class NewlyOrPreviouslyEnrolledOnARTCalculation extends AbstractPatientCa
         if (anyINHDateObs != null
             && anyINHDateObs.getValueDatetime() != null
             && anyINHDateObs.getValueDatetime().compareTo(DateUtils.addMonths(startDate, -6)) <= 0
-            && anyINHDateObs.getValueDatetime().compareTo(DateUtils.addMonths(endDate, -6))
-                <= 0) {
+            && anyINHDateObs.getValueDatetime().compareTo(DateUtils.addMonths(endDate, -6)) <= 0) {
           map.put(patientId, new BooleanResult(true, this));
         }
 
         if (anyINHDateObs2 != null
             && anyINHDateObs2.getValueDatetime() != null
             && anyINHDateObs2.getValueDatetime().compareTo(DateUtils.addMonths(startDate, -6)) <= 0
-            && anyINHDateObs2.getValueDatetime().compareTo(DateUtils.addMonths(endDate, -6))
-                <= 0) {
+            && anyINHDateObs2.getValueDatetime().compareTo(DateUtils.addMonths(endDate, -6)) <= 0) {
           map.put(patientId, new BooleanResult(true, this));
         }
 

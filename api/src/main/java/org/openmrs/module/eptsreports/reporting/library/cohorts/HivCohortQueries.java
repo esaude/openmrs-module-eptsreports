@@ -730,7 +730,7 @@ public class HivCohortQueries {
     cd.setCalculation(Context.getRegisteredComponents(TargetGroupCalculation.class).get(0));
     cd.setName("Adolescents and Youth at Risk Target Group");
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-//    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    //    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.addCalculationParameter(TIPO, ADOLESCENT_AND_YOUTH);
     return cd;

@@ -817,6 +817,7 @@ public class CommonQueries {
     valuesMap.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
     valuesMap.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
     valuesMap.put("1065", hivMetadata.getYesConcept().getConceptId());
+    valuesMap.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
 
     String sql =
         "SELECT art.patient_id AS patient_id, MIN(art.first_pickup) AS first_pickup FROM("
@@ -872,6 +873,23 @@ public class CommonQueries {
             + "                           AND ob.voided = 0  "
             + "                           AND ob.concept_id = ${1190}  "
             + "                           AND ob.obs_datetime <= '"
+            + endDate
+            + "'"
+            + "                           AND ob.location_id =  "
+            + location
+            + "                       GROUP  BY p.patient_id  "
+            + " UNION "
+            + " SELECT p.patient_id, MIN(ob.value_datetime) first_pickup  "
+            + "                                 FROM patient p  "
+            + "                           INNER JOIN encounter e "
+            + "                               ON p.patient_id= e.patient_id "
+            + "                           INNER JOIN obs ob  "
+            + "                               ON e.encounter_id = ob.encounter_id  "
+            + "                       WHERE  p.voided = 0  "
+            + "                           AND ob.voided = 0  "
+            + "                           AND e.encounter_type = ${53}  "
+            + "                           AND ob.concept_id = ${1190}  "
+            + "                           AND ob.value_datetime <= '"
             + endDate
             + "'"
             + "                           AND ob.location_id =  "
