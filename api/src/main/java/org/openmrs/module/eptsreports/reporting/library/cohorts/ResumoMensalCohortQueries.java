@@ -14,14 +14,6 @@
 
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import static org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries.*;
-import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.Location;
@@ -34,20 +26,22 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferre
 import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.evaluator.ResumoMensalTransferredOutCohortDefinitionEvaluator;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
-import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.DateObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.EncounterWithCodedObsCohortDefinition;
-import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries.*;
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 @Component
 public class ResumoMensalCohortQueries {

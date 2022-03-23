@@ -1,17 +1,19 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Date;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.data.converter.*;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.DQACargaViralCohortQueries;
-import org.openmrs.module.reporting.data.person.definition.*;
+import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
 
 @Component
 public class DQACargaViralDataset extends BaseDataSet {
@@ -60,8 +62,8 @@ public class DQACargaViralDataset extends BaseDataSet {
     pdd.addColumn(
         "inicio_tarv",
         dQACargaViralCohortQueries.getArtStartDate(),
-        "onOrBefore=${endDate},location=${location}",
-        new CalculationResultConverter());
+        "startDate=${startDate},endDate=${endDate},location=${location}",
+        new ForwardSlashDateConverter());
 
     /**
      * 5 - Data de Consulta onde Notificou o Resultado de CV dentro do Período de Revisão - Sheet 1:
@@ -76,14 +78,14 @@ public class DQACargaViralDataset extends BaseDataSet {
     /** 6 - Resultado da Carga Viral (Resultado Quantitativo) - Sheet 1: Column G */
     pdd.addColumn(
         "resultado_cv_quantitativo",
-        dQACargaViralCohortQueries.getViralLoadResults(true),
+        dQACargaViralCohortQueries.getViralLoadQuantitativeResults(),
         "startDate=${startDate},endDate=${endDate},location=${location}",
         new NotApplicableIfNullConverter());
 
     /** Resultado da Carga Viral (Resultado Qualitativo) - Sheet 1: Column H */
     pdd.addColumn(
         "resultado_cv_qualitativo",
-        dQACargaViralCohortQueries.getViralLoadResults(false),
+        dQACargaViralCohortQueries.getViralLoadQualitativeResults(),
         "startDate=${startDate},endDate=${endDate},location=${location}",
         new NotApplicableIfNullConverter());
 

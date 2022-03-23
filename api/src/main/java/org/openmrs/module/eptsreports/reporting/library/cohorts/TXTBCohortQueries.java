@@ -624,6 +624,7 @@ public class TXTBCohortQueries {
    * @return {@link CohortDefinition}
    */
   public CohortDefinition artList() {
+
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
 
     cd.addSearch(

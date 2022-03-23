@@ -1,13 +1,14 @@
 package org.openmrs.module.eptsreports.reporting.data.converter;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.calculation.result.CalculationResult;
 import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.reporting.data.converter.DataConverter;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class CalculationResultConverter implements DataConverter {
 
