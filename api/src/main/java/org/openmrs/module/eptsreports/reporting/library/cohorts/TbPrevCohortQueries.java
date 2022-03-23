@@ -108,7 +108,7 @@ public class TbPrevCohortQueries {
             + "    WHERE e.voided = 0 "
             + "      AND o.voided = 0 "
             + "      AND e.encounter_type = ${53} "
-            + "      AND o.concept_id = ${23985} "
+            + "      AND (o.concept_id = ${23985} AND o.value_coded IS NOT NULL) "
             + "      AND e.encounter_datetime = data_inicio.encounter "
             + ")";
 
@@ -136,10 +136,35 @@ public class TbPrevCohortQueries {
             getPatientsThatStartedProfilaxiaIsoniazidaOnPeriod(),
             "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
     definition.addSearch(
+        "last-profilaxia-tpt-inh",
+        EptsReportUtils.map(
+            getPatientsWhoHaveLastProfilaxiaTPTWithINH(),
+            "startDate=${onOrAfter-6m},endDate=${onOrBefore},location=${location}"));
+    definition.addSearch(
         "initiated-profilaxia",
         EptsReportUtils.map(
             getPatientsThatInitiatedProfilaxia(),
             "onOrAfter=${onOrAfter-6m},onOrBefore=${onOrBefore-6m},location=${location}"));
+    definition.addSearch(
+        "profilaxia-tpt-inh-marked-inicio",
+        EptsReportUtils.map(
+            getPatientsWhoHaveProfilaxiaTPTWithINHAndAreMarkedAsInicio(),
+            "startDate=${onOrAfter-6m},endDate=${onOrBefore},location=${location}"));
+    definition.addSearch(
+        "profilaxia-tpt-3hp-inicio-ficha-resumo",
+        EptsReportUtils.map(
+            getPatientsWhoHaveProfilaxiaTPTWith3HPAndDataInicioOnFichaResumo(),
+            "startDate=${onOrAfter-6m},endDate=${onOrBefore},location=${location}"));
+    definition.addSearch(
+        "profilaxia-tpt-3hp-marked-inicio",
+        EptsReportUtils.map(
+            getPatientsWhoHaveProfilaxiaTPTWith3HPAndAreMarkedAsInicio(),
+            "startDate=${onOrAfter-6m},endDate=${onOrBefore},location=${location}"));
+    definition.addSearch(
+        "outras-prescricoes-with-dt-3hp-on-ficha-clinica",
+        EptsReportUtils.map(
+            getPatientsWhoHaveOutrasPrescricoesWithDT3HPOnFichaClinica(),
+            "startDate=${onOrAfter-6m},endDate=${onOrBefore},location=${location}"));
     definition.addSearch(
         "transferred-out",
         EptsReportUtils.map(
@@ -179,7 +204,10 @@ public class TbPrevCohortQueries {
 
     definition.setCompositionString(
         "started-by-end-previous-reporting-period AND completed-isoniazid  AND  "
-            + "((started-isoniazid OR initiated-profilaxia OR regime-tpt-isoniazid OR regime-tpt-INH)"
+            + "((started-isoniazid OR last-profilaxia-tpt-inh OR initiated-profilaxia "
+            + " OR profilaxia-tpt-inh-marked-inicio OR profilaxia-tpt-3hp-inicio-ficha-resumo "
+            + " OR profilaxia-tpt-3hp-marked-inicio OR outras-prescricoes-with-dt-3hp-on-ficha-clinica "
+            + " OR regime-tpt-isoniazid OR regime-tpt-INH) "
             + " OR (outras-prescricoes-3hp OR regime-tpt-3hp OR regime-tpt-3hpOrPiridoxina) "
             + " ) ");
 
