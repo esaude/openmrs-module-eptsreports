@@ -7488,7 +7488,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition Mq15A = intensiveMonitoringCohortQueries.getMI15A();
     CohortDefinition Mq15B1 = intensiveMonitoringCohortQueries.getMI15B1();
-    CohortDefinition Mq15B2 = intensiveMonitoringCohortQueries.getMI15B2(24);
+    // CohortDefinition Mq15B2 = intensiveMonitoringCohortQueries.getMI15B2(24);
     CohortDefinition E1 = intensiveMonitoringCohortQueries.getMI15E(30, 1);
     CohortDefinition E2 = intensiveMonitoringCohortQueries.getMI15E(60, 31);
     CohortDefinition E3 = intensiveMonitoringCohortQueries.getMI15E(90, 61);
@@ -7508,10 +7508,10 @@ public class QualityImprovement2020CohortQueries {
         "B1",
         EptsReportUtils.map(
             Mq15B1, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
-    cd.addSearch(
-        "B2",
-        EptsReportUtils.map(
-            Mq15B2, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+    /*  cd.addSearch(
+    "B2",
+    EptsReportUtils.map(
+        Mq15B2, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));*/
 
     cd.addSearch(
         "E1",
@@ -7524,7 +7524,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "E3",
         EptsReportUtils.map(
-            E2, "startDate=${startDate},endDate={revisionEndDate},location=${location}"));
+            E3, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "C",
