@@ -13,10 +13,7 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.ResumoMensalCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.DQACargaViralCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.*;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -26,37 +23,34 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Component
 public class DQASESPDataset extends BaseDataSet {
 
   private EptsCommonDimension eptsCommonDimension;
   private EptsGeneralIndicator eptsGeneralIndicator;
   private AgeDimensionCohortInterface ageDimensionCohortInterface;
-  private ResumoMensalCohortQueries resumoMensalCohortQueries;
-  private TxCurrCohortQueries txCurrCohortQueries;
+  private final DQACargaViralCohortQueries dQACargaViralCohortQueries;
 
   @Autowired
   public DQASESPDataset(
       EptsCommonDimension eptsCommonDimension,
       EptsGeneralIndicator eptsGeneralIndicator,
-      ResumoMensalCohortQueries resumoMensalCohortQueries,
-      TxCurrCohortQueries txCurrCohortQueries,
       @Qualifier("commonAgeDimensionCohort")
-          AgeDimensionCohortInterface ageDimensionCohortInterface) {
+          AgeDimensionCohortInterface ageDimensionCohortInterface,
+      DQACargaViralCohortQueries dQACargaViralCohortQueries) {
     this.eptsCommonDimension = eptsCommonDimension;
     this.ageDimensionCohortInterface = ageDimensionCohortInterface;
-    this.resumoMensalCohortQueries = resumoMensalCohortQueries;
-    this.txCurrCohortQueries = txCurrCohortQueries;
     this.eptsGeneralIndicator = eptsGeneralIndicator;
+    this.dQACargaViralCohortQueries = dQACargaViralCohortQueries;
   }
 
-  public DataSetDefinition constructDQASESPDataset(boolean currentSpec) {
+  public DataSetDefinition constructDQASESPDataset() {
 
     CohortIndicatorDataSetDefinition dsd = new CohortIndicatorDataSetDefinition();
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
-    String mappingM1 = "startDate=${startDate},endDate=${startDate+1m-1d},location=${location}";
-    String mappingM2 = "startDate=${startDate+1m},endDate=${startDate+2m-1d},location=${location}";
-    String mappingM3 = "startDate=${startDate+2m},endDate=${endDate},location=${location}";
 
     dsd.addDimension("gender", EptsReportUtils.map(eptsCommonDimension.gender(), ""));
     dsd.addDimension(
@@ -74,7 +68,8 @@ public class DQASESPDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Número de Activos em TARV no fim do período de revisão (SESP - SISMA)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
+                    dQACargaViralCohortQueries.getBaseCohortSesp(
+                        DQACargaViralCohortQueries.SespCompositionString.SISMA),
                     mappings)),
             mappings),
         getDisaggregations());
@@ -87,9 +82,9 @@ public class DQASESPDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Número de Activos em TARV no fim do período de revisão (SESP - DATIM)",
                 EptsReportUtils.map(
-                    txCurrCohortQueries.getTxCurrCompositionCohort(
-                        "compositionCohort", currentSpec),
-                    "onOrBefore=${endDate},location=${location}")),
+                    dQACargaViralCohortQueries.getBaseCohortSesp(
+                        DQACargaViralCohortQueries.SespCompositionString.ARTDATIM),
+                    mappings)),
             mappings),
         getDisaggregations());
 
@@ -101,9 +96,9 @@ public class DQASESPDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Número de Novos Inícios em TARV durante o período de revisão (M3)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(),
-                    mappingM3)),
+                    dQACargaViralCohortQueries.getBaseCohortSesp(
+                        DQACargaViralCohortQueries.SespCompositionString.B1M3),
+                    mappings)),
             mappings),
         getDisaggregations());
 
@@ -115,9 +110,9 @@ public class DQASESPDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Número de Novos Inícios em TARV durante o período de revisão (M2)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(),
-                    mappingM2)),
+                    dQACargaViralCohortQueries.getBaseCohortSesp(
+                        DQACargaViralCohortQueries.SespCompositionString.B1M2),
+                    mappings)),
             mappings),
         getDisaggregations());
 
@@ -129,9 +124,9 @@ public class DQASESPDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Número de Novos Inícios em TARV durante o período de revisão (M1)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(),
-                    mappingM1)),
+                    dQACargaViralCohortQueries.getBaseCohortSesp(
+                        DQACargaViralCohortQueries.SespCompositionString.B1M1),
+                    mappings)),
             mappings),
         getDisaggregations());
 
@@ -143,37 +138,37 @@ public class DQASESPDataset extends BaseDataSet {
             eptsGeneralIndicator.getIndicator(
                 "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral (CV) durante o mês (Notificação anual!) (M3)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults(),
-                    mappingM3)),
+                    dQACargaViralCohortQueries.getBaseCohortSesp(
+                        DQACargaViralCohortQueries.SespCompositionString.E2M3),
+                    mappings)),
             mappings),
         disagForCargaViralM3());
 
     addRow(
         dsd,
         "ART-E2-M2",
-        "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral (CV) durante o mês (Notificação anual!) (M2)",
+        "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral(CV) durante o mês (Notificação anual!) (M2)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral (CV) durante o mês (Notificação anual!) (M2)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults(),
-                    mappingM2)),
+                    dQACargaViralCohortQueries.getBaseCohortSesp(
+                        DQACargaViralCohortQueries.SespCompositionString.E2M2),
+                    mappings)),
             mappings),
         disagForCargaViralM2());
 
     addRow(
         dsd,
         "ART-E2-M1",
-        "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral (CV) durante o mês (Notificação anual!) (M1)",
+        "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral(CV) durante o mês (Notificação anual!) (M1)",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
                 "Dos activos em TARV no fim do mês, subgrupo que recebeu um resultado de Carga Viral (CV) durante o mês (Notificação anual!) (M1)",
                 EptsReportUtils.map(
-                    resumoMensalCohortQueries
-                        .getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults(),
-                    mappingM1)),
+                    dQACargaViralCohortQueries.getBaseCohortSesp(
+                        DQACargaViralCohortQueries.SespCompositionString.E2M1),
+                    mappings)),
             mappings),
         disagForCargaViralM1());
 

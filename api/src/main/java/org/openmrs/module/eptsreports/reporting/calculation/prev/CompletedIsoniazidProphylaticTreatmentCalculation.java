@@ -11,15 +11,10 @@
  */
 package org.openmrs.module.eptsreports.reporting.calculation.prev;
 
-import java.util.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.joda.time.Days;
 import org.joda.time.Interval;
 import org.openmrs.*;
-import org.openmrs.Concept;
-import org.openmrs.EncounterType;
-import org.openmrs.Location;
-import org.openmrs.Obs;
 import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
@@ -33,6 +28,8 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
 
 /** Patients that completed isoniazid prophylactic treatment */
 @Component

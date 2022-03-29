@@ -23,15 +23,21 @@ public class DQACargaViralCohortQueries {
   private HivMetadata hivMetadata;
   private ResumoMensalCohortQueries resumoMensalCohortQueries;
   private final CommonQueries commonQueries;
+  private final TxCurrCohortQueries txCurrCohortQueries;
+  private final GenericCohortQueries genericCohortQueries;
 
   @Autowired
   public DQACargaViralCohortQueries(
       ResumoMensalCohortQueries resumoMensalCohortQueries,
       HivMetadata hivMetadata,
-      CommonQueries commonQueries) {
+      CommonQueries commonQueries,
+      TxCurrCohortQueries txCurrCohortQueries,
+      GenericCohortQueries genericCohortQueries) {
     this.hivMetadata = hivMetadata;
     this.resumoMensalCohortQueries = resumoMensalCohortQueries;
     this.commonQueries = commonQueries;
+    this.txCurrCohortQueries = txCurrCohortQueries;
+    this.genericCohortQueries = genericCohortQueries;
   }
 
   public CohortDefinition getBaseCohort() {
@@ -57,6 +63,137 @@ public class DQACargaViralCohortQueries {
     compositionCohortDefinition.setCompositionString("L1 OR L2 OR L3");
 
     return compositionCohortDefinition;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   * CohortDefinition to apply the general base cohort to all indicators from DQA SESP Sheet
+   * </blockquote>
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getBaseCohortSesp(SespCompositionString compositionString) {
+
+    CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+
+    compositionCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    compositionCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mappingM1 = "startDate=${startDate},endDate=${startDate+1m-1d},location=${location}";
+    String mappingM2 = "startDate=${startDate+1m},endDate=${startDate+2m-1d},location=${location}";
+    String mappingM3 = "startDate=${startDate+2m},endDate=${endDate},location=${location}";
+
+    CohortDefinition ART_SISMA =
+        resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false);
+
+    CohortDefinition ART_DATIM =
+        txCurrCohortQueries.getTxCurrCompositionCohort("compositionCohort", true);
+
+    CohortDefinition ART_B1_M3 =
+        resumoMensalCohortQueries.getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1();
+
+    CohortDefinition ART_B1_M2 =
+        resumoMensalCohortQueries.getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1();
+
+    CohortDefinition ART_B1_M1 =
+        resumoMensalCohortQueries.getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1();
+
+    CohortDefinition ART_E2_M3 =
+        resumoMensalCohortQueries
+            .getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults();
+
+    CohortDefinition ART_E2_M2 =
+        resumoMensalCohortQueries
+            .getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults();
+
+    CohortDefinition ART_E2_M1 =
+        resumoMensalCohortQueries
+            .getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults();
+
+    CohortDefinition baseCohort = genericCohortQueries.getBaseCohort();
+
+    compositionCohortDefinition.addSearch("SISMA", EptsReportUtils.map(ART_SISMA, mappings));
+    compositionCohortDefinition.addSearch(
+        "ARTDATIM", EptsReportUtils.map(ART_DATIM, "onOrBefore=${endDate},location=${location}"));
+    compositionCohortDefinition.addSearch("B1M3", EptsReportUtils.map(ART_B1_M3, mappingM3));
+    compositionCohortDefinition.addSearch("B1M2", EptsReportUtils.map(ART_B1_M2, mappingM2));
+    compositionCohortDefinition.addSearch("B1M1", EptsReportUtils.map(ART_B1_M1, mappingM1));
+    compositionCohortDefinition.addSearch("E2M3", EptsReportUtils.map(ART_E2_M3, mappingM3));
+    compositionCohortDefinition.addSearch("E2M2", EptsReportUtils.map(ART_E2_M2, mappingM2));
+    compositionCohortDefinition.addSearch("E2M1", EptsReportUtils.map(ART_E2_M1, mappingM1));
+    compositionCohortDefinition.addSearch(
+        "baseCohort", EptsReportUtils.map(baseCohort, "endDate=${endDate},location=${location}"));
+
+    compositionCohortDefinition.setCompositionString(
+        "baseCohort AND " + compositionString.getCompositionString());
+
+    return compositionCohortDefinition;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   * This Enum will return the right composition depending on the content
+   * of the compositionString variable on SespBaseCohort
+   * </blockquote>
+   */
+  public enum SespCompositionString {
+    SISMA {
+      @Override
+      public String getCompositionString() {
+        return "SISMA";
+      }
+    },
+    ARTDATIM {
+      @Override
+      public String getCompositionString() {
+        return "ARTDATIM";
+      }
+    },
+    B1M3 {
+      @Override
+      public String getCompositionString() {
+        return "B1M3";
+      }
+    },
+    B1M2 {
+      @Override
+      public String getCompositionString() {
+        return "B1M2";
+      }
+    },
+    B1M1 {
+      @Override
+      public String getCompositionString() {
+        return "B1M1";
+      }
+    },
+    E2M3 {
+      @Override
+      public String getCompositionString() {
+        return "E2M3";
+      }
+    },
+
+    E2M2 {
+      @Override
+      public String getCompositionString() {
+        return "E2M2";
+      }
+    },
+
+    E2M1 {
+      @Override
+      public String getCompositionString() {
+        return "E2M1";
+      }
+    };
+
+    public abstract String getCompositionString();
   }
 
   public DataDefinition getNID(int identifierType) {

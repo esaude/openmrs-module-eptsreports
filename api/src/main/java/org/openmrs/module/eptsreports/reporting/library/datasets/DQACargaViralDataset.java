@@ -3,7 +3,10 @@ package org.openmrs.module.eptsreports.reporting.library.datasets;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.api.context.Context;
-import org.openmrs.module.eptsreports.reporting.data.converter.*;
+import org.openmrs.module.eptsreports.reporting.data.converter.ForwardSlashDateConverter;
+import org.openmrs.module.eptsreports.reporting.data.converter.GenderConverter;
+import org.openmrs.module.eptsreports.reporting.data.converter.NotApplicableIfNullConverter;
+import org.openmrs.module.eptsreports.reporting.data.converter.ObjectCounterConverter;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.DQACargaViralCohortQueries;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
@@ -63,7 +66,7 @@ public class DQACargaViralDataset extends BaseDataSet {
         "inicio_tarv",
         dQACargaViralCohortQueries.getArtStartDate(),
         "startDate=${startDate},endDate=${endDate},location=${location}",
-        new ForwardSlashDateConverter());
+        null);
 
     /**
      * 5 - Data de Consulta onde Notificou o Resultado de CV dentro do Período de Revisão - Sheet 1:

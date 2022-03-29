@@ -1,9 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
 import org.openmrs.Cohort;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
@@ -18,6 +14,11 @@ import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reportingcompatibility.service.ReportService;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 @Handler(supports = EptsQuarterlyCohortDefinition.class)
 public class EptsQuarterlyCohortDefinitionEvaluator implements CohortDefinitionEvaluator {
