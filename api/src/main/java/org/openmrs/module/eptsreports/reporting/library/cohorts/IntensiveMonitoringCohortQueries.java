@@ -2010,7 +2010,7 @@ public class IntensiveMonitoringCohortQueries {
             + "         WHERE p.voided = 0 AND e.voided = 0 AND e.location_id =:location AND e.encounter_type = ${6} "
             + "         AND o.concept_id=${856} AND o.value_numeric < 1000 "
             + "         UNION "
-            + "         SELECT p.patient_id, o.value_datetime AS encounter_date "
+            + "         SELECT p.patient_id, e.encounter_datetime AS encounter_date "
             + "         FROM patient p "
             + "            INNER JOIN encounter e on p.patient_id = e.patient_id "
             + "            INNER JOIN obs o on e.encounter_id = o.encounter_id "
