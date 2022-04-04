@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
@@ -19,6 +16,10 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /** All queries needed for TxMl report needed for EPTS project */
 @Component
@@ -553,7 +554,7 @@ public class TxMlCohortQueries {
             + "    WHERE o.concept_id = ${defaultingMotiveConcept}  "
             + "    	   AND e.location_id = :location   "
             + "        AND e.encounter_type= ${buscaActivaEncounterType}   "
-            + "        AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "        AND e.encounter_datetime <= :endDate "
             + "		   AND o.value_coded IN (${transferredOutConcept} ,${autoTransferConcept})  "
             + "        AND e.voided=0   "
             + "        AND o.voided=0   "
