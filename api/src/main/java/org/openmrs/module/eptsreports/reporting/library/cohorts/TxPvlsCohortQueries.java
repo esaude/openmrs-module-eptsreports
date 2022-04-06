@@ -11,13 +11,11 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.reporting.calculation.mq.BreastfeedingPregnantCalculation4MQ;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingPregnantCalculation;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
@@ -31,6 +29,10 @@ import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 /** Defines all of the TxPvls Cohort Definition instances we want to expose for EPTS */
 @Component
@@ -444,4 +446,26 @@ public class TxPvlsCohortQueries {
 
     return cd;
   }
+  /**
+   * <b>Description</b>Get patients who are breastfeeding or pregnant controlled by parameter
+   * This method implements MQ Cat 14 Criteria
+   * @param state state
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter4MQ(
+          PregnantOrBreastfeedingWomen state, List<EncounterType> encounterTypeList) {
+    CalculationCohortDefinition cd =
+            new CalculationCohortDefinition(
+                    "pregnantBreastfeeding",
+                    Context.getRegisteredComponents(BreastfeedingPregnantCalculation4MQ.class).get(0));
+    cd.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
+    cd.addParameter(new Parameter("onOrAfter", "On or before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addCalculationParameter("state", state);
+    cd.addCalculationParameter("encounterTypeList", encounterTypeList);
+
+    return cd;
+  }
+
+
 }

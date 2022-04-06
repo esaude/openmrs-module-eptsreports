@@ -26,7 +26,11 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class QualityImprovement2020CohortQueries {
@@ -6734,13 +6738,13 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "A1",
         EptsReportUtils.map(
-            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
+            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter4MQ(
                 EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "A2",
         EptsReportUtils.map(
-            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
+            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter4MQ(
                 EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
 
@@ -6855,13 +6859,13 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "B1",
         EptsReportUtils.map(
-            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
+            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter4MQ(
                 EptsReportConstants.PregnantOrBreastfeedingWomen.PREGNANTWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch(
         "B2",
         EptsReportUtils.map(
-            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
+            txPvls.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter4MQ(
                 EptsReportConstants.PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN, null),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString(preposition.getCompositionString());
