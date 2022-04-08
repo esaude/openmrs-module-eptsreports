@@ -2,16 +2,9 @@ package org.openmrs.module.eptsreports.reporting.intergrated.library;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.hasSize;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
+import static org.junit.Assert.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -269,7 +262,7 @@ public class GenericCohortQueriesTest extends DefinitionsTest {
     parameters.put(
         new Parameter("location", "Location", Location.class), locationService.getLocation(1));
     assertEquals(
-        new HashSet<>(Arrays.asList(/* person dead: */ 100, /* exited by death */ 101)),
+        new HashSet<>(Arrays.asList(/* exited by death */ 101)),
         evaluateCohortDefinition(cohortDefinition, parameters).getMemberIds());
   }
 

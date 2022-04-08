@@ -200,7 +200,8 @@ public class EptsCalculationUtilsTest extends PowerMockBaseContextTest {
     map.put(10, new SimpleResult(enc, null, calculationContext));
     map.put(11, new SimpleResult(null, null, calculationContext));
     // returns value for simple result
-    Assert.assertEquals(Long.valueOf(1), EptsCalculationUtils.resultForPatient(map, 1));
+    Assert.assertEquals(
+        Integer.valueOf(1), EptsCalculationUtils.resultForPatient(map, Integer.valueOf(1)));
     // returns value for null simple result
     Assert.assertNull(EptsCalculationUtils.resultForPatient(map, 8));
     // return null for null result

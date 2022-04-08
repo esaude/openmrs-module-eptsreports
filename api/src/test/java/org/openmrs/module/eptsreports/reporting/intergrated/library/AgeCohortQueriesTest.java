@@ -3,11 +3,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.library;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.api.PatientService;
@@ -37,7 +33,7 @@ public class AgeCohortQueriesTest extends DefinitionsTest {
   @Test
   public void createXtoYAgeCohortShouldReturnRightlyAgedPatients() throws EvaluationException {
     assertEquals(44, patientService.getPatient(2).getAge(now).intValue());
-    assertEquals(11, patientService.getPatient(6).getAge(now).intValue());
+    assertEquals(43, patientService.getPatient(6).getAge(now).intValue());
     assertEquals(42, patientService.getPatient(7).getAge(now).intValue());
     assertEquals(
         new HashSet<>(Arrays.asList(2, 6, 7)),

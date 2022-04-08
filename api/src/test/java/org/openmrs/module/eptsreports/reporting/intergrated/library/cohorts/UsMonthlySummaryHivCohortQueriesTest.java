@@ -2,10 +2,6 @@ package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
 import static junit.framework.TestCase.assertTrue;
 import static org.junit.Assert.assertEquals;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
@@ -17,6 +13,10 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
 
