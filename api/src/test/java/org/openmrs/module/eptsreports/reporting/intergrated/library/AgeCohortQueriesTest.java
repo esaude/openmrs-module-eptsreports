@@ -41,19 +41,19 @@ public class AgeCohortQueriesTest extends DefinitionsTest {
                 ageCohortQueries.createXtoYAgeCohort("allNonVoidedWithAge", null, null), parameters)
             .getMemberIds());
     assertEquals(
-        new HashSet<>(Arrays.asList(6)),
+        new HashSet<>(Arrays.asList()),
         evaluateCohortDefinition(ageCohortQueries.createXtoYAgeCohort("<12", null, 11), parameters)
             .getMemberIds());
     assertEquals(
-        new HashSet<>(Arrays.asList(6, 7)),
+        new HashSet<>(Arrays.asList(7)),
         evaluateCohortDefinition(ageCohortQueries.createXtoYAgeCohort("0-42", 0, 42), parameters)
             .getMemberIds());
     assertEquals(
-        new HashSet<>(Arrays.asList(2)),
+        new HashSet<>(Arrays.asList(2, 6)),
         evaluateCohortDefinition(ageCohortQueries.createXtoYAgeCohort("43-44", 43, 44), parameters)
             .getMemberIds());
     assertEquals(
-        new HashSet<>(Arrays.asList(2)),
+        new HashSet<>(Arrays.asList(2, 6)),
         evaluateCohortDefinition(ageCohortQueries.createXtoYAgeCohort("43+", 43, null), parameters)
             .getMemberIds());
     assertEquals(

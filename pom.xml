@@ -41,7 +41,11 @@
 	<dependencyManagement>
 		<dependencies>
 
-
+			<dependency>
+				<groupId>mysql</groupId>
+				<artifactId>mysql-connector-java</artifactId>
+				<version>5.1.45</version>
+			</dependency>
 
 			<!-- Start of module dependacy -->
 			<dependency>
@@ -101,8 +105,6 @@
 				<type>test-jar</type>
 				<scope>test</scope>
 			</dependency>
-
-
 
 			<dependency>
 				<groupId>org.openmrs.test</groupId>
