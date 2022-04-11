@@ -3878,9 +3878,11 @@ public class QualityImprovement2020CohortQueries {
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("21187", hivMetadata.getRegArvSecondLine().getConceptId());
+    map.put("21151", hivMetadata.getTherapeuticLineConcept().getConceptId());
+    map.put("21148", hivMetadata.getSecondLineConcept().getConceptId());
 
     String query =
-        "SELECT p.patient_id "
+        " SELECT p.patient_id "
             + " FROM   patient p"
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = p.patient_id "
@@ -3908,7 +3910,7 @@ public class QualityImprovement2020CohortQueries {
             + "       AND o.value_coded IS NOT NULL "
             + "       AND o.obs_datetime >= :startDate "
             + "       AND o.obs_datetime <= :endDate "
-            + "       AND TIMESTAMPDIFF(MONTH, o.obs_datetime,  last_clinical.last_visit) >= 6 ";
+            + "       AND TIMESTAMPDIFF(MONTH, o.obs_datetime,  last_clinical.last_visit) >= 6";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -4421,6 +4423,8 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition b2New =
         commonCohortQueries.getPatientsWithFirstTherapeuticLineOnLastClinicalEncounterB2NEW();
 
+    CohortDefinition b2e = getMQC13DEN_B2E();
+
     CohortDefinition secondLine6Months = getPatientsOnRegimeArvSecondLineB2NEWP1_2();
 
     CohortDefinition changeRegimen6Months =
@@ -4551,6 +4555,12 @@ public class QualityImprovement2020CohortQueries {
         EptsReportUtils.map(
             G, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
+    compositionCohortDefinition.addSearch(
+        "B2E",
+        EptsReportUtils.map(
+            b2e,
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+
     if (den) {
       if (line == 1) {
         compositionCohortDefinition.setCompositionString(
@@ -4560,7 +4570,7 @@ public class QualityImprovement2020CohortQueries {
             "(B1 AND (B2NEW OR (B3 AND NOT B3E)) AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND age");
       } else if (line == 4 || line == 13) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND secondLineB2 AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND age");
+            "((B1 AND (secondLineB2 AND NOT B2E)) AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND age");
       }
     } else {
       if (line == 1 || line == 6 || line == 7 || line == 8) {
@@ -8386,6 +8396,89 @@ public class QualityImprovement2020CohortQueries {
             + "                        AND o.obs_datetime BETWEEN DATE_ADD(B2NEW.last_consultation, INTERVAL 6 MONTH)   "
             + "                        AND DATE_ADD(B2NEW.last_consultation, INTERVAL 9 MONTH)  "
             + "                        GROUP BY p.patient_id";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+
+    cd.setQuery(sb.replace(query));
+
+    return cd;
+  }
+
+  /**
+   * B2E - Exclude all patients from Ficha Clinica (encounter type 6, encounter_datetime) who have
+   * “LINHA TERAPEUTICA”(Concept id 21151) with value coded DIFFERENT THAN “SEGUNDA LINHA”(Concept
+   * id 21150) and obs_datetime > “REGIME ARV SEGUNDA LINHA” (from B2New) and <= “Last Clinical
+   * Consultation” (last encounter_datetime from B1)
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQC13DEN_B2E() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("All patients with LINHA TERAPEUTICA DIFFERENT THAN SEGUNDA LINHA ");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("21187", hivMetadata.getRegArvSecondLine().getConceptId());
+    map.put("21151", hivMetadata.getTherapeuticLineConcept().getConceptId());
+    map.put("21148", hivMetadata.getSecondLineConcept().getConceptId());
+
+    String query =
+        "SELECT     p.patient_id "
+            + "FROM       patient p "
+            + "INNER JOIN encounter e "
+            + "ON         e.patient_id = p.patient_id "
+            + "INNER JOIN obs o "
+            + "ON         o.encounter_id = e.encounter_id "
+            + "INNER JOIN "
+            + "           ( "
+            + "                      SELECT     p.patient_id , "
+            + "                                 o.obs_datetime           AS linha_terapeutica, "
+            + "                                 last_clinical.last_visit AS last_consultation "
+            + "                      FROM       patient p "
+            + "                      INNER JOIN encounter e "
+            + "                      ON         e.patient_id = p.patient_id "
+            + "                      INNER JOIN obs o "
+            + "                      ON         o.encounter_id = e.encounter_id "
+            + "                      INNER JOIN "
+            + "                                 ( "
+            + "                                            SELECT     p.patient_id, "
+            + "                                                       Max(e.encounter_datetime) last_visit "
+            + "                                            FROM       patient p "
+            + "                                            INNER JOIN encounter e "
+            + "                                            ON         e.patient_id = p.patient_id "
+            + "                                            WHERE      p.voided = 0 "
+            + "                                            AND        e.voided = 0 "
+            + "                                            AND        e.encounter_type = ${6} "
+            + "                                            AND        e.location_id = :location "
+            + "                                            AND        e.encounter_datetime BETWEEN :startDate AND :revisionEndDate "
+            + "                                            GROUP BY   p.patient_id) AS last_clinical "
+            + "                      ON         last_clinical.patient_id = p.patient_id "
+            + "                      WHERE      e.voided = 0 "
+            + "                      AND        p.voided = 0 "
+            + "                      AND        o.voided = 0 "
+            + "                      AND        e.encounter_type = ${53} "
+            + "                      AND        e.location_id = :location "
+            + "                      AND        o.concept_id = ${21187} "
+            + "                      AND        o.value_coded IS NOT NULL "
+            + "                      AND        o.obs_datetime >= :startDate "
+            + "                      AND        o.obs_datetime <= :endDate "
+            + "                      AND        timestampdiff(month, o.obs_datetime, last_clinical.last_visit) >= 6) second_line "
+            + "ON         second_line.patient_id = p.patient_id "
+            + "WHERE      e.voided = 0 "
+            + "AND        p.voided = 0 "
+            + "AND        o.voided = 0 "
+            + "AND        e.encounter_type = ${6} "
+            + "AND        e.location_id = :location "
+            + "AND        o.concept_id = ${21151} "
+            + "AND        o.value_coded <> ${21148} "
+            + "AND        o.obs_datetime > second_line.linha_terapeutica "
+            + "AND        o.obs_datetime <= second_line.last_consultation";
 
     StringSubstitutor sb = new StringSubstitutor(map);
 
