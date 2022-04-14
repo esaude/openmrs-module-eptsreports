@@ -148,8 +148,10 @@
 
 					<dependenciesToScan>
 						<dependency>org.openmrs.module.eptsreports</dependency>
-
 					</dependenciesToScan>
+					<excludes>
+						<exclude>**/LiveTests.java</exclude>
+					</excludes>
 
 				</configuration>
 			</plugin>

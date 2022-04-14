@@ -40,7 +40,6 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
         usMonthlySummaryHivCohortQueries.getRegisteredInPreArtByEndOfPreviousMonth();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort);
 
-    System.out.println("Members: " + evaluatedCohort.getMemberIds());
     assertEquals(2, evaluatedCohort.getMemberIds().size());
 
     // INSCRITOS
