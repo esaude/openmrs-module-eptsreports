@@ -335,14 +335,14 @@
 			   uuid="8a6d04ae-2042-11ec-814a-e3a323bd37b8" />
 
 	<obs obs_id="201010" person_id="1007" concept_id="6129"
-		 encounter_id="101012" obs_datetime="2020-01-09 00:00:00"
+		 encounter_id="101012" obs_datetime="2020-01-09 00:00:00" status = "FINAL"
 		 value_datetime="2020-01-09 00:00:00"
 		 location_id="1"  comments="" creator="1"
 		 date_created="2020-01-09 00:00:00" voided="false"
 		 uuid="7be4f49a-fc17-11eb-a0ff-0fa8d71e317b" />
 
 	<obs obs_id="201011" person_id="1007" concept_id="6129"
-		 encounter_id="101011" obs_datetime="2020-01-21 00:00:00.0"
+		 encounter_id="101011" obs_datetime="2020-01-21 00:00:00.0" status="FINAL"
 		 value_datetime="2020-01-21 00:00:00.0"
 		 location_id="1"  comments="" creator="1"
 		 date_created="2019-06-24 14:11:13.0" voided="false"
@@ -350,14 +350,14 @@
 
 	<!--For Completed Drugs Observations -->
 	<obs obs_id="201020" person_id="1007" concept_id="6122"
-		 encounter_id="101020" obs_datetime="2020-01-21 00:00:00.0"
+		 encounter_id="101020" obs_datetime="2020-01-21 00:00:00.0" status="FINAL"
 		 value_datetime="2020-01-21 00:00:00.0"
 		 location_id="1" value_coded="1267" comments="" creator="1"
 		 date_created="2019-07-22 00:00:00" voided="false"
 		 uuid="056ddd98-2031-11ec-b17f-7fe56ceaef70" />
 
 	<obs obs_id="201013" person_id="1007" concept_id="6122"
-		 encounter_id="101010" obs_datetime="2019-07-22 00:00:00"
+		 encounter_id="101010" obs_datetime="2019-07-22 00:00:00" status="FINAL"
 		 value_datetime="2019-07-22 00:00:00"
 		 location_id="1" value_coded="1256" comments="" creator="1"
 		 date_created="2019-07-22 00:00:00" voided="false"
@@ -366,27 +366,27 @@
 	<obs obs_id="201014" person_id="1007" concept_id="6122"
 		 encounter_id="101013" obs_datetime="2019-07-22 00:00:00"
 		 value_datetime="2019-07-22 00:00:00"
-		 location_id="1" value_coded="1256" comments="" creator="1"
+		 location_id="1" value_coded="1256" comments="" creator="1" status="FINAL"
 		 date_created="2019-06-24 14:11:13.0" voided="false"
 		 uuid="f154c440-fc39-11eb-aac7-2f3c68ca507b" />
 
 	<obs obs_id="201015" person_id="1007" concept_id="1719"
 		 encounter_id="101014" obs_datetime="2019-08-30 00:00:00"
 		 value_datetime="2019-08-30 00:00:00"
-		 location_id="1" value_coded="23954" comments="" creator="1"
+		 location_id="1" value_coded="23954" comments="" creator="1" status="FINAL"
 		 date_created="2019-06-24 14:11:13.0" voided="false"
 		 uuid="0637a5bc-ff23-11eb-ac3e-cf4a927a76a3" />
 
 	<obs obs_id="201017" person_id="1007" concept_id="23985"
 		 encounter_id="101015" obs_datetime="2019-08-30 00:00:00"
 		 value_datetime="2019-04-30 00:00:00"
-		 location_id="1" value_coded="23954" comments="" creator="1"
+		 location_id="1" value_coded="23954" comments="" creator="1" status="FINAL"
 		 date_created="2019-06-24 14:11:13.0" voided="false"
 		 uuid="a4b7aa4e-ff2c-11eb-a9eb-9b8f77a41fd9" />
 
 	<!--For encounter 6 -->
 	<obs obs_id="201021" person_id="1007" concept_id="6129"
-		 encounter_id="101023" obs_datetime="2020-01-21 00:00:00"
+		 encounter_id="101023" obs_datetime="2020-01-21 00:00:00" status="FINAL"
 		 value_datetime="2020-01-21 00:00:00"
 		 location_id="1" comments="" creator="1"
 		 date_created="2019-06-24 14:11:13.0" voided="false"
@@ -394,7 +394,7 @@
 
 	<!--For encounter 9 -->
 	<obs obs_id="201022" person_id="1007" concept_id="6129"
-		 encounter_id="101021" obs_datetime="2020-01-21 00:00:00"
+		 encounter_id="101021" obs_datetime="2020-01-21 00:00:00" status="FINAL"
 		 value_datetime="2020-01-21 00:00:00"
 		 location_id="1" comments="" creator="1"
 		 date_created="2019-06-24 14:11:13.0" voided="false"
@@ -402,7 +402,7 @@
 
 	<!--For encounter 53 -->
 	<obs obs_id="201023" person_id="1007" concept_id="6129"
-		 encounter_id="101025" obs_datetime="2020-01-21 00:00:00"
+		 encounter_id="101025" obs_datetime="2020-01-21 00:00:00" status="FINAL"
 		 value_datetime="2020-01-21 00:00:00"
 		 location_id="1" comments="" creator="1"
 		 date_created="2019-06-24 14:11:13.0" voided="false"

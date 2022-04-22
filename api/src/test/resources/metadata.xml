@@ -183,7 +183,7 @@
 
 	<concept concept_id="7777001" retired="false" datatype_id="1" class_id="1" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="e1d6247e-1d5f-11e0-b929-000c29ad1d07"/>
 	<concept_name concept_id="7777001" name="Viral Load" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_id="5777001" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777001"/>
-	<concept_numeric concept_id="7777001" hi_normal="1497.0" low_absolute="40.0" low_critical="75.0" hi_critical="500" hi_absolute="1600" units="cells/mmL" precise="1"/>
+	<concept_numeric concept_id="7777001" hi_normal="1497.0" low_absolute="40.0" low_critical="75.0" hi_critical="500" hi_absolute="1600" units="cells/mmL" allow_decimal="1"/>
 
 	<concept concept_id="7777002" retired="false" datatype_id="2" class_id="17" is_set="false" creator="1" date_created="2019-01-29 00:00:00.0" version="0.1" changed_by="1" date_changed="2019-01-29 14:57:33.0" uuid="a09ab2c5-878e-4905-b25d-578417777002"/>
 	<concept_name concept_name_id="5777002" concept_id="7777002" name="ARV Plan" locale="en_GB" creator="1" date_created="2019-01-29 00:00:00.0" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" voided="false" uuid="6e77e374-18a1-4ec6-8ed4-4152a5777002"/>

@@ -100,7 +100,7 @@
     <!--
         <obs obs_id="122" person_id="1001" concept_id="1255" encounter_id="112" obs_datetime="2019-09-26 00:00:00"  value_coded="1256"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c183947a-388b-11eb-b6a7-eb9d5a01c619" location_id="1" />
     -->
-    <obs obs_id="123" person_id="1001" concept_id="1190" encounter_id="112" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="76d70f0e-388d-11eb-927d-4fc160e49bf1" location_id="1" />
+    <obs obs_id="123" person_id="1001" status="FINAL" concept_id="1190" encounter_id="112" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="76d70f0e-388d-11eb-927d-4fc160e49bf1" location_id="1" />
 
 
 

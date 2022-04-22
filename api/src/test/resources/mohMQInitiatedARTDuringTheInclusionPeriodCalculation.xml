@@ -108,11 +108,11 @@
 
 
 
-    <obs obs_id="123" person_id="1001" concept_id="1190" encounter_id="112" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="76d70f0e-388d-11eb-927d-4fc160e49bf1" location_id="1" />
+    <obs obs_id="123" person_id="1001" concept_id="1190" encounter_id="112" status = "FINAL" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="76d70f0e-388d-11eb-927d-4fc160e49bf1" location_id="1" />
 
-    <obs obs_id="124" person_id="1001" concept_id="23866" encounter_id="111" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-10-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c0a7c0a0-4040-11eb-ae37-670c1f17452b" location_id="1" />
+    <obs obs_id="124" person_id="1001" concept_id="23866" encounter_id="111" obs_datetime="2019-09-26 00:00:00" status = "FINAL"  value_datetime="2019-10-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="c0a7c0a0-4040-11eb-ae37-670c1f17452b" location_id="1" />
 
-    <obs obs_id="125" person_id="1001" concept_id="23865" encounter_id="111"  value_coded="1065" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="ca727012-4040-11eb-a8ef-db23fc4d92de" location_id="1" />
+    <obs obs_id="125" person_id="1001" concept_id="23865" encounter_id="111"  value_coded="1065" obs_datetime="2019-09-26 00:00:00" status="FINAL"  value_datetime="2019-09-26 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="ca727012-4040-11eb-a8ef-db23fc4d92de" location_id="1" />
 
 
 

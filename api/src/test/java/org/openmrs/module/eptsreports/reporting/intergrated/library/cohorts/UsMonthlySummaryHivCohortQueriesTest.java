@@ -13,6 +13,7 @@ import org.openmrs.module.eptsreports.reporting.intergrated.utils.DefinitionsTes
 import org.openmrs.module.eptsreports.reporting.library.cohorts.UsMonthlySummaryHivCohortQueries;
 import org.openmrs.module.reporting.cohort.EvaluatedCohort;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
 
   @Autowired private UsMonthlySummaryHivCohortQueries usMonthlySummaryHivCohortQueries;
+
+  public UsMonthlySummaryHivCohortQueriesTest() {
+    setStartDate(DateUtil.getDateTime(2014, 4, 21));
+    setEndDate(DateUtil.getDateTime(2014, 12, 20));
+  }
 
   @Before
   public void setUp() throws Exception {
@@ -34,19 +40,13 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
         usMonthlySummaryHivCohortQueries.getRegisteredInPreArtByEndOfPreviousMonth();
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cohort);
 
-    assertEquals(5, evaluatedCohort.getMemberIds().size());
+    assertEquals(2, evaluatedCohort.getMemberIds().size());
 
     // INSCRITOS
     assertTrue(evaluatedCohort.getMemberIds().contains(2));
 
     // (INSCRITOFINAL NOT ALGUMAVEZTARV) AND CONSULTA
     assertTrue(evaluatedCohort.getMemberIds().contains(6));
-
-    // ENTRADAPRETARV
-    assertTrue(evaluatedCohort.getMemberIds().contains(1009));
-
-    // TRANSFERIDODE
-    assertTrue(evaluatedCohort.getMemberIds().contains(1003));
   }
 
   @Test
@@ -55,8 +55,7 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
     EvaluatedCohort evaluatedCohort =
         evaluateCohortDefinition(usMonthlySummaryHivCohortQueries.getEnrolledInArt());
 
-    assertEquals(5, evaluatedCohort.getMemberIds().size());
-
+    assertEquals(4, evaluatedCohort.getMemberIds().size());
     // Has S.TARV: ADULTO SEGUIMENTO encounter type
     assertTrue(evaluatedCohort.getMemberIds().contains(1009));
 
@@ -65,9 +64,6 @@ public class UsMonthlySummaryHivCohortQueriesTest extends DefinitionsTest {
 
     // Has S.TARV: FARMACIA
     assertTrue(evaluatedCohort.getMemberIds().contains(1001));
-
-    // Started ART before new instruments release date
-    assertTrue(evaluatedCohort.getMemberIds().contains(1002));
 
     assertTrue(evaluatedCohort.getMemberIds().contains(9999));
   }

@@ -167,94 +167,94 @@
 	<!-- obs -->
 	<obs obs_id="100" person_id="1001" concept_id="1255"
 		encounter_id="9001" obs_datetime="2013-06-17 00:00:00"
-		value_coded="1256" creator="1" date_created="2013-06-19 12:55:48"
+		value_coded="1256" creator="1" date_created="2013-06-19 12:55:48" status = "FINAL"
 		voided="0" uuid="3d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="1" />
 
 
 	<obs obs_id="101" person_id="1001" concept_id="1190"
 		encounter_id="9002" obs_datetime="2019-04-19 12:55:48" creator="1"
-		date_created="2019-04-19 12:55:48" voided="0"
+		date_created="2019-04-19 12:55:48" voided="0" status = "FINAL"
 		value_datetime="2019-04-19 12:55:48"
 		uuid="4d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="1" />
 
 	<obs obs_id="102" person_id="1004" concept_id="1670"
 		encounter_id="9005" obs_datetime="2013-06-17 00:00:00"
-		value_coded="507" creator="1" date_created="2013-06-19 12:55:48"
+		value_coded="507" creator="1" date_created="2013-06-19 12:55:48" status = "FINAL"
 		voided="0" uuid="0000210d-956f-4baf-a309-082fea160169" location_id="1" />
 
 	<obs obs_id="103" person_id="1005" concept_id="1410"
 		encounter_id="9006" obs_datetime="2019-02-17 00:00:00" creator="1"
-		date_created="2013-06-19 12:55:48" voided="0"
+		date_created="2013-06-19 12:55:48" voided="0" status = "FINAL"
 		uuid="9f78df44-9ff2-4156-b6cf-17d1108a9bcd" location_id="1"
 		value_datetime="2018-08-17 00:00:00" />
 
 
 	<obs obs_id="104" person_id="1006" concept_id="5096"
 		encounter_id="9007" obs_datetime="2019-05-17 00:00:00" creator="1"
-		date_created="2013-06-19 12:55:48" voided="0"
+		date_created="2013-06-19 12:55:48" voided="0" status = "FINAL"
 		uuid="ad02b3ca-71f0-46c6-8c58-50abd0a2d42b" location_id="1"
 		value_datetime="2019-02-17 00:00:00" />
 
 
 	<obs obs_id="105" person_id="1007" concept_id="6123"
 		encounter_id="9008" obs_datetime="2019-04-13 00:00:00" creator="1"
-		date_created="2013-06-19 12:55:48" voided="0"
+		date_created="2013-06-19 12:55:48" voided="0" status = "FINAL"
 		uuid="eb7e8939-0ae4-4e81-ad6a-ad4db58125f5" location_id="1"
 		value_datetime="2019-02-17 00:00:00" />
 
 	<obs obs_id="106" person_id="1008" concept_id="6128"
 		encounter_id="9010" obs_datetime="2019-02-13 00:00:00" creator="1"
-		date_created="2019-02-13 12:55:48" voided="0"
+		date_created="2019-02-13 12:55:48" voided="0" status = "FINAL"
 		uuid="51c1e1d5-ef36-4c1d-8833-b0d44d86bac6" location_id="1"
 		value_datetime="2019-02-13 00:00:00" />
 
 	<obs obs_id="107" person_id="1008" concept_id="6129"
 		encounter_id="9011" obs_datetime="2019-02-17 00:00:00" creator="1"
-		date_created="2019-02-17 12:55:48" voided="0"
+		date_created="2019-02-17 12:55:48" voided="0" status = "FINAL"
 		uuid="5ea57979-45d2-44f7-9809-172dc6dcedc3" location_id="1"
 		value_datetime="2019-02-17 00:00:00" />
 
 
 	<obs obs_id="109" person_id="1009" concept_id="6257"
 		encounter_id="9013" obs_datetime="2019-02-17 00:00:00" creator="1"
-		date_created="2019-02-17 12:55:48" voided="0"
+		date_created="2019-02-17 12:55:48" voided="0" status = "FINAL"
 		uuid="3923ca03-dc22-4899-8d53-75894447c259" location_id="1"
 		value_datetime="2019-02-17 00:00:00" />
 
 
 	<obs obs_id="110" person_id="1009" concept_id="6257"
 		encounter_id="9013" obs_datetime="2019-02-17 00:00:00" creator="1"
-		date_created="2019-02-17 12:55:48" voided="0"
+		date_created="2019-02-17 12:55:48" voided="0" status = "FINAL"
 		uuid="6e58434d-07c6-45f5-a24e-f3ec9e27890b" location_id="1"
 		value_datetime="2019-02-17 00:00:00" />
 
 	<obs obs_id="111" person_id="1010" concept_id="1065"
 		encounter_id="9014" obs_datetime="2019-02-17 00:00:00" creator="1"
 		date_created="2019-02-17 12:55:48" voided="0"
-		uuid="41e41995-a18a-48b9-bcf8-d41e0fe6759c" location_id="1"
+		uuid="41e41995-a18a-48b9-bcf8-d41e0fe6759c" location_id="1" status = "FINAL"
 		value_datetime="2019-02-17 00:00:00" value_text="SIM" />
 
 	<obs obs_id="112" person_id="1010" concept_id="6122"
 		encounter_id="9014" obs_datetime="2019-02-17 00:00:00" creator="1"
-		date_created="2019-02-17 12:55:48" voided="0"
+		date_created="2019-02-17 12:55:48" voided="0" status = "FINAL"
 		uuid="5b9ac7b5-2bef-4780-a41b-e662894d072d" location_id="1"
 		value_datetime="2019-02-17 00:00:00" />
 
 	<obs obs_id="113" person_id="1010" concept_id="6122"
 		encounter_id="9014" obs_datetime="2019-02-17 00:00:00" creator="1"
-		date_created="2019-02-17 12:55:48" voided="0"
+		date_created="2019-02-17 12:55:48" voided="0" status = "FINAL"
 		uuid="d62efcd5-77d7-4849-b936-2da7d92e6a08" location_id="1"
 		value_datetime="2019-02-17 00:00:00" />
 
 	<obs obs_id="114" person_id="1010" concept_id="6122"
 		encounter_id="9014" obs_datetime="2019-02-17 00:00:00" creator="1"
-		date_created="2019-02-17 12:55:48" voided="0"
+		date_created="2019-02-17 12:55:48" voided="0" status = "FINAL"
 		uuid="4368b584-b412-43e5-acae-dacb55370996" location_id="1"
 		value_datetime="2019-02-17 00:00:00" />
 
 	<obs obs_id="115" person_id="1003" concept_id="6332"
 		encounter_id="9018" obs_datetime="2019-02-17 00:00:00" creator="1"
-		date_created="2019-02-17 12:55:48" voided="0"
+		date_created="2019-02-17 12:55:48" voided="0" status = "FINAL"
 		uuid="ebf50564-fa33-4a78-83a8-9b41e28b8839" location_id="1"
 		value_datetime="2019-02-17 00:00:00" />
 

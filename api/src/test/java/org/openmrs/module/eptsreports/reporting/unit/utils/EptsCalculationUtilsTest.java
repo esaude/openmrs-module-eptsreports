@@ -3,12 +3,7 @@ package org.openmrs.module.eptsreports.reporting.unit.utils;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -205,7 +200,8 @@ public class EptsCalculationUtilsTest extends PowerMockBaseContextTest {
     map.put(10, new SimpleResult(enc, null, calculationContext));
     map.put(11, new SimpleResult(null, null, calculationContext));
     // returns value for simple result
-    Assert.assertEquals(1, EptsCalculationUtils.resultForPatient(map, 1));
+    Assert.assertEquals(
+        Integer.valueOf(1), EptsCalculationUtils.resultForPatient(map, Integer.valueOf(1)));
     // returns value for null simple result
     Assert.assertNull(EptsCalculationUtils.resultForPatient(map, 8));
     // return null for null result

@@ -2,11 +2,13 @@ package org.openmrs.module.eptsreports.reporting.intergrated.calculation;
 
 import java.util.Arrays;
 import java.util.Collection;
+import org.junit.Ignore;
 import org.openmrs.calculation.CountingCalculation;
 import org.openmrs.calculation.patient.PatientCalculation;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.SimpleResult;
 
+@Ignore
 // TODO probably move this into calculation module
 public class CountingCalculationTest extends BasePatientCalculationTest {
 

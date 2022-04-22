@@ -19,7 +19,7 @@
                encounter_datetime="2019-08-15 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
                voided="false" uuid="f858bde0-134c-404c-bde8-d5a59d6f9d0e"/>
 
-    <obs obs_id="10000" person_id="10000" concept_id="7777034" encounter_id="10000" obs_datetime="2019-08-15 00:00:00.0"
+    <obs obs_id="10000" person_id="10000" concept_id="7777034" encounter_id="10000" obs_datetime="2019-08-15 00:00:00.0" status = "FINAL"
          location_id="1" value_datetime="2019-07-15 00:00:00.0" creator="1" date_created="2019-02-28 14:29:05.0"
          voided="false" uuid="af7f70fc-8cb9-43f7-af45-af4cc68c004c"/>
 
@@ -27,11 +27,11 @@
                encounter_datetime="2019-08-15 00:00:00.0" creator="1" date_created="2019-02-28 14:09:05.0"
                voided="false" uuid="db38dbae-cd30-42d3-8460-71d8631d8516"/>
 
-    <obs obs_id="10001" person_id="10000" concept_id="7777004" encounter_id="10001" obs_datetime="2019-08-15 00:00:00.0"
+    <obs obs_id="10001" person_id="10000" concept_id="7777004" encounter_id="10001" obs_datetime="2019-08-15 00:00:00.0" status = "FINAL"
          location_id="1" value_coded="7777020" creator="1" date_created="2019-02-28 14:29:05.0"
          voided="false" uuid="2d4508c0-2d2a-4e0e-95cb-dd7336877ed0"/>
 
-    <obs obs_id="10002" person_id="10000" concept_id="6300" encounter_id="10001" obs_datetime="2019-08-15 00:00:00.0"
+    <obs obs_id="10002" person_id="10000" concept_id="6300" encounter_id="10001" obs_datetime="2019-08-15 00:00:00.0" status="FINAL"
          location_id="1" value_coded="6276" creator="1" date_created="2019-02-28 14:29:05.0"
          voided="false" uuid="71fec13a-8887-47f0-8457-c59b8d38d2dd"/>
     <!---->
@@ -47,7 +47,7 @@
                encounter_datetime="2019-06-30 00:00:00" creator="1" date_created="2020-01-07 09:14:29" voided="0"
                uuid="5efd185c-a8e6-4cde-9a11-732c029ff551"/>
 
-    <obs obs_id="4287901" person_id="1933" concept_id="7777025" encounter_id="543358" obs_datetime="2019-06-30 00:00:00"
+    <obs obs_id="4287901" person_id="1933" concept_id="7777025" encounter_id="543358" obs_datetime="2019-06-30 00:00:00" status="FINAL"
          location_id="1" value_coded="7777020" creator="1" date_created="2020-01-07 09:14:29" voided="0"
          uuid="10793851-a29e-499c-b606-0dfdac58ceca"/>
     <!--    -->

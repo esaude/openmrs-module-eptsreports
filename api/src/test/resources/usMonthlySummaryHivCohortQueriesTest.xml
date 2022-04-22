@@ -333,7 +333,7 @@
                   concept_name_id="2462" voided="0" uuid="e249f6c4-1d5f-11e0-b929-000c29ad1d07"
                   concept_name_type="FULLY_SPECIFIED" locale_preferred="0"/>
 
-    <program program_id="1" concept_id="1781" creator="1" date_created="2012-02-29 09:42:25" retired="0"
+    <program program_id="1" concept_id="1781" creator="1" date_created="2014-06-29 09:42:25" retired="0"
              name="SERVICO TARV - CUIDADO" description="Programa de seguimento e cuidado aos pacientes HIV+"
              uuid="7b2e4a0a-d4eb-4df7-be30-78ca4b28ca99"/>
 
@@ -371,8 +371,8 @@
                             terminal="1" creator="1" date_created="2012-02-29 10:20:45" retired="0"
                             uuid="fcad8a57-2a1a-4abd-84b7-935897e4fe06"/>
 
-    <patient_program patient_program_id="4616" patient_id="1003" program_id="1" date_enrolled="2013-08-01 00:00:00"
-                     creator="1" date_created="2013-09-16 17:53:04" voided="0"
+    <patient_program patient_program_id="4616" patient_id="1003" program_id="1" date_enrolled="2014-08-01 00:00:00"
+                     creator="1" date_created="2014-09-16 17:53:04" voided="0"
                      uuid="d1315b84-2b18-4605-9bde-0a845bc35ebc" location_id="1"/>
 
     <patient_program patient_program_id="3831" patient_id="1004" program_id="2" date_enrolled="2012-08-05 00:00:00"
@@ -387,14 +387,14 @@
                      creator="1" date_created="2013-09-16 00:00:00" voided="0"
                      uuid="b7c277dd-2430-4ec4-b230-1c32bf6fba49" location_id="1"/>
 
-    <patient_program patient_program_id="6517" patient_id="9999" program_id="2" date_enrolled="2012-08-05 00:00:00"
+    <patient_program patient_program_id="6517" patient_id="9999" program_id="2" date_enrolled="2014-08-05 00:00:00"
                      creator="1" date_created="2013-09-16 00:00:00" voided="0"
                      uuid="dcc59d60-d608-40b4-bb8a-22595c7c0b76" location_id="1"/>
 
-    <patient_state patient_state_id="6552" patient_program_id="4616" state="28" start_date="2013-08-01" creator="1"
+    <patient_state patient_state_id="6552" patient_program_id="4616" state="28" start_date="2014-08-01 00:00:00" creator="1"
                    date_created="2013-09-16 17:53:04" voided="0"/>
 
-    <patient_state patient_state_id="5220" patient_program_id="6517" state="29" start_date="2012-08-05 00:00:00"
+    <patient_state patient_state_id="5220" patient_program_id="6517" state="29" start_date="2014-08-05 00:00:00"
                    creator="1" date_created="2013-09-16 00:00:00" voided="0"
                    uuid="71d30157-19a9-4909-98fe-8068849c8253"/>
 
@@ -429,7 +429,7 @@
                     description="Outpatient Adult Initial Visit part 2" creator="1" date_created="2005-02-24 00:00:00"
                     retired="0" uuid="e278f1c2-1d5f-11e0-b929-000c29ad1d07"/>
 
-    <encounter encounter_id="32672" encounter_type="6" patient_id="2" encounter_datetime="2013-06-17 00:00:00"
+    <encounter encounter_id="32672" encounter_type="5" patient_id="2" encounter_datetime="2013-06-17 00:00:00"
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
                uuid="d012e4e6-05ff-4a1c-8896-7fd705f0e4e1" location_id="1"/>
 
@@ -437,11 +437,11 @@
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
                uuid="053c6742-424f-4036-9a2d-1e1f7598a124" location_id="1"/>
 
-    <encounter encounter_id="32674" encounter_type="6" patient_id="1009" encounter_datetime="2013-06-17 00:00:00"
+    <encounter encounter_id="32674" encounter_type="6" patient_id="1009" encounter_datetime="2014-06-17 00:00:00"
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
                uuid="cd33857e-c11b-4eb5-8c14-e84a8315958d" location_id="1"/>
 
-    <encounter encounter_id="123456" encounter_type="18" patient_id="1009" encounter_datetime="2013-06-18 00:00:00"
+    <encounter encounter_id="123456" encounter_type="18" patient_id="1009" encounter_datetime="2014-08-18 00:00:00"
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
                uuid="5db0c2fb-6bc1-4de5-98ca-e5c9124b5455" location_id="1"/>
 
@@ -458,43 +458,43 @@
                uuid="07330846-d879-4930-84b3-7dc367af0bb3" location_id="1"/>
 
     <encounter encounter_id="32646" encounter_type="5" patient_id="1005"
-               encounter_datetime="2013-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
+               encounter_datetime="2014-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
                uuid="d13d8575-9fb1-4ce9-8b00-096c601c236b" location_id="2"/>
 
     <encounter encounter_id="32647" encounter_type="6" patient_id="1005"
-               encounter_datetime="2013-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
+               encounter_datetime="2014-05-03 00:00:00" creator="1" date_created="2013-06-19 10:03:01" voided="0"
                uuid="e9581887-572f-4731-8776-5039e19c2cc4" location_id="2"/>
 
     <encounter encounter_id="11666" encounter_type="6" patient_id="1007" location_id="3"
                encounter_datetime="2013-01-09 00:00:00" creator="1" date_created="2013-06-15 00:36:54" voided="0"
                uuid="4218c9c9-6f22-1000-9281-8f1ee524029e"/>
 
-    <encounter encounter_id="11667" encounter_type="5" patient_id="1008" encounter_datetime="2013-06-17 00:00:00"
+    <encounter encounter_id="11667" encounter_type="5" patient_id="1008" encounter_datetime="2014-06-17 00:00:00"
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
                uuid="94f967db-d3eb-4fb7-81dc-63278042f3b4" location_id="4"/>
 
-    <encounter encounter_id="11668" encounter_type="6" patient_id="1008" encounter_datetime="2013-06-17 00:00:00"
+    <encounter encounter_id="11668" encounter_type="6" patient_id="1008" encounter_datetime="2014-06-17 00:00:00"
                creator="1" date_created="2013-06-19 12:55:48" voided="0"
                uuid="081c1d39-c634-4ac5-8b5e-b387871b0179" location_id="4"/>
 
-    <obs obs_id="274088" person_id="6" concept_id="6263" encounter_id="32673" obs_datetime="2013-06-17 00:00:00"
+    <obs obs_id="274088" person_id="6" concept_id="6263" encounter_id="32673" obs_datetime="2013-06-17 00:00:00" status = "FINAL"
          value_coded="6260" creator="1" date_created="2013-06-19 12:55:48" voided="0"
          uuid="28297084-dd14-4a4c-9e85-4b0bf149795b" location_id="1"/>
 
-    <obs obs_id="273788" person_id="8" concept_id="6264" encounter_id="32643" obs_datetime="2013-05-03 00:00:00"
+    <obs obs_id="273788" person_id="8" concept_id="6264" encounter_id="32643" obs_datetime="2013-05-03 00:00:00" status = "FINAL"
          value_coded="6261" creator="1" date_created="2013-06-19 10:03:01" voided="0"
          uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1"/>
     uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1"/>
 
-    <obs obs_id="276198" person_id="1005" concept_id="6257" encounter_id="32647" obs_datetime="2013-05-03 00:00:00"
+    <obs obs_id="276198" person_id="1005" concept_id="6257" encounter_id="32647" obs_datetime="2013-05-03 00:00:00" status = "FINAL"
          value_coded="1066" creator="1" date_created="2013-06-19 10:03:01" voided="0"
          uuid="9f3e7d16-6480-4f11-aa25-1103fc78ff4e" location_id="2"/>
 
-    <obs obs_id="161895" person_id="1007" concept_id="1410" encounter_id="11666" obs_datetime="2013-01-09 00:00:00"
+    <obs obs_id="161895" person_id="1007" concept_id="1410" encounter_id="11666" obs_datetime="2013-01-09 00:00:00" status = "FINAL"
          location_id="3" value_datetime="2013-01-23 00:00:00" creator="1" date_created="2013-06-15 00:36:54" voided="0"
          uuid="cc1c4b86-5257-4d80-8a4c-909e363055ba"/>
 
-    <obs obs_id="161897" person_id="1008" concept_id="6258" encounter_id="11668" obs_datetime="2013-06-17 00:00:00"
+    <obs obs_id="161897" person_id="1008" concept_id="6258" encounter_id="11668" obs_datetime="2014-06-17 00:00:00" status = "FINAL"
          value_coded="1066" creator="1" date_created="2013-06-19 12:55:48" voided="0"
          uuid="5d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="4"/>
 

@@ -530,35 +530,35 @@
 	<encounter encounter_id="11668" encounter_type="6" patient_id="1008" encounter_datetime="2013-06-17 00:00:00" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="081c1d39-c634-4ac5-8b5e-b387871b0179" location_id="4" />
 
 		 <obs obs_id="473787" person_id="1021" concept_id="23866" value_datetime="2019-09-17 00:00:00" encounter_id="52673" obs_datetime="2019-09-30 00:00:00"
-         creator="1" date_created="2019-09-30 00:00:00" voided="0"
+         creator="1" date_created="2019-09-30 00:00:00" voided="0" status = "FINAL"
          uuid="c0a0d917-ea43-443c-8926-31fbd88f2410" location_id="21"/>
 
 			   <obs obs_id="473788" person_id="1022" concept_id="6273" encounter_id="52674" obs_datetime="2019-09-30 00:00:00"
-         value_coded="1366" creator="1" date_created="2019-09-30 10:03:01" voided="0"
+         value_coded="1366" creator="1" date_created="2019-09-30 10:03:01" voided="0" status = "FINAL"
          uuid="ca34e782-57e9-11ea-8247-a0a4c5d1c75c" location_id="21"/>
 
 		 <obs obs_id="473789" person_id="1023" concept_id="6272" encounter_id="52675" obs_datetime="2019-09-30 00:00:00"
-         value_coded="1366" creator="1" date_created="2019-09-30 10:03:01" voided="0"
+         value_coded="1366" creator="1" date_created="2019-09-30 10:03:01" voided="0" status = "FINAL"
          uuid="e5818f05-57e9-11ea-8247-a0a4c5d1c75c" location_id="21"/>
 
 
-	<obs obs_id="274088" person_id="6" concept_id="6263" encounter_id="32673" obs_datetime="2013-06-17 00:00:00" value_coded="6260" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="28297084-dd14-4a4c-9e85-4b0bf149795b" location_id="1" />
+	<obs obs_id="274088" person_id="6" concept_id="6263" status = "FINAL" encounter_id="32673" obs_datetime="2013-06-17 00:00:00" value_coded="6260" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="28297084-dd14-4a4c-9e85-4b0bf149795b" location_id="1" />
 
-	<obs obs_id="294088" person_id="1004" concept_id="23866" encounter_id="44683" obs_datetime="2019-09-27 00:00:00" value_datetime="2019-10-19 12:55:48" creator="1" date_created="2019-10-19 12:55:48" voided="0" uuid="28297084-dd14-4a4c-9e96-5b0bf149795b" location_id="1" />
+	<obs obs_id="294088" person_id="1004" concept_id="23866" status = "FINAL" encounter_id="44683" obs_datetime="2019-09-27 00:00:00" value_datetime="2019-10-19 12:55:48" creator="1" date_created="2019-10-19 12:55:48" voided="0" uuid="28297084-dd14-4a4c-9e96-5b0bf149795b" location_id="1" />
 
-	<obs obs_id="273788" person_id="8" concept_id="6264" encounter_id="32643" obs_datetime="2013-05-03 00:00:00" value_coded="6261" creator="1" date_created="2013-06-19 10:03:01" voided="0" uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1" />
+	<obs obs_id="273788" person_id="8" concept_id="6264" status = "FINAL" encounter_id="32643" obs_datetime="2013-05-03 00:00:00" value_coded="6261" creator="1" date_created="2013-06-19 10:03:01" voided="0" uuid="c0a0d917-ea43-443c-8924-31fbd88f2410" location_id="1" />
 
-	<obs obs_id="276198" person_id="1005" concept_id="6257" encounter_id="32647" obs_datetime="2013-05-03 00:00:00" value_coded="1066" creator="1" date_created="2013-06-19 10:03:01" voided="0" uuid="9f3e7d16-6480-4f11-aa25-1103fc78ff4e" location_id="2" />
+	<obs obs_id="276198" person_id="1005" concept_id="6257" status = "FINAL" encounter_id="32647" obs_datetime="2013-05-03 00:00:00" value_coded="1066" creator="1" date_created="2013-06-19 10:03:01" voided="0" uuid="9f3e7d16-6480-4f11-aa25-1103fc78ff4e" location_id="2" />
 
-	<obs obs_id="161895" person_id="1007" concept_id="1410" encounter_id="11666" obs_datetime="2013-01-09 00:00:00" location_id="3" value_datetime="2013-01-23 00:00:00" creator="1" date_created="2013-06-15 00:36:54" voided="0" uuid="cc1c4b86-5257-4d80-8a4c-909e363055ba" />
+	<obs obs_id="161895" person_id="1007" concept_id="1410" status = "FINAL" encounter_id="11666" obs_datetime="2013-01-09 00:00:00" location_id="3" value_datetime="2013-01-23 00:00:00" creator="1" date_created="2013-06-15 00:36:54" voided="0" uuid="cc1c4b86-5257-4d80-8a4c-909e363055ba" />
 
-	<obs obs_id="161897" person_id="1008" concept_id="6258" encounter_id="11668" obs_datetime="2013-06-17 00:00:00" value_coded="1066" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="5d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="4" />
+	<obs obs_id="161897" person_id="1008" concept_id="6258" status = "FINAL" encounter_id="11668" obs_datetime="2013-06-17 00:00:00" value_coded="1066" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="5d6371cc-45b5-4731-b6c1-8e69cb882cd7" location_id="4" />
 
-	<obs obs_id="161898" person_id="1010" concept_id="1369" encounter_id="32682" obs_datetime="2019-09-26 00:00:00" value_coded="1065" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="6d6471cc-45b5-4731-b6d1-8e69cb882cd7" location_id="21" />
+	<obs obs_id="161898" person_id="1010" concept_id="1369" status = "FINAL" encounter_id="32682" obs_datetime="2019-09-26 00:00:00" value_coded="1065" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="6d6471cc-45b5-4731-b6d1-8e69cb882cd7" location_id="21" />
 
-	<obs obs_id="161899" person_id="1010" concept_id="6300" encounter_id="32682" obs_datetime="2019-09-26 00:00:00" value_coded="6275" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="6d6371cc-45b5-4731-b6d1-8e69cb882cd7" location_id="21" />
+	<obs obs_id="161899" person_id="1010" concept_id="6300" status = "FINAL" encounter_id="32682" obs_datetime="2019-09-26 00:00:00" value_coded="6275" creator="1" date_created="2013-06-19 12:55:48" voided="0" uuid="6d6371cc-45b5-4731-b6d1-8e69cb882cd7" location_id="21" />
 
-	<obs obs_id="161999" person_id="1004" concept_id="23808" encounter_id="33683" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-27 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="6d6371cc-45b5-5751-b6d1-8e69cb882cd7" location_id="21" /> 
+	<obs obs_id="161999" person_id="1004" concept_id="23808" status = "FINAL" encounter_id="33683" obs_datetime="2019-09-26 00:00:00"  value_datetime="2019-09-27 00:00:00"  creator="1" date_created="2019-09-26 12:55:48" voided="0" uuid="6d6371cc-45b5-5751-b6d1-8e69cb882cd7" location_id="21" />
  
 
 	<!-- testGetNumberOfPatientsWhoInitiatedPreTarvByEndOfPreviousMonthA1 -->
@@ -570,7 +570,7 @@
 			   encounter_datetime="2019-09-26 00:00:00" creator="1" date_created="2019-09-26 09:05:34" voided="0"
 			   uuid="bf769c55-87e7-49d7-930c-5c66afb85025" />
 	<obs obs_id="4129302" person_id="1933" concept_id="23808" encounter_id="522431" obs_datetime="2019-09-26 00:00:00"
-		 location_id="21" value_datetime="2012-05-07 00:00:00" comments="24 de julho" creator="1"
+		 location_id="21" value_datetime="2012-05-07 00:00:00" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-09-26 09:05:35" voided="0" uuid="fc4fa73c-f591-4e6e-9861-a8de95b30cc2"/>
 	<!---->
  
@@ -585,7 +585,7 @@
 			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-12-09 10:00:32" voided="0"
 			   uuid="51eebe5e-109a-47e7-9553-1ba2799c799a" />
 
-	<obs obs_id="9316926" person_id="41584" concept_id="1781" encounter_id="1135178" obs_datetime="2019-12-09 00:00:00"
+	<obs obs_id="9316926" person_id="41584" concept_id="1781" encounter_id="1135178" obs_datetime="2019-12-09 00:00:00" status = "FINAL"
 		 location_id="21" value_datetime="2019-12-16 00:00:00" comments="24 de julho" creator="1"
 		 date_created="2019-12-09 10:00:33" voided="0" uuid="d9dcaadf-3ed1-444e-a8db-61755469e062"/>
 
@@ -602,15 +602,15 @@
 			   uuid="e422ecf9-75dd-4367-b21e-54bccabc4763" />
 
 	<obs obs_id="4267228" person_id="12475" concept_id="1369" encounter_id="539804" obs_datetime="2019-11-12 00:00:00"
-		 location_id="21" value_coded="1065" comments="24 de julho" creator="1"
+		 location_id="21" value_coded="1065" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-18 14:50:26" voided="0" uuid="661aa566-62cb-4781-b0e3-33714979a854"/>
 
 	<obs obs_id="4267221" person_id="12475" concept_id="6300" encounter_id="539804" obs_datetime="2019-12-18 00:00:00"
-		 location_id="21" value_coded="6276"  comments="24 de julho" creator="1"
+		 location_id="21" value_coded="6276"  comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-18 14:50:26" voided="0" uuid="f201f3df-6c0a-4503-a5b3-694ed51e391b"/>
 
 	<obs obs_id="4267223" person_id="12475" concept_id="23891" encounter_id="539804" obs_datetime="2019-11-12 00:00:00"
-		 location_id="21" comments="24 de julho" creator="1" value_datetime="2019-11-19 14:50:26"
+		 location_id="21" comments="24 de julho" creator="1" value_datetime="2019-11-19 14:50:26" status = "FINAL"
 		 date_created="2019-12-18 14:50:26" voided="0" uuid="b1ec862b-e844-4e33-9771-870eaa6509b0"/>
 
 	<patient_program patient_program_id="5618" patient_id="12475" program_id="2" date_enrolled="2013-11-16 00:00:00"
@@ -640,7 +640,7 @@
 		 uuid="7f71ea09-312f-43f1-954a-b1b339e22a25" />
 
 	<obs obs_id="4138576" person_id="12304" concept_id="6273" encounter_id="529881" obs_datetime="2019-11-01 00:00:00"
-		 location_id="21" value_coded="1706" creator="1" date_created="2019-11-11 09:58:52" voided="0"
+		 location_id="21" value_coded="1706" creator="1" date_created="2019-11-11 09:58:52" voided="0" status = "FINAL"
 		 uuid="82d367ac-6e9a-433e-bf46-1ce440cedd52"/>
 
 	<!-- testgetPatientsWithStartDrugs-->
@@ -656,7 +656,7 @@
 				uuid="fa97e4aa-cd01-11ea-9333-2f3f5eafbe00" />
 
 	<obs obs_id="12580" person_id="12580" concept_id="6273" encounter_id="12580" obs_datetime="2019-11-12 00:00:00"
-				location_id="21" value_coded="1256" comments="24 de julho" creator="1"
+				location_id="21" value_coded="1256" comments="24 de julho" creator="1" status = "FINAL"
 				date_created="2019-12-18 14:50:26" voided="0" uuid="02d9b4fa-cd01-11ea-8910-4f5c82d70b6d"/>
 
 
@@ -673,7 +673,7 @@
 	 voided="0" uuid="a34ba966-d1b1-11ea-ae83-0b6039bf3491" location_id="21" />
 
 	<obs obs_id="8000001" person_id="6000001" concept_id="23808" encounter_id="7000001" obs_datetime="2019-10-10 00:00:00"
-	  creator="1" date_created="2013-06-19 12:55:48" voided="0"
+	  creator="1" date_created="2013-06-19 12:55:48" voided="0" status = "FINAL"
 	uuid="a811c4c6-d1b1-11ea-a1e8-8755f07100b9" location_id="21" value_datetime="2019-10-10"/>
 
 	<encounter encounter_id="7000002" encounter_type="6" patient_id="6000001"
@@ -681,7 +681,7 @@
 	 voided="0" uuid="f70cd248-d1d7-11ea-8187-071b40ab3f74" location_id="21" />
 
 	<obs obs_id="8000002" person_id="6000001" concept_id="23761" encounter_id="7000002" obs_datetime="2019-09-27 00:00:00"
-	  creator="1" date_created="2019-09-27 00:00:00" voided="0"
+	  creator="1" date_created="2019-09-27 00:00:00" voided="0" status = "FINAL"
 	uuid="f06ffc76-d1d7-11ea-a8db-dbe601aeecd0" location_id="21" value_coded="1065"/>
 
 
@@ -697,7 +697,7 @@
 	 voided="0" uuid="c2120d80-d220-11ea-b59a-2fde0838d1e5" location_id="21" />
 
 	<obs obs_id="8000003" person_id="6000002" concept_id="23808" encounter_id="7000003" obs_datetime="2019-10-10 00:00:00"
-	  creator="1" date_created="2013-06-19 12:55:48" voided="0"
+	  creator="1" date_created="2013-06-19 12:55:48" voided="0" status = "FINAL"
 	uuid="ccf0677e-d220-11ea-b987-7faf5a26d881" location_id="21" value_datetime="2019-10-10"/>
 
 	<encounter encounter_id="7000004" encounter_type="6" patient_id="6000002"
@@ -705,7 +705,7 @@
 	 voided="0" uuid="6dedc860-d221-11ea-8949-fffbf75223a5" location_id="21" />
 
 	<obs obs_id="8000004" person_id="6000002" concept_id="6122" encounter_id="7000004" obs_datetime="2019-09-27 00:00:00"
-	  creator="1" date_created="2019-09-27 00:00:00" voided="0"
+	  creator="1" date_created="2019-09-27 00:00:00" voided="0" status = "FINAL"
 	uuid="7458d762-d221-11ea-a75e-6765711a9e6a" location_id="21" value_coded="1256"/>
 
 
@@ -721,7 +721,7 @@
 	 voided="0" uuid="97bf2ade-d222-11ea-a46b-a350399183c3" location_id="21" />
 
 	<obs obs_id="8000005" person_id="6000003" concept_id="23808" encounter_id="7000005" obs_datetime="2019-10-10 00:00:00"
-	  creator="1" date_created="2013-06-19 12:55:48" voided="0"
+	  creator="1" date_created="2013-06-19 12:55:48" voided="0" status = "FINAL"
 	uuid="b5236ee6-d222-11ea-81ef-0b2a31540577" location_id="21" value_datetime="2019-10-10"/>
 
 	<encounter encounter_id="7000006" encounter_type="6" patient_id="6000003"
@@ -729,7 +729,7 @@
 	 voided="0" uuid="045ab294-d223-11ea-9612-532fd28d9585" location_id="21" />
 
 	<obs obs_id="8000006" person_id="6000003" concept_id="23758" encounter_id="7000006" obs_datetime="2019-09-27 00:00:00"
-	  creator="1" date_created="2019-09-27 00:00:00" voided="0"
+	  creator="1" date_created="2019-09-27 00:00:00" voided="0" status = "FINAL"
 	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a49" location_id="21" value_coded="1065"/>
 
 	
@@ -745,7 +745,7 @@
 			   uuid="edd4fb91-d0bd-11ea-9518-0242ac120002" />
 
 	<obs obs_id="9584632" person_id="5642" concept_id="5096" encounter_id="958624" obs_datetime="2019-12-09 00:00:00"
-		 location_id="21" value_datetime="2019-08-16 00:00:00" comments="24 de julho" creator="1"
+		 location_id="21" value_datetime="2019-08-16 00:00:00" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-09 10:00:33" voided="0" uuid="f661d190-d0bd-11ea-9518-0242ac120002"/>
 
 		 <!--testGetNumberOfPatientsTransferredFromAnotherHealthFacilityByEndOfPreviousMonthB12-->
@@ -760,11 +760,11 @@
 			   uuid="443a22bb-d0c0-11ea-9518-0242ac120002" />
 
 	<obs obs_id="988562" person_id="1563" concept_id="1369" value_coded="1065" encounter_id="76526" obs_datetime="2019-12-09 00:00:00"
-		 location_id="21" comments="24 de julho" creator="1"
+		 location_id="21" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-09 10:00:33" voided="0" uuid="4cb9ac19-d0c0-11ea-9518-0242ac120002"/>
 
 	<obs obs_id="988563" person_id="1563" concept_id="6300" value_coded="6276" encounter_id="76526" obs_datetime="2019-12-09 00:00:00"
-		 location_id="21" comments="24 de julho" creator="1"
+		 location_id="21" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-09 10:00:33" voided="0" uuid="53321af4-d0c0-11ea-9518-0242ac120002"/>
 
 		 <!--testGetPatientsPreTarvScreenedTB-->
@@ -779,7 +779,7 @@
 			   uuid="f0ed57bb-d16f-11ea-9518-0242ac120002" />
 
 	<obs obs_id="256415" person_id="86526" concept_id="23808" value_datetime="2019-11-09 00:00:00" encounter_id="462266" 
-		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-09 10:00:33" voided="0" uuid="b89338ac-d181-11ea-9518-0242ac120002"/>
 
 		 <encounter encounter_id="462267" encounter_type="6" patient_id="86526" location_id="21"
@@ -787,7 +787,7 @@
 			   uuid="936bb231-d170-11ea-9518-0242ac120002" />
 
 	<obs obs_id="256416" person_id="86526" concept_id="23758" value_coded="1065" encounter_id="462267" 
-		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-09 10:00:33" voided="0" uuid="99891203-d170-11ea-9518-0242ac120002"/>
 		 
 		 <!--testGetPatientsWhoInitiatedPreTarvDuringCurrentMonthAndScreenedTbC1 & getNumberOfPatientTbScreenedInFirstEncounter-->
@@ -802,7 +802,7 @@
 			   uuid="ea2e7511-d181-11ea-9518-0242ac120002" />
 
 	<obs obs_id="795216" encounter_id="462145"  person_id="6254" concept_id="23808" value_datetime="2019-11-09 00:00:00" 
-		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-09 10:00:33" voided="0" uuid="f165b77f-d181-11ea-9518-0242ac120002"/>
 
 		 <encounter encounter_id="462146" encounter_type="6" patient_id="6254" location_id="21"
@@ -810,7 +810,7 @@
 			   uuid="3f68f883-d185-11ea-9518-0242ac120002" />
 
 	<obs obs_id="795217" encounter_id="462146"  person_id="6254" concept_id="23758" value_coded="1065" 
-		obs_datetime="2019-09-21 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		obs_datetime="2019-09-21 00:00:00" location_id="21" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-09-21 10:00:33" voided="0" uuid="45146bd3-d185-11ea-9518-0242ac120002"/>
 
 		<!--testGetPatientsPreTarvScreenedTB-->
@@ -825,7 +825,7 @@
 			   uuid="ed9cb4ae-d18e-11ea-9518-0242ac120002" />
 
 	<obs obs_id="166598" person_id="15236" concept_id="23808" value_datetime="2019-11-09 00:00:00"  encounter_id="354898" 
-		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-09 10:00:33" voided="0" uuid="f6ba84ff-d18e-11ea-9518-0242ac120002"/>
 
 	<encounter encounter_id="354899" encounter_type="6" patient_id="15236" location_id="21"
@@ -833,7 +833,7 @@
 			   uuid="8a93194d-d18c-11ea-9518-0242ac120002" />
 
 	<obs obs_id="166599" person_id="15236" concept_id="6122" value_coded="1256" encounter_id="354899" 
-		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1"
+		obs_datetime="2019-12-09 00:00:00" location_id="21" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-09 10:00:33" voided="0" uuid="91bfa633-d18c-11ea-9518-0242ac120002"/>
 
 	<!--PatientsWithTBScreening-->
@@ -852,15 +852,15 @@
 			   uuid="f18bc002-2d57-418b-b6f4-8022c4f64bdf" />
 
 	<obs obs_id="9000006" person_id="23264" concept_id="23758" encounter_id="403205" obs_datetime="2019-12-09 00:00:00"
-	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0" status = "FINAL"
 	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a10" location_id="21" value_coded="1065"/>
 
 	<obs obs_id="9000007" person_id="23264" concept_id="23758" encounter_id="403205" obs_datetime="2019-12-09 00:00:00"
-	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0" status = "FINAL"
 	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a11" location_id="21" value_coded="1066"/>
 
 	<obs obs_id="9000008" person_id="23264" concept_id="1268" encounter_id="403205" obs_datetime="2019-12-09 00:00:00"
-	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0" status = "FINAL"
 	uuid="0e6ffe7e-d223-11ea-acaa-8fdc7c2a8a12" location_id="21"/>
 
 	<!-- getNumberOfActivePatientsInArtAtTheEndOfTheCurrentMonthHavingVlTestResults-->
@@ -881,7 +881,7 @@
 			   uuid="51eebe5e-109a-47e7-9553-1ba2799c799k" />
 	
 	<obs obs_id="9316975" person_id="25000" concept_id="1305" encounter_id="2500012" obs_datetime="2019-12-09 00:00:00"
-		location_id="21" comments="24 de julho" creator="1"
+		location_id="21" comments="24 de julho" creator="1" status = "FINAL"
 		date_created="2019-12-09 10:00:33" voided="0" uuid="7f9bf9a4-165b-4b52-8f91-9eeac6fca4f8"/>
 
 	<!-- getNumberOfPatientsWhoHadClinicalAppointmentDuringTheReportingMonthF1 -->
@@ -895,15 +895,15 @@
 		uuid="71eebe5e-109a-47e7-9553-1ba2799c799p" />
 
 	<obs obs_id="1700000" person_id="25000" concept_id="23758" encounter_id="2500014" obs_datetime="2019-12-09 00:00:00"
-	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0" status = "FINAL"
 	uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8a10" location_id="21" value_coded="1065"/>
 
 	<obs obs_id="1700001" person_id="25000" concept_id="23758" encounter_id="2500014" obs_datetime="2019-12-09 00:00:00"
-	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0" status = "FINAL"
 	uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8a11" location_id="21" value_coded="1066"/>
 
 	<obs obs_id="1700002" person_id="25000" concept_id="1268" encounter_id="2500014" obs_datetime="2019-12-09 00:00:00"
-	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0" status = "FINAL"
 	uuid="8e6ffe7e-d223-11ea-acaa-8fdc7c2a8a12" location_id="21"/>
 
 	<!-- getPatientsRegisteredAsTransferredInDuringTheStatisticalYear -->
@@ -912,15 +912,15 @@
 		uuid="72eebe5e-109a-47e7-9553-1ba2799c799p" />
 
 	<obs obs_id="1700003" person_id="25000" concept_id="1369" encounter_id="2500015" obs_datetime="2019-12-09 00:00:00"
-	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0" status = "FINAL"
 	uuid="8e6ffe7e-d223-11ea-acaa-8fdc7c2a8a1p" location_id="21" value_coded="1065" />
 
 	<obs obs_id="1700004" person_id="25000" concept_id="23866" encounter_id="2500015" obs_datetime="2019-12-09 00:00:00"
-	  creator="1" date_created="2019-12-09 00:00:00" voided="0"
+	  creator="1" date_created="2019-12-09 00:00:00" voided="0" status = "FINAL"
 		uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8a70" location_id="21" value_coded="6276" />
 
 	<obs obs_id="1700005" person_id="25000" concept_id="23891" encounter_id="2500015" obs_datetime="2019-12-09 00:00:00"
-		creator="1" date_created="2019-12-09 00:00:00" voided="0"
+		creator="1" date_created="2019-12-09 00:00:00" voided="0" status = "FINAL"
 		uuid="7e6ffe7e-d223-11ea-acaa-8fdc7c2a8c70" location_id="21" value_coded="6276" />
 
 	<!-- getExclusionForF3 -->	
@@ -936,49 +936,49 @@
 			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-10-09 10:00:32" voided="0"
 			   uuid="573e2088-39ff-11eb-a699-076167a716eb" />
 	<obs obs_id="90900091" person_id="999901" concept_id="6317" encounter_id="10099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="5f952998-39ff-11eb-9888-d75808b75658" location_id="21" value_coded="1065" />
 
 	<encounter encounter_id="10099222" encounter_type="35" patient_id="999901" location_id="21"
 			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-10-09 10:00:32" voided="0"
 			   uuid="3ddd4b42-3a03-11eb-87d7-bbc5b36bafd4" />
 	<obs obs_id="90900092" person_id="999901" concept_id="6318" encounter_id="10099222" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="34c2d234-3a03-11eb-a49b-6bfc9f5708c7" location_id="21" value_coded="1065" />
 
 	<encounter encounter_id="10099223" encounter_type="35" patient_id="999901" location_id="21"
 			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-10-09 10:00:32" voided="0"
 			   uuid="2afe3a7c-3a03-11eb-9a6c-2f06a1e2f9a9" />
 	<obs obs_id="90900093" person_id="999901" concept_id="6319" encounter_id="10099223" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="2701612e-3a03-11eb-bf2f-2b7ae2532b44" location_id="21" value_coded="1065" />
 
 	<encounter encounter_id="10099224" encounter_type="35" patient_id="999901" location_id="21"
 			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-10-09 10:00:32" voided="0"
 			   uuid="1d8f88a0-3a03-11eb-9413-872fe8c4c399" />
 	<obs obs_id="90900094" person_id="999901" concept_id="6320" encounter_id="10099224" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="17aa271a-3a03-11eb-9a3e-df9ed829c60a" location_id="21" value_coded="1065" />
 
 	<encounter encounter_id="10099225" encounter_type="35" patient_id="999901" location_id="21"
 			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-10-09 10:00:32" voided="0"
 			   uuid="114b3814-3a03-11eb-a09c-a3220015abd2" />
 	<obs obs_id="90900095" person_id="999901" concept_id="5271" encounter_id="10099225" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="0ab0c2d0-3a03-11eb-a904-9308d5de2c24" location_id="21" value_coded="1065" />
 
 	<encounter encounter_id="10099226" encounter_type="35" patient_id="999901" location_id="21"
 			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-10-09 10:00:32" voided="0"
 			   uuid="043b64b4-3a03-11eb-b381-b3cdbefa6862" />
 	<obs obs_id="90900096" person_id="999901" concept_id="6321" encounter_id="10099226" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="febbae22-3a02-11eb-a221-87a7c2d7d0ef" location_id="21" value_coded="1065" />
 
 	<encounter encounter_id="10099227" encounter_type="35" patient_id="999901" location_id="21"
 			   encounter_datetime="2019-12-09 00:00:00" creator="1" date_created="2019-10-09 10:00:32" voided="0"
 			   uuid="f3ae0930-3a02-11eb-990f-13cdb53d1262" />
 	<obs obs_id="90900097" person_id="999901" concept_id="6322" encounter_id="10099227" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="ed421b4a-3a02-11eb-841f-b37f5f4ec65d" location_id="21" value_coded="1065" />
 
 
@@ -991,25 +991,25 @@
 			   uuid="a2854c28-3a0a-11eb-8be6-9bc3965650aa" />
 
 	<obs obs_id="90800091" person_id="999902" concept_id="6317" encounter_id="20099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="f580751a-3a0a-11eb-96d9-bbd149e440f7" location_id="21" value_coded="1065" />
 	<obs obs_id="90800092" person_id="999902" concept_id="6318" encounter_id="20099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="fd96a77e-3a0a-11eb-8732-6b44cb1c443c" location_id="21" value_coded="1065" />
 	<obs obs_id="90800093" person_id="999902" concept_id="6319" encounter_id="20099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="080bdb02-3a0b-11eb-8937-df6ab18dd8d3" location_id="21" value_coded="1065" />
 	<obs obs_id="90800094" person_id="999902" concept_id="6320" encounter_id="20099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="0fae600a-3a0b-11eb-820a-637149e39978" location_id="21" value_coded="1065" />
 	<obs obs_id="90800095" person_id="999902" concept_id="5271" encounter_id="20099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="16229410-3a0b-11eb-889f-2777d2364ede" location_id="21" value_coded="1065" />
 	<obs obs_id="90800096" person_id="999902" concept_id="6321" encounter_id="20099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="1ca04c56-3a0b-11eb-abac-bf66b4f70d2d" location_id="21" value_coded="1065" />
 	<obs obs_id="90800097" person_id="999902" concept_id="6322" encounter_id="20099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="2172ffbc-3a0b-11eb-8a76-1fb48ecc33b0" location_id="21" value_coded="1065" />
 
 
@@ -1020,10 +1020,10 @@
 			   uuid="9b5d2a3c-3a15-11eb-85d7-47cef605f2cd" />
 
 	<obs obs_id="90400091" person_id="999904" concept_id="6317" encounter_id="40099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="dcc68b80-3a15-11eb-a95f-cfd6fb5e8154" location_id="21" value_coded="1065" />
 	<obs obs_id="90400092" person_id="999904" concept_id="6318" encounter_id="40099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="e32f4fd4-3a15-11eb-8076-cb401073899d" location_id="21" value_coded="1065" />
 
 
@@ -1032,10 +1032,10 @@
 			   uuid="a19b6ce2-3a15-11eb-91bc-77d4dcf54e76" />
 
 	<obs obs_id="90400093" person_id="999904" concept_id="6319" encounter_id="40099222" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="30feca8c-3a16-11eb-936e-0fb9dd9326e2" location_id="21" value_coded="1065" />
 	<obs obs_id="90400094" person_id="999904" concept_id="6320" encounter_id="40099222" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="2b3c2856-3a16-11eb-bba2-8f35c324fa8f" location_id="21" value_coded="1065" />
 
 
@@ -1044,13 +1044,13 @@
 			   uuid="a813f206-3a15-11eb-82c7-2fbccea8a2a1" />
 
 	<obs obs_id="90400095" person_id="999904" concept_id="5271" encounter_id="40099223" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="bb4b1efc-3a16-11eb-9f35-9f9dec98f7dd" location_id="21" value_coded="1065" />
 	<obs obs_id="90400096" person_id="999904" concept_id="6321" encounter_id="40099223" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="b0d1653a-3a16-11eb-99c8-7f3b187d5b8c" location_id="21" value_coded="1065" />
 	<obs obs_id="90400097" person_id="999904" concept_id="6322" encounter_id="40099223" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="9af7a972-3a16-11eb-911e-1f97a8738ad4" location_id="21" value_coded="1065" />
 
 	<!-- scenario 4 where patient 999903 did not complete PP1 to PP7 - this should not be  included in the cohort-->
@@ -1060,10 +1060,10 @@
 			   uuid="a2f574fa-3a0d-11eb-a8b7-1bb0b3e86b52" />
 
 	<obs obs_id="9070096" person_id="999903" concept_id="6321" encounter_id="30099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="d584c380-3a0d-11eb-a9ac-bfac6b1dfc2e" location_id="21" value_coded="1065" />
 	<obs obs_id="9070097" person_id="999903" concept_id="6322" encounter_id="30099221" obs_datetime="2019-12-09 00:00:00"
-		 creator="1" date_created="2019-10-09 00:00:00" voided="0"
+		 creator="1" date_created="2019-10-09 00:00:00" voided="0" status = "FINAL"
 		 uuid="e12f77c0-3a0d-11eb-8a75-7bd53c0a6e69" location_id="21" value_coded="1065" />
 
 

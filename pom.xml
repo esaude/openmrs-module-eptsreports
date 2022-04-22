@@ -40,6 +40,7 @@
 
 	<dependencyManagement>
 		<dependencies>
+
 			<!-- Start of module dependacy -->
 			<dependency>
 				<groupId>org.openmrs.module</groupId>
@@ -135,6 +136,26 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>3.0.0-M5</version>
+				<configuration>
+
+					<classpathDependencyExcludes>
+						<classpathDependencyExclude>org.openmrs.module:calculation-api:test-jar</classpathDependencyExclude>
+					</classpathDependencyExcludes>
+
+					<dependenciesToScan>
+						<dependency>org.openmrs.module.eptsreports</dependency>
+					</dependenciesToScan>
+					<excludes>
+						<exclude>**/LiveTests.java</exclude>
+					</excludes>
+
+				</configuration>
+			</plugin>
+
 			<!-- Code Coverage Tool -->
 			<plugin>
 				<groupId>org.jacoco</groupId>
@@ -161,8 +182,9 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<configuration>
-						<target>1.7</target>
-						<source>1.7</source>
+						<target>1.8</target>
+						<source>1.8</source>
+						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -174,7 +196,9 @@
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-dependency-plugin</artifactId>
 					<version>2.4</version>
+
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-release-plugin</artifactId>

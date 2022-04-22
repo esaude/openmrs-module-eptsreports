@@ -6,7 +6,9 @@ import org.openmrs.api.context.Context;
 import org.openmrs.api.context.ContextAuthenticationException;
 import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.test.BaseContextSensitiveTest;
+import org.springframework.test.context.ContextConfiguration;
 
+@ContextConfiguration(locations = "/TestingApplicationContext.xml")
 public abstract class DefinitionsFGHLiveTest extends DefinitionsTest {
   /** @see BaseContextSensitiveTest#useInMemoryDatabase() */
   @Override
@@ -19,6 +21,9 @@ public abstract class DefinitionsFGHLiveTest extends DefinitionsTest {
      */
     return false;
   }
+
+  @Override
+  public void executeDataSet(String datasetFilename) {}
 
   protected abstract String username();
 

@@ -13,9 +13,11 @@
  */
 package org.openmrs.module.eptsreports.reporting.cohort.evaluator;
 
-import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import org.openmrs.Cohort;
+import org.openmrs.Patient;
 import org.openmrs.annotation.Handler;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -28,7 +30,6 @@ import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.evaluator.CohortDefinitionEvaluator;
 import org.openmrs.module.reporting.evaluation.EvaluationContext;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
-import org.openmrs.module.reportingcompatibility.service.ReportService;
 
 /** Evaluator for calculation based cohorts */
 @Handler(supports = CalculationCohortDefinition.class)
@@ -79,13 +80,11 @@ public class CalculationCohortDefinitionEvaluator implements CohortDefinitionEva
   }
 
   private Cohort getAllPatientsCohort() {
-    ReportService reportService = Context.getService(ReportService.class);
-    Set<Integer> ids = new HashSet<Integer>();
-    for (Integer values : reportService.getAllPatients().getMemberIds()) {
-      if (values != null) {
-        ids.add(values);
-      }
-    }
+
+    List<Patient> patients = Context.getPatientService().getAllPatients();
+    Set<Integer> ids =
+        patients.stream().map(patient -> patient.getPatientId()).collect(Collectors.toSet());
+
     return new Cohort("All patients", "All Patients returned from the DB", ids);
   }
 }
