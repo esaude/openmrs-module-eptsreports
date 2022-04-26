@@ -614,4 +614,19 @@ public class TbMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.dataEstadoDaProfilaxiaConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 165189</b>
+   *
+   * <p><b>Name:</b> DETECTED MTB PRESENCE
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getTestXpertMtbUuidConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.testXpertMtbConceptUuid");
+    return getConcept(uuid);
+  }
 }

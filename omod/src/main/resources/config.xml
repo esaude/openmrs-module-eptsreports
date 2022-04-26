@@ -3280,6 +3280,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>eptsreports.testXpertMtbConceptUuid</property>
+		<defaultValue>8dc1afbd-c10b-4834-a327-396c73848c73</defaultValue>
+		<description>
+			DETECTED MTB PRESENCE
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
