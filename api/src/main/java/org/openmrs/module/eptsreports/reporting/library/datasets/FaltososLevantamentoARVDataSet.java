@@ -1,7 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.FaltososLevantamentoARVCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.*;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
@@ -12,6 +10,9 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Component
 public class FaltososLevantamentoARVDataSet extends BaseDataSet {
@@ -186,6 +187,57 @@ public class FaltososLevantamentoARVDataSet extends BaseDataSet {
   }
 
   private List<ColumnParameters> getColumnsForChildren() {
+
+    ColumnParameters lessThan10 =
+        new ColumnParameters(
+            "under10",
+            "under 10 year ",
+            EptsCommonDimensionKey.of(DimensionKeyForAge.bellow10Years).getDimensions(),
+            "lessThan10");
+
+    ColumnParameters lessTha1Female =
+        new ColumnParameters(
+            "under10Female",
+            "under 10 years Female",
+            EptsCommonDimensionKey.of(DimensionKeyForGender.female)
+                .and(DimensionKeyForAge.bellow10Years)
+                .getDimensions(),
+            "lessThan10Female");
+
+    ColumnParameters lessThan10Male =
+        new ColumnParameters(
+            "under10Male",
+            "under 10 years Male",
+            EptsCommonDimensionKey.of(DimensionKeyForGender.male)
+                .and(DimensionKeyForAge.bellow10Years)
+                .getDimensions(),
+            "lessThan10Male");
+
+    ColumnParameters between10And14 =
+        new ColumnParameters(
+            "between10and14",
+            "between 10 and 14 years ",
+            EptsCommonDimensionKey.of(DimensionKeyForAge.between10And14Years).getDimensions(),
+            "between10And14");
+
+    ColumnParameters between10And14Female =
+        new ColumnParameters(
+            "between10And14Female",
+            " between 10 And 14 Female",
+            EptsCommonDimensionKey.of(DimensionKeyForGender.female)
+                .and(DimensionKeyForAge.between10And14Years)
+                .getDimensions(),
+            "between10And14Female");
+
+    ColumnParameters between10And14Male =
+        new ColumnParameters(
+            "between10And14Male",
+            "between 10 And 14 Male",
+            EptsCommonDimensionKey.of(DimensionKeyForGender.male)
+                .and(DimensionKeyForAge.between10And14Years)
+                .getDimensions(),
+            "between10And14Male");
+
     ColumnParameters lessThan15 =
         new ColumnParameters(
             "under15",
@@ -209,10 +261,70 @@ public class FaltososLevantamentoARVDataSet extends BaseDataSet {
                 .getDimensions(),
             "lessThan15Male");
 
-    return Arrays.asList(lessThan15, lessTha15Female, lessThan15Male);
+    return Arrays.asList(
+        lessThan10,
+        lessTha1Female,
+        lessThan10Male,
+        between10And14,
+        between10And14Female,
+        between10And14Male,
+        lessThan15,
+        lessTha15Female,
+        lessThan15Male);
   }
 
   private List<ColumnParameters> getColumnsForAdult() {
+
+    ColumnParameters between15And24 =
+        new ColumnParameters(
+            "between15And24",
+            "between 15 And 24",
+            EptsCommonDimensionKey.of(DimensionKeyForAge.between15And24Years).getDimensions(),
+            "between15And24");
+
+    ColumnParameters between15And24Female =
+        new ColumnParameters(
+            "between15And24Female",
+            "between 15 And 24",
+            EptsCommonDimensionKey.of(DimensionKeyForGender.female)
+                .and(DimensionKeyForAge.between15And24Years)
+                .getDimensions(),
+            "between15And24Female");
+
+    ColumnParameters between15And24Male =
+        new ColumnParameters(
+            "between15And24Male",
+            "between 15 And 24 Male",
+            EptsCommonDimensionKey.of(DimensionKeyForGender.male)
+                .and(DimensionKeyForAge.between15And24Years)
+                .getDimensions(),
+            "between15And24Male");
+
+    ColumnParameters between25And49 =
+        new ColumnParameters(
+            "between25And49",
+            "between 25 And 49",
+            EptsCommonDimensionKey.of(DimensionKeyForAge.between25And49Years).getDimensions(),
+            "between25And49");
+
+    ColumnParameters between25And49Female =
+        new ColumnParameters(
+            "between25And49Female",
+            "between 25 And 49",
+            EptsCommonDimensionKey.of(DimensionKeyForGender.female)
+                .and(DimensionKeyForAge.between25And49Years)
+                .getDimensions(),
+            "between25And49Female");
+
+    ColumnParameters between25And49Male =
+        new ColumnParameters(
+            "between25And49Male",
+            "between 25 And 49 Male",
+            EptsCommonDimensionKey.of(DimensionKeyForGender.male)
+                .and(DimensionKeyForAge.between25And49Years)
+                .getDimensions(),
+            "between25And49Male");
+
     ColumnParameters greaterThan15 =
         new ColumnParameters(
             "EqualOrAbove15",
@@ -236,6 +348,41 @@ public class FaltososLevantamentoARVDataSet extends BaseDataSet {
                 .getDimensions(),
             "greaterThan15Male");
 
-    return Arrays.asList(greaterThan15, greaterTha15Female, greaterThan15Male);
+    ColumnParameters greaterThan50 =
+        new ColumnParameters(
+            "EqualOrAbove50",
+            "Equal above 50",
+            EptsCommonDimensionKey.of(DimensionKeyForAge.overOrEqualTo50Years).getDimensions(),
+            "greaterThan50");
+    ColumnParameters greaterTha50Female =
+        new ColumnParameters(
+            "above50Female",
+            "above 50 female",
+            EptsCommonDimensionKey.of(DimensionKeyForGender.female)
+                .and(DimensionKeyForAge.overOrEqualTo50Years)
+                .getDimensions(),
+            "greaterThan50Female");
+    ColumnParameters greaterThan50Male =
+        new ColumnParameters(
+            "above50Male",
+            "above50Male",
+            EptsCommonDimensionKey.of(DimensionKeyForGender.male)
+                .and(DimensionKeyForAge.overOrEqualTo50Years)
+                .getDimensions(),
+            "greaterThan50Male");
+
+    return Arrays.asList(
+        between15And24,
+        between15And24Female,
+        between15And24Male,
+        between25And49,
+        between25And49Female,
+        between25And49Male,
+        greaterThan15,
+        greaterTha15Female,
+        greaterThan15Male,
+        greaterThan50,
+        greaterTha50Female,
+        greaterThan50Male);
   }
 }
