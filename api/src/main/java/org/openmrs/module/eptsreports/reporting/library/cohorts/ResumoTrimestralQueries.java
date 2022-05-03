@@ -1,10 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import org.apache.commons.text.StringSubstitutor;
-import org.springframework.stereotype.Component;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
+import org.springframework.stereotype.Component;
 
 @Component
 public class ResumoTrimestralQueries {

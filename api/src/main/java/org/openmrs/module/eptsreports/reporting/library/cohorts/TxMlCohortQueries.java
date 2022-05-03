@@ -70,7 +70,7 @@ public class TxMlCohortQueries {
     CohortDefinition missedAppointment = getAllPatientsWhoMissedNextAppointment();
     CohortDefinition noScheduled = txRttCohortQueries.getSecondPartFromITT();
     CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
-    CohortDefinition transferredOut = getTransferredOutPatientsCompositionWithoutVisitCard();
+    CohortDefinition transferredOut = getTransferredOutPatientsComposition();
     String mappings = "onOrBefore=${endDate},location=${location}";
     String mappings2 = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     CohortDefinition dead = getDeadPatientsComposition();

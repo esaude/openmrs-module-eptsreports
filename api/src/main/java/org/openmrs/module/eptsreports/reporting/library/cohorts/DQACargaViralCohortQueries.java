@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -12,10 +15,6 @@ import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefini
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class DQACargaViralCohortQueries {
@@ -69,8 +68,11 @@ public class DQACargaViralCohortQueries {
    * <b>Technical Specs</b>
    *
    * <blockquote>
+   *
    * CohortDefinition to apply the general base cohort to all indicators from DQA SESP Sheet
+   *
    * </blockquote>
+   *
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getBaseCohortSesp(SespCompositionString compositionString) {
@@ -137,8 +139,10 @@ public class DQACargaViralCohortQueries {
    * <b>Technical Specs</b>
    *
    * <blockquote>
-   * This Enum will return the right composition depending on the content
-   * of the compositionString variable on SespBaseCohort
+   *
+   * This Enum will return the right composition depending on the content of the compositionString
+   * variable on SespBaseCohort
+   *
    * </blockquote>
    */
   public enum SespCompositionString {
