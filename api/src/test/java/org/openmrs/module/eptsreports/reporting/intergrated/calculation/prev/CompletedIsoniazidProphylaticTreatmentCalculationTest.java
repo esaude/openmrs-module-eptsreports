@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.intergrated.calculation.prev;
 
+import java.util.*;
 import org.apache.commons.lang3.time.DateUtils;
 import org.junit.Assert;
 import org.junit.Before;
@@ -14,8 +15,6 @@ import org.openmrs.calculation.result.SimpleResult;
 import org.openmrs.module.eptsreports.reporting.calculation.BooleanResult;
 import org.openmrs.module.eptsreports.reporting.calculation.prev.CompletedIsoniazidProphylaticTreatmentCalculation;
 import org.openmrs.module.eptsreports.reporting.intergrated.calculation.BasePatientCalculationTest;
-
-import java.util.*;
 
 @Ignore
 public class CompletedIsoniazidProphylaticTreatmentCalculationTest

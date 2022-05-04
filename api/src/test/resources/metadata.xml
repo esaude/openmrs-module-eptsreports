@@ -332,6 +332,10 @@
 	<concept concept_id="23865" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2019-07-09 12:53:56" changed_by="1" date_changed="2019-07-09 12:53:56" uuid="e07fb227-7a5a-4edf-93e8-7633c9fd1ea0" />
 	<concept_name concept_id="23865" name="ART PICKUP" locale="en" creator="1" date_created="2019-07-09 12:53:56" concept_name_id="33689" voided="0" uuid="02dd0763-2269-431d-8531-fe438c15d0a1" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
 
+	<concept concept_id="23821" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2019-07-09 12:53:56" changed_by="1" date_changed="2019-07-09 12:53:56" uuid="98859df4-c6d1-11ec-a801-3b9c6cc2e1d5" />
+	<concept_name concept_id="23821" name="Data e hora da colheita da amostra" locale="en" creator="1" date_created="2019-07-09 12:53:56" concept_name_id="33655" voided="0" uuid="b438b694-c6d1-11ec-9749-af45c76f0f88" concept_name_type="FULLY_SPECIFIED" locale_preferred="1" />
+
+
 	<concept_set concept_set_id="8777008" concept_id="7777008" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777008"/>
   	<concept_set concept_set_id="8777009" concept_id="7777009" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777009"/>
   	<concept_set concept_set_id="8777010" concept_id="7777010" concept_set="7777007" sort_weight="1.0" creator="1" date_created="2019-01-29 12:38:58.0" uuid="fdefaa94-3f99-464c-8b1f-3e1d18777010"/>
@@ -428,6 +432,7 @@
 	<encounter_type encounter_type_id="25" name="TUBERCULOSE: LIVRO" description="Livro de Registo de Doentes com Tuberculose" creator="1" date_created="2009-04-21 14:59:55" retired="0" uuid="e2791b98-1d5f-11e0-b929-000c29ad1d07" />
 	<encounter_type encounter_type_id="26" name="TUBERCULOSE: PROCESSO" description="TRATAMENTO DE TUBERCULOSE" creator="1" date_created="2009-05-08 08:32:07" retired="0" uuid="e2791cc4-1d5f-11e0-b929-000c29ad1d07" />
 	<encounter_type encounter_type_id="20" name="TUBERCULOSE: RASTREIO" description="TUBURCULOSE: RASTREIO" creator="1" date_created="2008-11-20 14:51:46" retired="0" uuid="e27915a8-1d5f-11e0-b929-000c29ad1d07" />
+	<encounter_type encounter_type_id="51" name="FSR - Carga Viral" description="FSR - Carga Viral" creator="1" date_created="2008-11-20 14:51:46" retired="0" uuid="51538a9a-c6d1-11ec-8547-6376d39cc614" />
 
 
 	<global_property property="eptsreports.hivViralLoadConceptUuid" property_value="e1d6247e-1d5f-11e0-b929-000c29ad1d07" uuid="a09ab2c5-878e-4905-b25d-578417777001"/>
@@ -698,5 +703,7 @@
 	<global_property property="eptsreports.who3AdultStageUuid" property_value="e1d9077a-1d5f-11e0-b929-000c29ad1d07" description="UUID for the     WHO STAGE 3 ADULT  concept" uuid="2f109e37-72ca-44e6-bbea-b2f738d9272c" />
 	<global_property property="eptsreports.who4AdultStageUuid" property_value="e1d90888-1d5f-11e0-b929-000c29ad1d07" description="UUID for the     WHO STAGE 4 ADULT  concept" uuid="90691d44-0a23-42bc-8fb8-2ec9803eb41f" />
 	<global_property property="eptsreports.whoGaveInformation" property_value="e1e09d8c-1d5f-11e0-b929-000c29ad1d07" description="UUID for the REASON PATIENT NOT FOUND PROVIDED BY concept" uuid="578bbc77-5aea-4d0d-9133-1f887cf5936f" />
+	<global_property property="eptsreports.sampleCollectionDateAndTimeUuid" property_value="98859df4-c6d1-11ec-a801-3b9c6cc2e1d5" description="UUID for Sample collection date and time" uuid="18596b6c-c6d4-11ec-9856-ff6f63aff087" />
+	<global_property property="eptsreports.fsrEncounterType" property_value="51538a9a-c6d1-11ec-8547-6376d39cc614" description="UUID for Sample collection date and time" uuid="226a7b0a-c6d4-11ec-b070-bb8587aeb4d0" />
 
 </dataset>

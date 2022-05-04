@@ -118,7 +118,9 @@ public class TxNewCohortQueries {
             hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getDateOfLastMenstruationConcept().getConceptId(),
+            hivMetadata.getPregnantConcept().getConceptId(),
+            hivMetadata.getFsrEncounterType().getEncounterTypeId(),
+            hivMetadata.getSampleCollectionDateAndTime().getConceptId(),
             hivMetadata.getPtvEtvProgram().getProgramId(),
             hivMetadata.getCriteriaForArtStart().getConceptId(),
             hivMetadata.getBPlusConcept().getConceptId(),
@@ -207,6 +209,8 @@ public class TxNewCohortQueries {
             hivMetadata.getNumberOfWeeksPregnant().getConceptId(),
             hivMetadata.getBPlusConcept().getConceptId(),
             hivMetadata.getDateOfLastMenstruationConcept().getConceptId(),
+            hivMetadata.getSampleCollectionDateAndTime().getConceptId(),
+            hivMetadata.getFsrEncounterType().getEncounterTypeId(),
             dsd));
     return cd;
   }

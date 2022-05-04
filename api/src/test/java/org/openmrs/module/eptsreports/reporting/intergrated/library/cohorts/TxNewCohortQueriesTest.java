@@ -2,13 +2,7 @@ package org.openmrs.module.eptsreports.reporting.intergrated.library.cohorts;
 
 import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.openmrs.Location;
@@ -20,6 +14,10 @@ import org.openmrs.module.reporting.common.DateUtil;
 import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TxNewCohortQueriesTest extends DefinitionsTest {
 

@@ -26,7 +26,9 @@ public class PregnantQueries {
       int adultInitialEncounter,
       int adultSegEncounter,
       int fichaResumo,
-      int lastMenstrualPeriod,
+      int pregnant,
+      int fsr,
+      int sampleCollectDateAndTime,
       int etvProgram,
       int startARVCriteriaConcept,
       int bPLusConcept,
@@ -125,10 +127,15 @@ public class PregnantQueries {
             + "     INNER JOIN person pe ON p.patient_id=pe.person_id "
             + "     INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + "     INNER JOIN obs o ON e.encounter_id=o.encounter_id "
-            + "      WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND concept_id= "
-            + lastMenstrualPeriod
+            + "     INNER JOIN obs ob ON e.encounter_id=ob.encounter_id "
+            + "      WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND o.concept_id= "
+            + sampleCollectDateAndTime
+            + " AND ob.concept_id = "
+            + pregnant
+            + " AND ob.value_coded = "
+            + yesConcept
             + "     AND e.encounter_type = "
-            + adultSegEncounter
+            + fsr
             + "     AND pe.gender='F' AND o.value_datetime BETWEEN :startDate AND :endDate GROUP BY p.patient_id) as pregnant "
             + "     GROUP BY patient_id) max_pregnant "
             + "     LEFT JOIN "
@@ -274,6 +281,8 @@ public class PregnantQueries {
       int weeksPregnantConcept,
       int bPLusConcept,
       int lastMenstrualPeriod,
+      int sampleCollectionDate,
+      int fsr,
       boolean dsd) {
 
     String query =
@@ -324,7 +333,22 @@ public class PregnantQueries {
             + ","
             + adultSegEncounter
             + ") AND e.encounter_datetime BETWEEN :onOrAfter AND :onOrBefore AND e.location_id=:location AND pe.gender='F' "
-            + " GROUP BY p.patient_id"
+            + " GROUP BY p.patient_id "
+            + " UNION "
+            + "     SELECT p.patient_id,  MAX(o.value_datetime) AS last_date  FROM patient p "
+            + "     INNER JOIN person pe ON p.patient_id=pe.person_id "
+            + "     INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + "     INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + "     INNER JOIN obs ob ON e.encounter_id=ob.encounter_id "
+            + "      WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND o.concept_id= "
+            + sampleCollectionDate
+            + " AND ob.concept_id = "
+            + breastFeedingConcept
+            + " AND ob.value_coded = "
+            + yesConcept
+            + " AND e.encounter_type = "
+            + fsr
+            + " AND pe.gender='F' AND o.value_datetime BETWEEN :onOrAfter AND :onOrBefore GROUP BY p.patient_id "
             + " UNION "
             + " SELECT pp.patient_id, MAX(ps.start_date) AS last_date "
             + " FROM patient_program pp"
