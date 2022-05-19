@@ -3138,7 +3138,7 @@ public class QualityImprovement2020CohortQueries {
         new CalculationCohortDefinition(
             Context.getRegisteredComponents(ConsultationUntilEndDateAfterStartingART.class).get(0));
     cd.setName(
-        "Categoru 11 - numerator - Session I - Interval of 33 Daus for APSS consultations after ART start date");
+        "Category 11 - numerator - Session I - Interval of 99 Days for APSS consultations after ART start date");
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
     cd.addParameter(new Parameter("onOrAfter", "After Date", Date.class));

@@ -26,15 +26,16 @@ import org.springframework.stereotype.Component;
  *   <li>For ( i=0; i<(days between “ART Start Date” and endDateRevision; i++)
  *       <ul>
  *         <li>Existence of consultation (Encounter_datetime (from encounter type 35)) > [“ART Start
- *             Date” (oldest date from A)+i] and <= “ART Start Date” (oldest date from A)+i+33days
- *         <li>i= i+33days
+ *             Date” (oldest date from A)+i] and <= “ART Start Date” (oldest date from A)+i+99days
+ *         <li>i= i+99days
  *       </ul>
  * </ul>
  */
 @Component
 public class ConsultationUntilEndDateAfterStartingART extends AbstractPatientCalculation {
 
-  private final int INTERVAL_BETWEEN_APSS_ENCOUNTERS = 33;
+  private final int DAYS_FROM_ART_START_DATE_TO_APSS_ENCOUNTER = 99;
+  private final int MIN_NUMBER_OF_APSS_CONSULTATIONS = 3;
 
   @Override
   public CalculationResultMap evaluate(
@@ -76,72 +77,40 @@ public class ConsultationUntilEndDateAfterStartingART extends AbstractPatientCal
 
       Date artStartDate = InitialArtStartDateCalculation.getArtStartDate(patientId, artStartDates);
       if (artStartDate != null) {
-        List<Encounter> wantedEncounters =
-            getApssEncounterAfterARTStartDate(appEncounters, artStartDate);
+        boolean atLeast3Encounters =
+            checkApssEncountersBetweenARTStartDateAndEndDate(appEncounters, artStartDate, endDate);
 
-        boolean rangeResult = evaluateEncounterDates(wantedEncounters, endDate);
-
-        if (rangeResult) {
-          calculationResultMap.put(patientId, new BooleanResult(rangeResult, this));
-        }
+        calculationResultMap.put(patientId, new BooleanResult(atLeast3Encounters, this));
       }
     }
 
     return calculationResultMap;
   }
 
-  List<Encounter> getApssEncounterAfterARTStartDate(
-      List<Encounter> appEncounters, Date artStartDate) {
-    List<Encounter> wantedEncounters = new ArrayList<>();
+  Boolean checkApssEncountersBetweenARTStartDateAndEndDate(
+      List<Encounter> appEncounters, Date artStartDate, Date endDate) {
+    boolean atLeast3Encounters = false;
+    int count = 0;
 
     for (Encounter e : appEncounters) {
       if (e.getEncounterDatetime().compareTo(artStartDate) > 0) {
-        wantedEncounters.add(e);
-      }
-    }
+        if (e.getEncounterDatetime().compareTo(endDate) < 0) {
+          int daysAfterArt =
+              Days.daysIn(new Interval(artStartDate.getTime(), e.getEncounterDatetime().getTime()))
+                  .getDays();
 
-    Collections.sort(
-        wantedEncounters,
-        new Comparator<Encounter>() {
-          @Override
-          public int compare(Encounter a, Encounter b) {
-            return a.getEncounterDatetime().compareTo(b.getEncounterDatetime());
+          if (daysAfterArt <= DAYS_FROM_ART_START_DATE_TO_APSS_ENCOUNTER) {
+            count += 1;
+
+            if (count == MIN_NUMBER_OF_APSS_CONSULTATIONS) {
+              atLeast3Encounters = true;
+              break;
+            }
           }
-        });
-
-    return wantedEncounters;
-  }
-
-  public boolean evaluateEncounterDates(List<Encounter> wantedEncounters, Date endDate) {
-
-    boolean isInterval33Days = false;
-
-    Encounter previous = null;
-    for (Encounter current : wantedEncounters) {
-
-      if (current.getEncounterDatetime().compareTo(endDate) <= 0) {
-
-        if (previous == null) {
-          previous = current;
-          continue;
-        }
-
-        int days =
-            Days.daysIn(
-                    new Interval(
-                        previous.getEncounterDatetime().getTime(),
-                        current.getEncounterDatetime().getTime()))
-                .getDays();
-
-        if (days == INTERVAL_BETWEEN_APSS_ENCOUNTERS) {
-          isInterval33Days = true;
-          previous = current;
-        } else {
-          isInterval33Days = false;
-          break;
         }
       }
     }
-    return isInterval33Days;
+
+    return atLeast3Encounters;
   }
 }
