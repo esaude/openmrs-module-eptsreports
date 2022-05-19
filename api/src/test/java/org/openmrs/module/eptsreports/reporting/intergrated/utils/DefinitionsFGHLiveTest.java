@@ -21,10 +21,12 @@ public abstract class DefinitionsFGHLiveTest extends DefinitionsTest {
   public void executeDataSet(String datasetFilename) {}
 
   @Override
-  public void deleteAllData(){};
+  public void deleteAllData() {};
 
   @Override
-  protected Credentials getCredentials() {return new UsernamePasswordCredentials(username(),password());}
+  protected Credentials getCredentials() {
+    return new UsernamePasswordCredentials(username(), password());
+  }
 
   protected abstract String username();
 

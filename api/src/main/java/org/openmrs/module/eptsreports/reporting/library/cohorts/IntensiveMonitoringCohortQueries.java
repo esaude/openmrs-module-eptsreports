@@ -1,6 +1,10 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
@@ -2334,5 +2338,31 @@ public class IntensiveMonitoringCohortQueries {
         "(B1 AND (B2NEW OR (B3 AND NOT B3E)) AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND age");
 
     return compositionCohortDefinition;
+  }
+
+  public CohortDefinition getMICAT14(
+      QualityImprovement2020CohortQueries.MQCat14Preposition preposition, String level) {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("MI CAT14 1-8 Numerator and Denominator");
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+
+    cd.addSearch(
+        "DEN",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getMQ14(preposition),
+            "startDate=${revisionEndDate-12m},endDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "NUM",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getMQ14NUM(preposition),
+            "startDate=${revisionEndDate-12m},endDate=${revisionEndDate},location=${location}"));
+
+    if (level.equals("DEN")) {
+      cd.setCompositionString("DEN");
+    } else if (level.equals("NUM")) {
+      cd.setCompositionString("NUM");
+    }
+    return cd;
   }
 }
