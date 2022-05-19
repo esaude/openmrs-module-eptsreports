@@ -41,7 +41,7 @@ public class EptsQuarterlyCohortDefinitionEvaluator implements CohortDefinitionE
     EptsQuarterlyCohortDefinition.Month month = cd.getMonth();
     Map<String, Date> range = getRange(year, quarter, month);
     context.getParameterValues().putAll(range);
-    context.setBaseCohort(context.getBaseCohort());
+    context.setBaseCohort(evaluateBaseCohort(context));
     Cohort c = cohortDefinitionService.evaluate(cd.getCohortDefinition(), context);
     return new EvaluatedCohort(c, cohortDefinition, context);
   }

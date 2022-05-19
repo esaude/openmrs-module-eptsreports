@@ -256,7 +256,6 @@ public class ResumoTrimestralQueries {
             + ")"
             + " GROUP BY max_susp.patient_id "
             + ") max_final_suspended_patients";
-
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     return sub.replace(sql);
   }
