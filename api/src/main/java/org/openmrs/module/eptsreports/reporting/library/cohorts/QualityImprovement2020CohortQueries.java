@@ -2113,7 +2113,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition pregnantWithCargaViralHigherThan1000 =
         QualityImprovement2020Queries.getMQ13DenB4_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
@@ -3241,7 +3240,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition b4 =
         QualityImprovement2020Queries.getMQ13DenB4_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
@@ -3376,7 +3374,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition b4 =
         QualityImprovement2020Queries.getMQ13DenB4_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
@@ -3590,7 +3587,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition b4 =
         QualityImprovement2020Queries.getMQ13DenB4_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
@@ -5246,7 +5242,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition pregnantWithCargaViralHigherThan1000 =
         QualityImprovement2020Queries.getMQ13DenB4_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getPregnantConcept().getConceptId());
