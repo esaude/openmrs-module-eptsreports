@@ -2120,7 +2120,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition breastfeedingWithCargaViralHigherThan1000 =
         QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
@@ -3247,7 +3246,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition b5 =
         QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
@@ -3372,7 +3370,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition b5 =
         QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
@@ -3401,8 +3398,7 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING8));
     }
 
-    compositionCohortDefinition.setCompositionString(
-        "B1 AND NOT B5 AND B4 AND NOT F AND H");
+    compositionCohortDefinition.setCompositionString("B1 AND NOT B5 AND B4 AND NOT F AND H");
 
     return compositionCohortDefinition;
   }
@@ -3575,7 +3571,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition b5 =
         QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
@@ -5220,7 +5215,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition breastfeedingWithCargaViralHigherThan1000 =
         QualityImprovement2020Queries.getMQ13DenB5_P4(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
