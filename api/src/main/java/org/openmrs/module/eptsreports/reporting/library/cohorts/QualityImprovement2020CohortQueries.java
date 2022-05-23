@@ -1,10 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
@@ -30,6 +25,8 @@ import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
 
 @Component
 public class QualityImprovement2020CohortQueries {
@@ -3857,7 +3854,7 @@ public class QualityImprovement2020CohortQueries {
    * <ul>
    *   <li>B2NEW P1_2- Select all patients who have the REGIME ARV SEGUNDA LINHA (Concept Id 21187,
    *       value coded different NULL) recorded in Ficha Resumo (encounter type 53) and obs_datetime
-   *       >= inclusionStartDate and <= inclusionEndDate AND at least for 6 months ( “Last Clinical
+   *       >= inclusionStartDate and <= revisionEndDate AND at least for 6 months ( “Last Clinical
    *       Consultation” (last encounter_datetime from B1) minus obs_datetime(from B2) >= 6 months)
    *
    * @return CohortDefinition
@@ -3867,7 +3864,6 @@ public class QualityImprovement2020CohortQueries {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName("Patients With Clinical Consultation");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlCohortDefinition.addParameter(
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
@@ -3908,7 +3904,7 @@ public class QualityImprovement2020CohortQueries {
             + "       AND o.concept_id = ${21187} "
             + "       AND o.value_coded IS NOT NULL "
             + "       AND o.obs_datetime >= :startDate "
-            + "       AND o.obs_datetime <= :endDate "
+            + "       AND o.obs_datetime <= :revisionEndDate "
             + "       AND TIMESTAMPDIFF(MONTH, o.obs_datetime,  last_clinical.last_visit) >= 6";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
@@ -4526,7 +4522,7 @@ public class QualityImprovement2020CohortQueries {
         "secondLineB2",
         EptsReportUtils.map(
             secondLine6Months,
-            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+            "startDate=${startDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "B3",
