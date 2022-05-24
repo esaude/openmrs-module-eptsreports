@@ -13,10 +13,6 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
-import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
-
-import java.util.*;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
@@ -26,14 +22,31 @@ import org.openmrs.Program;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.generic.*;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeInMonthsOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnPreArtStartDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.AgeOnReportEndDateDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.ArtDateMinusDiagnosisDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.NewlyOrPreviouslyEnrolledOnARTCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateCalculationMOH;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtBeforeDateForTxTbCalculation;
+import org.openmrs.module.eptsreports.reporting.calculation.generic.StartedArtOnPeriodCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.BaseQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PrepCtQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.PrepNewQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
-import org.openmrs.module.reporting.cohort.definition.*;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
+import org.openmrs.module.reporting.cohort.definition.AgeCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.BaseObsCohortDefinition.TimeModifier;
+import org.openmrs.module.reporting.cohort.definition.CodedObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.InProgramCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.NumericObsCohortDefinition;
+import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.common.DurationUnit;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
@@ -41,6 +54,15 @@ import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils.map;
+import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraightThrough;
 
 @Component
 public class GenericCohortQueries {
@@ -132,15 +154,32 @@ public class GenericCohortQueries {
    * @return CohortDefinition
    */
   public CohortDefinition getBaseCohort() {
-    return generalSql(
-        "baseCohort",
-        BaseQueries.getBaseCohortQuery(
-            hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
-            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-            hivMetadata.getHIVCareProgram().getProgramId(),
-            hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId()));
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setName("baseCohort");
+    cd.addSearch(
+        "base",
+        EptsReportUtils.map(
+            generalSql(
+                "baseCohort",
+                BaseQueries.getBaseCohortQuery(
+                    hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId(),
+                    hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId(),
+                    hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                    hivMetadata.getHIVCareProgram().getProgramId(),
+                    hivMetadata.getARTProgram().getProgramId(),
+                    hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId())),
+            "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "persons",
+        EptsReportUtils.map(
+            generalSql(
+                "persons",
+                "SELECT p.patient_id FROM patient p JOIN person pn ON p.patient_id=pn.person_id WHERE p.voided=0 AND pn.voided=0 "),
+            ""));
+    cd.setCompositionString("base AND persons");
+    return cd;
   }
 
   /**
