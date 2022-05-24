@@ -559,15 +559,11 @@ public class FaltososLevantamentoARVCohortQueries {
         getPatientsAndDeathDayOrTreatmentSuspensionRegisteredInFichaClinica();
     String deathRegisteredInFichaResumo =
         getPatientsAndDeathDayOrTreatmentSuspensionRegisteredInFichaResumo();
-    String deathDayRegisteredInLastHomeVisit =
-        getPatientsAndDeathsDayRegisteredInLastHomeVisitCard();
 
     String query =
         "SELECT patient_id "
             + "FROM   (SELECT transferout.patient_id,   Max(transferout.transferout_date) transferout_date "
             + "        FROM   ( "
-            + deathDayRegisteredInLastHomeVisit
-            + "                UNION "
             + deathRegisteredInFichaClinica
             + "                UNION "
             + deathDayInProgramState
@@ -1256,67 +1252,6 @@ public class FaltososLevantamentoARVCohortQueries {
             + "                  AND e.voided= 0 "
             + "                  AND o.voided= 0 "
             + "                GROUP BY p.patient_id ";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
-
-    return stringSubstitutor.replace(query);
-  }
-
-  /**
-   * <b>Technical Specs</b>
-   *
-   * <blockquote>
-   *
-   * <p>All deaths registered in Patient Program State by reporting end date
-   *
-   * <ul>
-   *   <li>Patient_program.program_id =2 = SERVICO TARV-TRATAMENTO and Patient_State.state = 10
-   *       (Died) patient_State.start_date <= Report End Date Patient_state.end_date is null
-   * </ul>
-   *
-   * </blockquote>
-   *
-   * @return {@link String}
-   */
-  public String getPatientsAndDeathsDayRegisteredInLastHomeVisitCard() {
-
-    Map<String, Integer> valuesMap = new HashMap<>();
-    valuesMap.put("21", hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId());
-    valuesMap.put(
-        "36", hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId());
-    valuesMap.put(
-        "37", hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId());
-    valuesMap.put("2031", hivMetadata.getReasonPatientNotFound().getConceptId());
-    valuesMap.put(
-        "23944", hivMetadata.getReasonPatientNotFoundByActivist2ndVisitConcept().getConceptId());
-    valuesMap.put(
-        "23945", hivMetadata.getReasonPatientNotFoundByActivist3rdVisitConcept().getConceptId());
-    valuesMap.put("1366", hivMetadata.getPatientHasDiedConcept().getConceptId());
-
-    String query =
-        " SELECT  max_date.patient_id, (max_date.last) AS transferout_date FROM "
-            + "            (SELECT "
-            + "                 p.patient_id, "
-            + "                 MAX(e.encounter_datetime) last "
-            + "             FROM patient p "
-            + "                      INNER  JOIN encounter e ON e.patient_id=p.patient_id "
-            + "             WHERE "
-            + "                     e.encounter_datetime <= :endDate "
-            + "               AND e.location_id = :location "
-            + "               AND e.encounter_type  in(  ${21} , ${36} , ${37} ) "
-            + "               AND e.voided=0 "
-            + "               AND p.voided = 0 "
-            + "             GROUP BY  p.patient_id  ) max_date "
-            + "                INNER  JOIN encounter ee "
-            + "                            ON ee.patient_id = max_date.patient_id "
-            + "                INNER  JOIN obs o ON ee.encounter_id = o.encounter_id "
-            + "                WHERE "
-            + "                    ( (o.concept_id =  ${2031}  AND o.value_coded =  ${1366} ) OR "
-            + "                            (o.concept_id =  ${23944}  AND o.value_coded =  ${1366} ) OR "
-            + "                            (o.concept_id =  ${23945}  AND o.value_coded =  ${1366}  ) ) "
-            + "                  AND o.voided=0 "
-            + "                  AND ee.voided = 0 "
-            + "                GROUP BY  max_date.patient_id ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
