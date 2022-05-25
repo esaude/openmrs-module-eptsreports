@@ -1013,7 +1013,6 @@ public class QualityImprovement2020Queries {
    * </blockquote>
    *
    * @param adultoSeguimentoEncounterType The Adulto Seguimento Encounter Type 6
-   * @param masterCardEncounterType The masterCard Encounter Type 53
    * @param hivViralLoadConcept The HIV ViralLoad Concept Id 856
    * @param yesConcept The answer yes Concept Id 1065
    * @param pregnantConcept The Pregnant Concept Id 1982
@@ -1021,7 +1020,6 @@ public class QualityImprovement2020Queries {
    */
   public static CohortDefinition getMQ13DenB4_P4(
       int adultoSeguimentoEncounterType,
-      int masterCardEncounterType,
       int hivViralLoadConcept,
       int yesConcept,
       int pregnantConcept) {
@@ -1035,7 +1033,6 @@ public class QualityImprovement2020Queries {
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
-    map.put("53", masterCardEncounterType);
     map.put("856", hivViralLoadConcept);
     map.put("1065", yesConcept);
     map.put("1982", pregnantConcept);
@@ -1053,8 +1050,7 @@ public class QualityImprovement2020Queries {
             + "                                AND o.voided = 0      "
             + "                                AND o.concept_id = ${856}   "
             + "                                AND o.value_numeric >= 1000  "
-            + "                                AND (( e.encounter_type = ${6} AND e.encounter_datetime BETWEEN :startDate AND :endDate) "
-            + "                                    OR (e.encounter_type = ${53} AND o.obs_datetime BETWEEN :startDate AND :endDate))   "
+            + "                                AND ( e.encounter_type = ${6} AND e.encounter_datetime BETWEEN :startDate AND :endDate) "
             + "                                AND e.location_id = :location   "
             + "                         GROUP  BY p.patient_id    "
             + "                       ) AS lab ON lab.patient_id = p.patient_id  "
@@ -1070,9 +1066,8 @@ public class QualityImprovement2020Queries {
             + "                                 AND o.concept_id = ${1982}    "
             + "                                 AND o.value_coded = ${1065}    "
             + "                                 AND pe.gender = 'F' "
-            + "                                 AND (( e.encounter_type = ${6} "
+            + "                                 AND ( e.encounter_type = ${6} "
             + "                                 AND e.encounter_datetime BETWEEN :startDate AND :endDate) "
-            + "                                    OR (e.encounter_type = ${53} AND o.obs_datetime BETWEEN :startDate AND :endDate))   "
             + "                                 AND e.location_id = :location    "
             + "                       ) AS mulher ON mulher.patient_id = p.patient_id  "
             + "             WHERE p.voided = 0  "
@@ -1156,7 +1151,6 @@ public class QualityImprovement2020Queries {
    */
   public static CohortDefinition getMQ13DenB5_P4(
       int adultoSeguimentoEncounterType,
-      int masterCardEncounterType,
       int hivViralLoadConcept,
       int yesConcept,
       int breastfeedingConcept) {
@@ -1170,7 +1164,6 @@ public class QualityImprovement2020Queries {
 
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
-    map.put("53", masterCardEncounterType);
     map.put("856", hivViralLoadConcept);
     map.put("1065", yesConcept);
     map.put("6332", breastfeedingConcept);
@@ -1188,8 +1181,7 @@ public class QualityImprovement2020Queries {
             + "                                AND o.voided = 0     "
             + "                                AND o.concept_id = ${856}   "
             + "                                AND o.value_numeric >= 1000  "
-            + "                                AND (( e.encounter_type = ${6} AND e.encounter_datetime BETWEEN :startDate AND :endDate) "
-            + "                                    OR (e.encounter_type = ${53} AND o.obs_datetime BETWEEN :startDate AND :endDate))   "
+            + "                                AND ( e.encounter_type = ${6} AND e.encounter_datetime BETWEEN :startDate AND :endDate) "
             + "                                AND e.location_id = :location   "
             + "                         GROUP  BY p.patient_id    "
             + "                       ) AS lab ON lab.patient_id = p.patient_id  "
@@ -1204,8 +1196,7 @@ public class QualityImprovement2020Queries {
             + "                                 AND o.voided = 0      "
             + "                                 AND o.concept_id = ${6332}     "
             + "                                 AND o.value_coded = ${1065}    "
-            + "                                 AND (( e.encounter_type = ${6} AND e.encounter_datetime BETWEEN :startDate AND :endDate) "
-            + "                                    OR (e.encounter_type = ${53} AND o.obs_datetime BETWEEN :startDate AND :endDate))    "
+            + "                                 AND ( e.encounter_type = ${6} AND e.encounter_datetime BETWEEN :startDate AND :endDate) "
             + "                                 AND e.location_id = :location    "
             + "                                 AND per.gender = 'F'      "
             + "                       ) AS mulher ON mulher.patient_id = p.patient_id  "
