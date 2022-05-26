@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.*;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.DatimCodeDatasetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TPTInitiationDataset;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TPTInitiationNewDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TPTInitiationTotalNewDataSet;
@@ -76,6 +77,7 @@ public class SetupTPTInitiationReport extends EptsDataExportManager {
         "TOTAL", Mapped.mapStraightThrough(tptInitiationTotalNewDataSet.constructDataSet()));
     rd.addDataSetDefinition(
         "TPT", Mapped.mapStraightThrough(tptInitiationNewDataSet.constructDataSet()));
+    rd.addDataSetDefinition("DATIM", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));
     return rd;
   }
 

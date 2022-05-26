@@ -110,6 +110,12 @@ public class TPTInitiationNewDataSet extends BaseDataSet {
         null);
 
     pdd.addColumn(
+        "3HP_initiation_dates_ficha_resumo",
+        tPTInitiationDataDefinitionQueries.get3HPInitiationDateOnFichaResumo(),
+        "startDate=${startDate},endDate=${endDate},location=${location}",
+        null);
+
+    pdd.addColumn(
         "FILT_3HP_dispensation_date",
         tPTInitiationDataDefinitionQueries.getPatientsAnd3HPDispensationDate(),
         "location=${location}",
@@ -120,6 +126,31 @@ public class TPTInitiationNewDataSet extends BaseDataSet {
         tPTInitiationDataDefinitionQueries.getPatientsAndLast3HPTypeOfDispensation(),
         "location=${location}",
         new DispensationTypeConverter());
+
+    pdd.addColumn(
+        "3HP_Completion_Date_On_Ficha_Clínica",
+        tPTInitiationDataDefinitionQueries.get3HPCompletionDateFichaClínica(),
+        "startDate=${startDate},endDate=${endDate},location=${location}",
+        null);
+
+    pdd.addColumn(
+        "3HP_Completion_Date_on_Ficha_Resumo",
+        tPTInitiationDataDefinitionQueries.get3HPCompletionDateonFichaResumo(),
+        "startDate=${startDate},endDate=${endDate},location=${location}",
+        null);
+
+    pdd.addColumn(
+        "Expected_3HP_Completion_Date",
+        tPTInitiationDataDefinitionQueries.getExpected3HPCompletionDate(),
+        "startDate=${startDate},location=${location}",
+        null);
+
+    pdd.addColumn(
+        "Difference_between_Registered_vs_Expected_3HP_Completion_Date",
+        tPTInitiationDataDefinitionQueries
+            .getDifferencebetweenRegisteredvsExpected3HPCompletionDate(),
+        "startDate=${startDate},endDate=${endDate},location=${location}",
+        null);
 
     pdd.addColumn(
         "IPT_FILT_start_date",
