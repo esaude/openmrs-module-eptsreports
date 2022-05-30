@@ -3288,6 +3288,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.mdcStateConceptUuid</property>
+		<defaultValue>fef178f2-d4c9-4035-9989-11c9afe81ea3</defaultValue>
+		<description>
+			MDC STATE
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

@@ -4801,4 +4801,19 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.dispensaComunitariaViaApeConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 165322</b>
+   *
+   * <p><b>Name:</b> MDC STATE
+   *
+   * <p><b>Description:</b> MDC STATE
+   *
+   * @return {@link Concept}
+   */
+  public Concept getMdcState() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.mdcStateConceptUuid");
+    return getConcept(uuid);
+  }
 }
