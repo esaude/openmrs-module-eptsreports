@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
 import org.openmrs.PersonAttributeType;
@@ -8,29 +11,17 @@ import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.data.converter.DispensationTypeConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.GenderConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.NotApplicableIfNullConverter;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsArtCohortCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsDefaultersOrIITCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsEligibleForVLDataDefinitionQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TPTInitiationDataDefinitionQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.*;
 import org.openmrs.module.eptsreports.reporting.library.queries.TxtbDenominatorQueries;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
-import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonAttributeDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
+import org.openmrs.module.reporting.data.person.definition.*;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.PatientDataSetDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 
 @Component
 public class ListOfPatientsCurrentlyOnArtWithoutTbScreeningDataset extends BaseDataSet {
@@ -102,6 +93,7 @@ public class ListOfPatientsCurrentlyOnArtWithoutTbScreeningDataset extends BaseD
             .getPersonAttributeTypeByUuid("e2e3fd64-1d5f-11e0-b929-000c29ad1d07");
 
     patientDefinition.addColumn("patient_id", new PersonIdDataDefinition(), "");
+
     patientDefinition.addColumn(
         "nid",
         tptListOfPatientsEligibleDataSet.getNID(identifierType.getPatientIdentifierTypeId()),
@@ -202,7 +194,7 @@ public class ListOfPatientsCurrentlyOnArtWithoutTbScreeningDataset extends BaseD
     patientDefinition.addColumn(
         "screening_date",
         txtbDenominatorQueries.getMostRecentTbScreeningDate(),
-        "startDate=${startDate-6m},endDate=${endDate},location=${location}");
+        "endDate=${endDate},location=${location}");
 
     patientDefinition.addColumn(
         "mdc_consultation_date",
