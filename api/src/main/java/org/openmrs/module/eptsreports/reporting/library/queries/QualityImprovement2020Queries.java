@@ -1670,6 +1670,115 @@ public class QualityImprovement2020Queries {
     return stringSubstitutor.replace(query);
   }
 
+
+  /**
+   * <b> O sistema irá identificar utentes que abandonaram o tratamento TARV durante o período da
+   * seguinte forma: </b>
+   *
+   * <blockquote>
+   *
+   * <p>incluindo os utentes com Último registo de “Mudança de Estado de Permanência” = “Abandono”
+   * na Ficha Clínica durante o período (“Data Consulta”>=”Data Início Período” e “Data
+   * Consulta”<=”Data Fim Período”
+   *
+   * <blockquote>
+   *
+   * <p>incluindo os utentes com Último registo de “Mudança de Estado de Permanência” = “Abandono”
+   * na Ficha Resumo durante o período (“Data de Mudança de Estado Permanência”>=”Data Início
+   * Período” e “Data Consulta”<=”Data Fim Período”
+   *
+   * <p>Nota: O período é definido conforme o requisito onde os utentes abandonos em TARV no fim do
+   * período serão excluídos:
+   * <li>6. para exclusão nos utentes que estão na 1ª linha de TARV, a “Data Início Período” será
+   * igual a “Data 1a Linha” – 6 meses e “Data Fim do Período” será igual a “Data 1a Linha”.
+   *
+   *     <p>B1= (BI1 and not B1E) ‘: MUDANCA DE REGIME
+   * <li>BI1 - Select all patients who have the most recent “ALTERNATIVA A LINHA - 1a LINHA”
+   *     (Concept Id 21190, obs_datetime) recorded in Ficha Resumo (encounter type 53) with any
+   *     value coded (not null) during the inclusion period (startDateInclusion and
+   *     endDateInclusion) AND
+   * <li>B1E - Exclude all patients from Ficha Clinica (encounter type 6, encounter_datetime) who
+   *     have “LINHA TERAPEUTICA”(Concept id 21151) with value coded DIFFERENT THAN “PRIMEIRA
+   *     LINHA”(Concept id 21150) and encounter_datetime > the most recent “ALTERNATIVA A LINHA - 1a
+   *     LINHA” (from B1) and <= endDateInclusion
+   *
+   * @param adultoSeguimentoEncounterType The Adulto Seguimento Encounter Type 6
+   * @param masterCardEncounterType The Ficha Resumo Encounter Type 53
+   * @param stateOfStayOfArtPatient The State of Stay in ART Concept 6273
+   * @param abandonedConcept The Abandoned Concept 1707
+   * @param stateOfStayOfPreArtPatient The State of Stay in Pre Art Concept 6272
+   * @param therapeuticLineConcept The Therapeutic Line Concept 21151
+   * @param firstLineConcept The First Line Concept 21150
+   * @param arvStartDateConcept The Art Start Date Concept 1190
+   * @param justificativeToChangeArvTreatment The Justificative To Change Arv Treatment Concept 1792
+   * @param regimenAlternativeToFirstLineConcept he Regimen Alternative To First Line Concept 21190
+   * @param pregnantConcept The Pregnant Concept 1982
+   * @return {@link String}
+   */
+  public static String getMQ13AbandonedTarvInTheLastSixMonthsFromFirstLineDate(
+      int adultoSeguimentoEncounterType,
+      int masterCardEncounterType,
+      int stateOfStayOfArtPatient,
+      int abandonedConcept,
+      int stateOfStayOfPreArtPatient,
+      int therapeuticLineConcept,
+      int firstLineConcept,
+      int arvStartDateConcept,
+      int justificativeToChangeArvTreatment,
+      int regimenAlternativeToFirstLineConcept,
+      int pregnantConcept) {
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", adultoSeguimentoEncounterType);
+    map.put("53", masterCardEncounterType);
+    map.put("6273", stateOfStayOfArtPatient);
+    map.put("1707", abandonedConcept);
+    map.put("6272", stateOfStayOfPreArtPatient);
+    map.put("21151", therapeuticLineConcept);
+    map.put("21150", firstLineConcept);
+    map.put("1190", arvStartDateConcept);
+    map.put("1792", justificativeToChangeArvTreatment);
+    map.put("21190", regimenAlternativeToFirstLineConcept);
+    map.put("1982", pregnantConcept);
+
+    String query =
+        " SELECT abandoned.patient_id from ( "
+            + "                                     SELECT p.patient_id, max(e.encounter_datetime) as last_encounter FROM patient p "
+            + "                                                                                                               INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                                                                                                               INNER JOIN obs o on e.encounter_id = o.encounter_id "
+            + "                                                                                                               INNER JOIN ( "
+            + getRegimenLineQuery(Linha.FIRST)
+            + " ) end_period ON end_period.patient_id = p.patient_id "
+            + "                                     WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + "                                       AND e.encounter_type = ${6} "
+            + "                                       AND o.concept_id = ${6273} "
+            + "                                       AND o.value_coded = ${1707} "
+            + "                                       AND e.location_id = :location "
+            + "       AND e.encounter_datetime >= DATE_SUB(end_period.last_encounter, INTERVAL 6 MONTH)  "
+            + "                                       AND e.encounter_datetime <= end_period.last_encounter "
+            + "                                     GROUP BY p.patient_id "
+            + "UNION "
+            + "     SELECT p.patient_id, max(o.obs_datetime) as last_encounter FROM patient p "
+            + "                                                                                                               INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                                                                                                               INNER JOIN obs o on e.encounter_id = o.encounter_id "
+            + "                                                                                                               INNER JOIN ( "
+            + getRegimenLineQuery(Linha.FIRST)
+            + " ) end_period ON end_period.patient_id = p.patient_id "
+            + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
+            + "                                       AND e.encounter_type = ${53} "
+            + "                                       AND o.concept_id = ${6272} "
+            + "                                       AND o.value_coded = ${1707} "
+            + "                                       AND e.location_id = :location "
+            + "       AND o.obs_datetime >= DATE_SUB(end_period.last_encounter, INTERVAL 6 MONTH)  "
+            + "                                       AND o.obs_datetime <= end_period.last_encounter "
+            + "                                     GROUP BY p.patient_id "
+            + "                                 ) abandoned GROUP BY abandoned.patient_id";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    return stringSubstitutor.replace(query);
+  }
+
   /**
    * <b> O sistema irá identificar utentes que abandonaram o tratamento TARV durante o período da
    * seguinte forma: </b>

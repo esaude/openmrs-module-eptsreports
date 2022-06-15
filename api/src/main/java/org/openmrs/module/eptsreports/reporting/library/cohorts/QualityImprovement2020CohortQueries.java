@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.*;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.Location;
@@ -27,6 +26,8 @@ import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
 
 @Component
 public class QualityImprovement2020CohortQueries {
@@ -4423,15 +4424,15 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getTherapeuticLineConcept(),
             Collections.singletonList(hivMetadata.getFirstLineConcept()));
 
-    CohortDefinition abandonedExclusionDuringThePeriod =
-        getPatientsWhoAbandonedTarvOnArtStartDate();
+    CohortDefinition abandonedExclusionInTheLastSixMonthsFromFirstLineDate =
+            getPatientsWhoAbandonedInTheLastSixMonthsFromFirstLineDate();
 
     CohortDefinition abandonedExclusionByTarvRestartDate =
         getPatientsWhoAbandonedTarvOnArtRestartDate();
 
     CohortDefinition abandonedExclusionFirstLine = getPatientsWhoAbandonedTarvOnOnFirstLineDate();
 
-    CohortDefinition abandonedExcluusionSecondLine =
+    CohortDefinition abandonedExclusionSecondLine =
         getPatientsWhoAbandonedTarvOnOnSecondLineDate();
 
     CohortDefinition restartdedExclusion = getPatientsWhoRestartedTarvAtLeastSixMonths();
@@ -4552,13 +4553,13 @@ public class QualityImprovement2020CohortQueries {
         "RESTARTEDTARV", EptsReportUtils.map(abandonedExclusionByTarvRestartDate, MAPPING));
 
     compositionCohortDefinition.addSearch(
-        "ABANDONEDTARV", EptsReportUtils.map(abandonedExclusionDuringThePeriod, MAPPING));
+        "ABANDONEDTARV", EptsReportUtils.map(abandonedExclusionInTheLastSixMonthsFromFirstLineDate, MAPPING1));
 
     compositionCohortDefinition.addSearch(
         "ABANDONED1LINE", EptsReportUtils.map(abandonedExclusionFirstLine, MAPPING1));
 
     compositionCohortDefinition.addSearch(
-        "ABANDONED2LINE", EptsReportUtils.map(abandonedExcluusionSecondLine, MAPPING1));
+        "ABANDONED2LINE", EptsReportUtils.map(abandonedExclusionSecondLine, MAPPING1));
 
     if (den) {
       if (line == 1) {
@@ -9042,6 +9043,51 @@ public class QualityImprovement2020CohortQueries {
 
     cd.setQuery(
         QualityImprovement2020Queries.getMQ13AbandonedTarvOnFirstLineDate(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
+            hivMetadata.getAbandonedConcept().getConceptId(),
+            hivMetadata.getStateOfStayOfPreArtPatient().getConceptId(),
+            hivMetadata.getTherapeuticLineConcept().getConceptId(),
+            hivMetadata.getFirstLineConcept().getConceptId(),
+            hivMetadata.getARVStartDateConcept().getConceptId(),
+            hivMetadata.getJustificativeToChangeArvTreatment().getConceptId(),
+            commonMetadata.getRegimenAlternativeToFirstLineConcept().getConceptId(),
+            commonMetadata.getPregnantConcept().getConceptId()));
+
+    return cd;
+  }
+
+
+  /**
+   * <b> RF7.2 EXCLUSION FOR PATIENTS WHO ABANDONED IN THE LAST SIX MONTHS FROM FIRST LINE DATE</b>
+   *
+   * <p>O sistema irá identificar utentes que abandonaram o tratamento TARV durante o período da
+   * seguinte forma:
+   *
+   * <p>incluindo os utentes com Último registo de “Mudança de Estado de Permanência” = “Abandono”
+   * na Ficha Clínica durante o período (“Data Consulta”>=”Data Início Período” e “Data
+   * Consulta”<=”Data Fim Período”
+   *
+   * <p>incluindo os utentes com Último registo de “Mudança de Estado de Permanência” = “Abandono”
+   * na Ficha Resumo durante o período (“Data de Mudança de Estado Permanência”>=”Data Início
+   * Período” e “Data Consulta”<=”Data Fim Período”
+   * <li>6. para exclusão nos utentes que estão na 1ª linha de TARV, a “Data Início Período” será
+   *    igual a “Data 1a Linha” – 6 meses e “Data Fim do Período” será igual a “Data 1a Linha”.
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoAbandonedInTheLastSixMonthsFromFirstLineDate() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("All patients who abandoned TARV In The Last Six Months From First Line Date");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    cd.setQuery(
+        QualityImprovement2020Queries.getMQ13AbandonedTarvInTheLastSixMonthsFromFirstLineDate(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
             hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
