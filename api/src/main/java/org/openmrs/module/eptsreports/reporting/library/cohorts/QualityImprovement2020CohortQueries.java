@@ -624,7 +624,7 @@ public class QualityImprovement2020CohortQueries {
    * @param conceptIdAns The value coded answers concept
    * @return CohortDefinition
    */
-  private CohortDefinition getPregnantAndBreastfeedingStates(int conceptIdQn, int conceptIdAns) {
+  public CohortDefinition getPregnantAndBreastfeedingStates(int conceptIdQn, int conceptIdAns) {
     Map<String, Integer> map = new HashMap<>();
     map.put("conceptIdQn", conceptIdQn);
     map.put("conceptIdAns", conceptIdAns);
@@ -4573,10 +4573,10 @@ public class QualityImprovement2020CohortQueries {
     } else {
       if (line == 1 || line == 6 || line == 7 || line == 8) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND (B2NEW OR (B3 AND NOT B3E)) AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND G AND age");
+            "(B1 AND ( (B2NEW AND NOT ABANDONEDTARV) OR  ( (RESTARTED AND NOT RESTARTEDTARV) OR (B3 AND NOT B3E AND NOT ABANDONED1LINE) ))  AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND G AND age");
       } else if (line == 4 || line == 13) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND secondLineB2 AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND G AND age");
+            "((B1 AND (secondLineB2 AND NOT B2E AND NOT ABANDONED2LINE)) AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND G AND age");
       }
     }
 
@@ -6223,6 +6223,9 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
             hivMetadata.getArtStatus().getConceptId());
 
+    CohortDefinition pregnantAbandonedDuringPeriod =
+        getPatientsWhoAbandonedTarvOnArtStartDateForPregnants();
+
     cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
     cd.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
     cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
@@ -6234,7 +6237,9 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
     cd.addSearch("H", EptsReportUtils.map(getMQC13P2DenB3(), MAPPING));
 
-    cd.setCompositionString("(A AND C AND H) AND NOT (D OR E OR F)");
+    cd.addSearch("ABANDONED", EptsReportUtils.map(pregnantAbandonedDuringPeriod, MAPPING));
+
+    cd.setCompositionString("((A AND NOT ABANDONED)AND C AND H) AND NOT (D OR E OR F)");
     return cd;
   }
 
