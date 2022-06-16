@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
@@ -1670,7 +1672,6 @@ public class QualityImprovement2020Queries {
     return stringSubstitutor.replace(query);
   }
 
-
   /**
    * <b> O sistema irá identificar utentes que abandonaram o tratamento TARV durante o período da
    * seguinte forma: </b>
@@ -1690,7 +1691,7 @@ public class QualityImprovement2020Queries {
    * <p>Nota: O período é definido conforme o requisito onde os utentes abandonos em TARV no fim do
    * período serão excluídos:
    * <li>6. para exclusão nos utentes que estão na 1ª linha de TARV, a “Data Início Período” será
-   * igual a “Data 1a Linha” – 6 meses e “Data Fim do Período” será igual a “Data 1a Linha”.
+   *     igual a “Data 1a Linha” – 6 meses e “Data Fim do Período” será igual a “Data 1a Linha”.
    *
    *     <p>B1= (BI1 and not B1E) ‘: MUDANCA DE REGIME
    * <li>BI1 - Select all patients who have the most recent “ALTERNATIVA A LINHA - 1a LINHA”
@@ -2073,6 +2074,6 @@ public class QualityImprovement2020Queries {
     if (dispensationTypes == null || dispensationTypes.isEmpty()) {
       throw new RuntimeException("The list of encounters or concepts might not be empty ");
     }
-    return dispensationTypes.toString().replace("[", "").replace("]", "");
+    return StringUtils.join(dispensationTypes, ",");
   }
 }

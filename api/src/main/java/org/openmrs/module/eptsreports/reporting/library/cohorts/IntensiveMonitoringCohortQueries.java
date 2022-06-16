@@ -1422,9 +1422,9 @@ public class IntensiveMonitoringCohortQueries {
    *
    *
    * <ul>
-   *   <li>G - Select all patients with the last (Viral Load Result (concept id 856) )and the result
-   *       is >= 1000 (value_numeric) registered on Ficha Clinica (encounter type 6) before “Last
-   *       Consultation Date” (encounter_datetime from A).
+   *   <li>utentes com último resultado de Carga Viral (se existir) registado na “Ficha Clínica”
+   *       (coluna 15) acima ou igual a de 1000 cópias, ou seja, último “Resultado Carga Viral” >=
+   *       1000., até “Data Fim de Avaliação” (“Data de Recolha Dados” menos (-) 1 mês).
    * </ul>
    *
    * @return CohortDefinition
@@ -1433,10 +1433,8 @@ public class IntensiveMonitoringCohortQueries {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("G - All patients with the last Viral Load Result");
-    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
-
     Map<String, Integer> map = new HashMap<>();
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
@@ -1455,16 +1453,8 @@ public class IntensiveMonitoringCohortQueries {
             + "       AND ee.encounter_type = ${6} "
             + "       AND oo.concept_id = ${856} "
             + "       AND oo.value_numeric >= 1000 "
-            + "       AND ee.encounter_datetime < (SELECT "
-            + "           Max(e.encounter_datetime) AS last_consultation_date "
-            + "                                     FROM   encounter e "
-            + "                                     WHERE  e.voided = 0 "
-            + "                                            AND e.location_id = :location "
-            + "                                            AND e.encounter_type = ${6} "
-            + "                                            AND e.patient_id = p.patient_id "
-            + "                                            AND e.encounter_datetime BETWEEN "
-            + "                                                :startDate AND :endDate "
-            + "                                     LIMIT  1)  ";
+            + "       AND ee.encounter_datetime <=  :endDate "
+            + " GROUP BY p.patient_id                        ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -1640,9 +1630,11 @@ public class IntensiveMonitoringCohortQueries {
     return cd;
   }
   /**
-   * F - Select all patients with the last CD4 result (concept id 1695) and the result is <= 200
-   * (value_numeric) registered on Ficha Clinica (encounter type 6) before “Last Consultation Date”
-   * (encounter_datetime from A).
+   * Os utentes com último resultado de CD4 (se existir) registado na “Ficha Clínica” (coluna 15)
+   * abaixo ou igual a de 200, ou seja, último “Resultado CD4” <= 200 até a “Data Fim de Avaliação”
+   * (“Data de Recolha Dados” menos (-) 1 mês), excepto os utentes que têm um registo de CV
+   * disponível na Ficha Clinica, último até “Data Fim de Avaliação”( “Data de Recolha Dados” menos
+   * (-) 1 mês)..
    *
    * @return CohortDefinition
    */
@@ -1656,14 +1648,15 @@ public class IntensiveMonitoringCohortQueries {
     Map<String, Integer> map = new HashMap<>();
     map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put("1695", hivMetadata.getCD4AbsoluteOBSConcept().getConceptId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("1305", hivMetadata.getHivViralLoadQualitative().getConceptId());
 
     String query =
-        " SELECT p.patient_id "
+        ""
+            + "SELECT p.patient_id "
             + "FROM   patient p "
-            + "       INNER JOIN encounter ee "
-            + "               ON ee.patient_id = p.patient_id "
-            + "       INNER JOIN obs oo "
-            + "               ON oo.encounter_id = ee.encounter_id "
+            + "       INNER JOIN encounter ee ON ee.patient_id = p.patient_id "
+            + "       INNER JOIN obs oo ON oo.encounter_id = ee.encounter_id "
             + "WHERE  p.voided = 0 "
             + "       AND ee.voided = 0 "
             + "       AND oo.voided = 0 "
@@ -1671,15 +1664,18 @@ public class IntensiveMonitoringCohortQueries {
             + "       AND ee.encounter_type = ${6} "
             + "       AND oo.concept_id = ${1695} "
             + "       AND oo.value_numeric <= 200 "
-            + "       AND ee.encounter_datetime < (SELECT "
-            + "           Max(e.encounter_datetime) AS last_consultation_date "
-            + "                                     FROM   encounter e "
-            + "                                     WHERE  e.voided = 0 "
-            + "                                            AND e.location_id = :location "
-            + "                                            AND e.encounter_type = ${6} "
-            + "                                            AND e.patient_id = p.patient_id "
-            + "                                            AND e.encounter_datetime BETWEEN "
-            + "                                                :startDate AND :endDate LIMIT  1) ";
+            + "       AND ee.encounter_datetime <= :endDate "
+            + "       AND NOT EXISTS (SELECT e.encounter_id "
+            + "                       FROM   encounter e    "
+            + "                              INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "                       WHERE  e.encounter_type = ${6} "
+            + "                              AND e.location_id = :location "
+            + "                              AND o.concept_id IN( ${856}, ${1305} ) "
+            + "                              AND e.patient_id = p.patient_id "
+            + "                              AND e.encounter_datetime <= :endDate "
+            + "                              AND e.voided = 0 "
+            + "                              AND o.voided = 0)"
+            + " GROUP BY p.patient_id         ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -2073,6 +2069,34 @@ public class IntensiveMonitoringCohortQueries {
     CohortDefinition k = getMI15K();
     CohortDefinition l = getMI15L();
     CohortDefinition p = getMI15P();
+    CohortDefinition alreadyEnrolledMdc =
+        qualityImprovement2020CohortQueries.getPatientsAlreadyEnrolledInTheMdc();
+
+    List<Integer> mdsConcepts =
+        Arrays.asList(
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId(),
+            hivMetadata.getDispensaComunitariaViaApeConcept().getConceptId(),
+            hivMetadata.getDescentralizedArvDispensationConcept().getConceptId(),
+            hivMetadata.getRapidFlow().getConceptId(),
+            hivMetadata.getSemiannualDispensation().getConceptId());
+
+    List<Integer> states = Arrays.asList(hivMetadata.getCompletedConcept().getConceptId());
+    List<Integer> start = Arrays.asList(hivMetadata.getStartDrugs().getConceptId());
+
+    CohortDefinition mdcLastClinical =
+        qualityImprovement2020CohortQueries
+            .getPatientsWhoHadMdsOnMostRecentClinicalAndPickupOnFilaFR36(mdsConcepts, start);
+
+    CohortDefinition recentMdc =
+        qualityImprovement2020CohortQueries
+            .getPatientsWithMdcOnMostRecentClinicalFormWithFollowingDispensationTypesAndState(
+                mdsConcepts, states);
+
+    CohortDefinition pickupAfterClinical =
+        qualityImprovement2020CohortQueries
+            .getPatientsWhoHadPickupOnFilaAfterMostRecentVlOnFichaClinica();
+
     CohortDefinition major2 = getAgeOnLastConsultationMoreThan2Years();
     String MAPPINGA =
         "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}";
@@ -2088,39 +2112,43 @@ public class IntensiveMonitoringCohortQueries {
     cd.addSearch("D", EptsReportUtils.map(d, MAPPINGD));
     cd.addSearch("E", EptsReportUtils.map(e, MAPPINGA));
     cd.addSearch("F", EptsReportUtils.map(f, MAPPINGA));
-    cd.addSearch("G", EptsReportUtils.map(g, MAPPINGA));
+    cd.addSearch("G", EptsReportUtils.map(g, "endDate=${revisionEndDate-1m},location=${location}"));
     cd.addSearch("H", EptsReportUtils.map(h, MAPPINGA));
     cd.addSearch("I", EptsReportUtils.map(i, MAPPINGA));
     cd.addSearch("J", EptsReportUtils.map(j, MAPPINGA));
     cd.addSearch("K", EptsReportUtils.map(k, MAPPINGA));
+    cd.addSearch("MDC", EptsReportUtils.map(alreadyEnrolledMdc, MAPPINGA));
     cd.addSearch("L", EptsReportUtils.map(l, MAPPINGA));
     cd.addSearch("P", EptsReportUtils.map(p, MAPPINGA));
     cd.addSearch("AGE2", EptsReportUtils.map(major2, MAPPINGA));
+    cd.addSearch("LMDC", EptsReportUtils.map(mdcLastClinical, MAPPINGA));
+    cd.addSearch("RMDC", EptsReportUtils.map(recentMdc, MAPPINGA));
+    cd.addSearch("PICKUP", EptsReportUtils.map(pickupAfterClinical, MAPPINGA));
 
     if (isDenominator) {
 
       if (level == 1) {
         cd.setName("Denominator: " + name1);
-        cd.setCompositionString("A AND B1 AND E AND NOT (C OR D OR F OR G OR J) AND AGE2 ");
+        cd.setCompositionString("A AND B1 AND E AND NOT (C OR D OR F OR G OR MDC) AND AGE2 ");
       }
       if (level == 2) {
         cd.setName("Denominator: " + name2);
-        cd.setCompositionString("A AND J AND H AND AGE2");
+        cd.setCompositionString("A AND MDC AND H AND AGE2");
       }
       if (level == 3) {
         cd.setName("Denominator: " + name3);
-        cd.setCompositionString("A AND J AND B2 AND NOT P AND AGE2");
+        cd.setCompositionString("A AND MDC AND B2 AND NOT P AND AGE2");
       }
       return cd;
     }
 
     if (level == 1) {
       cd.setName("Numerator: " + name1);
-      cd.setCompositionString("A AND B1 AND E AND NOT (C OR D OR F OR G OR J) AND K AND AGE2 ");
+      cd.setCompositionString("A AND B1 AND E AND NOT (C OR D OR F OR G OR J) AND LMDC AND AGE2 ");
     }
     if (level == 2) {
       cd.setName("Numerator: " + name2);
-      cd.setCompositionString("A AND J AND H AND L AND AGE2");
+      cd.setCompositionString("A AND RMDC AND PICKUP AND H AND L AND AGE2");
     }
     if (level == 3) {
       cd.setName("Numerator: " + name3);
@@ -2337,7 +2365,7 @@ public class IntensiveMonitoringCohortQueries {
         "ABANDONEDTARV",
         EptsReportUtils.map(
             abandonedInTheLastSixMonthsFromFirstLineDate,
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
         "RESTARTED",

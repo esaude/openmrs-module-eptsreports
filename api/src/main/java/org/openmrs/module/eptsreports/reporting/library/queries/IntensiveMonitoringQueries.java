@@ -1,9 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-import org.apache.commons.text.StringSubstitutor;
-
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.commons.text.StringSubstitutor;
 
 public class IntensiveMonitoringQueries {
 
@@ -246,11 +245,10 @@ public class IntensiveMonitoringQueries {
   }
 
   /**
-   * <p>Select all patients with S.TARV: ADULTO SEGUIMENTO (ID=6) that have Resultado Carga Viral
+   * Select all patients with S.TARV: ADULTO SEGUIMENTO (ID=6) that have Resultado Carga Viral
    * Quantitativo (Concept ID = 856) or Resultado Carga Viral Qualitativo (Concept ID = 1305) and
    * Value_numeric = any not empty for concept Id 856 (Resultado Carga Viral Quantitativo) or
    * Value_coded = any not empty for concept Id 1305 (Resultado Carga Viral Qualitativo)
-   *
    * <li>Nota: Se existir o registo de mais do que uma consulta clínica com registo de resultado de
    *     CV durante o mês de avaliação deve ser considerada a primeira consulta clínica com o
    *     registo de resultado de CV durante o mês de avaliação.
