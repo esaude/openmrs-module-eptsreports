@@ -1,6 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.*;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.Location;
@@ -27,6 +27,13 @@ import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Component
 public class QualityImprovement2020CohortQueries {
@@ -8176,10 +8183,21 @@ public class QualityImprovement2020CohortQueries {
             txPvls.getPatientsWithViralLoadResultsAndOnArtForMoreThan3Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "C",
+        "MDC",
         EptsReportUtils.map(
-            getMQMdsC(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("A and C");
+            getPatientsWhoHadMdsOnMostRecentClinicalAndPickupOnFilaFR36(
+                Arrays.asList(
+                    hivMetadata.getGaac().getConceptId(),
+                    hivMetadata.getQuarterlyDispensation().getConceptId(),
+                    hivMetadata.getDispensaComunitariaViaApeConcept().getConceptId(),
+                    hivMetadata.getDescentralizedArvDispensationConcept().getConceptId(),
+                    hivMetadata.getRapidFlow().getConceptId(),
+                    hivMetadata.getSemiannualDispensation().getConceptId()),
+                Arrays.asList(
+                    hivMetadata.getStartDrugs().getConceptId(),
+                    hivMetadata.getContinueRegimenConcept().getConceptId())),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("A AND MDC");
     return cd;
   }
 
@@ -8199,10 +8217,21 @@ public class QualityImprovement2020CohortQueries {
             txPvls.getPatientsWithViralLoadSuppressionWhoAreOnArtMoreThan3Months(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
-        "C",
+        "MDC",
         EptsReportUtils.map(
-            getMQMdsC(), "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("B and C");
+            getPatientsWhoHadMdsOnMostRecentClinicalAndPickupOnFilaFR36(
+                Arrays.asList(
+                    hivMetadata.getGaac().getConceptId(),
+                    hivMetadata.getQuarterlyDispensation().getConceptId(),
+                    hivMetadata.getDispensaComunitariaViaApeConcept().getConceptId(),
+                    hivMetadata.getDescentralizedArvDispensationConcept().getConceptId(),
+                    hivMetadata.getRapidFlow().getConceptId(),
+                    hivMetadata.getSemiannualDispensation().getConceptId()),
+                Arrays.asList(
+                    hivMetadata.getStartDrugs().getConceptId(),
+                    hivMetadata.getContinueRegimenConcept().getConceptId())),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("B AND MDC");
     return cd;
   }
 
@@ -9810,6 +9839,6 @@ public class QualityImprovement2020CohortQueries {
 
       throw new RuntimeException("The list of encounters or concepts might not be empty ");
     }
-    return dispensationTypes.toString().replace("[", "").replace("]", "");
+    return StringUtils.join(dispensationTypes, ",");
   }
 }

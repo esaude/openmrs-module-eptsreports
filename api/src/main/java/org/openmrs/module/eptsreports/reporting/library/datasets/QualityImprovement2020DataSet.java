@@ -2157,7 +2157,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQDen15Dot16(),
                 "startDate=${startDate},endDate=${endDate},location=${location}"));
-
+    MQ15DEN16.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     dataSetDefinition.addColumn(
         "MQ15DEN16",
         "15.16. % de utentes inscritos em MDS (para pacientes estáveis) com supressão viral",
@@ -2171,7 +2171,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
             EptsReportUtils.map(
                 qualityImprovement2020CohortQueries.getMQNum15Dot16(),
                 "startDate=${startDate},endDate=${endDate},location=${location}"));
-
+    MQ15NUM16.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     dataSetDefinition.addColumn(
         "MQ15NUM16",
         "15.16. % de utentes inscritos em MDS (para pacientes estáveis) com supressão viral",
