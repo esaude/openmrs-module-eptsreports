@@ -2090,6 +2090,7 @@ public class QualityImprovement2020CohortQueries {
    */
   public CohortDefinition getMQC11DEN(int indicatorFlag, MIMQ reportSource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+    boolean useE53 = false;
 
     compositionCohortDefinition.setName(
         "% adultos em TARV com o mínimo de 3 consultas de seguimento de adesão na FM-ficha de APSS/PP");
@@ -2105,7 +2106,7 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition patientsFromFichaClinicaLinhaTerapeutica =
         getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
 
-    CohortDefinition patientsFromFichaClinicaCargaViral = getB2_13();
+    CohortDefinition patientsFromFichaClinicaCargaViral = getB2_13(useE53);
 
     CohortDefinition pregnantWithCargaViralHigherThan1000 =
         QualityImprovement2020Queries.getMQ13DenB4_P4(
@@ -2199,13 +2200,13 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.setCompositionString("A AND NOT (C OR D OR E OR F)");
     }
     if (indicatorFlag == 2 || indicatorFlag == 7) {
-      compositionCohortDefinition.setCompositionString("(B1 AND B2) AND NOT (B5 OR E OR F OR B4)");
+      compositionCohortDefinition.setCompositionString("(B1 AND B2) AND NOT (B5 OR F OR B4)");
     }
     if (indicatorFlag == 3) {
       compositionCohortDefinition.setCompositionString("(A AND C) AND NOT (D OR E OR F)");
     }
     if (indicatorFlag == 4) {
-      compositionCohortDefinition.setCompositionString("(B1 AND B4) AND NOT (B5 OR E OR F)");
+      compositionCohortDefinition.setCompositionString("(B1 AND B4) AND NOT (B5 OR F)");
     }
 
     return compositionCohortDefinition;
@@ -2624,7 +2625,7 @@ public class QualityImprovement2020CohortQueries {
    *     is no patient who meets the conditions <strong>Should</strong> fetch all patients with B2
    *     criteria
    */
-  public CohortDefinition getB2_13() {
+  public CohortDefinition getB2_13(boolean e53) {
 
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(
@@ -2659,11 +2660,18 @@ public class QualityImprovement2020CohortQueries {
             + "                    AND o.location_id = :location"
             + "                    AND o.concept_id = ${856}"
             + "                    AND o.value_numeric >= 1000"
-            + "                    AND (( e.encounter_type = ${6}"
-            + "                    AND e.encounter_datetime BETWEEN :startDate AND :endDate) "
-            + "                    OR (e.encounter_type = ${53}"
-            + "                    AND o.obs_datetime BETWEEN :startDate AND :endDate))"
-            + "             GROUP BY p.patient_id) filtered ON p.patient_id = filtered.patient_id";
+            + "                    AND ("
+            + "                         ( e.encounter_type = ${6} "
+            + "                         AND e.encounter_datetime BETWEEN :startDate AND :endDate) ";
+
+    if (e53) {
+      query +=
+          "                         OR (e.encounter_type = ${53} "
+              + "                         AND o.obs_datetime BETWEEN :startDate AND :endDate)";
+    }
+    query +=
+        "                   ) "
+            + "               GROUP BY p.patient_id) filtered ON p.patient_id = filtered.patient_id ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -3234,6 +3242,7 @@ public class QualityImprovement2020CohortQueries {
    */
   public CohortDefinition getMQC11NumB1nB2notCnotDnotEnotEnotFnHandAdultss(MIMQ reportSource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+    boolean useE53 = false;
 
     compositionCohortDefinition.setName("Category 11 : Numeraror 11.2 ");
 
@@ -3245,7 +3254,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition b1 = getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
 
-    CohortDefinition b2 = getB2_13();
+    CohortDefinition b2 = getB2_13(useE53);
 
     CohortDefinition b4 =
         QualityImprovement2020Queries.getMQ13DenB4_P4(
@@ -3559,6 +3568,7 @@ public class QualityImprovement2020CohortQueries {
    */
   public CohortDefinition getMQC11NumB1nB2notCnotDnotEnotFnHChildren(MIMQ reportSource) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+    boolean useE53 = false;
 
     compositionCohortDefinition.setName("Category 11 : Numeraror 11.7");
 
@@ -3570,7 +3580,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition b1 = getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
 
-    CohortDefinition b2 = getB2_13();
+    CohortDefinition b2 = getB2_13(useE53);
 
     CohortDefinition b4 =
         QualityImprovement2020Queries.getMQ13DenB4_P4(
@@ -5221,6 +5231,7 @@ public class QualityImprovement2020CohortQueries {
    */
   public CohortDefinition getMQ13P4(Boolean den, Integer line) {
     CompositionCohortDefinition compositionCohortDefinition = new CompositionCohortDefinition();
+    boolean useE53 = true;
 
     if (den) {
       if (line == 3) {
@@ -5254,7 +5265,7 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition patientsFromFichaClinicaLinhaTerapeutica =
         getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
 
-    CohortDefinition patientsFromFichaClinicaCargaViral = getB2_13();
+    CohortDefinition patientsFromFichaClinicaCargaViral = getB2_13(useE53);
 
     CohortDefinition pregnantWithCargaViralHigherThan1000 =
         QualityImprovement2020Queries.getMQ13DenB4_P4(

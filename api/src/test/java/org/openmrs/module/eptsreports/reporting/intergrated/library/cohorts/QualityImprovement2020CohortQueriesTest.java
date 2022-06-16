@@ -120,7 +120,7 @@ public class QualityImprovement2020CohortQueriesTest extends DefinitionsTest {
   @Test
   public void getB2_13() throws EvaluationException {
 
-    CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getB2_13();
+    CohortDefinition cohortDefinition = qualityImprovement2020CohortQueries.getB2_13(true);
 
     Map<Parameter, Object> parameters = new HashMap<>();
     parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
