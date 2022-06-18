@@ -385,7 +385,7 @@ public class CommonCohortQueries {
             + "                       AND e.voided = 0 "
             + "                       AND e.location_id = :location "
             + "                       AND e.encounter_type = ${53} "
-            + "                       AND o.obs_datetime BETWEEN :startDate AND :revisionEndDate "
+            + "                       AND o.obs_datetime <= :revisionEndDate "
             + "                       AND o.voided = 0 "
             + "                       AND o.concept_id = ${6272} "
             + "                       AND o.value_coded = ${1706} "

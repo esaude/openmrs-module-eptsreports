@@ -4,7 +4,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
@@ -528,13 +527,13 @@ public class QualityImprovement2020Queries {
             + "                      AND        e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "                      AND        e.voided = 0 "
             + "                      AND        p.voided = 0 "
-            + "                      GROUP BY   p.patient_id ) recent_clinical "
+            + "                      GROUP BY   p.patient_id ) recent_clinical ON recent_clinical.patient_id = p.patient_id "
             + "WHERE      e.encounter_datetime = recent_clinical.consultation_date "
             + "AND        e.encounter_type = ${18} "
             + "AND        e.location_id = :location "
             + "AND        o.concept_id = ${5096} "
-            + "AND        DATEDIFF(recent_clinical.consultation_date , o.value_datetime) >= ${lower} "
-            + " AND        DATEDIFF(recent_clinical.consultation_date , o.value_datetime) <= ${upper} "
+            + "AND        DATEDIFF(o.value_datetime, recent_clinical.consultation_date) >= ${lower} "
+            + " AND        DATEDIFF(o.value_datetime, recent_clinical.consultation_date) <= ${upper} "
             + " AND        p.voided = 0 "
             + " AND        e.voided = 0 "
             + " AND        o.voided = 0 "

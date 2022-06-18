@@ -1446,21 +1446,21 @@ public class IntensiveMonitoringCohortQueries {
     map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
 
     String query =
-            " SELECT p.patient_id "
-                    + " FROM   patient p "
-                    + "       INNER JOIN encounter ee "
-                    + "               ON ee.patient_id = p.patient_id "
-                    + "       INNER JOIN obs oo"
-                    + "               ON oo.encounter_id = ee.encounter_id "
-                    + " WHERE  p.voided = 0 "
-                    + "       AND ee.voided = 0 "
-                    + "       AND oo.voided = 0 "
-                    + "       AND ee.location_id = :location "
-                    + "       AND ee.encounter_type = ${6} "
-                    + "       AND oo.concept_id = ${856} "
-                    + "       AND oo.value_numeric >= 1000 "
-                    + "       AND ee.encounter_datetime <=  :endDate "
-                    + " GROUP BY p.patient_id                        ";
+        " SELECT p.patient_id "
+            + " FROM   patient p "
+            + "       INNER JOIN encounter ee "
+            + "               ON ee.patient_id = p.patient_id "
+            + "       INNER JOIN obs oo"
+            + "               ON oo.encounter_id = ee.encounter_id "
+            + " WHERE  p.voided = 0 "
+            + "       AND ee.voided = 0 "
+            + "       AND oo.voided = 0 "
+            + "       AND ee.location_id = :location "
+            + "       AND ee.encounter_type = ${6} "
+            + "       AND oo.concept_id = ${856} "
+            + "       AND oo.value_numeric >= 1000 "
+            + "       AND ee.encounter_datetime <=  :endDate "
+            + " GROUP BY p.patient_id                        ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -1658,30 +1658,29 @@ public class IntensiveMonitoringCohortQueries {
     map.put("1305", hivMetadata.getHivViralLoadQualitative().getConceptId());
 
     String query =
-            ""
-                    + "SELECT p.patient_id "
-                    + "FROM   patient p "
-                    + "       INNER JOIN encounter ee ON ee.patient_id = p.patient_id "
-                    + "       INNER JOIN obs oo ON oo.encounter_id = ee.encounter_id "
-                    + "WHERE  p.voided = 0 "
-                    + "       AND ee.voided = 0 "
-                    + "       AND oo.voided = 0 "
-                    + "       AND ee.location_id = :location "
-                    + "       AND ee.encounter_type = ${6} "
-                    + "       AND oo.concept_id = ${1695} "
-                    + "       AND oo.value_numeric <= 200 "
-                    + "       AND ee.encounter_datetime <= :endDate "
-                    + "       AND NOT EXISTS (SELECT e.encounter_id "
-                    + "                       FROM   encounter e    "
-                    + "                              INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-                    + "                       WHERE  e.encounter_type = ${6} "
-                    + "                              AND e.location_id = :location "
-                    + "                              AND o.concept_id IN( ${856}, ${1305} ) "
-                    + "                              AND e.patient_id = p.patient_id "
-                    + "                              AND e.encounter_datetime <= :endDate "
-                    + "                              AND e.voided = 0 "
-                    + "                              AND o.voided = 0)"
-                    + " GROUP BY p.patient_id         ";
+             "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter ee ON ee.patient_id = p.patient_id "
+            + "       INNER JOIN obs oo ON oo.encounter_id = ee.encounter_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND ee.voided = 0 "
+            + "       AND oo.voided = 0 "
+            + "       AND ee.location_id = :location "
+            + "       AND ee.encounter_type = ${6} "
+            + "       AND oo.concept_id = ${1695} "
+            + "       AND oo.value_numeric <= 200 "
+            + "       AND ee.encounter_datetime <= :endDate "
+            + "       AND NOT EXISTS (SELECT e.encounter_id "
+            + "                       FROM   encounter e    "
+            + "                              INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "                       WHERE  e.encounter_type = ${6} "
+            + "                              AND e.location_id = :location "
+            + "                              AND o.concept_id IN( ${856}, ${1305} ) "
+            + "                              AND e.patient_id = p.patient_id "
+            + "                              AND e.encounter_datetime <= :endDate "
+            + "                              AND e.voided = 0 "
+            + "                              AND o.voided = 0)"
+            + " GROUP BY p.patient_id         ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -2076,32 +2075,32 @@ public class IntensiveMonitoringCohortQueries {
     CohortDefinition l = getMI15L();
     CohortDefinition p = getMI15P();
     CohortDefinition alreadyEnrolledMdc =
-            qualityImprovement2020CohortQueries.getPatientsAlreadyEnrolledInTheMdc();
+        qualityImprovement2020CohortQueries.getPatientsAlreadyEnrolledInTheMdc();
 
     List<Integer> mdsConcepts =
-            Arrays.asList(
-                    hivMetadata.getGaac().getConceptId(),
-                    hivMetadata.getQuarterlyDispensation().getConceptId(),
-                    hivMetadata.getDispensaComunitariaViaApeConcept().getConceptId(),
-                    hivMetadata.getDescentralizedArvDispensationConcept().getConceptId(),
-                    hivMetadata.getRapidFlow().getConceptId(),
-                    hivMetadata.getSemiannualDispensation().getConceptId());
+        Arrays.asList(
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId(),
+            hivMetadata.getDispensaComunitariaViaApeConcept().getConceptId(),
+            hivMetadata.getDescentralizedArvDispensationConcept().getConceptId(),
+            hivMetadata.getRapidFlow().getConceptId(),
+            hivMetadata.getSemiannualDispensation().getConceptId());
 
     List<Integer> states = Arrays.asList(hivMetadata.getCompletedConcept().getConceptId());
     List<Integer> start = Arrays.asList(hivMetadata.getStartDrugs().getConceptId());
 
     CohortDefinition mdcLastClinical =
-            qualityImprovement2020CohortQueries
-                    .getPatientsWhoHadMdsOnMostRecentClinicalAndPickupOnFilaFR36(mdsConcepts, start);
+        qualityImprovement2020CohortQueries
+            .getPatientsWhoHadMdsOnMostRecentClinicalAndPickupOnFilaFR36(mdsConcepts, start);
 
     CohortDefinition recentMdc =
-            qualityImprovement2020CohortQueries
-                    .getPatientsWithMdcOnMostRecentClinicalFormWithFollowingDispensationTypesAndState(
-                            mdsConcepts, states);
+        qualityImprovement2020CohortQueries
+            .getPatientsWithMdcOnMostRecentClinicalFormWithFollowingDispensationTypesAndState(
+                mdsConcepts, states);
 
     CohortDefinition pickupAfterClinical =
-            qualityImprovement2020CohortQueries
-                    .getPatientsWhoHadPickupOnFilaAfterMostRecentVlOnFichaClinica();
+        qualityImprovement2020CohortQueries
+            .getPatientsWhoHadPickupOnFilaAfterMostRecentVlOnFichaClinica();
 
     CohortDefinition major2 = getAgeOnLastConsultationMoreThan2Years();
     String MAPPINGA =
