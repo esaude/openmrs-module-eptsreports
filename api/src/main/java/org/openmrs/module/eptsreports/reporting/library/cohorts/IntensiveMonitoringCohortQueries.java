@@ -2371,7 +2371,6 @@ public class IntensiveMonitoringCohortQueries {
             EptsReportUtils.map(
                     abandonedInTheLastSixMonthsFromFirstLineDate,
                     "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
     compositionCohortDefinition.addSearch(
             "RESTARTED",
             EptsReportUtils.map(

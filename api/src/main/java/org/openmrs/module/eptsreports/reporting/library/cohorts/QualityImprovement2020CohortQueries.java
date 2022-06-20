@@ -1,5 +1,11 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
@@ -27,12 +33,6 @@ import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class QualityImprovement2020CohortQueries {
@@ -8014,7 +8014,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch("AGE2", EptsReportUtils.map(Mq15AGE2, "endDate=${revisionEndDate}"));
 
     cd.setCompositionString(
-        "A AND B1 AND (E1 AND E2 AND E3) AND NOT (C OR D OR F OR G OR MDS) AND AGE2");
+        "A AND B1 AND (E1 AND E2 AND E3) AND AGE2 AND NOT (C OR D OR F OR G OR MDS)");
 
     return cd;
   }
@@ -9394,9 +9394,9 @@ public class QualityImprovement2020CohortQueries {
             + "               AND e.location_id = :location "
             + "               AND o.concept_id = ${5096} "
             + "               AND DATEDIFF(o.value_datetime, "
-            + "               recent_clinical.consultation_date) >= ${lower} "
+            + "               e.encounter_datetime) >= ${lower} "
             + "               AND DATEDIFF(o.value_datetime, "
-            + "               recent_clinical.consultation_date) <= ${upper} "
+            + "               e.encounter_datetime) <= ${upper} "
             + "               AND p.voided = 0 "
             + "               AND e.voided = 0 "
             + "               AND o.voided = 0 "
@@ -9701,29 +9701,39 @@ public class QualityImprovement2020CohortQueries {
     map.put("upper", upperBounded);
 
     String query =
-        "SELECT     p.patient_id "
-            + "FROM       patient p "
-            + "INNER JOIN encounter e ON  e.patient_id = p.patient_id "
-            + "INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-            + "INNER JOIN (          SELECT     p.patient_id, Max(e.encounter_datetime) consultation_date "
-            + "                      FROM       patient p "
-            + "                      INNER JOIN encounter e  ON  e.patient_id = p.patient_id "
-            + "                      WHERE      e.encounter_type = ${6} "
-            + "                      AND        e.location_id = :location "
-            + "                      AND        e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + "                      AND        e.voided = 0 "
-            + "                      AND        p.voided = 0 "
-            + "                      GROUP BY   p.patient_id ) recent_clinical ON recent_clinical.patient_id = p.patient_id "
-            + "WHERE      e.encounter_datetime <= recent_clinical.consultation_date "
-            + "AND        e.encounter_type = ${18} "
-            + "AND        e.location_id = :location "
-            + "AND        o.concept_id = ${5096} "
-            + "AND        DATEDIFF(o.value_datetime, recent_clinical.consultation_date) >= ${lower} "
-            + " AND        DATEDIFF(o.value_datetime, recent_clinical.consultation_date) <= ${upper} "
-            + " AND        p.voided = 0 "
-            + " AND        e.voided = 0 "
-            + " AND        o.voided = 0 "
-            + " GROUP BY   p.patient_id";
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "       INNER JOIN (SELECT p.patient_id, Max(e.encounter_datetime) consultation_date "
+            + "                   FROM   patient p "
+            + "                          INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                          INNER JOIN (SELECT p.patient_id, Max(e.encounter_datetime) consultation_date "
+            + "                                      FROM   patient p "
+            + "                                             INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                                      WHERE  e.encounter_type = ${6} "
+            + "                                             AND e.location_id = :location "
+            + "                                             AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "                                             AND e.voided = 0 "
+            + "                                             AND p.voided = 0 "
+            + "                                      GROUP  BY p.patient_id) recent_clinical ON recent_clinical.patient_id = p.patient_id "
+            + "                   WHERE  e.encounter_datetime < recent_clinical.consultation_date "
+            + "                          AND e.encounter_type = ${18} "
+            + "                          AND e.location_id = :location "
+            + "                          AND p.voided = 0 "
+            + "                          AND e.voided = 0 "
+            + "                   GROUP  BY p.patient_id) recent_fila "
+            + "               ON recent_fila.patient_id = p.patient_id "
+            + "WHERE  e.encounter_type = ${18} "
+            + "       AND e.encounter_datetime = recent_fila.consultation_date "
+            + "       AND o.concept_id = ${5096} "
+            + "       AND e.location_id = :location "
+            + "       AND p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND DATEDIFF(o.value_datetime, e.encounter_datetime) >= ${lower} "
+            + "       AND DATEDIFF(o.value_datetime, e.encounter_datetime) <= ${upper} "
+            + " GROUP  BY p.patient_id  ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -9859,9 +9869,9 @@ public class QualityImprovement2020CohortQueries {
             + "               AND e.location_id = :location "
             + "               AND o.concept_id = ${5096} "
             + "               AND DATEDIFF(o.value_datetime, "
-            + "               recent_clinical.consultation_date) >= ${lower} "
+            + "               e.encounter_datetime) >= ${lower} "
             + "               AND DATEDIFF(o.value_datetime, "
-            + "               recent_clinical.consultation_date) <= ${upper} "
+            + "               e.encounter_datetime) <= ${upper} "
             + "               AND p.voided = 0 "
             + "               AND e.voided = 0 "
             + "               AND o.voided = 0 "
@@ -10016,9 +10026,9 @@ public class QualityImprovement2020CohortQueries {
             + "               AND e.location_id = :location "
             + "               AND o.concept_id = ${5096} "
             + "               AND DATEDIFF(o.value_datetime, "
-            + "               recent_clinical.consultation_date) >= ${lower} "
+            + "               e.encounter_datetime) >= ${lower} "
             + "               AND DATEDIFF(o.value_datetime, "
-            + "               recent_clinical.consultation_date) <= ${upper} "
+            + "               e.encounter_datetime) <= ${upper} "
             + "               AND p.voided = 0 "
             + "               AND e.voided = 0 "
             + "               AND o.voided = 0 "
