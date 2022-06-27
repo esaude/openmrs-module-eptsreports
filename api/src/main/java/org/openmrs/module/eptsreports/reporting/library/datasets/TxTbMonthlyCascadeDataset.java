@@ -1,12 +1,13 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TXTBCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxTbMonthlyCascadeCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.dimensions.*;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.DimensionKeyForAge;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.DimensionKeyForGender;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimensionKey;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -16,6 +17,10 @@ import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 
 @Component
 public class TxTbMonthlyCascadeDataset extends BaseDataSet {
@@ -61,13 +66,13 @@ public class TxTbMonthlyCascadeDataset extends BaseDataSet {
 
     CohortIndicator NEWART =
         eptsGeneralIndicator.getIndicator(
-            "NEWART ",
+            "NEWART",
             EptsReportUtils.map(
                 txTbMonthlyCascadeCohortQueries.getPatientsOnTxCurrAndNewOnArt(),
                 "endDate=${endDate},location=${location}"));
 
     cohortIndicatorDefinition.addColumn(
-        "NEWART ",
+        "NEWART",
         "NEWART",
         EptsReportUtils.map(NEWART, "endDate=${endDate},location=${location}"),
         "");
