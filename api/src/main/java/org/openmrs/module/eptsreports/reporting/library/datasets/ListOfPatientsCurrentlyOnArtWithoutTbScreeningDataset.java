@@ -9,6 +9,7 @@ import org.openmrs.PersonAttributeType;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.data.converter.DispensationTypeConverter;
+import org.openmrs.module.eptsreports.reporting.data.converter.DispensationTypeMdcConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.GenderConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.NotApplicableIfNullConverter;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.*;
@@ -207,35 +208,35 @@ public class ListOfPatientsCurrentlyOnArtWithoutTbScreeningDataset extends BaseD
         listOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries.getMdcDispensationType(
             ListOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries.DispensationColumn.MDC1),
         "location=${location}",
-        new DispensationTypeConverter());
+        new DispensationTypeMdcConverter());
 
     patientDefinition.addColumn(
         "mdc2",
         listOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries.getMdcDispensationType(
             ListOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries.DispensationColumn.MDC2),
         "location=${location}",
-        new DispensationTypeConverter());
+        new DispensationTypeMdcConverter());
 
     patientDefinition.addColumn(
         "mdc3",
         listOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries.getMdcDispensationType(
             ListOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries.DispensationColumn.MDC3),
         "location=${location}",
-        new DispensationTypeConverter());
+        new DispensationTypeMdcConverter());
 
     patientDefinition.addColumn(
         "mdc4",
         listOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries.getMdcDispensationType(
             ListOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries.DispensationColumn.MDC4),
         "location=${location}",
-        new DispensationTypeConverter());
+        new DispensationTypeMdcConverter());
 
     patientDefinition.addColumn(
         "mdc5",
         listOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries.getMdcDispensationType(
             ListOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries.DispensationColumn.MDC5),
         "location=${location}",
-        new DispensationTypeConverter());
+        new DispensationTypeMdcConverter());
 
     return patientDefinition;
   }

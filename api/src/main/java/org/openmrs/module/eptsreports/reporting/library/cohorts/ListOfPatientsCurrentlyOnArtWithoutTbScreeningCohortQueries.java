@@ -331,6 +331,7 @@ public class ListOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries {
             + "       AND o.concept_id = ${23866} "
             + "       AND p.voided = 0 "
             + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
             + "GROUP  BY p.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(valuesMap);
@@ -376,6 +377,7 @@ public class ListOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries {
             + "       AND o.concept_id = ${23866} "
             + "       AND p.voided = 0 "
             + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
             + "GROUP  BY p.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(valuesMap);
@@ -477,6 +479,7 @@ public class ListOfPatientsCurrentlyOnArtWithoutTbScreeningCohortQueries {
             + "                                 AND o.concept_id = ${165174} "
             + "                                 AND e.voided = 0 "
             + "                                 AND p.voided = 0 "
+            + "                                 AND o.voided = 0 "
             + "                          GROUP  BY p.patient_id) most_recent "
             + "                      ON most_recent.patient_id = p.patient_id "
             + "       WHERE  e.encounter_datetime = most_recent.consultation_date "

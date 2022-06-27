@@ -380,14 +380,11 @@ public class ListOfPatientsEligibleForVLDataDefinitionQueries {
     String query =
         "  SELECT p.patient_id, MAX(e.encounter_datetime) FROM patient p "
             + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "         INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + " WHERE e.encounter_type IN(${6},${9}) "
             + " AND e.encounter_datetime <= :startDate "
             + " AND e.location_id = :location "
             + " AND e.voided = 0 "
             + " AND p.voided = 0 "
-            + " AND o.voided = 0 "
-            + "  "
             + " GROUP BY p.patient_id ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
@@ -423,17 +420,28 @@ public class ListOfPatientsEligibleForVLDataDefinitionQueries {
     valuesMap.put("1410", hivMetadata.getReturnVisitDateConcept().getConceptId());
 
     String query =
-        "  SELECT p.patient_id, MAX(o.value_datetime) FROM patient p "
-            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "         INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-            + " WHERE e.encounter_type IN(${6},${9}) "
-            + " AND o.concept_id = ${1410} "
-            + " AND e.encounter_datetime <= :startDate "
-            + " AND e.voided = 0 "
-            + " AND e.location_id = :location "
-            + " AND p.voided = 0 "
-            + " AND o.voided = 0 "
-            + " GROUP BY p.patient_id ";
+        "SELECT p.patient_id,o.value_datetime "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "       INNER JOIN (SELECT p.patient_id,MAX(e.encounter_datetime) encounter_datetime "
+            + "                   FROM   patient p "
+            + "                          INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                   WHERE  e.encounter_type IN( ${6}, ${9} ) "
+            + "                          AND e.encounter_datetime <= :startDate "
+            + "                          AND e.voided = 0 "
+            + "                          AND e.location_id = :location "
+            + "                          AND p.voided = 0 "
+            + "                   GROUP  BY p.patient_id) most_recent "
+            + "               ON most_recent.patient_id = p.patient_id "
+            + "WHERE  e.encounter_type IN( ${6}, ${9} ) "
+            + "       AND o.concept_id = ${1410} "
+            + "       AND e.encounter_datetime = most_recent.encounter_datetime "
+            + "       AND e.voided = 0 "
+            + "       AND e.location_id = :location "
+            + "       AND p.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "GROUP  BY p.patient_id";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
