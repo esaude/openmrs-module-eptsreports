@@ -2079,4 +2079,85 @@ public class QualityImprovement2020Queries {
     }
     return StringUtils.join(dispensationTypes, ",");
   }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * B2 NEW - B2New - Select all patients with “LINHA TERAPEUTICA” (Concept Id 21151) equal to
+   * “PRIMEIRA LINHA” (concept id 21150) recorded in the Last Clinical Consultation (encounter type
+   * 6, encounter_datetime) occurred during the period (encounter_datetime >= startDateInclusion and
+   * <= endDateRevision) and Last Clinical Consultation Date (encounter_datetime) minus “Patient ART
+   * Start Date” (Concept Id 1190, value_datetime) recorded in Ficha Resumo (encounter type 53,
+   * encounter_datetime) >= 6 months)
+   *
+   * <blockquote>
+   */
+  public static String getFirstLineTherapyQuery() {
+
+    return " SELECT "
+        + "     pa.patient_id, first_line.encounter_datetime AS last_encounter "
+        + " FROM "
+        + "     patient pa "
+        + "          JOIN "
+        + "     encounter enc ON enc.patient_id = pa.patient_id "
+        + "          JOIN "
+        + "     obs ob ON ob.encounter_id = enc.encounter_id "
+        + "          JOIN "
+        + "      (SELECT "
+        + "          p.patient_id, filtered.encounter_datetime "
+        + "      FROM "
+        + "          patient p "
+        + "      JOIN encounter e ON e.patient_id = p.patient_id "
+        + "      JOIN obs o ON o.encounter_id = e.encounter_id "
+        + "      INNER JOIN (SELECT "
+        + "          p.patient_id, "
+        + "              MAX(e.encounter_datetime) AS encounter_datetime "
+        + "      FROM "
+        + "          patient p "
+        + "     INNER JOIN encounter e ON e.patient_id = p.patient_id "
+        + "      WHERE "
+        + "          e.encounter_type = ${6} AND p.voided = 0 "
+        + "              AND e.voided = 0 "
+        + "             AND e.location_id = :location "
+        + "              AND e.encounter_datetime BETWEEN :startDate AND :revisionEndDate "
+        + "      GROUP BY p.patient_id) filtered ON filtered.patient_id = p.patient_id "
+        + "      WHERE "
+        + "          e.encounter_datetime = filtered.encounter_datetime "
+        + "              AND e.location_id = :location "
+        + "              AND o.concept_id = ${21151} "
+        + "              AND e.voided = 0 "
+        + "              AND o.voided = 0 "
+        + "              AND o.value_coded = ${21150} "
+        + "              AND e.encounter_type = ${6}) first_line ON first_line.patient_id = pa.patient_id "
+        + "          INNER JOIN "
+        + "      (SELECT "
+        + "          p.patient_id, MAX(e.encounter_datetime) last_visit "
+        + "      FROM "
+        + "          patient p "
+        + "      INNER JOIN encounter e ON e.patient_id = p.patient_id "
+        + "      WHERE "
+        + "          p.voided = 0 AND e.voided = 0 "
+        + "              AND e.encounter_type = ${6} "
+        + "              AND e.location_id = :location "
+        + "              AND e.encounter_datetime BETWEEN :startDate AND :revisionEndDate "
+        + "      GROUP BY p.patient_id) AS last_clinical ON last_clinical.patient_id = pa.patient_id "
+        + "          INNER JOIN "
+        + "      (SELECT "
+        + "          p.patient_id, o.value_datetime AS arv_date "
+        + "      FROM "
+        + "          patient p "
+        + "      INNER JOIN encounter e ON e.patient_id = p.patient_id "
+        + "      INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+        + "      WHERE "
+        + "          o.concept_id = ${1190} "
+        + "              AND e.encounter_type = ${53} "
+        + "              AND e.location_id = :location "
+        + "              AND p.voided = 0 "
+        + "              AND e.voided = 0 "
+        + "              AND o.voided = 0) arv_start_date ON arv_start_date.patient_id = pa.patient_id "
+        + "          AND DATE(arv_start_date.arv_date) <= DATE_SUB(last_clinical.last_visit, INTERVAL 6 MONTH) "
+        + " GROUP BY pa.patient_id ";
+  }
 }
