@@ -1,5 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.*;
+import javax.annotation.PostConstruct;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
@@ -16,13 +18,6 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Component
 public class IntensiveMonitoringCohortQueries {
@@ -2305,8 +2300,9 @@ public class IntensiveMonitoringCohortQueries {
                     false, true, -12);
 
     CohortDefinition abandonedInTheLastSixMonthsFromFirstLineDate =
-            qualityImprovement2020CohortQueries
-                    .getPatientsWhoAbandonedInTheLastSixMonthsFromFirstLineDate();
+
+        qualityImprovement2020CohortQueries
+            .getPatientsWhoAbandonedInTheLastSixMonthsFromFirstLineDate();
 
     CohortDefinition restartdedExclusion =
             qualityImprovement2020CohortQueries.getPatientsWhoRestartedTarvAtLeastSixMonths();
@@ -2367,10 +2363,11 @@ public class IntensiveMonitoringCohortQueries {
                     B5E, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-            "ABANDONEDTARV",
-            EptsReportUtils.map(
-                    abandonedInTheLastSixMonthsFromFirstLineDate,
-                    "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+        "ABANDONEDTARV",
+        EptsReportUtils.map(
+            abandonedInTheLastSixMonthsFromFirstLineDate,
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
+
     compositionCohortDefinition.addSearch(
             "RESTARTED",
             EptsReportUtils.map(

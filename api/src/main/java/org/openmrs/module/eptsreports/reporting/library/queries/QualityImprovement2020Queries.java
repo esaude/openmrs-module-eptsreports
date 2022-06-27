@@ -1,17 +1,20 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.metadata.TbMetadata;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.CommonCohortQueries;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class QualityImprovement2020Queries {
 
@@ -1728,6 +1731,7 @@ public class QualityImprovement2020Queries {
       int regimenAlternativeToFirstLineConcept,
       int pregnantConcept) {
 
+    CommonCohortQueries commonCohortQueries = new CommonCohortQueries(new HivMetadata(), new TbMetadata());
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
     map.put("53", masterCardEncounterType);
@@ -1747,7 +1751,7 @@ public class QualityImprovement2020Queries {
             + "                                                                                                               INNER JOIN encounter e ON e.patient_id = p.patient_id "
             + "                                                                                                               INNER JOIN obs o on e.encounter_id = o.encounter_id "
             + "                                                                                                               INNER JOIN ( "
-            + getRegimenLineQuery(Linha.FIRST)
+            + commonCohortQueries.getFirstLineTherapyQuery()
             + " ) end_period ON end_period.patient_id = p.patient_id "
             + "                                     WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
             + "                                       AND e.encounter_type = ${6} "
@@ -1762,7 +1766,7 @@ public class QualityImprovement2020Queries {
             + "                                                                                                               INNER JOIN encounter e ON e.patient_id = p.patient_id "
             + "                                                                                                               INNER JOIN obs o on e.encounter_id = o.encounter_id "
             + "                                                                                                               INNER JOIN ( "
-            + getRegimenLineQuery(Linha.FIRST)
+            + commonCohortQueries.getFirstLineTherapyQuery()
             + " ) end_period ON end_period.patient_id = p.patient_id "
             + " WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
             + "                                       AND e.encounter_type = ${53} "
