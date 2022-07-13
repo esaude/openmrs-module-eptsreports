@@ -803,6 +803,7 @@ public class IntensiveMonitoringCohortQueries {
     if (level == 1 && !type) {
       cd.addSearch("MI13DEN", EptsReportUtils.map(this.getMI13DEN1(), mapp));
     } else {
+
       cd.addSearch("MI13DEN", EptsReportUtils.map(this.getMI13(true, level), mapp));
       cd.addSearch("MI13NUM", EptsReportUtils.map(this.getMI13(false, level), mapp));
     }
@@ -2216,12 +2217,13 @@ public class IntensiveMonitoringCohortQueries {
    */
   public CohortDefinition getMI15I() {
 
-    CohortDefinition cd = getMI15I(18, 12);
+    CohortDefinition cd = getMI15I(12, 12, 18);
 
     return cd;
   }
 
-  public CohortDefinition getMI15I(Integer monthsBefore, Integer lastVLResultMonths) {
+  public CohortDefinition getMI15I(
+      Integer monthsBeforeClinical, Integer vlMonthsLower, Integer vlMonthsUpper) {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("I - All patients with the last Viral Load Result");
@@ -2236,20 +2238,16 @@ public class IntensiveMonitoringCohortQueries {
 
     String query =
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e on p.patient_id = e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id  "
-            + " INNER JOIN (SELECT juncao.patient_id,juncao.encounter_date "
-            + " FROM ( "
+            + " INNER JOIN ("
+            + "  SELECT patient_id, MAX(encounter_date) encounter_date "
+            + "  FROM ( "
+            + "    SELECT juncao.patient_id,juncao.encounter_date "
+            + "      FROM ( "
             + "         SELECT p.patient_id, e.encounter_datetime AS encounter_date "
             + "         FROM patient p "
             + "                  INNER JOIN encounter e on p.patient_id = e.patient_id INNER JOIN obs o ON o.encounter_id=e.encounter_id "
             + "         WHERE p.voided = 0 AND e.voided = 0 AND e.location_id =:location AND e.encounter_type = ${6} "
-            + "         AND o.concept_id=${856} AND o.value_numeric < 1000 "
-            + "         UNION "
-            + "         SELECT p.patient_id, e.encounter_datetime AS encounter_date "
-            + "         FROM patient p "
-            + "            INNER JOIN encounter e on p.patient_id = e.patient_id "
-            + "            INNER JOIN obs o on e.encounter_id = o.encounter_id "
-            + "         WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND e.location_id =:location "
-            + "           AND o.concept_id = ${1305} and o.value_coded is not null AND e.encounter_type = ${6} "
+            + "         AND ( ( o.concept_id=${856} AND o.value_numeric < 1000 ) OR (o.concept_id = ${1305} and o.value_coded is not null)) "
             + "     ) juncao "
             + " INNER JOIN( SELECT p.patient_id, MAX(e.encounter_datetime) AS last_consultation_date   "
             + "            FROM  patient p INNER JOIN encounter e ON e.patient_id = p.patient_id "
@@ -2258,16 +2256,16 @@ public class IntensiveMonitoringCohortQueries {
             + "            )  "
             + " as last_consultation on last_consultation.patient_id = juncao.patient_id "
             + " WHERE juncao.encounter_date < DATE_SUB(last_consultation.last_consultation_date, INTERVAL "
-            + monthsBefore
-            + " MONTH)) as lastVLResult "
+            + monthsBeforeClinical
+            + " MONTH)) most_recent GROUP BY most_recent.patient_id  ) as lastVLResult "
             + " ON lastVLResult.patient_id=p.patient_id "
             + " WHERE "
-            + " o.concept_id=${856} AND o.value_numeric is not null AND e.encounter_type=${6} AND  "
+            + " ( (o.concept_id=${856} AND o.value_numeric is not null) OR (o.concept_id = 1305 and o.value_coded is not null)) AND e.encounter_type=${6} AND  "
             + " e.encounter_datetime BETWEEN DATE_ADD(lastVLResult.encounter_date,INTERVAL "
-            + lastVLResultMonths
+            + vlMonthsLower
             + " MONTH)  "
             + " AND DATE_ADD(lastVLResult.encounter_date,INTERVAL "
-            + monthsBefore
+            + vlMonthsUpper
             + " MONTH)AND e.location_id=:location";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
@@ -2484,6 +2482,58 @@ public class IntensiveMonitoringCohortQueries {
     cd.setQuery(str);
     return cd;
   }
+  /**
+   * Utentes que têm o registo do “Pedido de Investigações Laboratoriais” igual a “Carga Viral”, na
+   * Ficha Clínica nos últimos 12 meses da última consulta clínica (“Data Pedido CV”>= “Data Última
+   * Consulta” menos (-) 12meses e < “Data Última Consulta”).
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoHadLabInvestigationsRequest() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients with Pedido de Carga Viral Before Last Visit");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    cd.setName("All patients with concept PEDIDO DE INVESTIGACOES LABORATORIAIS BEFORE LAST VISIT");
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+
+    String query =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "       INNER JOIN (SELECT p.patient_id, MAX(e.encounter_datetime) visit_date "
+            + "                   FROM   patient p "
+            + "                          INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                   WHERE  e.encounter_type = ${6} "
+            + "                          AND location_id = :location "
+            + "                          AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "                          AND p.voided = 0 "
+            + "                          AND e.voided = 0 "
+            + "                   GROUP  BY p.patient_id) last_visit "
+            + "               ON last_visit.patient_id = p.patient_id "
+            + "WHERE  e.encounter_type = ${6} "
+            + "       AND e.encounter_datetime >= DATE_SUB(last_visit.visit_date, INTERVAL 12 MONTH) "
+            + "       AND e.encounter_datetime < last_visit.visit_date "
+            + "       AND e.location_id = :location "
+            + "       AND o.concept_id = ${23722} "
+            + "       AND o.value_coded = ${856} "
+            + "       AND p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "GROUP  BY p.patient_id";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    String str = stringSubstitutor.replace(query);
+    cd.setQuery(str);
+    return cd;
+  }
 
   /**
    * Get CAT 13.1 Denominator
@@ -2570,7 +2620,6 @@ public class IntensiveMonitoringCohortQueries {
         "B1",
         EptsReportUtils.map(
             lastClinical, "startDate=${startDate},endDate=${endDate},location=${location}"));
-
     compositionCohortDefinition.addSearch(
         "B2NEW",
         EptsReportUtils.map(

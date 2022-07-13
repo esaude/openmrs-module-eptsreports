@@ -2121,7 +2121,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "MQ15DEN15",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ15MdsDen15(),
+                qualityImprovement2020CohortQueries.getMQ15Den15(),
                 "startDate=${startDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MQ15DEN15.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
