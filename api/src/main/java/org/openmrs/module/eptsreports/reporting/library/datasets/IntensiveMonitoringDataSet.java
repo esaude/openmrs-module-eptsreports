@@ -77,6 +77,10 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "ageByEndDateRevision",
         EptsReportUtils.map(
             eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${revisionEndDate}"));
+    dataSetDefinition.addDimension(
+        "ageByEvaluationEndDate",
+        EptsReportUtils.map(
+            eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${revisionEndDate-1m}"));
 
     // dimensions to be added here
     dataSetDefinition.addDimension(
@@ -1161,7 +1165,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             MI15DEN13,
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"),
-        "");
+        "ageByEvaluationEndDate=2+");
 
     CohortIndicator MI15NUM13 =
         eptsGeneralIndicator.getIndicator(
@@ -1178,7 +1182,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             MI15NUM13,
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"),
-        "");
+        "ageByEvaluationEndDate=2+");
 
     CohortIndicator MI15DEN14 =
         eptsGeneralIndicator.getIndicator(
@@ -1195,7 +1199,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             MI15DEN14,
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"),
-        "");
+        "ageByEvaluationEndDate=2+");
 
     CohortIndicator MI15NUM14 =
         eptsGeneralIndicator.getIndicator(
@@ -1212,7 +1216,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             MI15NUM14,
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"),
-        "");
+        "ageByEvaluationEndDate=2+");
 
     CohortIndicator MI15DEN15 =
         eptsGeneralIndicator.getIndicator(
@@ -1229,7 +1233,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             MI15DEN15,
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"),
-        "");
+        "ageByEvaluationEndDate=2+");
 
     CohortIndicator MI15NUM15 =
         eptsGeneralIndicator.getIndicator(
@@ -1246,7 +1250,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         EptsReportUtils.map(
             MI15NUM15,
             "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"),
-        "");
+        "ageByEvaluationEndDate=2+");
 
     CohortIndicator MI15DEN16 =
         eptsGeneralIndicator.getIndicator(

@@ -2208,16 +2208,16 @@ public class IntensiveMonitoringCohortQueries {
    * I - Select all patients with the last Viral Load Result (concept id 856, value_numeric) < 1000
    * (value_numeric) OR Viral Load QUALITATIVE (concept id 1305) with value coded not null
    * registered on Ficha Clinica (encounter type 6) before “Last Consultation Date”
-   * (encounter_datetime from A) minus 12 months, as “Last VL Result <1000”, and filter all patients
+   * (encounter_datetime from A) minus 20 months, as “Last VL Result <1000”, and filter all patients
    * with at least one Viral Load Result (concept id 856, value_numeric not NULL) registered on
-   * Ficha Clinica (encounter type 6, encounter_datetime) between “Last VL Result <1000”+ 12 months
-   * and “Last VL Result <1000” + 18 months
+   * Ficha Clinica (encounter type 6, encounter_datetime) between “Last VL Result <1000”+ 10 months
+   * and “Last VL Result <1000” + 20 months
    *
    * @return CohortDefinition
    */
   public CohortDefinition getMI15I() {
 
-    CohortDefinition cd = getMI15I(12, 12, 18);
+    CohortDefinition cd = getMI15I(20, 10, 20);
 
     return cd;
   }

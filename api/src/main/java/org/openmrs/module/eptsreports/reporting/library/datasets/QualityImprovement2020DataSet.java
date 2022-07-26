@@ -2064,7 +2064,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ15DEN13,
             "startDate=${startDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "age=2+");
 
     CohortIndicator MQ15NUM13 =
         eptsGeneralIndicator.getIndicator(
@@ -2081,7 +2081,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ15NUM13,
             "startDate=${startDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "age=2+");
 
     CohortIndicator MQ15DEN14 =
         eptsGeneralIndicator.getIndicator(
@@ -2098,7 +2098,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ15DEN14,
             "startDate=${startDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "age=2+");
 
     CohortIndicator MQ15NUM14 =
         eptsGeneralIndicator.getIndicator(
@@ -2115,7 +2115,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ15NUM14,
             "startDate=${startDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "age=2+");
 
     CohortIndicator MQ15DEN15 =
         eptsGeneralIndicator.getIndicator(
@@ -2132,7 +2132,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ15DEN15,
             "startDate=${startDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "age=2+");
 
     CohortIndicator MQ15NUM15 =
         eptsGeneralIndicator.getIndicator(
@@ -2149,7 +2149,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
         EptsReportUtils.map(
             MQ15NUM15,
             "startDate=${startDate},revisionEndDate=${revisionEndDate},location=${location}"),
-        "");
+        "age=2+");
 
     CohortIndicator MQ15DEN16 =
         eptsGeneralIndicator.getIndicator(

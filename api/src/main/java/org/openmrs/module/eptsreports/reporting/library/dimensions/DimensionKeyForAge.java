@@ -4,6 +4,7 @@ public enum DimensionKeyForAge implements DimensionKey {
   unknown("UK"),
   bellowOneYear("<1"),
   bellow2Years("<2"),
+  overOrEqualTo2Years("2+"),
   betweenZeroAnd4Years("0-4"),
   betweenZeroAnd14Years("0-14"),
   betweenZeroAnd15Years("0-15"),

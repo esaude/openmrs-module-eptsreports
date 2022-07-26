@@ -7974,7 +7974,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition Mq15F = intensiveMonitoringCohortQueries.getMI15F();
     CohortDefinition Mq15G = intensiveMonitoringCohortQueries.getMI15G();
     CohortDefinition alreadyMds = getPatientsAlreadyEnrolledInTheMdc();
-    CohortDefinition Mq15AGE2 = getAgeOnEndDateInclusionMoreThan2Years();
 
     cd.addSearch(
         "A",
@@ -8020,10 +8019,7 @@ public class QualityImprovement2020CohortQueries {
             alreadyMds,
             "startDate=${revisionEndDate-12m+1d},endDate=${revisionEndDate},location=${location}"));
 
-    cd.addSearch("AGE2", EptsReportUtils.map(Mq15AGE2, "endDate=${revisionEndDate}"));
-
-    cd.setCompositionString(
-        "A AND B1 AND (E1 AND E2 AND E3) AND AGE2 AND NOT (C OR D OR F OR G OR MDS)");
+    cd.setCompositionString("A AND B1 AND (E1 AND E2 AND E3) AND NOT (C OR D OR F OR G OR MDS)");
 
     return cd;
   }
@@ -8046,7 +8042,6 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition Mq15F = intensiveMonitoringCohortQueries.getMI15F();
     CohortDefinition Mq15G = intensiveMonitoringCohortQueries.getMI15G();
     CohortDefinition alreadyMds = getPatientsAlreadyEnrolledInTheMdc();
-    CohortDefinition Mq15AGE2 = getAgeOnEndDateInclusionMoreThan2Years();
 
     cd.addSearch(
         "A",
@@ -8092,10 +8087,7 @@ public class QualityImprovement2020CohortQueries {
             alreadyMds,
             "startDate=${revisionEndDate-12m+1d},endDate=${revisionEndDate},location=${location}"));
 
-    cd.addSearch("AGE2", EptsReportUtils.map(Mq15AGE2, "endDate=${revisionEndDate}"));
-
-    cd.setCompositionString(
-        "A AND B1 AND (E1 AND E2 AND E3) AND AGE2 AND NOT (C OR D OR F OR G OR MDS)");
+    cd.setCompositionString("A AND B1 AND (E1 AND E2 AND E3)  AND NOT (C OR D OR F OR G OR MDS)");
 
     return cd;
   }
@@ -8188,7 +8180,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition Mq15A = intensiveMonitoringCohortQueries.getMI15A();
     CohortDefinition alreadyMdc = getPatientsAlreadyEnrolledInTheMdc();
-    CohortDefinition Mq15AGE2 = getAgeOnEndDateInclusionMoreThan2Years();
+
     CohortDefinition Mq15H = intensiveMonitoringCohortQueries.getMI15H();
 
     cd.addSearch(
@@ -8206,8 +8198,7 @@ public class QualityImprovement2020CohortQueries {
         EptsReportUtils.map(
             Mq15H, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
-    cd.addSearch("AGE2", EptsReportUtils.map(Mq15AGE2, "endDate=${revisionEndDate}"));
-    cd.setCompositionString("A AND MDC AND H AGE2");
+    cd.setCompositionString("A AND MDC AND H");
     return cd;
   }
 
@@ -8248,7 +8239,6 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition Mq15A = intensiveMonitoringCohortQueries.getMI15A();
     CohortDefinition alreadyMdc = getPatientsAlreadyEnrolledInTheMdc();
-    CohortDefinition Mq15Age2 = getAgeOnEndDateInclusionMoreThan2Years();
     CohortDefinition Mq15B2 = intensiveMonitoringCohortQueries.getMI15B2(24);
 
     cd.addSearch(
@@ -8265,8 +8255,7 @@ public class QualityImprovement2020CohortQueries {
         EptsReportUtils.map(
             Mq15B2, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
-    cd.addSearch("AGE2", EptsReportUtils.map(Mq15Age2, "endDate=${revisionEndDate}"));
-    cd.setCompositionString("A AND MDC AND B2 AND AGE2");
+    cd.setCompositionString("A AND MDC AND B2");
     return cd;
   }
 
@@ -8447,28 +8436,6 @@ public class QualityImprovement2020CohortQueries {
                     hivMetadata.getContinueRegimenConcept().getConceptId())),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("B AND MDC");
-    return cd;
-  }
-
-  /**
-   * Age should be calculated on end date inclusion (Check A for the algorithm to define this date).
-   *
-   * @return CohortDefinition
-   */
-  public CohortDefinition getAgeOnEndDateInclusionMoreThan2Years() {
-    SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Get age  on last end date inclusion ");
-    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
-
-    String sql =
-        "SELECT p.person_id "
-            + "FROM   person p "
-            + "WHERE p.voided = 0 "
-            + "    AND  TIMESTAMPDIFF(YEAR,p.birthdate,:endDate) >= 2 ";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor();
-    String str = stringSubstitutor.replace(sql);
-    cd.setQuery(str);
     return cd;
   }
 
