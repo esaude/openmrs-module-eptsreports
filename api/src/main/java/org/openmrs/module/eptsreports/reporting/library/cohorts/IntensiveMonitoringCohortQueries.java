@@ -808,7 +808,6 @@ public class IntensiveMonitoringCohortQueries {
     if (level == 1 && !type) {
       cd.addSearch("MI13DEN", EptsReportUtils.map(this.getMI13DEN1(), mapp));
     } else {
-
       cd.addSearch("MI13DEN", EptsReportUtils.map(this.getMI13(true, level), mapp));
       cd.addSearch("MI13NUM", EptsReportUtils.map(this.getMI13(false, level), mapp));
     }
@@ -2482,6 +2481,7 @@ public class IntensiveMonitoringCohortQueries {
             + " AND e.encounter_datetime >= DATE_SUB(last_consultation.last_consultation_date, INTERVAL 3 MONTH)"
             + " AND e.encounter_datetime < last_consultation.last_consultation_date"
             + " GROUP BY p.patient_id";
+            
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     String str = stringSubstitutor.replace(query);
     cd.setQuery(str);
@@ -2625,6 +2625,7 @@ public class IntensiveMonitoringCohortQueries {
         "B1",
         EptsReportUtils.map(
             lastClinical, "startDate=${startDate},endDate=${endDate},location=${location}"));
+
     compositionCohortDefinition.addSearch(
         "B2NEW",
         EptsReportUtils.map(
@@ -2659,6 +2660,7 @@ public class IntensiveMonitoringCohortQueries {
     compositionCohortDefinition.addSearch(
         "B5E",
         EptsReportUtils.map(B5E, "startDate=${startDate},endDate=${endDate},location=${location}"));
+
 
     compositionCohortDefinition.addSearch(
         "ABANDONEDTARV",

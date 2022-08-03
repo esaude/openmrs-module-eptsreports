@@ -1,0 +1,478 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<!-- This Source Code Form is subject to the terms of the Mozilla Public
+	License, v. 2.0. If a copy of the MPL was not distributed with this file,
+	You can obtain one at http://mozilla.org/MPL/2.0/. OpenMRS is also distributed
+	under the terms of the Healthcare Disclaimer located at http://openmrs.org/license.
+	Copyright (C) OpenMRS Inc. OpenMRS is a registered trademark and the OpenMRS
+	graphic logo is a trademark of OpenMRS Inc. -->
+<dataset>
+
+	<!-- location -->
+	<location location_id="400" name="Clínica_A" description="NA"
+			  address2="NA" state_province="NA" country="MA"
+			  date_created="2008-10-13 11:32:52" county_district="NA" address6="NA"
+			  retired="0" uuid="97186cee-e23d-11ec-8e84-6728408eef40" />
+
+	<!-- person -->
+	<person person_id="1001" gender="F"  creator="1"
+			birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+			date_created="2005-01-01 00:00:00.0" voided="false"
+			uuid="421875e2-6f22-1000-9281-8f1ee524029e" />
+
+	<person person_id="1002" gender="F"  creator="1"
+			birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+			date_created="2005-01-01 00:00:00.0" voided="false"
+			uuid="3383850a-ffce-11e9-9813-a7abde85e2d7" />
+
+	<person person_id="1003" gender="M"  creator="1"
+			birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+			date_created="2005-01-01 00:00:00.0" voided="false"
+			uuid="2e759bfc-ffce-11e9-8310-03ede599d55f" />
+
+	<person person_id="1004" gender="M"  creator="1"
+			birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="true"
+			date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
+			uuid="de2e129e-ffcf-11e9-8cf6-53ef1425b50c" />
+
+	<person person_id="1005" gender="M"  creator="1"
+			birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+			date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
+			uuid="f8bb3068-ffd1-11e9-83a4-ff897e853a14" />
+
+	<person person_id="1006" gender="M"  creator="1"
+			birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+			date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
+			uuid="74379b80-f2e3-11ec-9fea-7f4e1c90a56a" />
+
+	<person person_id="1007" gender="M"  creator="1"
+			birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+			date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
+			uuid="e9229fc4-f56a-11ec-bda4-c76a8eed3e38" />
+
+	<person person_id="1008" gender="M"  creator="1"
+			birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+			date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
+			uuid="d62945e4-f56a-11ec-8bfd-1f3fb7b574b3" />
+
+	<person person_id="1009" gender="M"  creator="1"
+			birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+			date_created="2005-01-01 00:00:00.0" voided="false"   death_date="2018-07-13 00:00:00.0"
+			uuid="dcce4a02-f56a-11ec-81d6-fbfff9df25df" />
+
+	<person person_id="9999" gender="M" birthdate="1948-01-01 00:00:00.0" birthdate_estimated="0" dead="false"
+			creator="1" date_created="2005-01-01 00:00:00.0" voided="false"
+			uuid="ac4b29bb-4f62-43d6-9a6a-1d994a04110a"/>
+
+	<!-- patient -->
+	<patient patient_id="1001"   creator="1"
+			 date_created="2005-09-22 00:00:00.0"
+			 date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1002"   creator="1"
+			 date_created="2005-09-22 00:00:00.0"
+			 date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1003"   creator="1"
+			 date_created="2005-09-22 00:00:00.0"
+			 date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1004"   creator="1"
+			 date_created="2005-09-22 00:00:00.0"
+			 date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1005"   creator="1"
+			 date_created="2005-09-22 00:00:00.0"
+			 date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1006"   creator="1"
+			 date_created="2005-09-22 00:00:00.0"
+			 date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1007"   creator="1"
+			 date_created="2005-09-22 00:00:00.0"
+			 date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1008"   creator="1"
+			 date_created="2005-09-22 00:00:00.0"
+			 date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="1009"   creator="1"
+			 date_created="2005-09-22 00:00:00.0"
+			 date_changed="2008-08-18 12:29:59.0" voided="false" void_reason="" />
+
+	<patient patient_id="9999" creator="1" date_created="2005-09-22 00:00:00.0" changed_by="1"
+			 date_changed="2008-08-18 12:29:59.0" voided="false" void_reason=""/>
+
+	<!-- global_property -->
+	<global_property
+			property="eptsreports.regimeTPTEncounterTypeUuid"
+			property_value="24bd60e2-a1c9-4159-a24f-12af15b77510"
+			description="UUID for Tratamento Profilático da Tuberculose (TPT) encounter type"
+			uuid="1e6aff3e-e0e7-11ec-b15e-6b55e2e3fe25" />
+
+	<global_property
+			property="eptsreports.3HPConceptUuid"
+			property_value="bce7d965-3396-4667-8294-aa5260c26334"
+			description="UUID for 3HP concept"
+			uuid="36bd1d4c-e0e7-11ec-a7e1-2fedfc63990d" />
+
+	<global_property
+			property="eptsreports.treatmentPrescribedConceptUuid"
+			property_value="e1de3092-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for TREATMENT PRESCRIBED concept"
+			uuid="7b889c8a-f55f-11ec-a0dc-3f7c01ef03bb" />
+
+	<global_property
+			property="eptsreports.regimeTPTConceptUuid"
+			property_value="9db4ce3b-4c1c-45dd-905f-c984a052f26e"
+			description="UUID for Regime TPT concept"
+			uuid="4885da46-e0e7-11ec-a6af-4f6201245669" />
+
+	<global_property
+			property="eptsreports.3HPPiridoxinaConceptUuid"
+			property_value="1b1ffdd8-8410-44ca-b485-613badb2b942"
+			description="UUID for 3HP + Piridoxina concept"
+			uuid="5463ecd6-e0e7-11ec-a13d-537a0c201ccb" />
+
+	<global_property
+			property="@MODULE_ID@.treatmentFollowUpUuid"
+			property_value="93603742-1cae-4970-9077-e2b27e46bd7e"
+			description="UUID for the Seguimento de tratamento TPT concept"
+			uuid="93b040f6-e0e7-11ec-b977-732d45851623" />
+
+	<global_property
+			property="@MODULE_ID@.startDrugsConceptUuid"
+			property_value="e1d9ef28-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for the INICIAR concept"
+			uuid="14351220-e259-11ec-89d8-ff8c858aa218"	/>
+
+	<global_property
+			property="@MODULE_ID@.restartConceptUuid"
+			property_value="e1de1bfc-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for the REINICIAR concept"
+			uuid="58795a92-e26b-11ec-b212-839a10841301"	/>
+
+	<global_property
+			property="@MODULE_ID@.DataInicioProfilaxiaIsoniazidaConceptUuid"
+			property_value="6fa92ac9-0a96-4372-9e10-dd9683c19135"
+			description="Data de inicio de profilaxia com Isoniazida"
+			uuid="c246375e-e0e7-11ec-80cd-031483a2870f" />
+
+	<global_property
+			property="eptsreports.isoniazidePiridoxinaConceptUuid"
+			property_value="6214dbcc-23a3-4708-85d8-a5b1af61c55d"
+			description="UUID for Isoniazide + Piridoxina concept"
+			uuid="60081464-e26c-11ec-adde-6b974662e568" />
+
+	<global_property
+			property="@MODULE_ID@.dataEstadoDaProfilaxiaConceptUuid"
+			property_value="b6c4d473-2af5-4c4d-a9bb-ad3779fa5579"
+			description="UUID FOR PROFLAXIS STATUS Concept"
+			uuid="d6f01ddc-e0e7-11ec-b771-6be83981a1b4" />
+
+	<global_property
+			property="@MODULE_ID@.DT3HPConceptUuid"
+			property_value="3d126efc-631b-436f-9e4b-db728071c8d0"
+			description="UUID FOR DT-3HP"
+			uuid="cccb41b0-e0e7-11ec-ac48-eba27eda8a90" />
+
+	<global_property
+			property="eptsreports.continueRegimen"
+			property_value="e1d9f036-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for the CONTINUE REGIMEN concept"
+			uuid="6b84cdfe-e0e7-11ec-9b66-2ba817a37ca0" />
+
+	<global_property
+			property="eptsreports.completedConceptUuid"
+			property_value="e1d9facc-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for the COMPLETO concept"
+			uuid="7678aaa0-e0e7-11ec-ac25-432aa1aba4a1" />
+
+	<global_property
+			property="eptsreports.isoniazidConceptUuid"
+			property_value="e1d43e52-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for ISONIAZID concept"
+			uuid="5a2a5676-f2e1-11ec-a056-2f7e548823af" />
+
+	<global_property
+			property="@MODULE_ID@.isoniazidUseConceptUuid"
+			property_value="be4a76ca-662a-4c39-903b-71983f5f67c9"
+			description="Uso de Isoniazida"
+			uuid="9a3f87a6-f2e4-11ec-a189-d7b8ae0cc431" />
+
+	<global_property property="eptsreports.transferFromOtherFacilityConceptUuid"
+					 property_value="e1da7d3a-1d5f-11e0-b929-000c29ad1d07"
+					 description="UUID for the TRANSFERIDO DE concept" uuid="a03044bc-abc9-4e14-9041-1515f7ea2082"/>
+
+	<global_property
+			property="@MODULE_ID@.masterCardEncounterType"
+			property_value="e422ecf9-75dd-4367-b21e-54bccabc4763"
+			description="UUID for the Master Card - Ficha Resumo encounter type"
+			uuid="fa15330c-e0e6-11ec-b07d-0f361f1dab39" />
+
+	<global_property
+			property="eptsreports.sTarvAdultoSeguimentoEncounterTypeUuid"
+			property_value="e278f956-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for the S.TARV: ADULTO SEGUIMENTO encounter type"
+			uuid="6e0aa915-22ba-4353-87e5-569326c57078" />
+
+	<global_property
+			property="eptsreports.sTarvPediatriaSeguimentoEncounterTypeUuid"
+			property_value="e278fce4-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for the S.TARV: PEDIATRIA SEGUIMENTO encounter type"
+			uuid="24b0e193-e567-465f-8d18-ddddd536fe30" />
+
+
+	<!-- concept -->
+	<concept concept_id="1719" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="e1de3092-1d5f-11e0-b929-000c29ad1d07" />
+
+	<concept concept_id="23954" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="bce7d965-3396-4667-8294-aa5260c26334" />
+
+	<concept concept_id="23985" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="9db4ce3b-4c1c-45dd-905f-c984a052f26e" />
+
+	<concept concept_id="23984" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="1b1ffdd8-8410-44ca-b485-613badb2b942" />
+
+	<concept concept_id="23987" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="93603742-1cae-4970-9077-e2b27e46bd7e" />
+
+	<concept concept_id="1256" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="e1d9ef28-1d5f-11e0-b929-000c29ad1d07" />
+
+	<concept concept_id="1705" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="e1de1bfc-1d5f-11e0-b929-000c29ad1d07" />
+
+	<concept concept_id="6128" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="6fa92ac9-0a96-4372-9e10-dd9683c19135" />
+
+	<concept concept_id="165308" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="b6c4d473-2af5-4c4d-a9bb-ad3779fa5579" />
+
+	<concept concept_id="165307" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="3d126efc-631b-436f-9e4b-db728071c8d0" />
+
+	<concept concept_id="1257" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="e1d9f036-1d5f-11e0-b929-000c29ad1d07" />
+
+	<concept concept_id="1267" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="e1d9facc-1d5f-11e0-b929-000c29ad1d07" />
+
+	<concept concept_id="656" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="e1d43e52-1d5f-11e0-b929-000c29ad1d07" />
+
+	<concept concept_id="6122" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="be4a76ca-662a-4c39-903b-71983f5f67c9" />
+
+	<concept concept_id="23982" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="6214dbcc-23a3-4708-85d8-a5b1af61c55d" />
+
+
+	<!-- encounter_type -->
+
+	<encounter_type encounter_type_id="60"
+					name="Tratamento Profilático da Tuberculose (TPT)"
+					description="Seguimento visita do paciente tratamento profilático da tuberculose" creator="1"
+					date_created="2008-10-13 11:35:34" retired="0"
+					uuid="24bd60e2-a1c9-4159-a24f-12af15b77510" />
+
+	<encounter_type encounter_type_id="53"
+					name="Master Card - Ficha Resumo" description="Seguimento visita do paciente ficha resumo" creator="1"
+					date_created="2008-10-13 11:35:34" retired="0"
+					uuid="e422ecf9-75dd-4367-b21e-54bccabc4763" />
+
+	<encounter_type encounter_type_id="6"
+					name="S.TARV: ADULTO SEGUIMENTO"
+					description="seguimento visita do paciente adulto" creator="1"
+					date_created="2008-10-13 11:35:34" retired="0"
+					uuid="e278f956-1d5f-11e0-b929-000c29ad1d07" />
+
+	<encounter_type encounter_type_id="9"
+					name="S.TARV: PEDIATRIA SEGUIMENTO"
+					description="Seguimento visita do paciente pediatria" creator="1"
+					date_created="2008-10-13 11:35:34" retired="0"
+					uuid="e278fce4-1d5f-11e0-b929-000c29ad1d07" />
+
+
+	<!-- encounter -->
+	<encounter encounter_id="9001" encounter_type="60"
+			   patient_id="1001" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="741555e2-ffc6-11e9-8774-1b8ca96a5dd5" location_id="400" />
+
+	<encounter encounter_id="9002" encounter_type="53"
+			   patient_id="1002" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="f34fb18a-f3bc-11ec-83e7-0f5560f1285d" location_id="400" />
+
+	<encounter encounter_id="9003" encounter_type="6"
+			   patient_id="1003" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="5015031a-f55d-11ec-9669-7fa34f85acd6" location_id="400" />
+
+	<encounter encounter_id="9004" encounter_type="6"
+			   patient_id="1004" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="3ff86408-f55e-11ec-9402-9b445716e988" location_id="400" />
+
+	<encounter encounter_id="9005" encounter_type="60"
+			   patient_id="1005" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="094d5de2-f562-11ec-9b3b-c3f656026041" location_id="400" />
+
+	<encounter encounter_id="9006" encounter_type="53"
+			   patient_id="1006" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="29560c4e-f56a-11ec-b562-cb34576dd211" location_id="400" />
+
+	<encounter encounter_id="9007" encounter_type="6"
+			   patient_id="1007" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="63e055b0-f56d-11ec-af9f-37f9eaf18596" location_id="400" />
+
+	<encounter encounter_id="9008" encounter_type="6"
+			   patient_id="1008" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="6f44a974-f56d-11ec-b333-2b9813993348" location_id="400" />
+
+	<encounter encounter_id="9008" encounter_type="9"
+			   patient_id="1008" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="77d9149e-f56d-11ec-bd5b-4b00ba388838" location_id="400" />
+
+	<encounter encounter_id="9009" encounter_type="60"
+			   patient_id="1009" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="dfac4078-f56d-11ec-aa63-d750e228bd20" location_id="400" />
+
+	<encounter encounter_id="9099" encounter_type="60"
+			   patient_id="9999" encounter_datetime="2018-07-08 00:00:00" creator="1"
+			   date_created="2018-06-20 12:55:48" voided="0"
+			   uuid="7f79aa80-f570-11ec-acea-db6345e48401" location_id="400" />
+
+
+	<!-- obs -->
+	<obs obs_id="100" person_id="1001" concept_id="23985"
+		 encounter_id="9001" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="23984" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="d2131ee8-ffd2-11e9-93d3-634e34fa1937" location_id="400" />
+
+	<obs obs_id="101" person_id="1001" concept_id="23987"
+		 encounter_id="9001" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="1256" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="12f7cb6e-e272-11ec-8ede-43557dee0045" location_id="400" />
+
+	<obs obs_id="102" person_id="1002" concept_id="23985"
+		 encounter_id="9002" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="23954" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="f34fb18a-f3bc-11ec-83e7-0f5560f1285d" location_id="400" />
+
+	<obs obs_id="103" person_id="1002" concept_id="6128"
+		 encounter_id="9002" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="56696716-f3bd-11ec-a4f4-d31454a5c40d" location_id="400" />
+
+	<obs obs_id="104" person_id="1003" concept_id="23985"
+		 encounter_id="9003" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="23954" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="c0b579ac-f55c-11ec-86fc-8f0ec37e52ff" location_id="400" />
+
+	<obs obs_id="105" person_id="1003" concept_id="165308"
+		 encounter_id="9003" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="1256" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="c8dc1ece-f55c-11ec-af2e-07c7691b1bd0" location_id="400" />
+
+	<obs obs_id="106" person_id="1004" concept_id="1719"
+		 encounter_id="9004" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="165307" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="e51467e4-f55d-11ec-8e95-372b6792f4b2" location_id="400" />
+
+	<obs obs_id="107" person_id="1005" concept_id="23985"
+		 encounter_id="9005" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="23984" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="6d8a606c-f561-11ec-bfee-ff9c9846d547" location_id="400" />
+
+	<obs obs_id="108" person_id="1005" concept_id="23987"
+		 encounter_id="9005" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="1267" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="783140b2-f561-11ec-8c15-0bf82cf8ad22" location_id="400" />
+
+	<obs obs_id="109" person_id="1006" concept_id="23985"
+		 encounter_id="9006" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="656" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="eaca6aba-f569-11ec-a3a3-434d99430936" location_id="400" />
+
+	<obs obs_id="110" person_id="1007" concept_id="6122"
+		 encounter_id="9007" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="1256" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="84f8b23a-f56b-11ec-aacc-2f74571d3b8b" location_id="400" />
+
+	<obs obs_id="111" person_id="1007" concept_id="23985"
+		 encounter_id="9007" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="656" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="7c6dcbfa-f56b-11ec-b352-63e6d14b7581" location_id="400" />
+
+	<obs obs_id="112" person_id="1007" concept_id="165308"
+		 encounter_id="9007" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="1256" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="73cbe900-f56b-11ec-b60b-bb55d88846b1" location_id="400" />
+
+	<obs obs_id="113" person_id="1008" concept_id="6128"
+		 encounter_id="9008" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="152c9712-f56d-11ec-98f2-2f122dbc7ae5" location_id="400" />
+
+	<obs obs_id="114" person_id="1009" concept_id="23985"
+		 encounter_id="9009" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="656" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="2773e3de-f56e-11ec-995a-07d22f0a66d1" location_id="400" />
+
+	<obs obs_id="115" person_id="1009" concept_id="23987"
+		 encounter_id="9009" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="1257" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="1f048884-f56e-11ec-98c5-f39ef0557e4a" location_id="400" />
+
+	<obs obs_id="116" person_id="9999" concept_id="23985"
+		 encounter_id="9099" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="23982" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="f5273630-f570-11ec-b133-6f4a16b209db" location_id="400" />
+
+	<obs obs_id="117" person_id="9999" concept_id="23987"
+		 encounter_id="9099" obs_datetime="2018-07-08 00:00:00" status = "FINAL"
+		 value_coded="1705" creator="1" date_created="2018-07-08 12:55:48"
+		 voided="0" uuid="0e281974-f571-11ec-87f6-abb09463a9ff" location_id="400" />
+
+
+</dataset>
