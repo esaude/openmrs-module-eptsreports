@@ -7,12 +7,10 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.DatimCodeDatasetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.IntensiveMonitoringDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.QualityImprovement2020DataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.ViralLoadIntensiveMonitoringDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
-import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -80,7 +78,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
         Mapped.mapStraightThrough(
             intensiveMonitoringDataSet.constructIntensiveMonitoringDataSet()));
 
-    reportDefinition.addDataSetDefinition(
+    /* reportDefinition.addDataSetDefinition(
         "TOTAL",
         EptsReportUtils.map(
             this.viralLoadIntensiveMonitoringDataSet.constructViralLoadIntensiveMonitoringDataSet(),
@@ -91,7 +89,7 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
             genericCohortQueries.getBaseCohort(),
             "endDate=${revisionEndDate},location=${location}"));
     reportDefinition.addDataSetDefinition(
-        "DT", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));
+        "DT", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));*/
 
     return reportDefinition;
   }

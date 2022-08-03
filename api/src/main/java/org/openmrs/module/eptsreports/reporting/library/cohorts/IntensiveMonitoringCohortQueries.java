@@ -1,6 +1,11 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.annotation.PostConstruct;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
@@ -2660,7 +2665,6 @@ public class IntensiveMonitoringCohortQueries {
         EptsReportUtils.map(
             abandonedInTheLastSixMonthsFromFirstLineDate,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
-
     compositionCohortDefinition.addSearch(
         "RESTARTED",
         EptsReportUtils.map(

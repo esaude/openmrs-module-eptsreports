@@ -156,7 +156,8 @@ public class TxPvlsCohortQueries {
                     hivMetadata.getMisauLaboratorioEncounterType(),
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMasterCardEncounterType())),
+                    hivMetadata.getMasterCardEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("supp AND onArtLongEnough");
     return cd;
@@ -191,7 +192,8 @@ public class TxPvlsCohortQueries {
                     hivMetadata.getMisauLaboratorioEncounterType(),
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMasterCardEncounterType())),
+                    hivMetadata.getMasterCardEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("results AND onArtLongEnough");
     return cd;
@@ -226,7 +228,8 @@ public class TxPvlsCohortQueries {
                     hivMetadata.getMisauLaboratorioEncounterType(),
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMasterCardEncounterType())),
+                    hivMetadata.getMasterCardEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("Routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(), mappings));
     cd.setCompositionString("(results AND onArtLongEnough) AND Routine");
@@ -262,7 +265,8 @@ public class TxPvlsCohortQueries {
                     hivMetadata.getMisauLaboratorioEncounterType(),
                     hivMetadata.getAdultoSeguimentoEncounterType(),
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
-                    hivMetadata.getMasterCardEncounterType())),
+                    hivMetadata.getMasterCardEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
             "onOrBefore=${endDate},location=${location}"));
     cd.addSearch("Target", EptsReportUtils.map(getPatientsWhoAreOnTarget(), mappings));
     cd.setCompositionString("(results AND onArtLongEnough) AND Target");

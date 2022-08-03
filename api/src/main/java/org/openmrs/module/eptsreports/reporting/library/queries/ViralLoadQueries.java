@@ -16,6 +16,7 @@ package org.openmrs.module.eptsreports.reporting.library.queries;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
+import org.openmrs.module.eptsreports.metadata.HivMetadata;
 
 public class ViralLoadQueries {
 
@@ -43,13 +44,13 @@ public class ViralLoadQueries {
         "SELECT fn1.patient_id FROM( "
             + " SELECT  patient_id, MAX(data_carga) AS data_carga FROM( "
             + " SELECT patient_id,data_carga FROM "
-            + " (SELECT p.patient_id,MAX(o.obs_datetime) data_carga "
+            + " (SELECT p.patient_id, MAX(o.obs_datetime) data_carga "
             + " FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + " INNER JOIN obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND e.encounter_type IN (%d, %d, %d, %d) "
             + " AND  o.concept_id IN(%d, %d) "
             + " AND (o.value_numeric IS NOT NULL OR o.value_coded IS NOT NULL) AND "
-            + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
+            + " DATE(e.encounter_datetime) BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
             + " e.location_id=:location GROUP BY p.patient_id "
             + ") ultima_carga "
             + " INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND obs.obs_datetime= "
@@ -113,14 +114,14 @@ public class ViralLoadQueries {
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND "
             + " e.encounter_type IN (%d,%d,%d,%d) AND "
             + " ((o.concept_id=%d AND o.value_numeric IS NOT NULL) OR (o.concept_id=%d AND o.value_coded IS NOT NULL)) AND "
-            + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
+            + " DATE(e.encounter_datetime) BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
             + " e.location_id=:location "
             + " UNION "
             + " SELECT p.patient_id FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN "
             + " obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND "
             + " e.encounter_type IN (%d) AND o.concept_id=%d AND o.value_numeric IS NOT NULL AND "
-            + " o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
+            + " DATE(o.obs_datetime) BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
             + " e.location_id=:location ";
     return String.format(
         query,
@@ -225,5 +226,82 @@ public class ViralLoadQueries {
             + "WHERE  age BETWEEN ${minAge} AND ${maxAge} ";
     StringSubstitutor sb = new StringSubstitutor(map);
     return sb.replace(query);
+  }
+
+  /**
+   * <b>Description:</b> Patients having viral load within the 12 months period
+   *
+   * @return {@link String}
+   */
+  public static String getPatientsHavingTypeOfDispensationBasedOnTheirLastVlResults() {
+
+    HivMetadata hivMetadata = new HivMetadata();
+    Map<String, Integer> map = new HashMap<>();
+
+    map.put("13", hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId());
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("51", hivMetadata.getFsrEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("1305", hivMetadata.getHivViralLoadQualitative().getConceptId());
+    map.put("23739", hivMetadata.getTypeOfDispensationConcept().getConceptId());
+    map.put("23720", hivMetadata.getQuarterlyConcept().getConceptId());
+    map.put("23888", hivMetadata.getSemiannualDispensation().getConceptId());
+
+    String query =
+        "SELECT out_p.patient_id "
+            + "FROM   patient pp "
+            + "       INNER JOIN encounter ep ON pp.patient_id = ep.patient_id "
+            + "       INNER JOIN obs op ON ep.encounter_id = op.encounter_id "
+            + "       INNER JOIN (SELECT patient_id, MAX(encounter_datetime) AS max_vl_date_and_max_ficha "
+            + "                   FROM   (SELECT pp.patient_id, ee.encounter_datetime "
+            + "                           FROM   patient pp "
+            + "                                  INNER JOIN encounter ee ON pp.patient_id = ee.patient_id "
+            + "                                  INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
+            + "                                  INNER JOIN (SELECT patient_id, DATE( Max(encounter_date)) AS vl_max_date "
+            + "                                              FROM   (SELECT p.patient_id, DATE(e.encounter_datetime) AS encounter_date "
+            + "                                                      FROM   patient p "
+            + "                                                      INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "                                                      INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "                                                      WHERE  p.voided = 0 "
+            + "                                                       AND e.voided = 0 "
+            + "                                                       AND o.voided = 0 "
+            + "                                                       AND e.encounter_type IN ( ${13}, ${6}, ${9}, ${51} ) "
+            + "                                                       AND ( ( o.concept_id = ${856} AND o.value_numeric IS NOT  NULL ) "
+            + "                                                             OR ( o.concept_id = ${1305}  AND o.value_coded IS NOT NULL ) ) "
+            + "                                                       AND DATE(e.encounter_datetime) BETWEEN :startDate AND :endDate "
+            + "                                                       AND e.location_id = :location "
+            + "                                               UNION "
+            + "                                               SELECT p.patient_id, DATE(o.obs_datetime) AS encounter_date "
+            + "                                               FROM   patient p "
+            + "                                               INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "                                               INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+            + "                                               WHERE  p.voided = 0 "
+            + "                                                 AND e.voided = 0 "
+            + "                                                 AND o.voided = 0 "
+            + "                                                 AND e.encounter_type IN ( ${53} ) "
+            + "                                                 AND o.concept_id = ${856} "
+            + "                                                 AND o.value_numeric IS NOT NULL "
+            + "                                                 AND DATE(o.obs_datetime) BETWEEN :startDate AND :endDate "
+            + "                                                 AND e.location_id = :location) max_vl_date "
+            + "                                                 GROUP  BY patient_id"
+            + "                   ) vl_date_tbl ON pp.patient_id = vl_date_tbl.patient_id "
+            + "                 WHERE  ee.encounter_datetime BETWEEN Date_add( vl_date_tbl.vl_max_date, INTERVAL - 12 MONTH) AND  DATE_ADD( vl_date_tbl.vl_max_date,INTERVAL - 1 DAY) "
+            + "                 AND oo.concept_id = ${23739} "
+            + "                 AND oo.voided = 0 "
+            + "                 AND ee.voided = 0   "
+            + "                 AND ee.encounter_type = ${6}) fin_tbl "
+            + "                 GROUP  BY patient_id) out_p ON pp.patient_id = out_p.patient_id "
+            + "WHERE  ep.encounter_type = ${6} "
+            + "       AND op.voided = 0 "
+            + "       AND ep.voided = 0 "
+            + "       AND pp.voided = 0 "
+            + "       AND ep.encounter_datetime = max_vl_date_and_max_ficha "
+            + "       AND op.concept_id = ${23739} "
+            + "       AND op.value_coded IN( ${23720}, ${23888} )";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    return stringSubstitutor.replace(query);
   }
 }
