@@ -97,14 +97,23 @@ public class TXTBQueries {
 
   /**
    * Patients with Pulmonary TB Date in Patient Clinical Record of ART date TB
+   * (Condicoes medicas importantes – Ficha Resumo Mastercard during reporting
+   * period.
+   * <ul>
+   * <li>Encounter Type ID = 53</li>
+   * <li>Concept ID for Other Diagnosis = 1406</li>
+   * <li>Answer = Pulmonary TB (value_coded 42)</li>
+   *<li>Obs_datetime >= startDate and <=endDate</li>
+   *
+   * </ul>
    *
    * @param encounterTypeId
+   * @param otherDiagnosisConcept
    * @param pulmonaryTBConcept
-   * @param yesConcept
    * @return String
    */
   public static String pulmonaryTB(
-      Integer encounterTypeId, Integer pulmonaryTBConcept, Integer yesConcept) {
+      Integer encounterTypeId, Integer otherDiagnosisConcept ,Integer pulmonaryTBConcept) {
     return String.format(
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
             + "ON p.patient_id = e.patient_id "
@@ -112,7 +121,7 @@ public class TXTBQueries {
             + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s AND o.concept_id = %s AND o.value_coded = %s AND o.obs_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
-        encounterTypeId, pulmonaryTBConcept, yesConcept);
+        encounterTypeId, otherDiagnosisConcept ,pulmonaryTBConcept);
   }
 
   /**
