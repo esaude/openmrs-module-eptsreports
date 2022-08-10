@@ -11,12 +11,9 @@
  */
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
+import org.openmrs.Concept;
 import org.openmrs.Location;
 import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
@@ -35,6 +32,8 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
 
 /** Defines all of the TxCurrCohortQueries we want to expose for EPTS */
 @Component
@@ -1988,11 +1987,15 @@ public class TxCurrCohortQueries {
     CohortDefinition monthlyDispensation = getPatientsWithLessThan3MonthlyTypeOfDispensation();
     CohortDefinition semiAnnualDispensation = getPatientsWithSemiAnnualTypeOfDispensation();
 
+    CohortDefinition monthlyDispensationOnLastPickup =
+        getPatientsWithDispensationOnLastConsultationDate(hivMetadata.getMonthlyConcept());
+
     cd.addSearch("quarterly", Mapped.mapStraightThrough(quarterlyDispensation));
     cd.addSearch("monthly", Mapped.mapStraightThrough(monthlyDispensation));
     cd.addSearch("semiAnnual", Mapped.mapStraightThrough(semiAnnualDispensation));
+    cd.addSearch("DM", Mapped.mapStraightThrough(monthlyDispensationOnLastPickup));
 
-    cd.setCompositionString("monthly AND NOT (quarterly OR semiAnnual)");
+    cd.setCompositionString("(monthly OR DM) AND NOT (quarterly OR semiAnnual)");
     return cd;
   }
 
@@ -2010,11 +2013,22 @@ public class TxCurrCohortQueries {
 
     CohortDefinition quarterlyDispensation = getPatientsWithQuarterlyTypeOfDispensation();
     CohortDefinition semiAnnualDispensation = getPatientsWithSemiAnnualTypeOfDispensation();
+    CohortDefinition quarterlyDispensationOnLastPickup =
+        getPatientsWithDispensationOnLastConsultationDate(hivMetadata.getQuarterlyConcept());
+
+    CohortDefinition dtOnLastMdc =
+        getPatientsWithTypeOfDispensationOnLastMdcRecord(
+            Collections.singletonList(hivMetadata.getQuarterlyDispensation().getConceptId()),
+            Arrays.asList(
+                hivMetadata.getStartDrugs().getConceptId(),
+                hivMetadata.getContinueRegimenConcept().getConceptId()));
 
     cd.addSearch("quarterly", Mapped.mapStraightThrough(quarterlyDispensation));
     cd.addSearch("semiAnnual", Mapped.mapStraightThrough(semiAnnualDispensation));
+    cd.addSearch("DT", Mapped.mapStraightThrough(quarterlyDispensationOnLastPickup));
+    cd.addSearch("dtMDC", Mapped.mapStraightThrough(dtOnLastMdc));
 
-    cd.setCompositionString("quarterly AND NOT semiAnnual");
+    cd.setCompositionString("(quarterly OR DT OR dtMDC) AND NOT semiAnnual");
     return cd;
   }
 
@@ -2025,16 +2039,29 @@ public class TxCurrCohortQueries {
    */
   public CohortDefinition semiAnnualDispensationComposition() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
-    cd.setName("Get patients with Quarterly ARV Dispensation");
+    cd.setName("Get patients with Semi Annual ARV Dispensation");
     cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     CohortDefinition semiAnnualDispensation = getPatientsWithSemiAnnualTypeOfDispensation();
+    CohortDefinition semiAnnualDispensationOnLastPickup =
+        getPatientsWithDispensationOnLastConsultationDate(hivMetadata.getSemiannualDispensation());
+
+    CohortDefinition dsOrDaOnLastMdc =
+        getPatientsWithTypeOfDispensationOnLastMdcRecord(
+            Arrays.asList(
+                hivMetadata.getSemiannualDispensation().getConceptId(),
+                hivMetadata.getAnnualArvDispensationConcept().getConceptId()),
+            Arrays.asList(
+                hivMetadata.getStartDrugs().getConceptId(),
+                hivMetadata.getContinueRegimenConcept().getConceptId()));
 
     cd.addSearch("semiAnnual", Mapped.mapStraightThrough(semiAnnualDispensation));
+    cd.addSearch("DS", Mapped.mapStraightThrough(semiAnnualDispensationOnLastPickup));
+    cd.addSearch("DSDA", Mapped.mapStraightThrough(dsOrDaOnLastMdc));
 
-    cd.setCompositionString("semiAnnual");
+    cd.setCompositionString("(semiAnnual OR DS OR DSDA)");
     return cd;
   }
 
@@ -2140,5 +2167,140 @@ public class TxCurrCohortQueries {
     definition.addParameter(new Parameter("location", "location", Location.class));
 
     return definition;
+  }
+
+  /**
+   * All active patients whose last “Tipo de Levantamento” (Concept_id = 23739) is marked as @param
+   * dispensationType in Ficha Clinica Mastercard
+   *
+   * @param dispensationType The Type Of Dispensation Concept
+   * @return {@link CohortDefinition}
+   */
+  public SqlCohortDefinition getPatientsWithDispensationOnLastConsultationDate(
+      Concept dispensationType) {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Utentes com último registo de tipo de dispensa marcado como DM");
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("23739", hivMetadata.getTypeOfDispensationConcept().getConceptId());
+    map.put("dispensation", dispensationType.getConceptId());
+
+    String query =
+        " SELECT p.patient_id "
+            + " FROM   patient p "
+            + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "       INNER JOIN (SELECT p.patient_id, MAX(e.encounter_datetime) encounter_datetime "
+            + "                   FROM   patient p "
+            + "                          INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                          INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "                   WHERE  p.voided = 0 "
+            + "                          AND o.voided = 0 "
+            + "                          AND e.voided = 0 "
+            + "                          AND e.location_id = :location "
+            + "                          AND e.encounter_type = ${6} "
+            + "                          AND o.concept_id = ${23739} "
+            + "                          AND e.encounter_datetime <= :onOrBefore "
+            + "                   GROUP  BY p.patient_id) last_dispensation_type ON last_dispensation_type.patient_id = p.patient_id "
+            + " WHERE  p.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND e.location_id = :location "
+            + "       AND e.encounter_type = ${6} "
+            + "       AND o.concept_id = ${23739} "
+            + "       AND o.value_coded = ${dispensation} "
+            + "       AND e.encounter_datetime = last_dispensation_type.encounter_datetime "
+            + " GROUP  BY p.patient_id";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    cd.setQuery(stringSubstitutor.replace(query));
+
+    return cd;
+  }
+
+  /**
+   * <b>For 6 or more months of ARVs dispensed to active patients on ART: </b>
+   * <li>All active patients whose one of the MDCs is marked as “@param dispensationTypes” with
+   *     Estado do MDC as Iniciar (I) or Continuar (C) in the last Ficha Clinica with MDCs
+   *     registered
+   *
+   * @param dispensationTypes The List of dispensation types concepts
+   * @param states The list of MDC states
+   * @return {@link CohortDefinition}
+   */
+  public SqlCohortDefinition getPatientsWithTypeOfDispensationOnLastMdcRecord(
+      List<Integer> dispensationTypes, List<Integer> states) {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName(
+        "All active patients whose one of the MDCs is marked as “DT OR DS OR DA” with Iniciar or Continuar in the last Ficha Clinica with MDC");
+    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, String> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId().toString());
+    map.put("1257", hivMetadata.getContinueRegimenConcept().getConceptId().toString());
+    map.put("1256", hivMetadata.getStartDrugs().getConceptId().toString());
+    map.put("23724", hivMetadata.getGaac().getConceptId().toString());
+    map.put("23730", hivMetadata.getQuarterlyDispensation().getConceptId().toString());
+    map.put("165179", hivMetadata.getDispensaComunitariaViaApeConcept().getConceptId().toString());
+    map.put(
+        "165315", hivMetadata.getDescentralizedArvDispensationConcept().getConceptId().toString());
+    map.put("23888", hivMetadata.getSemiannualDispensation().getConceptId().toString());
+    map.put("23729", hivMetadata.getRapidFlow().getConceptId().toString());
+    map.put("165174", hivMetadata.getLastRecordOfDispensingModeConcept().getConceptId().toString());
+    map.put("165322", hivMetadata.getMdcState().getConceptId().toString());
+    map.put("dispensationTypes", StringUtils.join(dispensationTypes, ","));
+    map.put("states", StringUtils.join(states, ","));
+
+    String query =
+        " SELECT p.patient_id   "
+            + "FROM   patient p   "
+            + "           INNER JOIN encounter e ON e.patient_id = p.patient_id   "
+            + "           INNER JOIN obs otype ON otype.encounter_id = e.encounter_id   "
+            + "           INNER JOIN obs ostate ON ostate.encounter_id = e.encounter_id   "
+            + "           INNER JOIN (    "
+            + "    SELECT p.patient_id, MAX(e.encounter_datetime) AS last_encounter   "
+            + "    FROM   patient p   "
+            + "               INNER JOIN encounter e ON p.patient_id = e.patient_id   "
+            + "               INNER JOIN obs otype ON otype.encounter_id = e.encounter_id   "
+            + "               INNER JOIN obs ostate ON ostate.encounter_id = e.encounter_id   "
+            + "    WHERE  p.voided = 0    "
+            + "      AND e.voided = 0   "
+            + "      AND otype.voided = 0   "
+            + "      AND ostate.voided = 0    "
+            + "      AND e.encounter_type = ${6}   "
+            + "      AND otype.concept_id = ${165174}    "
+            + "      AND otype.value_coded IS NOT NULL "
+            + "      AND ostate.concept_id = ${165322}   "
+            + "      AND ostate.value_coded IS NOT NULL   "
+            + "      AND otype.obs_group_id = ostate.obs_group_id   "
+            + "      AND e.encounter_datetime <= :onOrBefore "
+            + "      AND e.location_id = :location    "
+            + "    group by p.patient_id    "
+            + ") first_mdc ON first_mdc.patient_id = p.patient_id   "
+            + "WHERE  e.encounter_type = ${6}   "
+            + "  AND otype.concept_id = ${165174}   "
+            + "  AND otype.value_coded IN (${dispensationTypes})   "
+            + "  AND ostate.concept_id = ${165322}    "
+            + "  AND ostate.value_coded IN (${states})   "
+            + "  AND e.encounter_datetime = first_mdc.last_encounter    "
+            + "  AND otype.obs_group_id = ostate.obs_group_id   "
+            + "  AND e.location_id = :location    "
+            + "  AND e.voided = 0   "
+            + "  AND p.voided = 0   "
+            + "  AND otype.voided = 0   "
+            + "  AND ostate.voided = 0    ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    cd.setQuery(stringSubstitutor.replace(query));
+
+    return cd;
   }
 }

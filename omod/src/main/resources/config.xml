@@ -3304,6 +3304,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.annualArvDispensationConceptUuid</property>
+		<defaultValue>018ba584-3158-4075-82f7-c84c51f5085c</defaultValue>
+		<description>
+			UUID for ANNUAL ARV DISPENSATION Concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 
