@@ -4832,7 +4832,36 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.descentralizedArvDispensationConceptUuid");
     return getConcept(uuid);
   }
+  /**
+   * <b>concept_id = 6338</b>
+   *
+   * <p><b>Name:</b> PARTIALLY REVEALED
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getPartiallyRevealedConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.partiallyRevealedConcept");
+    return getConcept(uuid);
+  }
+  /**
+   * <b>concept_id = 6339</b>
+   *
+   * <p><b>Name:</b> NOT REVEALED
+   *
+   * <p><b>Description: </b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getNotRevealedConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.notRevealedConcept");
 
+    return getConcept(uuid);
+  }
   /**
    * <b>concept_id = 165314</b>
    *
