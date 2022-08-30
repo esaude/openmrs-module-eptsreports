@@ -35,23 +35,6 @@ public class TPTInitiationCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  @Ignore("Funtions are not supported by H2")
-  public void getPatientsWith3HP1PrescriptionsShouldPass() throws EvaluationException {
-
-    CohortDefinition cd = tptInitiationCohortQueries.getPatientsWith3HP1Prescriptions();
-
-    Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
-    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
-
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
-
-    assertEquals(1, evaluatedCohort.getMemberIds().size());
-    assertTrue(evaluatedCohort.getMemberIds().contains(1001));
-  }
-
-  @Test
   public void getPatientsWith3HP3RegimeTPTAndSeguimentoDeTratamentoShoulPass()
       throws EvaluationException {
     TPTInitiationCohortQueries tpt =
@@ -71,12 +54,12 @@ public class TPTInitiationCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
+  @Ignore("Funtions are not supported by H2")
   public void getPatientsWithUltimaProfilaxia3hpShouldPass() throws EvaluationException {
 
     CohortDefinition cd = tptInitiationCohortQueries.getPatientsWithUltimaProfilaxia3hp();
 
     Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
@@ -86,12 +69,12 @@ public class TPTInitiationCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
+  @Ignore("Funtions are not supported by H2")
   public void getPatientWithProfilaxiaTpt3hpShouldPass() throws EvaluationException {
 
     CohortDefinition cd = tptInitiationCohortQueries.getPatientWithProfilaxiaTpt3hp();
 
     Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
@@ -101,12 +84,12 @@ public class TPTInitiationCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
+  @Ignore("Funtions are not supported by H2")
   public void getPatientsWithOutrasPerscricoesDT3HPShouldPass() throws EvaluationException {
 
     CohortDefinition cd = tptInitiationCohortQueries.getPatientsWithOutrasPerscricoesDT3HP();
 
     Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 
@@ -122,7 +105,6 @@ public class TPTInitiationCohortQueriesTest extends DefinitionsTest {
     CohortDefinition cd = tptInitiationCohortQueries.getPatientsWithRegimeDeTPT3HP();
 
     Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
     parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
     parameters.put(new Parameter("location", "Location", Location.class), getLocation());
 

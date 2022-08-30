@@ -433,11 +433,13 @@ public class TPTInitiationDataDefinitionQueries {
    *
    * <blockquote>
    *
-   * <p>The earliest date (value datetime) on Ficha Resumo - MasterCard (encounter type 53) Última
-   * profilaxia(concept id 23985) value coded 3HP(concept id 23954) and Data Início da Profilaxia
-   * TPT(value datetime, concept id 6128) registered during the reporting
+   * <p>Última profilaxia(concept id 23985) value coded 3HP(concept id 23954) and Data Início value
+   * datetime selected in Ficha Resumo - MasterCard (encounter type 53) by reporting end date.
    *
-   * <p></bloackquote>
+   * <p>
+   *
+   * <p>Note: if there is more than one Ficha Resumo then information from all Ficha Resumo should
+   * be included. </bloackquote>
    *
    * @return {@link DataDefinition}
    */
@@ -445,7 +447,6 @@ public class TPTInitiationDataDefinitionQueries {
 
     SqlPatientDataDefinition sqlPatientDataDefinition = new SqlPatientDataDefinition();
     sqlPatientDataDefinition.setName("12 - 3HP Initiation Date On FIcha Resumo ");
-    sqlPatientDataDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     sqlPatientDataDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
     sqlPatientDataDefinition.addParameter(new Parameter("location", "location", Location.class));
 
@@ -456,18 +457,15 @@ public class TPTInitiationDataDefinitionQueries {
     valuesMap.put("6128", hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId());
 
     String query =
-        "SELECT p.patient_id, "
-            + "       Min(o2.value_datetime) AS earliest_date "
+        "SELECT p.patient_id "
             + "FROM   patient p "
             + "       INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "       INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "       INNER JOIN obs o2 ON e.encounter_id = o2.encounter_id "
-            + "WHERE  p.voided = 0 AND e.voided = 0 AND o.voided = 0 AND o2.voided = 0 "
+            + "WHERE  p.voided = 0 AND e.voided = 0 AND o.voided = 0 "
             + "       AND e.location_id = :location "
             + "       AND e.encounter_type = ${53} "
             + "       AND o.concept_id = ${23985} AND o.value_coded = ${23954} "
-            + "       AND o2.concept_id = ${6128} AND o2.value_datetime < CURRENT_DATE() "
-            + "GROUP BY p.patient_id ";
+            + "       AND o.value_datetime <= :endDate ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 

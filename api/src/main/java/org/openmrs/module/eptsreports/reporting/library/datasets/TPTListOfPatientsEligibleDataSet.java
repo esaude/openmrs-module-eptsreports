@@ -15,6 +15,7 @@ import org.openmrs.module.eptsreports.reporting.data.converter.CalculationResult
 import org.openmrs.module.eptsreports.reporting.data.converter.EncounterDatetimeConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.GenderConverter;
 import org.openmrs.module.eptsreports.reporting.data.definition.CalculationDataDefinition;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.ListOfPatientsEligibleForVLDataDefinitionQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TPTEligiblePatientListCohortQueries;
 import org.openmrs.module.reporting.ReportingConstants;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -44,12 +45,19 @@ public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {
   private HivMetadata hivMetadata;
   private TPTEligiblePatientListCohortQueries tPTEligiblePatientListCohortQueries;
 
+  private final ListOfPatientsEligibleForVLDataDefinitionQueries
+      listOfPatientsEligibleForVLDataDefinitionQueries;
+
   @Autowired
   public TPTListOfPatientsEligibleDataSet(
       HivMetadata hivMetadata,
-      TPTEligiblePatientListCohortQueries tPTEligiblePatientListCohortQueries) {
+      TPTEligiblePatientListCohortQueries tPTEligiblePatientListCohortQueries,
+      ListOfPatientsEligibleForVLDataDefinitionQueries
+          listOfPatientsEligibleForVLDataDefinitionQueries) {
     this.hivMetadata = hivMetadata;
     this.tPTEligiblePatientListCohortQueries = tPTEligiblePatientListCohortQueries;
+    this.listOfPatientsEligibleForVLDataDefinitionQueries =
+        listOfPatientsEligibleForVLDataDefinitionQueries;
   }
 
   public DataSetDefinition constructDataset() throws EvaluationException {
@@ -98,6 +106,16 @@ public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {
         new EncounterDatetimeConverter());
     pdd.addColumn(
         "pregnant_or_breastfeeding", pregnantBreasfeediDefinition(), "location=${location}", null);
+    pdd.addColumn(
+        "last_drug_pickup_date_on_fila",
+        listOfPatientsEligibleForVLDataDefinitionQueries.getPatientsAndLastDrugPickUpDateOnFila(),
+        "startDate=${generationDate},location=${location}",
+        null);
+    pdd.addColumn(
+        "next_drug_pickup_date_on_fila",
+        listOfPatientsEligibleForVLDataDefinitionQueries.getPatientsAndNextDrugPickUpDateOnFila(),
+        "startDate=${generationDate},location=${location}",
+        null);
 
     return pdd;
   }

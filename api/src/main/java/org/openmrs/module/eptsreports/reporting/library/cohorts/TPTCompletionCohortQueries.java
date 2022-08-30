@@ -155,33 +155,13 @@ public class TPTCompletionCohortQueries {
             mapping));
 
     compositionCohortDefinition.addSearch(
-        "B1",
-        EptsReportUtils.map(
-            tptEligiblePatientListCohortQueries.getIPTB1(
-                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept().getConceptId(),
-                hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getIsoniazidUsageConcept().getConceptId(),
-                hivMetadata.getStartDrugs().getConceptId(),
-                hivMetadata.getCompletedConcept().getConceptId(),
-                hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId(),
-                hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
-                tbMetadata.getRegimeTPTEncounterType().getEncounterTypeId(),
-                tbMetadata.getRegimeTPTConcept().getConceptId(),
-                tbMetadata.getIsoniazidConcept().getConceptId(),
-                tbMetadata.getIsoniazidePiridoxinaConcept().getConceptId()),
-            mapping));
-
-    compositionCohortDefinition.addSearch(
         "B2",
         EptsReportUtils.map(
             tptEligiblePatientListCohortQueries.getIPTB2(
                 hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getIsoniazidUsageConcept().getConceptId(),
                 hivMetadata.getStartDrugs().getConceptId(),
                 hivMetadata.getCompletedConcept().getConceptId(),
-                hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId(),
                 hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                 tbMetadata.getRegimeTPTEncounterType().getEncounterTypeId(),
                 tbMetadata.getRegimeTPTConcept().getConceptId(),
@@ -194,11 +174,9 @@ public class TPTCompletionCohortQueries {
         EptsReportUtils.map(
             tptEligiblePatientListCohortQueries.getIPTB3(
                 hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept().getConceptId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getIsoniazidUsageConcept().getConceptId(),
                 hivMetadata.getStartDrugs().getConceptId(),
-                hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId(),
+                hivMetadata.getCompletedConcept().getConceptId(),
                 hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                 tbMetadata.getRegimeTPTEncounterType().getEncounterTypeId(),
                 tbMetadata.getRegimeTPTConcept().getConceptId(),
@@ -211,11 +189,9 @@ public class TPTCompletionCohortQueries {
         EptsReportUtils.map(
             tptEligiblePatientListCohortQueries.getIPTB4(
                 hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
-                hivMetadata.getDataFinalizacaoProfilaxiaIsoniazidaConcept().getConceptId(),
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getIsoniazidUsageConcept().getConceptId(),
                 hivMetadata.getStartDrugs().getConceptId(),
-                hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId(),
+                hivMetadata.getCompletedConcept().getConceptId(),
                 hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                 tbMetadata.getRegimeTPTEncounterType().getEncounterTypeId(),
                 tbMetadata.getRegimeTPTConcept().getConceptId(),
@@ -228,9 +204,7 @@ public class TPTCompletionCohortQueries {
         EptsReportUtils.map(
             tptEligiblePatientListCohortQueries.getIPTB5Part1(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getIsoniazidUsageConcept().getConceptId(),
                 hivMetadata.getStartDrugs().getConceptId(),
-                hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId(),
                 hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getContinueRegimenConcept().getConceptId(),
                 hivMetadata.getYesConcept().getConceptId()),
@@ -241,9 +215,8 @@ public class TPTCompletionCohortQueries {
         EptsReportUtils.map(
             tptEligiblePatientListCohortQueries.getIPTB5Part2(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getIsoniazidUsageConcept().getConceptId(),
                 hivMetadata.getStartDrugs().getConceptId(),
-                hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId(),
+                hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getContinueRegimenConcept().getConceptId(),
                 tbMetadata.getTreatmentPrescribedConcept().getConceptId(),
                 tbMetadata.getDtINHConcept().getConceptId()),
@@ -254,9 +227,8 @@ public class TPTCompletionCohortQueries {
         EptsReportUtils.map(
             tptEligiblePatientListCohortQueries.getIPTB5Part3(
                 hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
-                hivMetadata.getIsoniazidUsageConcept().getConceptId(),
                 hivMetadata.getStartDrugs().getConceptId(),
-                hivMetadata.getDataInicioProfilaxiaIsoniazidaConcept().getConceptId(),
+                hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
                 hivMetadata.getContinueRegimenConcept().getConceptId(),
                 tbMetadata.getTreatmentPrescribedConcept().getConceptId(),
                 tbMetadata.getDtINHConcept().getConceptId()),
@@ -380,7 +352,7 @@ public class TPTCompletionCohortQueries {
         EptsReportUtils.map(getPatientsThatCompletedIsoniazidProphylacticTreatment(), mapping2));
 
     compositionCohortDefinition.setCompositionString(
-        "txcurr AND (((A1 OR A2 OR A3 OR A4 OR A5 OR A6) AND (B1 OR B2 OR B3 OR B4 OR (B5Part1 OR B5Part3 OR B5Part3) OR (B6Part1 OR B6Part3 OR B6Part3))) OR ((C1 OR C2 OR C3) AND (D1 OR D2 OR D3)))");
+        "txcurr AND (((A1 OR A2 OR A3 OR A4 OR A5 OR A6) AND (B2 OR B3 OR B4 OR (B5Part1 OR B5Part3 OR B5Part3) OR (B6Part1 OR B6Part3 OR B6Part3))) OR ((C1 OR C2 OR C3) AND (D1 OR D2 OR D3)))");
 
     return compositionCohortDefinition;
   }
