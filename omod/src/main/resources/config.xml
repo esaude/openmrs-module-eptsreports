@@ -3327,6 +3327,14 @@
 			UUID for ANNUAL ARV DISPENSATION Concept
 		</description>
 	</globalProperty>
+	<!--23885-->
+	<globalProperty>
+		<property>@MODULE_ID@.keyPopOtherConceptUuid</property>
+		<defaultValue>217ac8d1-b36f-43c9-8372-8d589e99bd03</defaultValue>
+		<description>
+			UUID for Key Population - Others Concept
+		</description>
+	</globalProperty>
 
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 

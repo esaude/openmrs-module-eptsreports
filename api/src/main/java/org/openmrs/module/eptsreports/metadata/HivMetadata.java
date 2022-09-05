@@ -4877,4 +4877,18 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.annualArvDispensationConceptUuid");
     return getConcept(uuid);
   }
+  /**
+   * <b>concept_id = 23885</b>
+   *
+   * <p><b>Name:</b> AKey Population - Others
+   *
+   * <p><b>Description:</b> Key Population - Others Concept
+   *
+   * @return {@link Concept}
+   */
+  public Concept getKeyPopOtherConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.keyPopOtherConceptUuid");
+    return getConcept(uuid);
+  }
 }
