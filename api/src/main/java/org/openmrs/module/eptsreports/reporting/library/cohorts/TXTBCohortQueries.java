@@ -745,13 +745,14 @@ public class TXTBCohortQueries {
     cd.addSearch("ii", map(ii, generalParameterMapping));
 
     CohortDefinition patientswithPulmonaryTbDate =
-        TXTBQueries.getPatientsWithObsBetweenDates(
-            "Patients with Pulmonary TB Date",
-            tbMetadata.getPulmonaryTB(),
-            hivMetadata.getPatientFoundYesConcept(),
-            Arrays.asList(hivMetadata.getMasterCardEncounterType()));
+        genericCohortQueries.generalSql(
+            "patientswithPulmonaryTbDate",
+            TXTBQueries.tbPulmonaryTBDate(
+                hivMetadata.getMasterCardEncounterType().getId(),
+                hivMetadata.getOtherDiagnosis().getConceptId(),
+                tbMetadata.getPulmonaryTB().getConceptId()));
     cd.addSearch(
-        "patientswithPulmonaryTbDate", map(patientswithPulmonaryTbDate, codedObsParameterMapping));
+        "patientswithPulmonaryTbDate", map(patientswithPulmonaryTbDate, generalParameterMapping));
 
     CohortDefinition patientsWhoInitiatedTbTreatment =
         genericCohortQueries.generalSql(
