@@ -89,7 +89,7 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "IM_ER_Report.xls", "IM_ER-Report", getExcelDesignUuid(), null);
+              reportDefinition, "IM_ER_v2.8.xls", "IM_ER-Report", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
