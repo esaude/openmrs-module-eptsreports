@@ -28,6 +28,7 @@ import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQuer
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.queries.TbPrevQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.InverseCohortDefinition;
@@ -66,6 +67,8 @@ public class EptsCommonDimension {
 
   private PrepCtCohortQueries prepCtCohortQueries;
 
+  private TbPrevQueries tbPrevQueries;
+
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
   private AgeDimensionCohortInterface ageDimensionCohort;
@@ -84,7 +87,8 @@ public class EptsCommonDimension {
       TxCurrCohortQueries txCurrCohortQueries,
       EriDSDCohortQueries eriDSDCohortQueries,
       MISAUKeyPopsCohortQueries misauKeyPopsCohortQueries,
-      PrepCtCohortQueries prepCtCohortQueries) {
+      PrepCtCohortQueries prepCtCohortQueries,
+      TbPrevQueries tbPrevQueries) {
     this.genderCohortQueries = genderCohortQueries;
     this.txNewCohortQueries = txNewCohortQueries;
     this.genericCohortQueries = genericCohortQueries;
@@ -98,6 +102,7 @@ public class EptsCommonDimension {
     this.eriDSDCohortQueries = eriDSDCohortQueries;
     this.misauKeyPopsCohortQueries = misauKeyPopsCohortQueries;
     this.prepCtCohortQueries = prepCtCohortQueries;
+    this.tbPrevQueries = tbPrevQueries;
   }
 
   /**
@@ -375,13 +380,13 @@ public class EptsCommonDimension {
     dim.addCohortDefinition(
         "new-on-art",
         EptsReportUtils.map(
-            tbPrevCohortQueries.getNewOnArt(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+            tbPrevQueries.getPatientsWhoStartedTptAndNewOnArt(),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
     dim.addCohortDefinition(
         "previously-on-art",
         EptsReportUtils.map(
-            tbPrevCohortQueries.getPreviouslyOnArt(),
-            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}"));
+            tbPrevQueries.getPatientsWhoStartedTptPreviouslyOnArt(),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
     return dim;
   }
 

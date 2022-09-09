@@ -22,6 +22,7 @@ import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIn
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
+import org.openmrs.module.reporting.indicator.CohortIndicator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -54,51 +55,36 @@ public class TbPrevDataset extends BaseDataSet {
         EptsReportUtils.map(
             eptsCommonDimension.getArtStatusDimension(),
             "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    CohortIndicator denominatorIndicator =
+        eptsGeneralIndicator.getIndicator(
+            "Numerator Total",
+            EptsReportUtils.map(
+                tbPrevCohortQueries.getDenominator(),
+                "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    CohortIndicator numeratorIndicator =
+        eptsGeneralIndicator.getIndicator(
+            "Numerator Disaggregations",
+            EptsReportUtils.map(
+                tbPrevCohortQueries.getNumerator(),
+                "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
     dsd.addColumn(
-        "NUM-TOTAL",
-        "Numerator Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Numerator Total",
-                EptsReportUtils.map(
-                    tbPrevCohortQueries.getNumerator(),
-                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
-            mappings),
-        "");
+        "NUM-TOTAL", "Numerator Total", EptsReportUtils.map(numeratorIndicator, mappings), "");
     dsd.addColumn(
-        "DEN-TOTAL",
-        "Denominator Total",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Denominator Total",
-                EptsReportUtils.map(
-                    tbPrevCohortQueries.getDenominator(),
-                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
-            mappings),
-        "");
+        "DEN-TOTAL", "Denominator Total", EptsReportUtils.map(denominatorIndicator, mappings), "");
     addRow(
         dsd,
         "R01",
         "Numerator Disaggregations",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Numerator Disaggregations",
-                EptsReportUtils.map(
-                    tbPrevCohortQueries.getNumerator(),
-                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
-            mappings),
+        EptsReportUtils.map(numeratorIndicator, mappings),
         getColumns());
     addRow(
         dsd,
         "R02",
         "Denominator Disaggregations",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "Denominator Disaggregations",
-                EptsReportUtils.map(
-                    tbPrevCohortQueries.getDenominator(),
-                    "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}")),
-            mappings),
+        EptsReportUtils.map(denominatorIndicator, mappings),
         getColumns());
     return dsd;
   }
