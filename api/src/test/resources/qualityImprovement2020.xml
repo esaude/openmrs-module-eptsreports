@@ -565,6 +565,30 @@ uuid="25a16b62-05fd-4b4e-83e0-8a3659c69981" />
 property_value="92653c45-9eb2-486d-90c0-3e00569e99c0" 
 description="UUID for the APPLICATION FOR LABORATORY RESEARCH concept" 
 uuid="27066b38-7156-4fbb-8f45-0c940c4f1179" />
+
+	<global_property
+			property="eptsreports.regimeTPTConceptUuid"
+			property_value="9db4ce3b-4c1c-45dd-905f-c984a052f26e"
+			description="UUID for Regime TPT concept"
+			uuid="ccbbe832-2d13-11ed-9a85-83bec9cd57a4" />
+
+	<global_property
+			property="eptsreports.3HPConceptUuid"
+			property_value="bce7d965-3396-4667-8294-aa5260c26334"
+			description="UUID for 3HP concept"
+			uuid="7101e66a-2d16-11ed-a5fd-f74faf11b472" />
+
+	<global_property
+			property="eptsreports.isoniazidConceptUuid"
+			property_value="e1d43e52-1d5f-11e0-b929-000c29ad1d07"
+			description="UUID for ISONIAZID concept"
+			uuid="57cd2012-2d14-11ed-ae1b-c37058bb7eec" />
+
+	<global_property
+			property="@MODULE_ID@.dataEstadoDaProfilaxiaConceptUuid"
+			property_value="b6c4d473-2af5-4c4d-a9bb-ad3779fa5579"
+			description="UUID FOR PROFLAXIS STATUS Concept"
+			uuid="e1c96622-2d14-11ed-b5cf-7762b2d121d2" />
 		
 		<!-- concept & concept_name -->
 
@@ -997,6 +1021,30 @@ uuid="27066b38-7156-4fbb-8f45-0c940c4f1179" />
 <concept concept_id="856" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="e1d6247e-1d5f-11e0-b929-000c29ad1d07" />
 
 <concept concept_id="23722" retired="0" datatype_id="2" class_id="8" is_set="0" creator="1" date_created="2018-10-23 16:22:43" changed_by="1" date_changed="2019-01-07 23:01:13" uuid="92653c45-9eb2-486d-90c0-3e00569e99c0" />
+
+	<!-- 23985 -->
+	<concept concept_id="23985" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="9db4ce3b-4c1c-45dd-905f-c984a052f26e" />
+
+	<!-- 23954 -->
+	<concept concept_id="23954" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="bce7d965-3396-4667-8294-aa5260c26334" />
+
+	<!-- 656 -->
+	<concept concept_id="656" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="e1d43e52-1d5f-11e0-b929-000c29ad1d07" />
+
+	<!-- 165308 -->
+	<concept concept_id="165308" retired="0"   creator="1"
+			 is_set="0"  class_id="11" datatype_id="4"
+			 date_created="2012-02-27 11:30:21"
+			 uuid="b6c4d473-2af5-4c4d-a9bb-ad3779fa5579" />
 		 
 		<!--| program | -->
 
