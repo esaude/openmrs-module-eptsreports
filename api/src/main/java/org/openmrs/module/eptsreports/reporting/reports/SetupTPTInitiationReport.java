@@ -4,11 +4,7 @@ import java.io.IOException;
 import java.util.*;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.datasets.DatimCodeDatasetDefinition;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TPTInitiationDataset;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TPTInitiationNewDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TPTInitiationTotalNewDataSet;
-import org.openmrs.module.eptsreports.reporting.library.datasets.TPTTotalsDataset;
+import org.openmrs.module.eptsreports.reporting.library.datasets.*;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
@@ -78,6 +74,7 @@ public class SetupTPTInitiationReport extends EptsDataExportManager {
     rd.addDataSetDefinition(
         "TPT", Mapped.mapStraightThrough(tptInitiationNewDataSet.constructDataSet()));
     rd.addDataSetDefinition("DATIM", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));
+    rd.addDataSetDefinition("SM", Mapped.mapStraightThrough(new SismaCodeDatasetDefinition()));
     return rd;
   }
 
@@ -93,12 +90,12 @@ public class SetupTPTInitiationReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Template_List_Patients_Initiated.xls",
+              "Template_List_Patients_Initiated_TPT_v1.7.xls",
               "TPT Initiation Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
-      props.put("repeatingSections", "sheet:1,row:5,dataset:TPT");
+      props.put("repeatingSections", "sheet:1,row:9,dataset:TPT");
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
     } catch (IOException e) {

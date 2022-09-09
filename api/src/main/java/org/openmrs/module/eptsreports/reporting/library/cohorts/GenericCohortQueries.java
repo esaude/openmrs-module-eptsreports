@@ -154,6 +154,7 @@ public class GenericCohortQueries {
    */
   public CohortDefinition getBaseCohort() {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.setName("baseCohort");
@@ -169,7 +170,7 @@ public class GenericCohortQueries {
                     hivMetadata.getHIVCareProgram().getProgramId(),
                     hivMetadata.getARTProgram().getProgramId(),
                     hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId())),
-            "endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "persons",
         EptsReportUtils.map(
