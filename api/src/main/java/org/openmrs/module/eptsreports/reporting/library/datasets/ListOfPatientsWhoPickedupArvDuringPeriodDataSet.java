@@ -45,11 +45,11 @@ public class ListOfPatientsWhoPickedupArvDuringPeriodDataSet extends BaseDataSet
             .getPatientIdentifierTypeByUuid("e2b966d0-1d5f-11e0-b929-000c29ad1d07");
     DataConverter identifierFormatter = new ObjectFormatter("{identifier}");
 
-        DataDefinition identifierDef =
-            new ConvertedPatientDataDefinition(
-                "identifier",
-                new PatientIdentifierDataDefinition(identifierType.getName(), identifierType),
-                identifierFormatter);
+    DataDefinition identifierDef =
+        new ConvertedPatientDataDefinition(
+            "identifier",
+            new PatientIdentifierDataDefinition(identifierType.getName(), identifierType),
+            identifierFormatter);
 
     DataConverter formatter = new ObjectFormatter("{familyName}, {givenName}");
 
