@@ -1,6 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -21,10 +20,10 @@ import org.openmrs.module.reporting.common.TimeQualifier;
 import org.openmrs.module.reporting.data.DataDefinition;
 import org.openmrs.module.reporting.data.converter.DataConverter;
 import org.openmrs.module.reporting.data.converter.ObjectFormatter;
+import org.openmrs.module.reporting.data.patient.definition.EncountersForPatientDataDefinition;
 import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.ConvertedPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.GenderDataDefinition;
-import org.openmrs.module.reporting.data.person.definition.ObsForPersonDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PersonIdDataDefinition;
 import org.openmrs.module.reporting.data.person.definition.PreferredNameDataDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -70,8 +69,7 @@ public class ListChildrenAdolescentARTWithoutFullDisclosureDataset extends BaseD
         new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
     pdsd.addRowFilter(
         listChildrenAdolescentARTWithoutFullDisclosureCohortQueries
-            .getAdolescentsCurrentlyOnArtWithoutDisclosures(
-                hivMetadata.getRevealdConcept().getConceptId()),
+            .getTotalPatientsWithoutDisclosure(),
         "endDate=${endDate},location=${location}");
 
     pdsd.addColumn("patient_id", new PersonIdDataDefinition(), "");
@@ -143,21 +141,18 @@ public class ListChildrenAdolescentARTWithoutFullDisclosureDataset extends BaseD
   }
 
   private DataDefinition getAdolescentsCurrentlyOnArtWithDisclosures() {
-    ObsForPersonDataDefinition obsForPersonDataDefinition = new ObsForPersonDataDefinition();
-    obsForPersonDataDefinition.setName("Adolescent patients with disclosures");
-    obsForPersonDataDefinition.addParameter(new Parameter("onOrBefore", "Before Date", Date.class));
-    obsForPersonDataDefinition.addParameter(
+    EncountersForPatientDataDefinition encountersForPatientDataDefinition =
+        new EncountersForPatientDataDefinition();
+    encountersForPatientDataDefinition.setName("Adolescent patients with disclosures");
+    encountersForPatientDataDefinition.addParameter(
+        new Parameter("onOrBefore", "Before Date", Date.class));
+    encountersForPatientDataDefinition.addParameter(
         new Parameter("locationList", "Location", Location.class));
-    obsForPersonDataDefinition.setEncounterTypeList(
-        Arrays.asList(hivMetadata.getPrevencaoPositivaSeguimentoEncounterType()));
-    obsForPersonDataDefinition.setQuestion(
-        hivMetadata.getDisclosureOfHIVDiagnosisToChildrenAdolescentsConcept());
-    obsForPersonDataDefinition.setWhich(TimeQualifier.LAST);
-    obsForPersonDataDefinition.setValueCodedList(
-        Arrays.asList(
-            hivMetadata.getPartiallyRevealedConcept(), hivMetadata.getNotRevealedConcept()));
+    encountersForPatientDataDefinition.addType(
+        hivMetadata.getPrevencaoPositivaSeguimentoEncounterType());
+    encountersForPatientDataDefinition.setWhich(TimeQualifier.LAST);
 
-    return obsForPersonDataDefinition;
+    return encountersForPatientDataDefinition;
   }
 
   private DataDefinition getAdolescentsCurrentlyOnArtWithPartialDisclosures(Concept valueCoded) {
