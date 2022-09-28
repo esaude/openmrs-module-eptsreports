@@ -76,22 +76,10 @@ public class TPTInitiationCohortQueries {
         "A3HP3",
         EptsReportUtils.map(
             A3HP3, "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "A3HP4",
-        EptsReportUtils.map(
-            A3HP4, "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "A3HP5",
-        EptsReportUtils.map(
-            A3HP5, "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "A3HP6",
-        EptsReportUtils.map(
-            A3HP6, "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "A3HP7",
-        EptsReportUtils.map(
-            A3HP7, "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch("A3HP4", EptsReportUtils.map(A3HP4, "endDate=${endDate},location=${location}"));
+    cd.addSearch("A3HP5", EptsReportUtils.map(A3HP5, "endDate=${endDate},location=${location}"));
+    cd.addSearch("A3HP6", EptsReportUtils.map(A3HP6, "endDate=${endDate},location=${location}"));
+    cd.addSearch("A3HP7", EptsReportUtils.map(A3HP7, "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("(A3HP3 OR A3HP4 OR A3HP5 OR A3HP6 OR A3HP7)");
 
@@ -198,8 +186,10 @@ public class TPTInitiationCohortQueries {
    * <blockquote>
    *
    * <p>Select all patients with Última profilaxia(concept id 23985) value coded 3HP(concept id
-   * 23954) and Data Início selected in Ficha Resumo - Mastercard (Encounter type 53) (3HP Start
-   * Date) between endDate-4 months and endDate
+   * <<<<<<< HEAD 23954) and Data Início da Profilaxia TPT(value datetime, concept id 6128) selected
+   * in Ficha Resumo - Mastercard (Encounter type 53) (3HP Start Date) between endDate-4 months and
+   * endDate ======= 23954) and Data Início selected in Ficha Resumo - Mastercard (Encounter type
+   * 53) (3HP Start Date) between endDate-4 months and endDate >>>>>>> 2.x_develop
    *
    * </blockquote>
    *
@@ -297,8 +287,9 @@ public class TPTInitiationCohortQueries {
    * <blockquote>
    *
    * <p>Select all patients with Outras prescricoes(concept id 1719) value coded DT-3HP (concept id
-   * 165307) marked in Ficha Clínica – Mastercard (Encounter type 6) (3HP Start Date) during the
-   * reporting period or
+   * <<<<<<< HEAD 165307) marked in Ficha Clínica – Mastercard (Encounter type 6) (3HP Start Date)
+   * between endDate-4 months or ======= 165307) marked in Ficha Clínica – Mastercard (Encounter
+   * type 6) (3HP Start Date) during the reporting period or >>>>>>> 2.x_develop
    *
    * </blockquote>
    *
@@ -330,7 +321,7 @@ public class TPTInitiationCohortQueries {
             + "       AND e.encounter_type = ${6} "
             + "       AND o.concept_id = ${1719} "
             + "       AND o.value_coded = ${165307} "
-            + "       AND e.encounter_datetime BETWEEN :startDate AND :endDate ";
+            + "       AND e.encounter_datetime BETWEEN DATE_SUB(:endDate, INTERVAL 4 MONTH) AND :endDate ";
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
     cd.setQuery(stringSubstitutor.replace(query));
