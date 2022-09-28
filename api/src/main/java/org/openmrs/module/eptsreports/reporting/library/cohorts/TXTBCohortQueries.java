@@ -834,7 +834,8 @@ public class TXTBCohortQueries {
     cd.addSearch("G", mapStraightThrough(getTBTreatmentStart()));
     cd.addSearch("H", mapStraightThrough(getPulmonaryTB()));
     cd.addSearch("I", mapStraightThrough(getPatientsWithAtLeastOneResponseForPositiveScreeningI()));
-    cd.setCompositionString("A OR B OR C OR D OR E OR F OR G OR H OR I");
+    cd.addSearch("J", mapStraightThrough(getXpertMtbTestCohort()));
+    cd.setCompositionString("A OR B OR C OR D OR E OR F OR G OR H OR I OR J");
     addGeneralParameters(cd);
     return cd;
   }
@@ -1192,6 +1193,8 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "tb-genexpert-lab-test",
         EptsReportUtils.map(getTBGenexpertTestCohort(13), generalParameterMapping));
+    definition.addSearch(
+        "tb-xpert-mtb", EptsReportUtils.map(getXpertMtbTestCohort(), generalParameterMapping));
 
     definition.addSearch(
         "culture-test", EptsReportUtils.map(getCultureTest(6), generalParameterMapping));
@@ -1242,7 +1245,7 @@ public class TXTBCohortQueries {
 
     definition.setCompositionString(
         "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tb-treatment-start "
-            + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR tb-genexpert-lab-test OR culture-test OR culture-test-lab "
+            + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR tb-genexpert-lab-test OR tb-xpert-mtb OR culture-test OR culture-test-lab "
             + "OR test-tb-lam OR test-tb-lam-lab OR test-bk OR x-ray-chest) OR result-for-basiloscopia)) "
             + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period OR pulmonary-tb-date OR marked-as-tratamento-tb-inicio)");
 
@@ -1891,9 +1894,11 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "applicationForLaboratoryResearchCohort",
         EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
+    definition.addSearch(
+        "tb-xpert-mtb", EptsReportUtils.map(getXpertMtbTestCohort(), generalParameterMapping));
 
     definition.setCompositionString(
-        "basiloscopiaExamCohort OR basiloscopiaLabExamCohort OR genexpertTestCohort OR genexpertLabTestCohort OR tbLamTestCohort OR tbLamLabTestCohort OR cultureTestCohort OR cultureLabTestCohort OR applicationForLaboratoryResearchCohort");
+        "basiloscopiaExamCohort OR basiloscopiaLabExamCohort OR genexpertTestCohort OR genexpertLabTestCohort OR tbLamTestCohort OR tbLamLabTestCohort OR cultureTestCohort OR cultureLabTestCohort OR applicationForLaboratoryResearchCohort OR tb-xpert-mtb");
     return definition;
   }
 
@@ -1945,9 +1950,11 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "applicationForLaboratoryResearchCohort",
         EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
+    definition.addSearch(
+        "tb-xpert-mtb", EptsReportUtils.map(getXpertMtbTestCohort(), generalParameterMapping));
 
     definition.setCompositionString(
-        "genexpertTestCohort OR genexpertLabTestCohort OR applicationForLaboratoryResearchCohort");
+        "genexpertTestCohort OR genexpertLabTestCohort OR applicationForLaboratoryResearchCohort OR tb-xpert-mtb");
     return definition;
   }
 
@@ -2183,5 +2190,32 @@ public class TXTBCohortQueries {
     definition.setCompositionString(
         "genexpertTestCohort OR genexpertLabTestCohort OR basiloscopiaExamCohort OR tbLamTestCohort OR tbLamLabTestCohort OR cultureTestCohort OR cultureLabTestCohort");
     return definition;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * Xpert MTB <b>(concept_id = 165189)</b> with Answer Yes <b>(concept_id = 1065)</b> or No <b>(id
+   * = 1066)</b>
+   *
+   * <p>Registered in the laboratory form <b>(encounterType_id = 13)</b> during the reporting period
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getXpertMtbTestCohort() {
+    CohortDefinition cd =
+        genericCohortQueries.generalSql(
+            "xpertMtbTest",
+            TXTBQueries.tbGenexpertTest(
+                hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
+                tbMetadata.getTestXpertMtbUuidConcept().getConceptId(),
+                commonMetadata.getYesConcept().getConceptId(),
+                commonMetadata.getNoConcept().getConceptId()));
+    addGeneralParameters(cd);
+    return cd;
   }
 }
