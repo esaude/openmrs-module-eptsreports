@@ -4891,4 +4891,20 @@ public class HivMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.keyPopOtherConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 23903</b>
+   *
+   * <p><b>Name:</b> NEGATIVE DIAGNOSIS
+   *
+   * <p><b>Description:</b> NEGATIVE DIAGNOSIS Concept
+   *
+   * @return {@link Concept}
+   */
+  public Concept getNegativeDiagnosisConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.negativeDiagnosisConceptUuid");
+    return getConcept(uuid);
+  }
 }

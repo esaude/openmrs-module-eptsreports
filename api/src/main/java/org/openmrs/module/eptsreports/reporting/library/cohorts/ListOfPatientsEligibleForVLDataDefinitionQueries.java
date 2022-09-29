@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -11,6 +8,10 @@ import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefini
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class ListOfPatientsEligibleForVLDataDefinitionQueries {
@@ -60,6 +61,7 @@ public class ListOfPatientsEligibleForVLDataDefinitionQueries {
     valuesMap.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
     valuesMap.put("5096", hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
     valuesMap.put("1256", hivMetadata.getStartDrugs().getConceptId());
+    valuesMap.put("2", hivMetadata.getARTProgram().getProgramId());
 
     String query =
         " SELECT art.patient_id, MIN(art.art_date) min_art_date FROM ( "
@@ -92,11 +94,7 @@ public class ListOfPatientsEligibleForVLDataDefinitionQueries {
             + "  "
             + " UNION "
             + "  "
-            + " SELECT p.patient_id, historical.min_date AS art_date FROM patient p  "
-            + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
-            + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id "
-            + "     INNER JOIN( "
-            + " SELECT p.patient_id,e.encounter_id,  MIN(o.value_datetime) min_date FROM patient p "
+            + " SELECT p.patient_id, MIN(o.value_datetime) min_date FROM patient p "
             + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
             + " INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + " WHERE e.encounter_type IN(${6},${9},${18},${53}) "
@@ -105,30 +103,19 @@ public class ListOfPatientsEligibleForVLDataDefinitionQueries {
             + "                 AND o.value_datetime <= :endDate "
             + " AND e.voided = 0 "
             + " AND p.voided = 0 "
-            + "  "
-            + " GROUP BY p.patient_id "
-            + "                 ) historical "
-            + " ON historical.patient_id = p.patient_id "
-            + " WHERE e.encounter_type IN(${6},${9},${18},${53}) "
-            + " AND o.concept_id = ${1190} "
-            + " AND e.location_id = :location "
-            + "                 AND o.value_datetime <= :endDate "
-            + " AND e.voided = 0 "
-            + " AND p.voided = 0 "
-            + "                 AND historical.encounter_id = e.encounter_id "
-            + "                 AND o.value_datetime = historical.min_date "
+            + " AND o.voided = 0 "
             + " GROUP BY p.patient_id "
             + "                  "
             + " UNION "
             + "  "
-            + " SELECT p.patient_id, ps.start_date AS art_date "
+            + " SELECT p.patient_id, pg.date_enrolled AS art_date "
             + "     FROM   patient p   "
             + "           INNER JOIN patient_program pg  "
             + "                ON p.patient_id = pg.patient_id  "
             + "        INNER JOIN patient_state ps  "
             + "                   ON pg.patient_program_id = ps.patient_program_id  "
             + "     WHERE  pg.location_id = :location "
-            + "    AND pg.program_id = 2 and ps.start_date <= :endDate "
+            + "    AND pg.program_id = ${2} and pg.date_enrolled <= :endDate "
             + "     "
             + "    UNION "
             + "     "
@@ -137,7 +124,7 @@ public class ListOfPatientsEligibleForVLDataDefinitionQueries {
             + " INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + "                         INNER JOIN obs oyes ON oyes.encounter_id = e.encounter_id  "
             + "                         AND o.person_id = oyes.person_id "
-            + " WHERE e.encounter_type = 52 "
+            + " WHERE e.encounter_type = ${52} "
             + " AND o.concept_id = ${23866} "
             + "                 AND o.value_datetime <= :endDate "
             + "                 AND o.voided = 0 "

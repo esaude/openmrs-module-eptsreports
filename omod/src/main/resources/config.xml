@@ -3336,6 +3336,14 @@
 		</description>
 	</globalProperty>
 
+	<globalProperty>
+		<property>@MODULE_ID@.negativeDiagnosisConceptUuid</property>
+		<defaultValue>3cafb15a-7aed-4fc5-b91d-86f7211087fa</defaultValue>
+		<description>
+			UUID for NEGATIVE DIAGNOSIS Concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

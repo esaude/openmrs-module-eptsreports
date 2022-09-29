@@ -1,7 +1,7 @@
 package org.openmrs.module.eptsreports.reporting.calculation.formulations;
 
-import java.util.*;
 import org.openmrs.Drug;
+import org.openmrs.Encounter;
 import org.openmrs.Location;
 import org.openmrs.Obs;
 import org.openmrs.api.context.Context;
@@ -14,10 +14,20 @@ import org.openmrs.module.eptsreports.reporting.calculation.AbstractPatientCalcu
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.*;
 
 @Component
 public class ListOfChildrenOnARTFormulation1Calculation extends AbstractPatientCalculation {
+
+  private EPTSCalculationService eptsCalculationService;
+
+  @Autowired
+  public ListOfChildrenOnARTFormulation1Calculation(EPTSCalculationService eptsCalculationService) {
+    this.eptsCalculationService = eptsCalculationService;
+  }
 
   @Override
   public CalculationResultMap evaluate(
@@ -30,6 +40,16 @@ public class ListOfChildrenOnARTFormulation1Calculation extends AbstractPatientC
     EPTSCalculationService ePTSCalculationService =
         Context.getRegisteredComponents(EPTSCalculationService.class).get(0);
     Location location = (Location) context.getFromCache("location");
+    Date onOrBefore = (Date) context.getFromCache("onOrBefore");
+
+    CalculationResultMap lastPickupFila =
+        ePTSCalculationService.getEncounter(
+            Collections.singletonList(hivMetadata.getARVPharmaciaEncounterType()),
+            TimeQualifier.LAST,
+            cohort,
+            location,
+            onOrBefore,
+            context);
 
     CalculationResultMap calculationResultMap =
         ePTSCalculationService.getObs(
@@ -40,17 +60,32 @@ public class ListOfChildrenOnARTFormulation1Calculation extends AbstractPatientC
             null,
             TimeQualifier.ANY,
             null,
+            onOrBefore,
             context);
 
     for (Integer patientId : cohort) {
       ListResult listResult = (ListResult) calculationResultMap.get(patientId);
       List<Obs> obsList = EptsCalculationUtils.extractResultValues(listResult);
+      Encounter lastEncounterFila =
+          EptsCalculationUtils.resultForPatient(lastPickupFila, patientId);
       Drug drug = null;
 
-      if (obsList.size() > 0) {
-        Obs requiredOb = obsList.get(0);
-        if (requiredOb.getValueDrug() != null) {
-          drug = requiredOb.getValueDrug();
+      if (obsList == null || obsList.size() == 0 || lastEncounterFila == null) {
+        continue;
+      }
+
+      List<Obs> onLastEncounter = new ArrayList<>();
+
+      for (Obs o : obsList) {
+        if (o.getEncounter().getEncounterId() == lastEncounterFila.getEncounterId()) {
+          onLastEncounter.add(o);
+        }
+      }
+
+      if (onLastEncounter.size() >= 1) {
+        Obs firstFormulation = onLastEncounter.get(0);
+        if (firstFormulation.getValueDrug() != null) {
+          drug = firstFormulation.getValueDrug();
           map.put(patientId, new SimpleResult(drug.getDisplayName(), this));
         }
       }
