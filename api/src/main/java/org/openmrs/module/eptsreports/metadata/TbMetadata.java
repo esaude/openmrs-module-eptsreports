@@ -629,4 +629,36 @@ public class TbMetadata extends ProgramsMetadata {
         Context.getAdministrationService().getGlobalProperty("eptsreports.testXpertMtbConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 165192</b>
+   *
+   * <p><b>Name:</b> RESISTANCE TO RIFAMPIN
+   *
+   * <p><b>Description: RESISTANCE TO RIFAMPIN Concept
+   *
+   * @return {@link Concept}
+   */
+  public Concept getRifampinResistanceConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.rifampinResistanceConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165184</b>
+   *
+   * <p><b>Name:</b> NOT FOUND
+   *
+   * <p><b>Description: NOT FOUND Concept
+   *
+   * @return {@link Concept}
+   */
+  public Concept getNotFoundTestResultConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.notFoundTestResultConceptUuid");
+    return getConcept(uuid);
+  }
 }

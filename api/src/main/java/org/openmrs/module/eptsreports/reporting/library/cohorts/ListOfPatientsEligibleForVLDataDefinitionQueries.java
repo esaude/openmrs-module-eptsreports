@@ -94,7 +94,7 @@ public class ListOfPatientsEligibleForVLDataDefinitionQueries {
             + "  "
             + " UNION "
             + "  "
-            + " SELECT p.patient_id, MIN(o.value_datetime) min_date FROM patient p "
+            + " SELECT p.patient_id, MIN(o.value_datetime) art_date FROM patient p "
             + " INNER JOIN encounter e ON e.patient_id = p.patient_id "
             + " INNER JOIN obs o ON o.encounter_id = e.encounter_id "
             + " WHERE e.encounter_type IN(${6},${9},${18},${53}) "
