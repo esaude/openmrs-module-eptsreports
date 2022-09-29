@@ -17,6 +17,7 @@ import org.openmrs.calculation.patient.PatientCalculationContext;
 import org.openmrs.calculation.result.CalculationResultMap;
 import org.openmrs.calculation.result.ListResult;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
+import org.openmrs.module.eptsreports.metadata.TbMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.common.EPTSCalculationService;
 import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
@@ -29,12 +30,16 @@ public class CodedObsOnFirstOrSecondEncounterCalculation extends AbstractPatient
   private EPTSCalculationService eptsCalculationService;
 
   private HivMetadata hivMetadata;
+  private TbMetadata tbMetadata;
 
   @Autowired
   public CodedObsOnFirstOrSecondEncounterCalculation(
-      EPTSCalculationService eptsCalculationService, HivMetadata hivMetadata) {
+      EPTSCalculationService eptsCalculationService,
+      HivMetadata hivMetadata,
+      TbMetadata tbMetadata) {
     this.eptsCalculationService = eptsCalculationService;
     this.hivMetadata = hivMetadata;
+    this.tbMetadata = tbMetadata;
   }
 
   @Override
@@ -48,19 +53,47 @@ public class CodedObsOnFirstOrSecondEncounterCalculation extends AbstractPatient
     Location location = (Location) context.getFromCache("location");
     Date onOrAfter = (Date) context.getFromCache("onOrAfter");
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
-    Concept concept = (Concept) parameterValues.get("concept");
-    Concept valueCoded = (Concept) parameterValues.get("valueCoded");
+
+    Concept tptRegimeConcept = tbMetadata.getRegimeTPTConcept();
+    Concept isoniazidConcept = tbMetadata.getIsoniazidConcept();
+    Concept threehpConcept = tbMetadata.get3HPConcept();
+
+    Concept profilaxyStateConcept = tbMetadata.getDataEstadoDaProfilaxiaConcept();
+    Concept startConcept = hivMetadata.getStartDrugs();
 
     CalculationResultMap adultSegEncounters =
         eptsCalculationService.allEncounters(
             encounterTypes, cohort, location, onOrAfter, onOrBefore, context);
-    CalculationResultMap getObs =
+
+    CalculationResultMap isoniazidResult =
         eptsCalculationService.getObs(
-            concept,
+            tptRegimeConcept,
             encounterTypes,
             cohort,
             Arrays.asList(location),
-            Arrays.asList(valueCoded),
+            Arrays.asList(isoniazidConcept),
+            TimeQualifier.ANY,
+            null,
+            context);
+
+    CalculationResultMap threehpResult =
+        eptsCalculationService.getObs(
+            tptRegimeConcept,
+            encounterTypes,
+            cohort,
+            Arrays.asList(location),
+            Arrays.asList(threehpConcept),
+            TimeQualifier.ANY,
+            null,
+            context);
+
+    CalculationResultMap profilaxyStateResult =
+        eptsCalculationService.getObs(
+            profilaxyStateConcept,
+            encounterTypes,
+            cohort,
+            Arrays.asList(location),
+            Arrays.asList(startConcept),
             TimeQualifier.ANY,
             null,
             context);
@@ -68,18 +101,43 @@ public class CodedObsOnFirstOrSecondEncounterCalculation extends AbstractPatient
     CalculationResultMap map = new CalculationResultMap();
     for (Integer pId : cohort) {
       List<Encounter> encounters = getFirstTwoEncounters(adultSegEncounters, pId);
-      List<Obs> obsFoundList =
-          EptsCalculationUtils.extractResultValues((ListResult) getObs.get(pId));
-      boolean pass = false;
+
+      List<Obs> isoniazidObservations =
+          EptsCalculationUtils.extractResultValues((ListResult) isoniazidResult.get(pId));
+
+      List<Obs> threehpObservations =
+          EptsCalculationUtils.extractResultValues((ListResult) threehpResult.get(pId));
+
+      List<Obs> startObservations =
+          EptsCalculationUtils.extractResultValues((ListResult) profilaxyStateResult.get(pId));
+
+      boolean hasIsoniazid = false;
+      boolean hasThreehp = false;
+      boolean isStarting = false;
       for (Encounter e : encounters) {
-        for (Obs o : obsFoundList) {
+
+        for (Obs o : isoniazidObservations) {
           if (e.getEncounterId().equals(o.getEncounter().getEncounterId())) {
-            pass = true;
+            hasIsoniazid = true;
+            break;
+          }
+        }
+
+        for (Obs o : threehpObservations) {
+          if (e.getEncounterId().equals(o.getEncounter().getEncounterId())) {
+            hasThreehp = true;
+            break;
+          }
+        }
+
+        for (Obs o : startObservations) {
+          if (e.getEncounterId().equals(o.getEncounter().getEncounterId())) {
+            isStarting = true;
             break;
           }
         }
       }
-      map.put(pId, new BooleanResult(pass, this));
+      map.put(pId, new BooleanResult((hasIsoniazid || hasThreehp) && isStarting, this));
     }
 
     return map;

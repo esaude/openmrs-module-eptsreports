@@ -493,13 +493,84 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch(
         "B2Exlcusion",
-        map(getTransferredInPatients(true), "onOrAfter=${onOrAfter-1},location=${location}"));
+        map(getTransferredInPatients(true), "onOrAfter=${onOrAfter},location=${location}"));
 
     CohortDefinition transferredOut = getPatientsTransferredOutB5(false);
 
     cd.addSearch("B5", map(transferredOut, "onOrBefore=${onOrAfter},location=${location}"));
 
     cd.setCompositionString("B2 AND NOT ( B2Exlcusion AND NOT B5)");
+
+    return cd;
+  }
+
+  /**
+   * O sistema irá produzir B.3) Nº de reinícios TARV durante o mês:<br>
+   * Nº de activos em TARV no fim do mês = no Indicador B.13 (: RF21) oue Nº de que sairam do TARV
+   * (saídas TARV) durante o mês = Indicador B9 RF 17<br>
+   * Excluindo os utentes: Nº de utentes activos em TARV até ao fim do mês anterior = Indicador B12
+   * RF20) Nº de utentes que iniciaram TARV nesta unidade sanitária durante o mês = Indicador B1 RF9
+   * Nº de transferidos de outras US em TARV durante o mês = Indicador B2 RF10
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsRestartedTarvtB3() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Nº de reinícios TARV durante o mês");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    cd.addSearch("B13", map(getActivePatientsInARTByEndOfCurrentMonth(false), mapping));
+
+    cd.addSearch("B9", map(getB9(), mapping));
+
+    cd.addSearch("B12", map(getPatientsWhoWereActiveByEndOfPreviousMonthB12(), mapping));
+
+    cd.addSearch(
+        "B1", map(getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(), mapping));
+
+    cd.addSearch(
+        "B2",
+        map(
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.setCompositionString("B13 OR B9 AND NOT (B12 OR B2 OR B1)");
+
+    return cd;
+  }
+
+  /**
+   * O sistema irá produzir B.4) Nº de entradas TARV durante o mês automaticamente calculado através
+   * da fórmula: (B.4 = B.1 + B.2 + B.3)
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getB4() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("O sistema irá produzir B.4");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
+
+    cd.addSearch(
+        "B1", map(getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(), mapping));
+
+    cd.addSearch(
+        "B2",
+        map(
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch("B3", map(getPatientsRestartedTarvtB3(), mapping));
+
+    cd.setCompositionString("B1 OR B2 OR B3");
 
     return cd;
   }
@@ -872,6 +943,44 @@ public class ResumoMensalCohortQueries {
 
     StringSubstitutor sub = new StringSubstitutor(valuesMap);
     cd.setQuery(sub.replace(sql));
+
+    return cd;
+  }
+
+  /**
+   * RF 17 - O sistema irá produzir B.9) Nº de saídas TARV durante o mês, calculado automaticamente
+   * através da seguinte fórmula: (B.9 = B.5 + B.6 + B.7 + B.8 )
+   */
+  public CohortDefinition getB9() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Nº de saídas TARV durante o mês");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "end Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "B5",
+        map(
+            getPatientsTransferredOutB5(true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "B6",
+        map(
+            getPatientsWhoSuspendedTreatmentB6(true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "B7",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringCurrentMonthForB7(),
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "B8",
+        map(
+            getPatientsWhoDied(true),
+            "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
+
+    cd.setCompositionString("B5 OR B6 OR B7 OR B8");
 
     return cd;
   }
@@ -1499,8 +1608,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
-    cd.addCalculationParameter("concept", tbMetadata.getActiveTBConcept());
-    cd.addCalculationParameter("valueCoded", hivMetadata.getYesConcept());
+
     return cd;
   }
 
@@ -1509,15 +1617,21 @@ public class ResumoMensalCohortQueries {
    * S.TARV – Adulto Seguimento (encounter id 6)
    *
    * <ul>
-   *   <li>“ISONIAZID PROPYLAXIS” (PT”: “Profilaxia com Isoniazida”) (Concept ID 6122) = (Concept ID
-   *       1256) <b>AND</b>
-   *   <li>Encounter Date >=startDate and <= endDate (ONLY CONSIDER THE FIRST OR SECOND OCCURRENCE
-   *       EVER)
+   *   <li>com o registo de “Profilaxia TPT”=”INH” e “Estado da Profilaxia” =“Inicio” numa consulta
+   *       clínica (Ficha Clínica) durante a 1ª ou a 2ª consulta que ocorreu no período do relatório
+   *       após o início Pré-TARV (“Data 1a Consulta” ou “Data 2a Consulta” >= “Data Início do
+   *       Relatório ” e <=” Data Fim do Relatório” and “Data 1a Consulta” ou “Data 2a Consulta” >=
+   *       “Data Inicio Pre- TARV ”), ou
+   *   <li>com o registo de “Profilaxia TPT”= ”3HP” e “Estado da Profilaxia” =“Inicio” numa consulta
+   *       clínica (Ficha Clínica) ocorrida durante a 1ª ou a 2ª consulta que ocorreu no período do
+   *       relatório após o início Pré-TARV ("Data 1a Consulta” ou “Data 2a Consulta”>= “Data Início
+   *       do Relatório ” e <=” Data Fim do Relatório” and “Data 1a Consulta” ou “Data 2a Consulta”
+   *       >= “Data Inicio Pre-TARV ”)
    * </ul>
    *
    * @return {@link CohortDefinition}
    */
-  private CohortDefinition getPatientsWhoStartedTPI() {
+  public CohortDefinition getPatientsWhoStartedTPI() {
     CodedObsOnFirstOrSecondEncounterCalculation calculation =
         Context.getRegisteredComponents(CodedObsOnFirstOrSecondEncounterCalculation.class).get(0);
     CalculationCohortDefinition cd = new CalculationCohortDefinition(calculation);
@@ -1525,8 +1639,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
-    cd.addCalculationParameter("concept", hivMetadata.getIsoniazidUsageConcept());
-    cd.addCalculationParameter("valueCoded", hivMetadata.getStartDrugs());
+
     return cd;
   }
 
@@ -1984,12 +2097,14 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * <b>Description:</b> Number of patients with coded observation
+   * <b>Description:</b> que tiveram um registo de resultado de "Carga viral qualitativo ou
+   * quantitativo ” na “Ficha Clínica” e “Data de Consulta” (Coluna 1, na qual ocorreu o registo da
+   * CV) >= “Data Início Relatório” e <= “Data Fim de Relatório”
    *
    * @param
    * @return {@link CohortDefinition}
    */
-  private CohortDefinition gePatientsWithCodedObs(Concept question) {
+  private CohortDefinition gePatientsWithvViralLoadQuantitative(Concept question) {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patients with Viral load qualitative done");
     cd.addParameter(new Parameter("startDate", "After Date", Date.class));
@@ -1999,6 +2114,26 @@ public class ResumoMensalCohortQueries {
         ResumoMensalQueries.gePatientsWithCodedObs(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             question.getConceptId()));
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWithQuantitativeVLOnFichaResumo() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients with Viral load quantitative on Ficha Resumo");
+    cd.addParameter(new Parameter("startDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(ResumoMensalQueries.getPatientsWithQuantitativeViralLoadResultsOnFichaResumo());
+    return cd;
+  }
+
+  private CohortDefinition getPatientsWithQualitativeVLOnFichaResumo() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Patients with Viral load qualitative on Ficha Resumo");
+    cd.addParameter(new Parameter("startDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(ResumoMensalQueries.getPatientsWithQualitativeVLOnFichaResumo());
     return cd;
   }
 
@@ -2021,9 +2156,29 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "VLQ",
         map(
-            gePatientsWithCodedObs(hivMetadata.getHivViralLoadQualitative()),
+            gePatientsWithvViralLoadQuantitative(hivMetadata.getHivViralLoadQualitative()),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("VL OR VLQ");
+    return cd;
+  }
+
+  private CohortDefinition getViralLoadOrQualitativeOnfichaResumo() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Combined Quantitative and  qualitative on Ficha Resumo");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "QL",
+        map(
+            getPatientsWithQualitativeVLOnFichaResumo(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "QT",
+        map(
+            getPatientsWithQuantitativeVLOnFichaResumo(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("QL OR QT");
     return cd;
   }
 
@@ -2080,6 +2235,12 @@ public class ResumoMensalCohortQueries {
             getViralLoadOrQualitative(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
+        "VLR",
+        map(
+            getViralLoadOrQualitativeOnfichaResumo(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
         "Ex2",
         map(
             genericCohortQueries.generalSql(
@@ -2090,7 +2251,13 @@ public class ResumoMensalCohortQueries {
                     hivMetadata.getHivViralLoadQualitative().getConceptId())),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(C AND VL) AND NOT Ex2");
+    cd.addSearch(
+        "R",
+        map(
+            genericCohortQueries.generalSql("R", getPatientsWithVLOn21DecemberOnFichaResumo()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(C AND (VL OR VLR)) AND NOT (Ex2 OR R)");
     return cd;
   }
 
@@ -2150,7 +2317,19 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "QUAL",
         map(
-            gePatientsWithCodedObs(hivMetadata.getHivViralLoadQualitative()),
+            gePatientsWithvViralLoadQuantitative(hivMetadata.getHivViralLoadQualitative()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "QTR",
+        map(
+            getViralLoadSuppressionOnFichaResumo(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "QLR",
+        map(
+            getPatientsWithQualitativeVLOnFichaResumo(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -2164,7 +2343,14 @@ public class ResumoMensalCohortQueries {
                     hivMetadata.getHivViralLoadQualitative().getConceptId())),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("(C AND (SUPP OR QUAL)) AND NOT Ex3");
+    cd.addSearch(
+        "ExR",
+        map(
+            genericCohortQueries.generalSql(
+                "ExR", getPatientsWithVLSuppression21DecemberOnFichaResumo()),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(C AND (SUPP OR QUAL OR QTR OR QLR)) AND NOT (Ex3 OR ExR)");
     return cd;
   }
 
@@ -2183,6 +2369,24 @@ public class ResumoMensalCohortQueries {
         getPatientsHavingViralLoadSuppression(
             hivMetadata.getHivViralLoadConcept().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
+    return cd;
+  }
+
+  /**
+   * que tiveram registo de resultado de “Carga Viral Quantitativo” <1000 cópias ou qualquer registo
+   * de resultado de “Carga Viral Qualitativo” na “Ficha Resumo” com a data da carga viral ocorrida
+   * durante o período de reporte( “Data da CV>= “Data Início Relatório” e <= “Data Fim de
+   * Relatório”
+   *
+   * @return CohortDefinition
+   */
+  private CohortDefinition getViralLoadSuppressionOnFichaResumo() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Viral load suppression on Ficha Resumo");
+    cd.addParameter(new Parameter("startDate", "After Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "Before Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.setQuery(getPatientsHavingVLSuppressionOnFichaResumo());
     return cd;
   }
 

@@ -748,9 +748,19 @@
 	 encounter_datetime="2019-09-27 00:00:00" creator="1" date_created="2019-09-27 00:00:00"
 	 voided="0" uuid="6dedc860-d221-11ea-8949-fffbf75223a5" location_id="21" />
 
-	<obs obs_id="8000004" person_id="6000002" concept_id="6122" encounter_id="7000004" obs_datetime="2019-09-27 00:00:00"
+	<obs obs_id="8000004" person_id="6000002" concept_id="23985" encounter_id="7000004" obs_datetime="2019-09-27 00:00:00"
 	  creator="1" date_created="2019-09-27 00:00:00" voided="0" status = "FINAL"
-	uuid="7458d762-d221-11ea-a75e-6765711a9e6a" location_id="21" value_coded="1256"/>
+	uuid="7458d762-d221-11ea-a75e-6765711a9e6a" location_id="21" value_coded="656"/>
+
+	<obs obs_id="800008" person_id="6000002" concept_id="165308" encounter_id="7000004" obs_datetime="2019-09-27 00:00:00"
+		 creator="1" date_created="2019-09-27 00:00:00" voided="0" status = "FINAL"
+		 uuid="4414ce3c-3361-11ed-932d-afdfeceb0e2e" location_id="21" value_coded="1256"/>
+
+	<concept concept_id="23985" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="9db4ce3b-4c1c-45dd-905f-c984a052f26e" />
+	<concept concept_id="165308" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="b6c4d473-2af5-4c4d-a9bb-ad3779fa5579" />
+	<concept concept_id="656" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="e1d43e52-1d5f-11e0-b929-000c29ad1d07" />
+	<concept concept_id="23954" retired="0" datatype_id="2" class_id="7" is_set="0" creator="1" date_created="2005-02-22 20:07:06" changed_by="1" date_changed="2016-10-31 17:09:42" uuid="bce7d965-3396-4667-8294-aa5260c26334" />
+
 
 
 	<!-- getPatientScreenedForTb -->
@@ -913,6 +923,10 @@
 
     <global_property property="eptsreports.hivViralLoadConceptUuid" property_value="e1d6247e-1d5f-11e0-b929-000c29ad1d07" description="UUID for HIV VIRAL LOAD concept" uuid="25a16b62-05fd-4b4e-83e0-8a3659c69981" />
     <global_property property="eptsreports.viralLoadQualitativeConceptUuid" property_value="e1da2704-1d5f-11e0-b929-000c29ad1d07" description="UUID for HIV VIRAL LOAD QUALITATIVE concept" uuid="28a16b62-05fd-4b4e-83e0-8a3659c69981" />
+	<global_property property="eptsreports.isoniazidConceptUuid" property_value="e1d43e52-1d5f-11e0-b929-000c29ad1d07" description="UUID for Isoniazid concept" uuid="2cc4adb6-3360-11ed-9025-f7ed64f3fddb" />
+	<global_property property="eptsreports.regimeTPTConceptUuid" property_value="9db4ce3b-4c1c-45dd-905f-c984a052f26e" description="UUID TPT concept" uuid="5a256624-3360-11ed-b664-ef8cd2b72e26" />
+	<global_property property="eptsreports.3HPConceptUuid" property_value="bce7d965-3396-4667-8294-aa5260c26334" description="UUID for 3HP concept" uuid="a1b55904-3360-11ed-8b85-1335fb9c723e" />
+	<global_property property="eptsreports.dataEstadoDaProfilaxiaConceptUuid" property_value="b6c4d473-2af5-4c4d-a9bb-ad3779fa5579" description="UUID FOR PROFLAXIS STATUS Concept" uuid="f0621db2-3360-11ed-8022-434f1bc99cac" />
 
 	<person person_id="25000" gender="F" birthdate="2000-10-06" birthdate_estimated="false" dead="false" creator="1"
 			date_created="2000-10-06 09:30:10" voided="false" uuid="75d5cf82-ca66-4eb1-b217-9808fdc97819"

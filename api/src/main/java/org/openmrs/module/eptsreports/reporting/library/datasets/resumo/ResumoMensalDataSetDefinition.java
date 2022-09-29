@@ -22,6 +22,7 @@ import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionC
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
 import org.openmrs.module.eptsreports.reporting.library.disaggregations.ResumoMensalAandBdisaggregations;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
 import org.openmrs.module.reporting.dataset.definition.DataSetDefinition;
@@ -68,7 +69,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
     dsd.addDimension(
         "age", map(eptsCommonDimension.age(ageDimensionCohort), "effectiveDate=${endDate}"));
 
-    /* // indicators for section A1
+    // indicators for section A1
     addRow(
         dsd,
         "A1TC",
@@ -204,6 +205,63 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
+    // B3
+    CohortIndicator b3Indicator =
+        eptsGeneralIndicator.getIndicator(
+            "B3",
+            EptsReportUtils.map(resumoMensalCohortQueries.getPatientsRestartedTarvtB3(), mappings));
+    addRow(
+        dsd,
+        "B3TC",
+        "Patients under 15 years",
+        EptsReportUtils.map(b3Indicator, mappings),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "B3TA",
+        "Patients over 15 years - adults",
+        EptsReportUtils.map(b3Indicator, mappings),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "B3TP", "Total patients - Total Geral", EptsReportUtils.map(b3Indicator, mappings), "");
+
+    addRow(
+        dsd,
+        "B3TAD",
+        "Adolescentes patients",
+        EptsReportUtils.map(b3Indicator, mappings),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
+    // B4
+    CohortIndicator b4Indicator =
+        eptsGeneralIndicator.getIndicator(
+            "B4", EptsReportUtils.map(resumoMensalCohortQueries.getB4(), mappings));
+    addRow(
+        dsd,
+        "B4TC",
+        "Patients under 15 years",
+        EptsReportUtils.map(b4Indicator, mappings),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "B4TA",
+        "Patients over 15 years - adults",
+        EptsReportUtils.map(b4Indicator, mappings),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "B4TP", "Total patients - Total Geral", EptsReportUtils.map(b4Indicator, mappings), "");
+
+    addRow(
+        dsd,
+        "B4TAD",
+        "Adolescentes patients",
+        EptsReportUtils.map(b4Indicator, mappings),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
     // B5 indicators
     addRow(
         dsd,
@@ -305,6 +363,34 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
         "B8TAD",
         "Adolescentes patients",
         getPatientsWhoDiedDuringCurrentMonth(),
+        resumoMensalAandBdisaggregations.getAdolescentesColumns());
+
+    // B9
+    CohortIndicator b9Indicator =
+        eptsGeneralIndicator.getIndicator(
+            "B9", EptsReportUtils.map(resumoMensalCohortQueries.getB9(), mappings));
+    addRow(
+        dsd,
+        "B9TC",
+        "Patients under 15 years",
+        EptsReportUtils.map(b9Indicator, mappings),
+        resumoMensalAandBdisaggregations.getUnder14YearsColumns());
+
+    addRow(
+        dsd,
+        "B9TA",
+        "Patients over 15 years - adults",
+        EptsReportUtils.map(b9Indicator, mappings),
+        resumoMensalAandBdisaggregations.getAdultPatients());
+
+    dsd.addColumn(
+        "B9TP", "Total patients - Total Geral", EptsReportUtils.map(b9Indicator, mappings), "");
+
+    addRow(
+        dsd,
+        "B9TAD",
+        "Adolescentes patients",
+        EptsReportUtils.map(b9Indicator, mappings),
         resumoMensalAandBdisaggregations.getAdolescentesColumns());
 
     // B10 indicators
@@ -434,7 +520,8 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                         .getNumberOfActivePatientsInArtAtEndOfCurrentMonthWithVlPerformed(false),
                     mappings)),
             mappings),
-        resumoMensalAandBdisaggregations.disAggForE());*/
+        resumoMensalAandBdisaggregations.disAggForE());
+
     // E2
     addRow(
         dsd,
@@ -450,7 +537,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
             mappings),
         resumoMensalAandBdisaggregations.disAggForE());
 
-    /*// E3
+    // E3
     addRow(
         dsd,
         "E3",
@@ -503,7 +590,7 @@ public class ResumoMensalDataSetDefinition extends BaseDataSet {
                         .getNumberOfPatientsWithAtLeastOneClinicalAppointmentDuringTheYearF3(),
                     mappings)),
             mappings),
-        "");*/
+        "");
 
     return dsd;
   }
