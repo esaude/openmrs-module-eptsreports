@@ -164,7 +164,6 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
             + "  AND   ps.start_date = states.most_recent"
             + "  AND pg.voided = 0"
             + "  AND ps.voided = 0"
-            + "  AND ps.end_date is null "
             + "  AND NOT EXISTS ("
             + "        SELECT ee.encounter_id"
             + "        FROM encounter ee"
@@ -183,8 +182,6 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
             + "                     AND        o3.obs_datetime = states.most_recent"
             + "                   GROUP BY eee.encounter_id   ) "
             + " GROUP BY pg.patient_id ";
-
-    ;
 
     sqlPatientDataDefinition.setQuery(new StringSubstitutor(valuesMap).replace(query));
 

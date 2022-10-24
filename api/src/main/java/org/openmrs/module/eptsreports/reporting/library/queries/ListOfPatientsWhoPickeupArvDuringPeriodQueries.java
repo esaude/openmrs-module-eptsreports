@@ -55,7 +55,7 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodQueries {
    */
   public static String getLastStateOfStayOnArtProgram() {
     return " SELECT p.patient_id, "
-        + "         Max(ps.start_date) start_date"
+        + "         Max(pg.date_enrolled) AS most_recent"
         + "  FROM   patient p"
         + "         INNER JOIN patient_program pg"
         + "                 ON p.patient_id = pg.patient_id"
@@ -63,7 +63,7 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodQueries {
         + "                 ON pg.patient_program_id ="
         + "                    ps.patient_program_id"
         + "  WHERE  pg.program_id = ${2} AND pg.voided = 0 AND ps.voided = 0 "
-        + "         AND ps.start_date < :endDate"
+        + "         AND pg.date_enrolled <= :endDate"
         + "     AND pg.location_id= :location "
         + "  GROUP  BY p.patient_id ";
   }

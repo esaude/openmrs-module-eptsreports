@@ -106,7 +106,7 @@ public class ListOfPatientsWhoPickedupArvDuringPeriodDataSet extends BaseDataSet
         "art_start_date",
         listOfpatientsEligibleForVLDataDefinitionQueries.getPatientsAndARTStartDate(),
         "endDate=${endDate},location=${location}",
-        null);
+        new ForwardSlashDateConverter());
 
     // 4 - Age - Sheet 1: Column D
     pdd.addColumn(

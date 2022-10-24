@@ -114,7 +114,7 @@ public class ListOfPatientsEligibleForVLDataDefinitionQueries {
             + "                ON p.patient_id = pg.patient_id  "
             + "        INNER JOIN patient_state ps  "
             + "                   ON pg.patient_program_id = ps.patient_program_id  "
-            + "     WHERE  pg.location_id = :location "
+            + "     WHERE  pg.location_id = :location AND pg.voided = 0 AND p.voided = 0"
             + "    AND pg.program_id = ${2} and pg.date_enrolled <= :endDate "
             + "     "
             + "    UNION "
