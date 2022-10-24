@@ -1,12 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.reports;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.datasets.DatimCodeDatasetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.SismaCodeDatasetDefinition;
 import org.openmrs.module.eptsreports.reporting.library.datasets.TPTCompletionDataSet;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -17,6 +14,12 @@ import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
 
 @Component
 public class SetupTPTCompletionReport extends EptsDataExportManager {
@@ -37,7 +40,7 @@ public class SetupTPTCompletionReport extends EptsDataExportManager {
 
   @Override
   public String getDescription() {
-    return "The TPT Completion Cascade Report generates the number of patients who are eligible or completed TPT in their lifetime until the end of reporting period.";
+    return "Este relatório gera o número de pacientes elegíveis ou que alguma vez completaram Tratamento Preventivo de Tuberculose até ao fim do período de reporte.";
   }
 
   @Override
@@ -59,6 +62,10 @@ public class SetupTPTCompletionReport extends EptsDataExportManager {
     reportDefinition.setParameters(getDataParameters());
     reportDefinition.addDataSetDefinition(
         "ALL", Mapped.mapStraightThrough(tPTCompletionDataSet.constructTPTCompletionDataSet()));
+    reportDefinition.addDataSetDefinition(
+        "DT", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));
+    reportDefinition.addDataSetDefinition(
+        "SM", Mapped.mapStraightThrough(new SismaCodeDatasetDefinition()));
 
     // add a base cohort here to help in calculations running
     reportDefinition.setBaseCohortDefinition(
@@ -75,7 +82,7 @@ public class SetupTPTCompletionReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "TPT_Completion_Report_v1.1.xls",
+              "Template_TPT_Completion_Cascade_Report_v1.3.xls",
               "TPT Completion Report",
               getExcelDesignUuid(),
               null);
