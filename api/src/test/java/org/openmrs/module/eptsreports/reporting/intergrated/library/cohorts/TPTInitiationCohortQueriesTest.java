@@ -144,23 +144,6 @@ public class TPTInitiationCohortQueriesTest extends DefinitionsTest {
   }
 
   @Test
-  public void getPatientsIPTStart3WithFichaClinicaOrFichaPediatricaShouldPass()
-      throws EvaluationException {
-
-    CohortDefinition cd =
-        tptInitiationCohortQueries.getPatientsIPTStart3WithFichaClinicaOrFichaPediatrica();
-
-    Map<Parameter, Object> parameters = new HashMap<>();
-    parameters.put(new Parameter("startDate", "Start Date", Date.class), this.getStartDate());
-    parameters.put(new Parameter("endDate", "End Date", Date.class), this.getEndDate());
-    parameters.put(new Parameter("location", "Location", Location.class), getLocation());
-
-    EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
-
-    assertNotNull(evaluatedCohort.getMemberIds());
-  }
-
-  @Test
   @Ignore("Funtions are not supported by H2")
   public void getPatientsWithFirstFiltRegimeTptShouldPass() throws EvaluationException {
 

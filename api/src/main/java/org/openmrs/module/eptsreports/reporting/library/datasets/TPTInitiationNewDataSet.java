@@ -5,6 +5,7 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.reporting.data.converter.DispensationTypeConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.EmptyToNaoAndAnyToSimConverter;
 import org.openmrs.module.eptsreports.reporting.data.converter.NotApplicableIfNullConverter;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.DQACargaViralCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TPTInitiationCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.TPTInitiationDataDefinitionQueries;
 import org.openmrs.module.reporting.data.DataDefinition;
@@ -25,15 +26,19 @@ public class TPTInitiationNewDataSet extends BaseDataSet {
   private ListChildrenOnARTandFormulationsDataset listChildrenOnARTandFormulationsDataset;
   private TPTInitiationCohortQueries tptInitiationCohortQueries;
 
+  private DQACargaViralCohortQueries dqaCargaViralCohortQueries;
+
   @Autowired
   public TPTInitiationNewDataSet(
       TPTInitiationDataDefinitionQueries tPTInitiationDataDefinitionQueries,
       ListChildrenOnARTandFormulationsDataset listChildrenOnARTandFormulationsDataset,
-      TPTInitiationCohortQueries tptInitiationCohortQueries) {
+      TPTInitiationCohortQueries tptInitiationCohortQueries,
+      DQACargaViralCohortQueries dqaCargaViralCohortQueries) {
 
     this.tPTInitiationDataDefinitionQueries = tPTInitiationDataDefinitionQueries;
     this.listChildrenOnARTandFormulationsDataset = listChildrenOnARTandFormulationsDataset;
     this.tptInitiationCohortQueries = tptInitiationCohortQueries;
+    this.dqaCargaViralCohortQueries = dqaCargaViralCohortQueries;
   }
 
   public DataSetDefinition constructDataSet() {
@@ -61,7 +66,8 @@ public class TPTInitiationNewDataSet extends BaseDataSet {
         new ConvertedPersonDataDefinition("name", new PreferredNameDataDefinition(), formatter);
     pdd.setParameters(getParameters());
 
-    pdd.addColumn("NID", listChildrenOnARTandFormulationsDataset.getNID(), "");
+    pdd.addColumn(
+        "NID", dqaCargaViralCohortQueries.getNID(identifierType.getPatientIdentifierTypeId()), "");
 
     pdd.addColumn("name", nameDef, "");
 
@@ -142,7 +148,7 @@ public class TPTInitiationNewDataSet extends BaseDataSet {
     pdd.addColumn(
         "Expected_3HP_Completion_Date",
         tPTInitiationDataDefinitionQueries.getExpected3HPCompletionDate(),
-        "startDate=${startDate},location=${location}",
+        "startDate=${startDate},endDate=${endDate},location=${location}",
         null);
 
     pdd.addColumn(
@@ -188,13 +194,13 @@ public class TPTInitiationNewDataSet extends BaseDataSet {
         "IPT_end_date",
         tPTInitiationDataDefinitionQueries
             .getPatientsAndIPTCompletioDateOnFichaClinicaOrFichaSeguimento(),
-        "location=${location}",
+        "startDate=${startDate},endDate=${endDate},location=${location}",
         null);
 
     pdd.addColumn(
         "IPT_mastercard_end_date",
         tPTInitiationDataDefinitionQueries.getPatientsAndIPTCompetionDateOnFichaResumo(),
-        "location=${location}",
+        "startDate=${startDate},endDate=${endDate},location=${location}",
         null);
 
     pdd.addColumn(
