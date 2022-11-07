@@ -2858,22 +2858,22 @@ public class QualityImprovement2020CohortQueries {
 
     if (indicator == 2)
       compositionCohortDefinition.setName(
-          "Crianças  (0-4 anos de idade) que iniciaram TARV no período de inclusão");
+          "Adultos (15/+anos) que iniciaram a 1a linha de TARV ou novo regime da 1ª linha há 9 meses atrás");
     if (indicator == 9)
       compositionCohortDefinition.setName(
-          "Crianças  (5-9 anos de idade) que iniciaram TARV no período de inclusão");
+          "Crianças (0-4 anos de idade) com registo de início da 1a linha de TARV há 9 meses");
     if (indicator == 10)
       compositionCohortDefinition.setName(
-          "Crianças  (5-9 anos de idade) que iniciaram TARV no período de inclusão");
+          "Crianças  (5-9 anos de idade) com registo de início da 1a linha de TARV ou novo regime de TARV há 9 meses");
     if (indicator == 11)
       compositionCohortDefinition.setName(
-          "crianças  (10-14 anos de idade) que iniciaram TARV no período de inclusão");
+          "Crianças  (10-14 anos de idade) com registo de início da 1a linha de TARV ou novo regime da 1ª linha de TARV no mês de avaliação");
     if (indicator == 5)
       compositionCohortDefinition.setName(
-          "Adultos (15/+ anos) que iniciaram a 2a linha do TARV no período de inclusão ");
+          "Adultos (15/+ anos) com registo de início da 2a linha de TARV há 9 meses");
     if (indicator == 14)
       compositionCohortDefinition.setName(
-          "Crianças  > 2 anos que iniciaram a 2a linha do TARV no período de inclusão");
+          "Crianças com registo de início da 2a linha de TARV no mês de avaliação");
 
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("endDate", "endDate", Date.class));
@@ -2919,10 +2919,10 @@ public class QualityImprovement2020CohortQueries {
           "age",
           EptsReportUtils.map(
               ageCohortQueries.createXtoYAgeCohort(
-                  "Adultos (15/+anos) na 2a linha de TARV que receberam o resultado da CV entre o sexto e o nono mês após o início da 2a linha de TARV",
+                  "Adultos (15/+anos) que iniciaram a 1a linha de TARV ou novo regime da 1ª linha há 9 meses atrás",
                   15,
                   null),
-              "effectiveDate=${endDate}"));
+              "effectiveDate=${revisionEndDate}"));
     } else if (indicator == 5) {
 
       compositionCohortDefinition.addSearch(
@@ -2935,28 +2935,28 @@ public class QualityImprovement2020CohortQueries {
           "age",
           EptsReportUtils.map(
               ageCohortQueries.createXtoYAgeCohort(
-                  "Crianças (0-4 anos de idade) na 1a linha de TARV que receberam o resultado da Carga Viral entre o sexto e o nono mês após o início do TARV",
+                  "Crianças (0-4 anos de idade) com registo de início da 1a linha de TARV há 9 meses",
                   0,
                   4),
-              "effectiveDate=${endDate}"));
+              "effectiveDate=${revisionEndDate}"));
     } else if (indicator == 10) {
       compositionCohortDefinition.addSearch(
           "age",
           EptsReportUtils.map(
               ageCohortQueries.createXtoYAgeCohort(
-                  "Crianças  (5-9 anos de idade) na 1a linha de TARV que receberam o resultado da Carga Viral entre o sexto e o nono mês após o início do TARV",
+                  "Crianças  (5-9 anos de idade) com registo de início da 1a linha de TARV ou novo regime de TARV há 9 meses",
                   5,
                   9),
-              "effectiveDate=${endDate}"));
+              "effectiveDate=${revisionEndDate}"));
     } else if (indicator == 11) {
       compositionCohortDefinition.addSearch(
           "age",
           EptsReportUtils.map(
               ageCohortQueries.createXtoYAgeCohort(
-                  "Crianças  (10-14 anos de idade) na 1a linha de TARV que receberam o resultado da Carga Viral entre o sexto e o nono mês após o início do TARV",
+                  "Crianças  (10-14 anos de idade) com registo de início da 1a linha de TARV ou novo regime da 1ª linha de TARV no mês de avaliação",
                   10,
                   14),
-              "effectiveDate=${endDate}"));
+              "effectiveDate=${revisionEndDate}"));
     } else if (indicator == 14) {
       compositionCohortDefinition.addSearch(
           "age",
@@ -5116,7 +5116,7 @@ public class QualityImprovement2020CohortQueries {
                   "Adultos (15/+anos) na 2a linha de TARV que receberam o resultado da CV entre o sexto e o nono mês após o início da 2a linha de TARV",
                   15,
                   null),
-              "effectiveDate=${endDate}"));
+              "effectiveDate=${revisionEndDate}"));
     } else if (indicator == 5) {
       cd.addSearch(
           "age",
@@ -5131,7 +5131,7 @@ public class QualityImprovement2020CohortQueries {
                   "Crianças (0-4 anos de idade) na 1a linha de TARV que receberam o resultado da Carga Viral entre o sexto e o nono mês após o início do TARV",
                   0,
                   4),
-              "effectiveDate=${endDate}"));
+              "effectiveDate=${revisionEndDate}"));
     } else if (indicator == 10) {
       cd.addSearch(
           "age",
@@ -5140,7 +5140,7 @@ public class QualityImprovement2020CohortQueries {
                   "Crianças  (5-9 anos de idade) na 1a linha de TARV que receberam o resultado da Carga Viral entre o sexto e o nono mês após o início do TARV",
                   5,
                   9),
-              "effectiveDate=${endDate}"));
+              "effectiveDate=${revisionEndDate}"));
     } else if (indicator == 11) {
       cd.addSearch(
           "age",
@@ -5149,7 +5149,7 @@ public class QualityImprovement2020CohortQueries {
                   "Crianças  (10-14 anos de idade) na 1a linha de TARV que receberam o resultado da Carga Viral entre o sexto e o nono mês após o início do TARV",
                   10,
                   14),
-              "effectiveDate=${endDate}"));
+              "effectiveDate=${revisionEndDate}"));
     } else if (indicator == 14) {
       cd.addSearch(
           "age",
@@ -5760,7 +5760,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition H = getMQ13P4H();
     compositionCohortDefinition.addSearch(
-        "adults", EptsReportUtils.map(adults, "effectiveDate=${endDate}"));
+        "adults", EptsReportUtils.map(adults, "effectiveDate=${revisionEndDate}"));
     compositionCohortDefinition.addSearch(
         "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING1));
 

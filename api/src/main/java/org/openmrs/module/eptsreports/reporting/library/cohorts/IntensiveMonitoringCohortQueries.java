@@ -879,7 +879,9 @@ public class IntensiveMonitoringCohortQueries {
     if (level == 15) {
       cd.addSearch(
           "MI13NUM15",
-          EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQC13P2Num1(), MAPPING));
+          EptsReportUtils.map(
+              qualityImprovement2020CohortQueries.getMQC13P2Num1(),
+              "startDate=${revisionEndDate-4m+1d},endDate=${revisionEndDate-3m},revisionEndDate=${revisionEndDate},location=${location}"));
     } else if (level == 16) {
       cd.addSearch("MI13NUM16", EptsReportUtils.map(getMQC13P2Num2(), MAPPING));
     } else if (level == 17) {
