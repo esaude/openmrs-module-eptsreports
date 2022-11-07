@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.library.datasets;
 
+import java.util.*;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.PatientIdentifierType;
@@ -27,8 +28,6 @@ import org.openmrs.module.reporting.evaluation.EvaluationException;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 @Component
 public class TPTListOfPatientsEligibleDataSet extends BaseDataSet {

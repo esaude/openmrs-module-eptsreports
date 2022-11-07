@@ -4771,6 +4771,22 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
+   * <b>concept_id = 165176</b>
+   *
+   * <p><b>Name:</b> FORA DO HORÁRIO
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getForaDoHorarioConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.foraDoHorarioConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
    * <b>concept_id = 165177</b>
    *
    * <p><b>Name:</b> LAST RECORD OF FARMAC
@@ -4787,6 +4803,70 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
+   * <b>concept_id = 165178</b>
+   *
+   * <p><b>Name:</b> DISPENSA COMUNITÁRIA VIA PROVEDOR
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDispensaComunitariaViaProvedorConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dispensaComunitariaViaProvedorConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165264</b>
+   *
+   * <p><b>Name:</b> BRIGADAS MVEIS (DCBM)
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getBrigadasMoveisConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.brigadasMoveisConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165180 </b>
+   *
+   * <p><b>Name:</b> BRIGADAS MÓVEIS DIURNAS
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getBrigadasMoveisDiurnasConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.brigadasMoveiDiurnasConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165181 </b>
+   *
+   * <p><b>Name:</b> BRIGADAS MOVEIS NOTURNAS(HOTSPOTS)
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getBrigadasMoveisNocturnasConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.brigadasMoveiNocturnasConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
    * <b>concept_id = 165179</b>
    *
    * <p><b>Name:</b> DISPENSA COMUNITÁRIA VIA APE
@@ -4799,6 +4879,102 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.dispensaComunitariaViaApeConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165182 </b>
+   *
+   * <p><b>Name:</b> CLINICAS MOVEIS DIURNAS
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getClinicasMoveisDiurnasConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.clinicasMoveisDiurnasConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165183 </b>
+   *
+   * <p><b>Name:</b> CLINICAS MOVEIS NOTURNAS(HOTSPOTS)
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getClinicasMoveisNocturnasConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.clinicasMoveisNocturnasConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165265</b>
+   *
+   * <p><b>Name:</b> CLINICAS MVEIS (DCCM)
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getClinicasMoveisConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.clinicasMoveisConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165316</b>
+   *
+   * <p><b>Name:</b> Extensão de Horário
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getExtensaoHorarioConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.extensaoHorarioConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165317</b>
+   *
+   * <p><b>Name:</b> Paragem Única No Sector Da TB
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getParagemUnicaNoSectorDaTBConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.paragemUnicaNoSectorDaTBConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165318</b>
+   *
+   * <p><b>Name:</b> Paragem Única Nos Serviços De TARV
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getParagemUnicaNosServicosTARVConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.paragemUnicaNosServicosTARVConceptUuid");
     return getConcept(uuid);
   }
 
@@ -4875,6 +5051,54 @@ public class HivMetadata extends ProgramsMetadata {
     String uuid =
         Context.getAdministrationService()
             .getGlobalProperty("eptsreports.annualArvDispensationConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165319</b>
+   *
+   * <p><b>Name:</b> Paragem Única No SAAJ
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getParagemUnicaNoSAAJConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.paragemUnicaNoSAAJConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165320</b>
+   *
+   * <p><b>Name:</b> Paragem Única Na SMI
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getParagemUnicaNaSMIConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.paragemUnicaNaSMIConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165321</b>
+   *
+   * <p><b>Name:</b> Doença Avançada Por HIV
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDoencaAvancadaPorHIVConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.doencaAvancadaPorHIVConceptUuid");
     return getConcept(uuid);
   }
   /**

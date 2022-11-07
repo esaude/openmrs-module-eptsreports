@@ -217,7 +217,7 @@ public class TxRttCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getPatientsWithFilaOrFichaOrMasterCardPickup(
+  public CohortDefinition getPatientsWithFilaOrFichaOrMasterCardPickup(
       List<EncounterType> encounterTypes, Concept... conceptIds) {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();

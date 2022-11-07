@@ -1,5 +1,6 @@
 package org.openmrs.module.eptsreports.reporting.calculation.formulations;
 
+import java.util.*;
 import org.openmrs.Drug;
 import org.openmrs.Encounter;
 import org.openmrs.Location;
@@ -16,8 +17,6 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsCalculationUtils;
 import org.openmrs.module.reporting.common.TimeQualifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.*;
 
 @Component
 public class ListOfChildrenOnARTFormulation1Calculation extends AbstractPatientCalculation {

@@ -19,9 +19,8 @@ import org.openmrs.module.reporting.evaluation.parameter.ParameterizableUtil;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
-@Component
+@Deprecated
 public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Autowired private TxMlDataset txMlDataset;
@@ -63,7 +62,7 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     return "PEPFAR MER 2.6 Semi-Annual Report";
   }
 
-  @Override
+  @Deprecated
   public ReportDefinition constructReportDefinition() {
     ReportDefinition rd = new ReportDefinition();
     rd.setUuid(getUuid());

@@ -1,5 +1,8 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
@@ -10,10 +13,6 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class ListOfPatientsWhoPickedupArvDuringPeriodCohortQueries {
@@ -61,8 +60,8 @@ public class ListOfPatientsWhoPickedupArvDuringPeriodCohortQueries {
   }
 
   /**
-   * <p>Patients with ARV drug pick-up registered on FILA between the
-   * selected report start date and end date;
+   * Patients with ARV drug pick-up registered on FILA between the selected report start date and
+   * end date;
    *
    * @return {@link CohortDefinition}
    */

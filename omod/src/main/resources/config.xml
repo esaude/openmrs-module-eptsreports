@@ -3335,6 +3335,118 @@
 			UUID for Key Population - Others Concept
 		</description>
 	</globalProperty>
+	<!-- 165176 -->
+	<globalProperty>
+		<property>eptsreports.foraDoHorarioConceptUuid</property>
+		<defaultValue>1309d08a-5c73-4429-8f4b-43a551952858</defaultValue>
+		<description>
+			UUID for FORA DO HORÁRIO concept
+		</description>
+	</globalProperty>
+	<!-- 165178 -->
+	<globalProperty>
+		<property>eptsreports.dispensaComunitariaViaProvedorConceptUuid</property>
+		<defaultValue>870e2d25-c5ef-4e36-89db-0a4a37af214e</defaultValue>
+		<description>
+			UUID for DISPENSA COMUNITÁRIA VIA PROVEDOR concept
+		</description>
+	</globalProperty>
+	<!-- 165180 -->
+	<globalProperty>
+		<property>eptsreports.brigadasMoveiDiurnasConceptUuid</property>
+		<defaultValue>3ab58d0e-f831-4966-97bd-209738f5e4df</defaultValue>
+		<description>
+			UUID for BRIGADAS MÓVEIS DIURNAS concept
+		</description>
+	</globalProperty>
+	<!-- 165181 -->
+	<globalProperty>
+		<property>eptsreports.brigadasMoveiNocturnasConceptUuid</property>
+		<defaultValue>d6ad74a1-ff67-4b81-afa1-a0d906462623</defaultValue>
+		<description>
+			UUID for BRIGADAS MOVEIS NOTURNAS(HOTSPOTS) concept
+		</description>
+	</globalProperty>
+	<!-- 165182 --> 
+	<globalProperty>
+		<property>eptsreports.clinicasMoveisDiurnasConceptUuid</property>
+		<defaultValue>467718bc-1756-4b3f-b1ee-98d01910153a</defaultValue>
+		<description>
+			UUID for CLINICAS MOVEIS DIURNAS concept
+		</description>
+	</globalProperty>
+	<!-- 165183 --> 
+	<globalProperty>
+		<property>eptsreports.clinicasMoveisNocturnasConceptUuid</property>
+		<defaultValue>091737af-d6bf-4830-8e87-82572ffac9ea</defaultValue>
+		<description>
+			UUID for CLINICAS MOVEIS NOTURNAS(HOTSPOTS) concept
+		</description>
+	</globalProperty>
+	<!-- 165264 -->
+	<globalProperty>
+		<property>eptsreports.brigadasMoveisConceptUuid</property>
+		<defaultValue>0b639730-70ae-44b8-a90f-c24ce7af31e4</defaultValue>
+		<description>
+			UUID for BRIGADAS MVEIS (DCBM) concept
+		</description>
+	</globalProperty>
+	<!-- 165265 -->
+	<globalProperty>
+		<property>eptsreports.clinicasMoveisConceptUuid</property>
+		<defaultValue>0b35d894-49c6-45bc-880b-8c816f659e6e</defaultValue>
+		<description>
+			UUID for CLINICAS MVEIS (DCCM) concept
+		</description>
+	</globalProperty>
+	<!-- 165316 -->
+	<globalProperty>
+		<property>eptsreports.extensaoHorarioConceptUuid</property>
+		<defaultValue>c95ec0b3-f175-48e8-8fc0-a6cb2d249ed5</defaultValue>
+		<description>
+			UUID for Extensão de Horário concept
+		</description>
+	</globalProperty>
+	<!-- 165317 -->
+	<globalProperty>
+		<property>eptsreports.paragemUnicaNoSectorDaTBConceptUuid</property>
+		<defaultValue>e8aa76e4-f105-4de4-b3d8-617c526cc199</defaultValue>
+		<description>
+			UUID for Paragem Única No Sector Da TB concept
+		</description>
+	</globalProperty>
+	<!-- 165318 -->
+	<globalProperty>
+		<property>eptsreports.paragemUnicaNosServicosTARVConceptUuid</property>
+		<defaultValue>a8b3dd5a-fcc1-4e5c-a6a7-4d51c31b33da</defaultValue>
+		<description>
+			UUID for Paragem Única Nos Serviços De TARV concept
+		</description>
+	</globalProperty>
+	<!-- 165319 -->
+	<globalProperty>
+		<property>eptsreports.paragemUnicaNoSAAJConceptUuid</property>
+		<defaultValue>8d4ba67e-3e45-425c-b48c-104028dd7cec</defaultValue>
+		<description>
+			UUID for Paragem Única No SAAJ concept
+		</description>
+	</globalProperty>
+	<!-- 165320 -->
+	<globalProperty>
+		<property>eptsreports.paragemUnicaNaSMIConceptUuid</property>
+		<defaultValue>fc78cb84-f9a4-4d64-9569-2ff301af36ea</defaultValue>
+		<description>
+			UUID for Paragem Única Na SMI concept
+		</description>
+	</globalProperty>
+	<!-- 165321 -->
+	<globalProperty>
+		<property>eptsreports.doencaAvancadaPorHIVConceptUuid</property>
+		<defaultValue>26b01a43-32d6-4bf9-aa1a-0d8d03aab463</defaultValue>
+		<description>
+			UUID for Doença Avançada Por HIV concept
+		</description>
+	</globalProperty>
 
 	<globalProperty>
 		<property>@MODULE_ID@.negativeDiagnosisConceptUuid</property>

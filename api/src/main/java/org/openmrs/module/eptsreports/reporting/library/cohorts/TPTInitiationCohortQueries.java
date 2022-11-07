@@ -389,7 +389,6 @@ public class TPTInitiationCohortQueries {
             + "       AND o.value_coded = ${165307} "
             + "       AND e.encounter_datetime BETWEEN :startDate AND :endDate ";
 
-
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
     return stringSubstitutor.replace(query);

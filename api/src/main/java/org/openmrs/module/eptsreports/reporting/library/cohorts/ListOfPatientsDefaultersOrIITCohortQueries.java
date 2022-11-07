@@ -1693,8 +1693,8 @@ public class ListOfPatientsDefaultersOrIITCohortQueries {
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("1369", commonMetadata.getTransferFromOtherFacilityConcept().getConceptId());
     map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
-    map.put("6276", hivMetadata.getTypeOfPatientTransferredFrom().getConceptId());
-    map.put("6300", hivMetadata.getArtStatus().getConceptId());
+    map.put("6276", hivMetadata.getArtStatus().getConceptId());
+    map.put("6300", hivMetadata.getTypeOfPatientTransferredFrom().getConceptId());
     map.put("23891", hivMetadata.getDateOfMasterCardFileOpeningConcept().getConceptId());
 
     String query =
