@@ -89,7 +89,7 @@ public class ThirdFollowingEncounterAfterOldestARTStartDateCalculation
   private Date evaluateConsultation(List<Encounter> appEncounters, Date lower, Date upper) {
 
     for (Encounter e : appEncounters) {
-      if (e.getEncounterDatetime().compareTo(lower) > 0
+      if (e.getEncounterDatetime().compareTo(lower) >= 0
           && e.getEncounterDatetime().compareTo(upper) <= 0) {
         return e.getEncounterDatetime();
       }

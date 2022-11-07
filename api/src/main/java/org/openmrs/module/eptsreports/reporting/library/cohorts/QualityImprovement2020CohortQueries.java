@@ -63,7 +63,7 @@ public class QualityImprovement2020CohortQueries {
       "startDate=${revisionEndDate-14m},endDate=${revisionEndDate-11m},location=${location}";
   private final String MAPPING3 =
       "startDate=${startDate},endDate=${revisionEndDate},location=${location}";
-  private final String MAPPING4 =
+  private String MAPPING4 =
       "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},location=${location}";
   private final String MAPPING5 =
       "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate},revisionEndDate=${revisionEndDate},location=${location}";
@@ -2606,7 +2606,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
 
-    if (reportSource.equals(EptsReportConstants.MIMQ.MQ)) {
+    if (reportSource.equals(MIMQ.MQ)) {
       compositionCohortDefinition.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
       compositionCohortDefinition.addSearch(
           "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING1));
@@ -2624,7 +2624,7 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
       compositionCohortDefinition.addSearch("E", EptsReportUtils.map(transferredIn, MAPPING));
       compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING1));
-    } else if (reportSource.equals(EptsReportConstants.MIMQ.MI)) {
+    } else if (reportSource.equals(MIMQ.MI)) {
 
       if (indicatorFlag == 1) {
         compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transfOut, MAPPING5));
@@ -2675,6 +2675,7 @@ public class QualityImprovement2020CohortQueries {
 
     return compositionCohortDefinition;
   }
+
   /**
    * <b>MQ12</b>: Melhoria de Qualidade Category 12 Denominator Part 2 <br>
    * <i> DENOMINATORS: A,B1,B1E,B2,B2E,C,D and E</i> <br>
