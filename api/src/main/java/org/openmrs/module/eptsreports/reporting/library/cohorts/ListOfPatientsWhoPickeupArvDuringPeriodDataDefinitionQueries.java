@@ -1,8 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
@@ -15,6 +12,10 @@ import org.openmrs.module.reporting.data.patient.definition.SqlPatientDataDefini
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
@@ -79,7 +80,8 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
         "8", hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId());
     valuesMap.put("1369", commonMetadata.getTransferFromOtherFacilityConcept().getConceptId());
     valuesMap.put("6269", hivMetadata.getActiveOnProgramConcept().getConceptId());
-    valuesMap.put("6", hivMetadata.getPateintActiveArtWorkflowState().getProgramWorkflowStateId());
+    valuesMap.put(
+        "state_6", hivMetadata.getPateintActiveArtWorkflowState().getProgramWorkflowStateId());
     valuesMap.put(
         "29",
         hivMetadata
@@ -87,9 +89,7 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
             .getProgramWorkflowStateId());
     valuesMap.put("1705", hivMetadata.getRestartConcept().getConceptId());
 
-    String query = "  ";
-
-    // this will change the column output if the query is used to return the last state date
+    String query = " ";
     if (lastState) {
       query += " SELECT p.patient_id, o.value_coded as last_state ";
     } else {
@@ -105,39 +105,41 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
             + "                       INNER JOIN encounter e ON p.patient_id = e.patient_id   "
             + "                       INNER JOIN obs o ON e.encounter_id = o.encounter_id "
             + "                       INNER JOIN( "
-            + " SELECT recent.patient_id, MAX(recent.most_recent) as most_recent FROM ( "
+            + "                           SELECT recent.patient_id, MAX(recent.most_recent) as most_recent FROM ( "
             + getUnionQuery()
-            + " ) recent "
-            + " GROUP BY recent.patient_id "
-            + " )states on p.patient_id = states.patient_id "
+            + "                                 ) recent "
+            + "                           GROUP BY recent.patient_id "
+            + "                       )states on p.patient_id = states.patient_id "
             + " WHERE   "
             + "  e.voided = 0   "
             + "  AND p.voided = 0   "
             + "  AND o.voided = 0   "
             + "  AND e.location_id = :location "
             + "AND (   "
-            + "    (   "
-            + "                e.encounter_type = ${53}   "
-            + "            AND        o.concept_id = ${6272}   "
-            + "            AND        o.value_coded IN (${1705}, ${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})   "
-            + "            AND        o.obs_datetime = states.most_recent   "
-            + "        )   "
+            + "         (   "
+            + "                 e.encounter_type = ${53}   "
+            + "                 AND        o.concept_id = ${6272}   "
+            + "                 AND        o.value_coded IN (${1705}, ${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})   "
+            + "                 AND        o.obs_datetime = states.most_recent   "
+            + "         )   "
             + "    OR   "
-            + "    (   "
-            + "                e.encounter_type = ${6}   "
-            + "            AND        o.concept_id = ${6273}   "
-            + "            AND        o.value_coded IN (${1705}, ${1706}, ${1709} ,${1707}, ${1366}, ${23903}, ${1369})   "
-            + "            AND        e.encounter_datetime = states.most_recent   "
-            + "            AND NOT EXISTS  (   "
-            + "                SELECT eee.encounter_id FROM encounter eee  "
-            + "                      INNER JOIN obs o3 ON eee.encounter_id = o3.encounter_id   "
-            + "                WHERE eee.patient_id = p.patient_id AND   "
-            + "                        eee.encounter_type = ${53}   "
-            + "                  AND        o3.concept_id = ${6272}   "
-            + "                  AND        o3.value_coded IN (${1705}, ${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})   "
-            + "                  AND        o3.obs_datetime = states.most_recent   "
-            + "                GROUP BY eee.patient_id   )"
-            + "        )   )"
+            + "         (   "
+            + "                 e.encounter_type = ${6}   "
+            + "                 AND        o.concept_id = ${6273}   "
+            + "                 AND        o.value_coded IN (${1705}, ${1706}, ${1709} ,${1707}, ${1366}, ${23903}, ${1369})   "
+            + "                 AND        e.encounter_datetime = states.most_recent   "
+            + "                 AND NOT EXISTS  (   "
+            + "                     SELECT eee.encounter_id FROM encounter eee  "
+            + "                           INNER JOIN obs o3 ON eee.encounter_id = o3.encounter_id   "
+            + "                     WHERE eee.patient_id = p.patient_id AND   "
+            + "                             eee.encounter_type = ${53}   "
+            + "                       AND        o3.concept_id = ${6272}   "
+            + "                       AND        o3.value_coded IN (${1705}, ${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})   "
+            + "                       AND        o3.obs_datetime = states.most_recent   "
+            + "                     GROUP BY eee.patient_id   "
+            + "                                 )"
+            + "         )   "
+            + "   )"
             + "GROUP BY p.patient_id "
             + " UNION ";
 
@@ -148,19 +150,19 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
     }
 
     query +=
-        " FROM "
+        "       FROM "
             + " patient_program pg"
             + "    INNER JOIN patient_state ps"
             + "        ON pg.patient_program_id = ps.patient_program_id"
             + "                               INNER JOIN ("
-            + "     SELECT recent.patient_id, MAX(recent.most_recent) as most_recent FROM ( "
+            + "                                   SELECT recent.patient_id, MAX(recent.most_recent) as most_recent FROM ( "
             + getUnionQuery()
-            + " ) recent "
-            + " GROUP BY recent.patient_id "
-            + " )states on pg.patient_id = states.patient_id "
+            + "                                         ) recent "
+            + "                                   GROUP BY recent.patient_id "
+            + "                                )states on pg.patient_id = states.patient_id "
             + "  WHERE pg.program_id = ${2} "
-            + "  AND ps.state IN (${6}, ${7}, ${8}, ${9}, ${10}, ${29} )"
-            + "  AND   ps.start_date = states.most_recent"
+            + "  AND ps.state IN (${state_6}, ${7}, ${8}, ${9}, ${10}, ${29} )"
+            + "  AND ps.start_date = states.most_recent"
             + "  AND pg.voided = 0"
             + "  AND ps.voided = 0"
             + "  AND NOT EXISTS ("
@@ -172,14 +174,16 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
             + "          AND o2.concept_id = ${6273}"
             + "          AND o2.value_coded IN (${1705},${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})"
             + "          AND o2.obs_datetime = states.most_recent GROUP BY ee.patient_id)"
-            + "  AND NOT EXISTS ( SELECT eee.encounter_id FROM encounter eee"
+            + "          AND NOT EXISTS ( "
+            + "                       SELECT eee.encounter_id FROM encounter eee"
             + "                                                    INNER JOIN obs o3 ON eee.encounter_id = o3.encounter_id"
-            + "                   WHERE eee.patient_id = pg.patient_id AND"
-            + "                           eee.encounter_type = ${53}"
-            + "                     AND        o3.concept_id = ${6272}"
-            + "                     AND        o3.value_coded IN (${1705},${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})"
-            + "                     AND        o3.obs_datetime = states.most_recent"
-            + "                   GROUP BY eee.encounter_id   ) "
+            + "                       WHERE eee.patient_id = pg.patient_id "
+            + "                           AND   eee.encounter_type = ${53}"
+            + "                           AND        o3.concept_id = ${6272}"
+            + "                           AND        o3.value_coded IN (${1705},${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})"
+            + "                           AND        o3.obs_datetime = states.most_recent"
+            + "                       GROUP BY eee.encounter_id   "
+            + "                       ) "
             + " GROUP BY pg.patient_id ";
 
     sqlPatientDataDefinition.setQuery(new StringSubstitutor(valuesMap).replace(query));
@@ -232,7 +236,8 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
         "8", hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId());
     valuesMap.put("1369", commonMetadata.getTransferFromOtherFacilityConcept().getConceptId());
     valuesMap.put("6269", hivMetadata.getActiveOnProgramConcept().getConceptId());
-    valuesMap.put("6", hivMetadata.getPateintActiveArtWorkflowState().getProgramWorkflowStateId());
+    valuesMap.put(
+        "state_6", hivMetadata.getPateintActiveArtWorkflowState().getProgramWorkflowStateId());
     valuesMap.put(
         "29",
         hivMetadata
@@ -245,39 +250,40 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
             + "                       INNER JOIN encounter e ON p.patient_id = e.patient_id   "
             + "                       INNER JOIN obs o ON e.encounter_id = o.encounter_id "
             + "                       INNER JOIN( "
-            + " SELECT recent.patient_id, MAX(recent.most_recent) as most_recent FROM ( "
+            + "                           SELECT recent.patient_id, MAX(recent.most_recent) as most_recent FROM ( "
             + getUnionQuery()
-            + " ) recent "
-            + " GROUP BY recent.patient_id "
-            + " )states on p.patient_id = states.patient_id "
+            + "                                 ) recent "
+            + "                           GROUP BY recent.patient_id "
+            + "                       )states on p.patient_id = states.patient_id "
             + " WHERE   "
             + "  e.voided = 0   "
             + "  AND p.voided = 0   "
             + "  AND o.voided = 0   "
             + "  AND e.location_id = :location "
             + "AND (   "
-            + "    (   "
-            + "                e.encounter_type = ${53}   "
+            + "         (   "
+            + "            e.encounter_type = ${53}   "
             + "            AND        o.concept_id = ${6272}   "
             + "            AND        o.value_coded IN (${1705}, ${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})   "
             + "            AND        o.obs_datetime = states.most_recent   "
             + "        )   "
             + "    OR   "
-            + "    (   "
-            + "                e.encounter_type = ${6}   "
+            + "       (   "
+            + "            e.encounter_type = ${6}   "
             + "            AND        o.concept_id = ${6273}   "
             + "            AND        o.value_coded IN (${1705}, ${1706}, ${1709} ,${1707}, ${1366}, ${23903}, ${1369})   "
             + "            AND        e.encounter_datetime = states.most_recent   "
             + "            AND NOT EXISTS  (   "
-            + "                SELECT eee.encounter_id FROM encounter eee  "
-            + "                      INNER JOIN obs o3 ON eee.encounter_id = o3.encounter_id   "
-            + "                WHERE eee.patient_id = p.patient_id AND   "
-            + "                        eee.encounter_type = ${53}   "
-            + "                  AND        o3.concept_id = ${6272}   "
-            + "                  AND        o3.value_coded IN (${1705}, ${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})   "
-            + "                  AND        o3.obs_datetime = states.most_recent   "
-            + "                GROUP BY eee.patient_id   )"
-            + "        )   )"
+            + "                           SELECT eee.encounter_id FROM encounter eee  "
+            + "                                 INNER JOIN obs o3 ON eee.encounter_id = o3.encounter_id   "
+            + "                           WHERE eee.patient_id = p.patient_id AND   "
+            + "                                   eee.encounter_type = ${53}   "
+            + "                              AND        o3.concept_id = ${6272}   "
+            + "                             AND        o3.value_coded IN (${1705}, ${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})   "
+            + "                              AND        o3.obs_datetime = states.most_recent   "
+            + "                           GROUP BY eee.patient_id   )"
+            + "        )  "
+            + " )"
             + "GROUP BY p.patient_id "
             + " UNION "
             + " SELECT pg.patient_id, pg.program_id FROM "
@@ -285,13 +291,13 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
             + "    INNER JOIN patient_state ps"
             + "        ON pg.patient_program_id = ps.patient_program_id"
             + "                               INNER JOIN ("
-            + "     SELECT recent.patient_id, MAX(recent.most_recent) as most_recent FROM ( "
+            + "                                      SELECT recent.patient_id, MAX(recent.most_recent) as most_recent FROM ( "
             + getUnionQuery()
-            + " ) recent "
-            + " GROUP BY recent.patient_id "
-            + " )states on pg.patient_id = states.patient_id "
+            + "                                           ) recent "
+            + "                                        GROUP BY recent.patient_id "
+            + "                               )states on pg.patient_id = states.patient_id "
             + "  WHERE pg.program_id = ${2} "
-            + "  AND ps.state IN (${6}, ${7}, ${8}, ${9}, ${10}, ${29} )"
+            + "  AND ps.state IN (${state_6}, ${7}, ${8}, ${9}, ${10}, ${29} )"
             + "  AND   ps.start_date = states.most_recent"
             + "  AND pg.voided = 0"
             + "  AND ps.voided = 0"
@@ -304,10 +310,11 @@ public class ListOfPatientsWhoPickeupArvDuringPeriodDataDefinitionQueries {
             + "          AND o2.concept_id = ${6273}"
             + "          AND o2.value_coded IN (${1705},${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})"
             + "          AND o2.obs_datetime = states.most_recent GROUP BY ee.patient_id)"
-            + "  AND NOT EXISTS ( SELECT eee.encounter_id FROM encounter eee"
+            + "  AND NOT EXISTS ( "
+            + "                   SELECT eee.encounter_id FROM encounter eee"
             + "                                                    INNER JOIN obs o3 ON eee.encounter_id = o3.encounter_id"
-            + "                   WHERE eee.patient_id = pg.patient_id AND"
-            + "                           eee.encounter_type = ${53}"
+            + "                   WHERE eee.patient_id = pg.patient_id "
+            + "                     AND      eee.encounter_type = ${53}"
             + "                     AND        o3.concept_id = ${6272}"
             + "                     AND        o3.value_coded IN (${1705},${1706}, ${1709}, ${1707}, ${1366}, ${23903}, ${1369})"
             + "                     AND        o3.obs_datetime = states.most_recent"

@@ -58,7 +58,7 @@ public class TbPrevDataset extends BaseDataSet {
 
     CohortIndicator denominatorIndicator =
         eptsGeneralIndicator.getIndicator(
-            "Numerator Total",
+            "Denominator Total",
             EptsReportUtils.map(
                 tbPrevCohortQueries.getDenominator(),
                 "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));

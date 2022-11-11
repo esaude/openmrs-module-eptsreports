@@ -308,31 +308,21 @@ public class TbPrevCohortQueries {
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("6272", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
+    map.put("1706", hivMetadata.getTransferredOutConcept().getConceptId());
+    map.put("23863", hivMetadata.getAutoTransferConcept().getConceptId());
+    map.put("6273", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
+    map.put("2016", hivMetadata.getDefaultingMotiveConcept().getConceptId());
+    map.put("21", hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId());
+    map.put("2", hivMetadata.getARTProgram().getProgramId());
     map.put(
-        "adultoSeguimentoEncounterType",
-        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put(
-        "pediatriaSeguimentoEncounterType",
-        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
-    map.put(
-        "pharmaciaEncounterType", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
-    map.put(
-        "masterCardDrugPickupEncounterType",
-        hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    map.put("artDatePickup", hivMetadata.getArtDatePickupMasterCard().getConceptId());
-    map.put(
-        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
-    map.put(
-        "stateOfStayOfPreArtPatient", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
-    map.put("transferredOutConcept", hivMetadata.getTransferredOutConcept().getConceptId());
-    map.put("autoTransferConcept", hivMetadata.getAutoTransferConcept().getConceptId());
-    map.put("stateOfStayOfArtPatient", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
-    map.put("defaultingMotiveConcept", hivMetadata.getDefaultingMotiveConcept().getConceptId());
-    map.put(
-        "buscaActivaEncounterType", hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId());
-    map.put("artProgram", hivMetadata.getARTProgram().getProgramId());
-    map.put(
-        "transferredOutToAnotherHealthFacilityWorkflowState",
+        "7",
         hivMetadata
             .getTransferredOutToAnotherHealthFacilityWorkflowState()
             .getProgramWorkflowStateId());
@@ -351,9 +341,8 @@ public class TbPrevCohortQueries {
             + "    WHERE pg.voided=0   "
             + "        AND ps.voided=0   "
             + "        AND p.voided=0   "
-            + "        AND pg.program_id= ${artProgram}  "
-            + "        AND ps.state = ${transferredOutToAnotherHealthFacilityWorkflowState}   "
-            + "        AND ps.end_date is null   "
+            + "        AND pg.program_id= ${2}  "
+            + "        AND ps.state = ${7}   "
             + "        AND ps.start_date BETWEEN :startDate AND :endDate    "
             + "        AND pg.location_id= :location   "
             + "    group by p.patient_id  "
@@ -369,9 +358,9 @@ public class TbPrevCohortQueries {
             + "    WHERE  p.voided = 0   "
             + "        AND e.voided = 0   "
             + "        AND o.voided = 0   "
-            + "        AND e.encounter_type = ${masterCardEncounterType}   "
-            + "        AND o.concept_id = ${stateOfStayOfPreArtPatient}  "
-            + "        AND o.value_coded =  ${transferredOutConcept}   "
+            + "        AND e.encounter_type = ${53}   "
+            + "        AND o.concept_id = ${6272}  "
+            + "        AND o.value_coded =  ${1706}   "
             + "        AND o.obs_datetime BETWEEN :startDate AND :endDate   "
             + "        AND e.location_id =  :location   "
             + "    GROUP BY p.patient_id  "
@@ -385,9 +374,9 @@ public class TbPrevCohortQueries {
             + "    WHERE  p.voided = 0   "
             + "        AND e.voided = 0   "
             + "        AND o.voided = 0   "
-            + "        AND e.encounter_type = ${adultoSeguimentoEncounterType}  "
-            + "        AND o.concept_id = ${stateOfStayOfArtPatient}  "
-            + "        AND o.value_coded = ${transferredOutConcept}   "
+            + "        AND e.encounter_type = ${6}  "
+            + "        AND o.concept_id = ${6273}  "
+            + "        AND o.value_coded = ${1706}   "
             + "        AND e.encounter_datetime BETWEEN :startDate AND :endDate   "
             + "        AND e.location_id =  :location  "
             + "    GROUP BY p.patient_id   "
@@ -400,11 +389,11 @@ public class TbPrevCohortQueries {
             + "              ON p.patient_id = e.patient_id   "
             + "        INNER JOIN obs o   "
             + "              ON e.encounter_id = o.encounter_id   "
-            + "    WHERE o.concept_id = ${defaultingMotiveConcept}  "
+            + "    WHERE o.concept_id = ${2016}  "
             + "    	   AND e.location_id = :location   "
-            + "        AND e.encounter_type= ${buscaActivaEncounterType}   "
+            + "        AND e.encounter_type= ${21}   "
             + "        AND e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + "		   AND o.value_coded IN (${transferredOutConcept} ,${autoTransferConcept})  "
+            + "		   AND o.value_coded IN (${1706} ,${23863})  "
             + "        AND e.voided=0   "
             + "        AND o.voided=0   "
             + "        AND p.voided=0   "
@@ -418,9 +407,9 @@ public class TbPrevCohortQueries {
             + "	                         ON e.patient_id=p.patient_id     "
             + "	                 WHERE  p.voided = 0     "
             + "	                     AND e.voided = 0     "
-            + "	                     AND e.encounter_type IN (${adultoSeguimentoEncounterType},"
-            + "${pediatriaSeguimentoEncounterType},"
-            + "${pharmaciaEncounterType})    "
+            + "	                     AND e.encounter_type IN (${6},"
+            + "${9},"
+            + "${18})    "
             + "	                     AND e.encounter_datetime > lastest.last_date "
             + " AND e.encounter_datetime <=  :endDate    "
             + "	                     AND e.location_id =  :location    "
@@ -435,8 +424,8 @@ public class TbPrevCohortQueries {
             + "	                  WHERE  p.voided = 0      "
             + "	                      AND e.voided = 0      "
             + "	                      AND o.voided = 0      "
-            + "	                      AND e.encounter_type = ${masterCardDrugPickupEncounterType}     "
-            + "	                      AND o.concept_id = ${artDatePickup}     "
+            + "	                      AND e.encounter_type = ${52}     "
+            + "	                      AND o.concept_id = ${23866}     "
             + "	                      AND o.value_datetime > lastest.last_date  "
             + " AND o.value_datetime <= :endDate      "
             + "	                      AND e.location_id =  :location     "
