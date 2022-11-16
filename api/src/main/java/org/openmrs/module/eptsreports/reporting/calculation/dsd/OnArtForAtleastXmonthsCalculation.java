@@ -51,13 +51,11 @@ public class OnArtForAtleastXmonthsCalculation extends AbstractPatientCalculatio
       if (artStartDateResult != null && patientBirthdate != null) {
         Date artStartDate = (Date) artStartDateResult.getValue();
         if (artStartDate != null && onOrBefore != null && patientBirthdate != null) {
-          Date onArt12Months = EptsCalculationUtils.addMonths(artStartDate, 12);
-          Date onArt6Months = EptsCalculationUtils.addMonths(artStartDate, 6);
+          Date onArt3Months = EptsCalculationUtils.addMonths(artStartDate, 3);
 
           Integer ageInYears = ageInYearsAtDate(patientBirthdate, onOrBefore);
 
-          if ((onArt12Months.compareTo(onOrBefore) <= 0 && ageInYears >= 2 && ageInYears <= 9)
-              || (onArt6Months.compareTo(onOrBefore) <= 0 && ageInYears >= 10)) {
+          if ((onArt3Months.compareTo(onOrBefore) <= 0 && ageInYears >= 2)) {
             onArtAtleastMonths = true;
           }
         }

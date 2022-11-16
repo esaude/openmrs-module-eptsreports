@@ -62,7 +62,7 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
     return "PEPFAR MER 2.6 Semi-Annual Report";
   }
 
-  @Override
+  @Deprecated
   public ReportDefinition constructReportDefinition() {
     ReportDefinition rd = new ReportDefinition();
     rd.setUuid(getUuid());
