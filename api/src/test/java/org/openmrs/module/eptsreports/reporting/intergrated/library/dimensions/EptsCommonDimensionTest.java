@@ -27,7 +27,6 @@ public class EptsCommonDimensionTest extends DefinitionsTest {
         evaluateCohortDefinitionDimension(eptsCommonDimension.gender(), null).getOptionCohorts();
     assertEquals(new HashSet<>(Arrays.asList(2, 6)), genderOptions.get("M").getMemberIds());
     assertEquals(new HashSet<>(Arrays.asList(7, 8)), genderOptions.get("F").getMemberIds());
-    assertEquals(new HashSet<>(Arrays.asList(2, 6, 7, 8)), genderOptions.get("?").getMemberIds());
   }
 
   /**
