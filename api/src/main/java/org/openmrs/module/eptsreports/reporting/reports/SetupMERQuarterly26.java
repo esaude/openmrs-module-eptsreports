@@ -123,8 +123,7 @@ public class SetupMERQuarterly26 extends EptsDataExportManager {
     rd.setDescription(getDescription());
     rd.setParameters(txPvlsDataset.getParameters());
     rd.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
-    rd.addDataSetDefinition(
-        "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
+    rd.addDataSetDefinition("C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
     rd.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
     rd.addDataSetDefinition(
         "TXML", Mapped.mapStraightThrough(txMlDataset25.constructtxMlDataset()));
@@ -155,7 +154,7 @@ public class SetupMERQuarterly26 extends EptsDataExportManager {
           createXlsReportDesign(
               reportDefinition,
               "PEPFAR_MER_2.6.1_Quarterly_v1.10.1.xls",
-              "PEPFAR MER 2.6 Quarterly Report",
+              "PEPFAR MER 2.6.1 Quarterly Report",
               getExcelDesignUuid(),
               null);
       Properties props = new Properties();
