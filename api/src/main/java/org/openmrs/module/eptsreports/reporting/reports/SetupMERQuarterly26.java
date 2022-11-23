@@ -38,8 +38,9 @@ import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-@Deprecated
+@Component
 public class SetupMERQuarterly26 extends EptsDataExportManager {
 
   private TxPvlsDataset txPvlsDataset;
@@ -153,7 +154,7 @@ public class SetupMERQuarterly26 extends EptsDataExportManager {
       rd =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.6_Quarterly_v1.9.xls",
+              "PEPFAR_MER_2.6.1_Quarterly_v1.10.1.xls",
               "PEPFAR MER 2.6 Quarterly Report",
               getExcelDesignUuid(),
               null);

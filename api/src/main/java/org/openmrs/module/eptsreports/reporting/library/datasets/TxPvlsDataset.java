@@ -71,7 +71,7 @@ public class TxPvlsDataset extends BaseDataSet {
     // Denominator -------------------------------------------------------------
     // Totals
     dsd.addColumn(
-        "0D",
+        "totalDenominator",
         "Total patients with Viral load - Denominator",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -149,7 +149,7 @@ public class TxPvlsDataset extends BaseDataSet {
     // Numerator ------------------------------------------------------------
     // Totals
     dsd.addColumn(
-        "0N",
+        "totalNumerator",
         "Total patients with suppressed Viral load - Numerator",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -226,59 +226,76 @@ public class TxPvlsDataset extends BaseDataSet {
   private List<ColumnParameters> getAdultChildrenColumns() {
     // Male
     ColumnParameters under1M =
-        new ColumnParameters("under1M", "under 1 year male", "gender=M|age=<1", "01");
+        new ColumnParameters("under1M", "under 1 year male", "gender=M|age=<1", "under1M");
     ColumnParameters oneTo4M =
-        new ColumnParameters("oneTo4M", "1 - 4 years male", "gender=M|age=1-4", "02");
+        new ColumnParameters("oneTo4M", "1 - 4 years male", "gender=M|age=1-4", "oneTo4M");
     ColumnParameters fiveTo9M =
-        new ColumnParameters("fiveTo9M", "5 - 9 years male", "gender=M|age=5-9", "03");
+        new ColumnParameters("fiveTo9M", "5 - 9 years male", "gender=M|age=5-9", "fiveTo9M");
     ColumnParameters tenTo14M =
-        new ColumnParameters("tenTo14M", "10 - 14 male", "gender=M|age=10-14", "04");
+        new ColumnParameters("tenTo14M", "10 - 14 male", "gender=M|age=10-14", "tenTo14M");
     ColumnParameters fifteenTo19M =
-        new ColumnParameters("fifteenTo19M", "15 - 19 male", "gender=M|age=15-19", "05");
+        new ColumnParameters("fifteenTo19M", "15 - 19 male", "gender=M|age=15-19", "fifteenTo19M");
     ColumnParameters twentyTo24M =
-        new ColumnParameters("twentyTo24M", "20 - 24 male", "gender=M|age=20-24", "06");
+        new ColumnParameters("twentyTo24M", "20 - 24 male", "gender=M|age=20-24", "twentyTo24M");
     ColumnParameters twenty5To29M =
-        new ColumnParameters("twenty4To29M", "25 - 29 male", "gender=M|age=25-29", "07");
+        new ColumnParameters("twenty5To29M", "25 - 29 male", "gender=M|age=25-29", "twenty5To29M");
     ColumnParameters thirtyTo34M =
-        new ColumnParameters("thirtyTo34M", "30 - 34 male", "gender=M|age=30-34", "08");
+        new ColumnParameters("thirtyTo34M", "30 - 34 male", "gender=M|age=30-34", "thirtyTo34M");
     ColumnParameters thirty5To39M =
-        new ColumnParameters("thirty5To39M", "35 - 39 male", "gender=M|age=35-39", "09");
-    ColumnParameters foutyTo44M =
-        new ColumnParameters("foutyTo44M", "40 - 44 male", "gender=M|age=40-44", "10");
-    ColumnParameters fouty5To49M =
-        new ColumnParameters("fouty5To49M", "45 - 49 male", "gender=M|age=45-49", "11");
-    ColumnParameters above50M =
-        new ColumnParameters("above50M", "50+ male", "gender=M|age=50+", "12");
+        new ColumnParameters("thirty5To39M", "35 - 39 male", "gender=M|age=35-39", "thirty5To39M");
+    ColumnParameters fortyTo44M =
+        new ColumnParameters("fortyTo44M", "40 - 44 male", "gender=M|age=40-44", "fortyTo44M");
+    ColumnParameters forty5To49M =
+        new ColumnParameters("forty5To49M", "45 - 49 male", "gender=M|age=45-49", "forty5To49M");
+    // 50-54, 55-59, 60-64, 65+ male
+    ColumnParameters fiftyTo54M =
+        new ColumnParameters("fiftyTo54M", "50 - 54 male", "gender=M|age=50-54", "fiftyTo54M");
+    ColumnParameters fifty5To59M =
+        new ColumnParameters("fifty5To59M", "55 - 59 male", "gender=M|age=55-59", "fifty5To59M");
+    ColumnParameters sixtyTo64M =
+        new ColumnParameters("sixtyTo64M", "60 - 64 male", "gender=M|age=60-64", "sixtyTo64M");
+    ColumnParameters above65M =
+        new ColumnParameters("above65M", "65+ male", "gender=M|age=65+", "above65M");
     ColumnParameters unknownM =
-        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "13");
+        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "unknownM");
 
     // Female
     ColumnParameters under1F =
-        new ColumnParameters("under1F", "under 1 year female", "gender=F|age=<1", "14");
+        new ColumnParameters("under1F", "under 1 year female", "gender=F|age=<1", "under1F");
     ColumnParameters oneTo4F =
-        new ColumnParameters("oneTo4F", "1 - 4 years female", "gender=F|age=1-4", "15");
+        new ColumnParameters("oneTo4F", "1 - 4 years female", "gender=F|age=1-4", "oneTo4F");
     ColumnParameters fiveTo9F =
-        new ColumnParameters("fiveTo9F", "5 - 9 years female", "gender=F|age=5-9", "16");
+        new ColumnParameters("fiveTo9F", "5 - 9 years female", "gender=F|age=5-9", "fiveTo9F");
     ColumnParameters tenTo14F =
-        new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "17");
+        new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "tenTo14F");
     ColumnParameters fifteenTo19F =
-        new ColumnParameters("fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "18");
+        new ColumnParameters(
+            "fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "fifteenTo19F");
     ColumnParameters twentyTo24F =
-        new ColumnParameters("twentyTo24F", "20 - 24 female", "gender=F|age=20-24", "19");
+        new ColumnParameters("twentyTo24F", "20 - 24 female", "gender=F|age=20-24", "twentyTo24F");
     ColumnParameters twenty5To29F =
-        new ColumnParameters("twenty4To29F", "25 - 29 female", "gender=F|age=25-29", "20");
+        new ColumnParameters(
+            "twenty5To29F", "25 - 29 female", "gender=F|age=25-29", "twenty5To29F");
     ColumnParameters thirtyTo34F =
-        new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "21");
+        new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "thirtyTo34F");
     ColumnParameters thirty5To39F =
-        new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "22");
-    ColumnParameters foutyTo44F =
-        new ColumnParameters("foutyTo44F", "40 - 44 female", "gender=F|age=40-44", "23");
-    ColumnParameters fouty5To49F =
-        new ColumnParameters("fouty5To49F", "45 - 49 female", "gender=F|age=45-49", "24");
-    ColumnParameters above50F =
-        new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "25");
+        new ColumnParameters(
+            "thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "thirty5To39F");
+    ColumnParameters fortyTo44F =
+        new ColumnParameters("fortyTo44F", "40 - 44 female", "gender=F|age=40-44", "fortyTo44F");
+    ColumnParameters forty5To49F =
+        new ColumnParameters("forty5To49F", "45 - 49 female", "gender=F|age=45-49", "forty5To49F");
+    // 50-54, 55-59, 60-64, 65+ female
+    ColumnParameters fiftyTo54F =
+        new ColumnParameters("fiftyTo54F", "50 - 54 female", "gender=F|age=50-54", "fiftyTo54F");
+    ColumnParameters fifty5To59F =
+        new ColumnParameters("fifty5To59F", "55 - 59 female", "gender=F|age=55-59", "fifty5To59F");
+    ColumnParameters sixtyTo64F =
+        new ColumnParameters("sixtyTo64F", "60 - 64 female", "gender=F|age=60-64", "sixtyTo64F");
+    ColumnParameters above65F =
+        new ColumnParameters("above65F", "65+ female", "gender=F|age=65+", "above65F");
     ColumnParameters unknownF =
-        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "26");
+        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "unknownF");
 
     return Arrays.asList(
         unknownM,
@@ -291,9 +308,12 @@ public class TxPvlsDataset extends BaseDataSet {
         twenty5To29M,
         thirtyTo34M,
         thirty5To39M,
-        foutyTo44M,
-        fouty5To49M,
-        above50M,
+        fortyTo44M,
+        forty5To49M,
+        fiftyTo54M,
+        fifty5To59M,
+        sixtyTo64M,
+        above65M,
         unknownF,
         under1F,
         oneTo4F,
@@ -304,9 +324,12 @@ public class TxPvlsDataset extends BaseDataSet {
         twenty5To29F,
         thirtyTo34F,
         thirty5To39F,
-        foutyTo44F,
-        fouty5To49F,
-        above50F);
+        fortyTo44F,
+        forty5To49F,
+        fiftyTo54F,
+        fifty5To59F,
+        sixtyTo64F,
+        above65F);
   }
 
   private List<ColumnParameters> getRoutineTargetedColumns() {

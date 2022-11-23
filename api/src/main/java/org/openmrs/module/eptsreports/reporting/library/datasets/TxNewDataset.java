@@ -73,37 +73,35 @@ public class TxNewDataset extends BaseDataSet {
         "TX_NEW: New on ART",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
         "");
+        dataSetDefinition.addColumn(
+            "ANC",
+            "TX_NEW: Breastfeeding Started ART",
+            EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+            "maternity=breastfeeding");
 
-    dataSetDefinition.addColumn(
-        "ANC",
-        "TX_NEW: Breastfeeding Started ART",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "maternity=breastfeeding");
+        dataSetDefinition.addColumn(
+            "PID",
+            "TX_NEW: People who inject drugs",
+            EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+            "keypop=PID");
 
-    dataSetDefinition.addColumn(
-        "PID",
-        "TX_NEW: People who inject drugs",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "keypop=PID");
+        dataSetDefinition.addColumn(
+            "MSM",
+            "TX_NEW: Men who have sex with men",
+            EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+            "keypop=MSM");
 
-    dataSetDefinition.addColumn(
-        "MSM",
-        "TX_NEW: Men who have sex with men",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "keypop=MSM");
+        dataSetDefinition.addColumn(
+            "CSW",
+            "TX_NEW: Female sex workers",
+            EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+            "keypop=CSW");
 
-    dataSetDefinition.addColumn(
-        "CSW",
-        "TX_NEW: Female sex workers",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "keypop=CSW");
-
-    dataSetDefinition.addColumn(
-        "PRI",
-        "TX_NEW: People in prison and other closed settings",
-        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-        "keypop=PRI");
-
+        dataSetDefinition.addColumn(
+            "PRI",
+            "TX_NEW: People in prison and other closed settings",
+            EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+            "keypop=PRI");
     addRow(
         dataSetDefinition,
         "males",
@@ -146,8 +144,15 @@ public class TxNewDataset extends BaseDataSet {
         new ColumnParameters("fortyTo44M", "40 - 44 male", "gender=M|age=40-44", "fortyTo44M");
     ColumnParameters forty5To49M =
         new ColumnParameters("forty5To49M", "45 - 49 male", "gender=M|age=45-49", "forty5To49M");
-    ColumnParameters above50M =
-        new ColumnParameters("above50M", "50+ male", "gender=M|age=50+", "above50M");
+    // 50-54, 55-59, 60-64, 65+ male
+    ColumnParameters fiftyTo54M =
+        new ColumnParameters("fiftyTo54M", "50 - 54 male", "gender=M|age=50-54", "fiftyTo54M");
+    ColumnParameters fifty5To59M =
+        new ColumnParameters("fifty5To59M", "55 - 59 male", "gender=M|age=55-59", "fifty5To59M");
+    ColumnParameters sixtyTo64M =
+        new ColumnParameters("sixtyTo64M", "60 - 64 male", "gender=M|age=60-64", "sixtyTo64M");
+    ColumnParameters above65M =
+        new ColumnParameters("above65M", "65+ male", "gender=M|age=65+", "above65M");
 
     return Arrays.asList(
         unknownM,
@@ -162,7 +167,10 @@ public class TxNewDataset extends BaseDataSet {
         thirty5To39M,
         fortyTo44M,
         forty5To49M,
-        above50M);
+        fiftyTo54M,
+        fifty5To59M,
+        sixtyTo64M,
+        above65M);
   }
 
   private List<ColumnParameters> getFemaleColumns() {
@@ -193,8 +201,15 @@ public class TxNewDataset extends BaseDataSet {
         new ColumnParameters("fortyTo44F", "40 - 44 female", "gender=F|age=40-44", "fortyTo44F");
     ColumnParameters forty5To49F =
         new ColumnParameters("forty5To49F", "45 - 49 female", "gender=F|age=45-49", "forty5To49F");
-    ColumnParameters above50F =
-        new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "above50F");
+    // 50-54, 55-59, 60-64, 65+ female
+    ColumnParameters fiftyTo54F =
+        new ColumnParameters("fiftyTo54F", "50 - 54 female", "gender=F|age=50-54", "fiftyTo54F");
+    ColumnParameters fifty5To59F =
+        new ColumnParameters("fifty5To59F", "55 - 59 female", "gender=F|age=55-59", "fifty5To59F");
+    ColumnParameters sixtyTo64F =
+        new ColumnParameters("sixtyTo64F", "60 - 64 female", "gender=F|age=60-64", "sixtyTo64F");
+    ColumnParameters above65F =
+        new ColumnParameters("above65F", "65+ female", "gender=F|age=65+", "above65F");
 
     return Arrays.asList(
         unknownF,
@@ -209,6 +224,9 @@ public class TxNewDataset extends BaseDataSet {
         thirty5To39F,
         fortyTo44F,
         forty5To49F,
-        above50F);
+        fiftyTo54F,
+        fifty5To59F,
+        sixtyTo64F,
+        above65F);
   }
 }
