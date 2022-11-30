@@ -154,7 +154,7 @@ public class TxMlDataset25 extends BaseDataSet {
         getColumnsForAgeAndGenderAndKeyPop());
 
     dsd.addColumn(
-        "totalIIT",
+        "M9",
         "Total IIT",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -173,86 +173,81 @@ public class TxMlDataset25 extends BaseDataSet {
    */
   private List<ColumnParameters> getColumnsForAgeAndGenderAndKeyPop() {
     ColumnParameters under1M =
-        new ColumnParameters("under1M", "under 1 year male", "gender=M|age=<1", "under1M");
+        new ColumnParameters("under1M", "under 1 year male", "gender=M|age=<1", "01");
     ColumnParameters oneTo4M =
-        new ColumnParameters("oneTo4M", "1 - 4 years male", "gender=M|age=1-4", "oneTo4M");
+        new ColumnParameters("oneTo4M", "1 - 4 years male", "gender=M|age=1-4", "02");
     ColumnParameters fiveTo9M =
-        new ColumnParameters("fiveTo9M", "5 - 9 years male", "gender=M|age=5-9", "fiveTo9M");
+        new ColumnParameters("fiveTo9M", "5 - 9 years male", "gender=M|age=5-9", "03");
     ColumnParameters tenTo14M =
-        new ColumnParameters("tenTo14M", "10 - 14 male", "gender=M|age=10-14", "tenTo14M");
+        new ColumnParameters("tenTo14M", "10 - 14 male", "gender=M|age=10-14", "04");
     ColumnParameters fifteenTo19M =
-        new ColumnParameters("fifteenTo19M", "15 - 19 male", "gender=M|age=15-19", "fifteenTo19M");
+        new ColumnParameters("fifteenTo19M", "15 - 19 male", "gender=M|age=15-19", "05");
     ColumnParameters twentyTo24M =
-        new ColumnParameters("twentyTo24M", "20 - 24 male", "gender=M|age=20-24", "twentyTo24M");
+        new ColumnParameters("twentyTo24M", "20 - 24 male", "gender=M|age=20-24", "06");
     ColumnParameters twenty5To29M =
-        new ColumnParameters("twenty5To29M", "25 - 29 male", "gender=M|age=25-29", "twenty5To29M");
+        new ColumnParameters("twenty5To29M", "25 - 29 male", "gender=M|age=25-29", "07");
     ColumnParameters thirtyTo34M =
-        new ColumnParameters("thirtyTo34M", "30 - 34 male", "gender=M|age=30-34", "thirtyTo34M");
+        new ColumnParameters("thirtyTo34M", "30 - 34 male", "gender=M|age=30-34", "08");
     ColumnParameters thirty5To39M =
-        new ColumnParameters("thirty5To39M", "35 - 39 male", "gender=M|age=35-39", "thirty5To39M");
+        new ColumnParameters("thirty5To39M", "35 - 39 male", "gender=M|age=35-39", "09");
     ColumnParameters fortyTo44M =
-        new ColumnParameters("fortyTo44M", "40 - 44 male", "gender=M|age=40-44", "fortyTo44M");
+        new ColumnParameters("fortyTo44M", "40 - 44 male", "gender=M|age=40-44", "10");
     ColumnParameters forty5To49M =
-        new ColumnParameters("forty5To49M", "45 - 49 male", "gender=M|age=45-49", "forty5To49M");
+        new ColumnParameters("forty5To49M", "45 - 49 male", "gender=M|age=45-49", "11");
     // 50-54, 55-59, 60-64, 65+ male
     ColumnParameters fiftyTo54M =
-        new ColumnParameters("fiftyTo54M", "50 - 54 male", "gender=M|age=50-54", "fiftyTo54M");
+        new ColumnParameters("fiftyTo54M", "50 - 54 male", "gender=M|age=50-54", "12");
     ColumnParameters fifty5To59M =
-        new ColumnParameters("fifty5To59M", "55 - 59 male", "gender=M|age=55-59", "fifty5To59M");
+        new ColumnParameters("fifty5To59M", "55 - 59 male", "gender=M|age=55-59", "13");
     ColumnParameters sixtyTo64M =
-        new ColumnParameters("sixtyTo64M", "60 - 64 male", "gender=M|age=60-64", "sixtyTo64M");
+        new ColumnParameters("sixtyTo64M", "60 - 64 male", "gender=M|age=60-64", "14");
     ColumnParameters above65M =
-        new ColumnParameters("above65M", "65+ male", "gender=M|age=65+", "above65M");
+        new ColumnParameters("above65M", "65+ male", "gender=M|age=65+", "15");
     ColumnParameters unknownM =
-        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "unknownM");
-    ColumnParameters totalM =
-        new ColumnParameters("totalM", "Total of Males", "gender=M", "subTotalM");
+        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "16");
+    ColumnParameters totalM = new ColumnParameters("totalM", "Total of Males", "gender=M", "17");
 
     ColumnParameters under1F =
-        new ColumnParameters("under1F", "under 1 year female", "gender=F|age=<1", "under1F");
+        new ColumnParameters("under1F", "under 1 year female", "gender=F|age=<1", "18");
     ColumnParameters oneTo4F =
-        new ColumnParameters("oneTo4F", "1 - 4 years female", "gender=F|age=1-4", "oneTo4F");
+        new ColumnParameters("oneTo4F", "1 - 4 years female", "gender=F|age=1-4", "19");
     ColumnParameters fiveTo9F =
-        new ColumnParameters("fiveTo9F", "5 - 9 years female", "gender=F|age=5-9", "fiveTo9F");
+        new ColumnParameters("fiveTo9F", "5 - 9 years female", "gender=F|age=5-9", "20");
     ColumnParameters tenTo14F =
-        new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "tenTo14F");
+        new ColumnParameters("tenTo14F", "10 - 14 female", "gender=F|age=10-14", "21");
     ColumnParameters fifteenTo19F =
-        new ColumnParameters(
-            "fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "fifteenTo19F");
+        new ColumnParameters("fifteenTo19F", "15 - 19 female", "gender=F|age=15-19", "22");
     ColumnParameters twentyTo24F =
-        new ColumnParameters("twentyTo24F", "20 - 24 female", "gender=F|age=20-24", "twentyTo24F");
+        new ColumnParameters("twentyTo24F", "20 - 24 female", "gender=F|age=20-24", "23");
     ColumnParameters twenty5To29F =
-        new ColumnParameters(
-            "twenty5To29F", "25 - 29 female", "gender=F|age=25-29", "twenty5To29F");
+        new ColumnParameters("twenty5To29F", "25 - 29 female", "gender=F|age=25-29", "24");
     ColumnParameters thirtyTo34F =
-        new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "thirtyTo34F");
+        new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "25");
     ColumnParameters thirty5To39F =
-        new ColumnParameters(
-            "thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "thirty5To39F");
+        new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "26");
     ColumnParameters fortyTo44F =
-        new ColumnParameters("fortyTo44F", "40 - 44 female", "gender=F|age=40-44", "fortyTo44F");
+        new ColumnParameters("fortyTo44F", "40 - 44 female", "gender=F|age=40-44", "27");
     ColumnParameters forty5To49F =
-        new ColumnParameters("forty5To49F", "45 - 49 female", "gender=F|age=45-49", "forty5To49F");
+        new ColumnParameters("forty5To49F", "45 - 49 female", "gender=F|age=45-49", "28");
     // 50-54, 55-59, 60-64, 65+ female
     ColumnParameters fiftyTo54F =
-        new ColumnParameters("fiftyTo54F", "50 - 54 female", "gender=F|age=50-54", "fiftyTo54F");
+        new ColumnParameters("fiftyTo54F", "50 - 54 female", "gender=F|age=50-54", "29");
     ColumnParameters fifty5To59F =
-        new ColumnParameters("fifty5To59F", "55 - 59 female", "gender=F|age=55-59", "fifty5To59F");
+        new ColumnParameters("fifty5To59F", "55 - 59 female", "gender=F|age=55-59", "30");
     ColumnParameters sixtyTo64F =
-        new ColumnParameters("sixtyTo64F", "60 - 64 female", "gender=F|age=60-64", "sixtyTo64F");
+        new ColumnParameters("sixtyTo64F", "60 - 64 female", "gender=F|age=60-64", "31");
     ColumnParameters above65F =
-        new ColumnParameters("above65F", "65+ female", "gender=F|age=65+", "above65F");
+        new ColumnParameters("above65F", "65+ female", "gender=F|age=65+", "32");
     ColumnParameters unknownF =
-        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "unknownF");
-    ColumnParameters total = new ColumnParameters("totals", "Totals", "", "27");
-    ColumnParameters totalF =
-        new ColumnParameters("totalF", "Total of Females", "gender=F", "subTotalF");
+        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "33");
+    ColumnParameters totalF = new ColumnParameters("totalF", "Total of Females", "gender=F", "34");
+    ColumnParameters total = new ColumnParameters("totals", "Totals", "", "40");
 
     // Key population
-    ColumnParameters pid = new ColumnParameters("pid", "PID", "KP=PID", "pid");
-    ColumnParameters msm = new ColumnParameters("msm", "MSM", "KP=MSM", "msm");
-    ColumnParameters csw = new ColumnParameters("msm", "CSW", "KP=CSW", "csw");
-    ColumnParameters pri = new ColumnParameters("pri", "PRI", "KP=PRI", "pri");
+    ColumnParameters pid = new ColumnParameters("pid", "PID", "KP=PID", "35");
+    ColumnParameters msm = new ColumnParameters("msm", "MSM", "KP=MSM", "36");
+    ColumnParameters csw = new ColumnParameters("msm", "CSW", "KP=CSW", "37");
+    ColumnParameters pri = new ColumnParameters("pri", "PRI", "KP=PRI", "38");
 
     return Arrays.asList(
         under1M,
