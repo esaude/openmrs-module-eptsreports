@@ -73,35 +73,35 @@ public class TxNewDataset extends BaseDataSet {
         "TX_NEW: New on ART",
         EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
         "");
-        dataSetDefinition.addColumn(
-            "ANC",
-            "TX_NEW: Breastfeeding Started ART",
-            EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-            "maternity=breastfeeding");
+    dataSetDefinition.addColumn(
+        "ANC",
+        "TX_NEW: Breastfeeding Started ART",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        "maternity=breastfeeding");
 
-        dataSetDefinition.addColumn(
-            "PID",
-            "TX_NEW: People who inject drugs",
-            EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-            "keypop=PID");
+    dataSetDefinition.addColumn(
+        "PID",
+        "TX_NEW: People who inject drugs",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        "keypop=PID");
 
-        dataSetDefinition.addColumn(
-            "MSM",
-            "TX_NEW: Men who have sex with men",
-            EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-            "keypop=MSM");
+    dataSetDefinition.addColumn(
+        "MSM",
+        "TX_NEW: Men who have sex with men",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        "keypop=MSM");
 
-        dataSetDefinition.addColumn(
-            "CSW",
-            "TX_NEW: Female sex workers",
-            EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-            "keypop=CSW");
+    dataSetDefinition.addColumn(
+        "CSW",
+        "TX_NEW: Female sex workers",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        "keypop=CSW");
 
-        dataSetDefinition.addColumn(
-            "PRI",
-            "TX_NEW: People in prison and other closed settings",
-            EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
-            "keypop=PRI");
+    dataSetDefinition.addColumn(
+        "PRI",
+        "TX_NEW: People in prison and other closed settings",
+        EptsReportUtils.map(patientEnrolledInHIVStartedARTIndicator, mappings),
+        "keypop=PRI");
     addRow(
         dataSetDefinition,
         "males",

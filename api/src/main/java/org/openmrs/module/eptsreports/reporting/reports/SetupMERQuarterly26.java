@@ -123,7 +123,8 @@ public class SetupMERQuarterly26 extends EptsDataExportManager {
     rd.setDescription(getDescription());
     rd.setParameters(txPvlsDataset.getParameters());
     rd.addDataSetDefinition("N", Mapped.mapStraightThrough(txNewDataset.constructTxNewDataset()));
-    rd.addDataSetDefinition("C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
+    rd.addDataSetDefinition(
+        "C", Mapped.mapStraightThrough(txCurrDataset.constructTxCurrDataset(true)));
     rd.addDataSetDefinition("P", Mapped.mapStraightThrough(txPvlsDataset.constructTxPvlsDatset()));
     rd.addDataSetDefinition(
         "TXML", Mapped.mapStraightThrough(txMlDataset25.constructtxMlDataset()));
