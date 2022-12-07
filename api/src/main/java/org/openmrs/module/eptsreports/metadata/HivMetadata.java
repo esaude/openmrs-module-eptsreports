@@ -5131,4 +5131,67 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.negativeDiagnosisConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 165325</b>
+   *
+   * <p><b>Name:</b> CHAMPION MAN
+   *
+   * <p><b>Description:</b> CHAMPION MAN Concept
+   *
+   * @return {@link Concept}
+   */
+  public Concept getChampioManConcept() {
+    String uuid =
+        Context.getAdministrationService().getGlobalProperty("eptsreports.champioManConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 165324</b>
+   *
+   * <p><b>Name:</b> YOUTH AND TEENAGE MENTHOR
+   *
+   * <p><b>Description:</b> YOUTH AND TEENAGE MENTHOR Concept
+   *
+   * @return {@link Concept}
+   */
+  public Concept getYouthAndTeenageMenthorConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.youthAndTeenageMenthorConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 24031</b>
+   *
+   * <p><b>Name:</b> Mentoring Mother
+   *
+   * <p><b>Description:</b> Mentoring Mother Concept
+   *
+   * @return {@link Concept}
+   */
+  public Concept getMentoringMotherConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.mentoringMotherConceptUuid");
+    return getConcept(uuid);
+  }
+
+  /**
+   * <b>concept_id = 6310</b>
+   *
+   * <p><b>Name:</b> DATE OF NEXT COUNSELING
+   *
+   * <p><b>Description:</b> DATE OF NEXT COUNSELING Concept
+   *
+   * @return {@link Concept}
+   */
+  public Concept getDateOfNextCounselingConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.dateOfNextCounselingConceptUuid");
+    return getConcept(uuid);
+  }
 }
