@@ -1203,7 +1203,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13DEN1",
-        "% de adultos (15/+anos) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
+        "# de adultos (15/+anos) na 1a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV",
         EptsReportUtils.map(
             MQ13DEN1,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1220,7 +1220,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13DEN4",
-        "# de adultos (15/+ anos) na 2a linha de TARV elegíveis a CV.",
+        "# de adultos (15/+anos) na 2a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV",
         EptsReportUtils.map(
             MQ13DEN4,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1237,7 +1237,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13DEN6",
-        "% de crianças (0-4 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
+        "# de crianças (0-4 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV",
         EptsReportUtils.map(
             MQ13DEN6,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1254,7 +1254,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13DEN7",
-        "% de crianças (5-9 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
+        "# de crianças (5-9 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV",
         EptsReportUtils.map(
             MQ13DEN7,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1271,7 +1271,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13DEN8",
-        "% de crianças (10-14 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
+        "# de crianças (10-14 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV",
         EptsReportUtils.map(
             MQ13DEN8,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1288,7 +1288,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13DEN13",
-        "# de crianças (>2anos) na 2a linha de TARV elegíveis ao pedido de CV.",
+        "# de crianças na 2a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV",
         EptsReportUtils.map(
             MQ13DEN13,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1306,7 +1306,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13NUM1",
-        "% de adultos (15/+anos) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
+        "# de adultos (15/+anos) na 2a linha de TARV que tiveram consulta clínica no período de revisão e que eram elegíveis ao pedido de CV",
         EptsReportUtils.map(
             MQ13NUM1,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1323,7 +1323,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13NUM4",
-        "% de adultos (15/+anos) na 2a linha de TARV elegíveis a CV com registo de pedido de CV feito pelo clínico",
+        "# de adultos (15/+anos) na 2a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
         EptsReportUtils.map(
             MQ13NUM4,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1340,7 +1340,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13NUM6",
-        "% de crianças (0-4 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
+        "# de crianças (0-4 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
         EptsReportUtils.map(
             MQ13NUM6,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1357,7 +1357,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13NUM7",
-        "% de crianças (5-9 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
+        "# de crianças (5-9 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
         EptsReportUtils.map(
             MQ13NUM7,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1374,7 +1374,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13NUM8",
-        "% de crianças (10-14 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico.",
+        "# de crianças (10-14 anos de idade) na 1a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
         EptsReportUtils.map(
             MQ13NUM8,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1391,7 +1391,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13NUM13",
-        "% de crianças na  2ª linha de TARV elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
+        "# de crianças na 2a linha de TARV que tiveram consulta clínica no período de revisão, eram elegíveis ao pedido de CV e com registo de pedido de CV feito pelo clínico",
         EptsReportUtils.map(
             MQ13NUM13,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1508,7 +1508,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
     MQ13DEN3.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     dataSetDefinition.addColumn(
         "MQ13DEN3",
-        "# de adultos na 1a linha de TARV que receberam um resultado de CV acima de 1000 cópias no período de inclusão",
+        "# de Adultos (15/+anos) na 1ª linha de TARV com registo resultado de CV acima de 1000",
         EptsReportUtils.map(
             MQ13DEN3,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1525,7 +1525,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13DEN12",
-        "# de crianças (>2 anos de idade) na 1a linha de TARV que receberam um resultado de CV acima de 1000 cópias no período de inclusão",
+        "# de crianças (>2 anos de idade) na 1ª linha de TARV com registo de resultado de CV ≥1000",
         EptsReportUtils.map(
             MQ13DEN12,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1542,7 +1542,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13DEN18",
-        "# de MG na 1a linha de TARV que receberam um resultado de CV acima de 1000 cópias no período de inclusão",
+        "# de MG na 1ª linha de TARV com registo de resultado de CV ≥ 1000",
         EptsReportUtils.map(
             MQ13DEN18,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1663,7 +1663,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13NUM3",
-        "% de Adultos (15/+anos) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 e terem  3 sessões consecutivas de APSS/PP",
+        "# de Adultos (15/+anos) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV ≥1000 cps/ml",
         EptsReportUtils.map(
             MQ13NUM3,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1680,7 +1680,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13NUM12",
-        "% de crianças (>2 anos de idade) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 cópia e terem  3 sessões consecutivas de APSS/PP",
+        "# de crianças (>2 anos de idade) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV ≥1000",
         EptsReportUtils.map(
             MQ13NUM12,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),
@@ -1697,7 +1697,7 @@ public class QualityImprovement2020DataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "MQ13NUM18",
-        "% de MG na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV acima de 1000 cópia e terem 3 sessões consecutivas de APSS/PP",
+        "# de MG na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV ≥1000",
         EptsReportUtils.map(
             MQ13NUM18,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"),

@@ -967,18 +967,16 @@ public class CommonCohortQueries {
    *
    * <blockquote>
    *
-   * B4E - Exclude all patients with “Carga Viral” (Concept id 856, value_numeric not null)
-   * registered in Ficha Clinica (encounter type 6, encounter_datetime) or Ficha Resumo (encounter
-   * type 53, obs_datetime) during the last 12 months from the Last Clinical Consultation, i.e, at
-   * least one “Carga Viral” encounter_datetime between “Last Clinical Consultation”-12months (last
-   * encounter_datetime-12months from B1) and “Last Clinical Consultation” (last encounter_datetime
-   * from B1).
+   * B4E - excluindo os utentes que têm o registo do resultado de Carga Viral (quantitativo e
+   * qualitativo) ) com supressão viral (<1000cópias/ml) na Ficha Clínica ou na Ficha Resumo nos
+   * últimos 12 meses da última consulta clínica (“Data Resultado CV”>= “Data Última Consulta” menos
+   * (-) 12meses e <= “Data Última Consulta”). Nota: “Data Última Consulta” é a data da última
+   * consulta clínica ocorrida durante o período de revisão.
    *
-   * <p>B5E- exclude all patients with concept “PEDIDO DE INVESTIGACOES LABORATORIAIS” (Concept Id
-   * 23722) and value coded “HIV CARGA VIRAL” (Concept Id 856) registered in Ficha Clinica
-   * (encounter type 6) during the last 3 months from the Last Clinical Consultation (at least one
-   * “Pedido de Carga Viral” encounter_datetime between “Last Clinical Consultation”-3months and
-   * “Last Clinical Consultation” (last encounter_datetime from B1).
+   * <p>B5E- excluindo os utentes que têm o registo do “Pedido de Investigações Laboratoriais” igual
+   * a “Carga Viral”, na Ficha Clínica nos últimos 6 meses da última consulta clínica (“Data Pedido
+   * CV”>= “Data Última Consulta” menos (-) 6meses e < “Data Última Consulta”). Nota: “Data Última
+   * Consulta” é a data da última consulta clínica ocorrida durante o período de revisão.
    *
    * </blockquote>
    *
@@ -1023,7 +1021,7 @@ public class CommonCohortQueries {
             + "         AND e.location_id = :location  ";
     if (b4e) {
       query +=
-          "         AND ((((concept_id = ${856} AND o.value_numeric IS NOT NULL)  "
+          "         AND ((((concept_id = ${856} AND o.value_numeric < 1000)  "
               + "               OR (concept_id = ${1305}  AND o.value_coded IS NOT NULL)) ";
     } else if (b5e) {
       query += "         AND (concept_id = ${23722}  " + "         AND o.value_coded =  ${856}  ";
@@ -1031,7 +1029,7 @@ public class CommonCohortQueries {
     if (b5e) {
       query +=
           "         AND e.encounter_type = ${6}  "
-              + "         AND e.encounter_datetime >= date_add(clinical.last_visit, INTERVAL ${period} MONTH) "
+              + "         AND e.encounter_datetime >= DATE_SUB(clinical.last_visit, INTERVAL ${period} MONTH) "
               + "         AND e.encounter_datetime < clinical.last_visit)  ";
     } else {
       query +=
@@ -1042,8 +1040,8 @@ public class CommonCohortQueries {
     if (b4e) {
       query +=
           "      OR   "
-              + "         (concept_id = ${856}  "
-              + "         AND o.value_numeric IS NOT NULL "
+              + "         (((concept_id = ${856} AND o.value_numeric IS NOT NULL) "
+              + "         OR (concept_id = ${1305}  AND o.value_coded IS NOT NULL)) "
               + "         AND e.encounter_type = ${53}  "
               + "         AND o.obs_datetime BETWEEN DATE_SUB(clinical.last_visit,  "
               + "         INTERVAL 12 MONTH) AND clinical.last_visit))";

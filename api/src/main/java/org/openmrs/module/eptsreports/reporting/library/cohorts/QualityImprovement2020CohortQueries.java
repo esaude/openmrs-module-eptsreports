@@ -4916,7 +4916,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition B5E =
         commonCohortQueries.getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
-            false, true, -3);
+            false, true, 6);
 
     CohortDefinition G = getMQ13G();
 
@@ -5477,123 +5477,6 @@ public class QualityImprovement2020CohortQueries {
   }
 
   /**
-   * <b>MQ13</b>: Melhoria de Qualidade Category 13 Part 4, G <br>
-   *
-   * <ul>
-   *   <li>G - Select all patients who have 3 APSS&PP (encounter type 35) consultations in 99 days
-   *       after Viral Load Result (the oldest date from B2) following the conditions:
-   *   <li>
-   *       <p>G1 - One Consultation (Encounter_datetime (from encounter type 35)) on the same date
-   *       when the Viral Load with >=1000 result was recorded (the oldest date from B2) AND
-   *   <li>
-   *       <p>G2 -Another consultation (Encounter_datetime (from encounter type 35) > “Viral Load
-   *       Date” (the oldest date from B2)+20dias and <=“Viral Load Date” (the oldest date from
-   *       B2)+33days. AND
-   *   <li>
-   *       <p>G3 - Another consultation (Encounter_datetime (from encounter type 35)) > “Second
-   *       Date” (date from G2, the oldest from G2)+20days and <=“Second Date” (date from G2, the
-   *       oldest one)+33days.
-   * </ul>
-   *
-   * @return CohortDefinition
-   */
-  public CohortDefinition getMQ13P4G() {
-    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("endDate", "End date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
-
-    sqlCohortDefinition.setName("Category 13 - Part 4 Denominator - G");
-
-    Map<String, Integer> map = new HashMap<>();
-    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put("35", hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
-    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
-
-    String query =
-        "SELECT DISTINCT   "
-            + "      p.patient_id   "
-            + "  FROM   "
-            + "      patient p   "
-            + "         INNER JOIN   "
-            + "      encounter e ON p.patient_id = e.patient_id   "
-            + "          INNER JOIN   "
-            + "      (SELECT  "
-            + "     p.patient_id,DATE(list.encounter_datetime) encounter_datetime   "
-            + " FROM  "
-            + "     patient p  "
-            + "         INNER JOIN  "
-            + "     encounter e ON e.patient_id = p.patient_id  "
-            + "         INNER JOIN  "
-            + "     obs o ON o.encounter_id = e.encounter_id  "
-            + "         INNER JOIN  "
-            + "     (SELECT   "
-            + "         p.patient_id, MIN(e.encounter_datetime) encounter_datetime  "
-            + "     FROM  "
-            + "         patient p  "
-            + "     INNER JOIN encounter e ON e.patient_id = p.patient_id  "
-            + "     INNER JOIN obs o ON o.encounter_id = e.encounter_id  "
-            + "     WHERE  "
-            + "         p.voided = 0 AND e.voided = 0  "
-            + "             AND o.voided = 0  "
-            + "             AND e.location_id = :location  "
-            + "             AND e.encounter_type = ${6}  "
-            + "             AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
-            + "             AND o.concept_id = ${856}  "
-            + "     GROUP BY p.patient_id) AS list ON list.patient_id = p.patient_id  "
-            + " WHERE  "
-            + "     p.voided = 0 AND e.voided = 0  "
-            + "         AND o.voided = 0  "
-            + "         AND e.location_id = :location  "
-            + "         AND DATE(e.encounter_datetime) = DATE(list.encounter_datetime)  "
-            + "         AND o.concept_id = ${856}  "
-            + "         AND o.value_numeric >= 1000) vl ON p.patient_id = vl.patient_id   "
-            + "          INNER JOIN   "
-            + "      (SELECT    "
-            + "          p.patient_id, e.encounter_datetime AS primeira   "
-            + "      FROM   "
-            + "          patient p   "
-            + "      INNER JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "      WHERE   "
-            + "          p.voided = 0 AND e.voided = 0   "
-            + "              AND e.encounter_type = ${35}) visit1 ON visit1.patient_id = p.patient_id   "
-            + "          INNER JOIN   "
-            + "      (SELECT    "
-            + "          p.patient_id, e.encounter_datetime AS segunda   "
-            + "      FROM   "
-            + "          patient p   "
-            + "      INNER JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "      WHERE   "
-            + "          p.voided = 0 AND e.voided = 0   "
-            + "              AND e.encounter_type = ${35}) visit2 ON visit2.patient_id = p.patient_id   "
-            + "          INNER JOIN   "
-            + "      (SELECT    "
-            + "          p.patient_id, e.encounter_datetime AS terceira   "
-            + "      FROM   "
-            + "          patient p   "
-            + "      INNER JOIN encounter e ON e.patient_id = p.patient_id   "
-            + "      WHERE   "
-            + "          p.voided = 0 AND e.voided = 0   "
-            + "              AND e.encounter_type = ${35}) visit3 ON visit3.patient_id = p.patient_id   "
-            + "  WHERE p.voided = 0   "
-            + "   AND   e.voided = 0     "
-            + "          AND e.encounter_type = ${35}   "
-            + "          AND e.location_id = :location   "
-            + "          AND DATE(visit1.primeira) = DATE(vl.encounter_datetime)   "
-            + "          AND DATE(visit2.segunda) > DATE(visit1.primeira)   "
-            + "          AND DATE(visit2.segunda) >= DATE_ADD(visit1.primeira, INTERVAL 20 DAY)   "
-            + "          AND DATE(visit2.segunda) <= DATE_ADD(visit1.primeira, INTERVAL 33 DAY)   "
-            + "          AND DATE(visit3.terceira) > DATE(visit2.segunda)   "
-            + "          AND DATE(visit3.terceira) >= DATE_ADD(visit2.segunda, INTERVAL 20 DAY)    "
-            + "          AND DATE(visit3.terceira) <= DATE_ADD(visit2.segunda, INTERVAL 33 DAY);";
-
-    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
-    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
-
-    return sqlCohortDefinition;
-  }
-
-  /**
    * <b>MQ13</b>: Melhoria de Qualidade Category 13 Part 4, H <br>
    *
    * <ul>
@@ -5711,12 +5594,12 @@ public class QualityImprovement2020CohortQueries {
     } else {
       if (line == 3) {
         compositionCohortDefinition.setName(
-            "(B1 and B2 AND G AND H)  and NOT (B4 or B5 or E or F) and Age >= 15*");
+            "(B1 AND B2 AND H)  AND NOT (B4 or B5 or E or F) and Age >= 15*");
       } else if (line == 12) {
         compositionCohortDefinition.setName(
-            "(B1 and B2 AND G AND H)  and NOT (B4 or B5 or E or F) and Age > 2 and Age < 14*");
+            "(B1 AND B2 AND H)  and NOT (B4 or B5 or E or F) and Age > 2 and Age < 14*");
       } else if (line == 18) {
-        compositionCohortDefinition.setName("(B1 and B4 AND G AND H)  and NOT (B5 or E or F)");
+        compositionCohortDefinition.setName("(B1 AND B4 AND H)  and NOT (B5 or E or F)");
       }
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
@@ -5756,8 +5639,6 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
 
-    CohortDefinition G = getMQ13P4G();
-
     CohortDefinition H = getMQ13P4H();
     compositionCohortDefinition.addSearch(
         "adults", EptsReportUtils.map(adults, "effectiveDate=${revisionEndDate}"));
@@ -5777,8 +5658,6 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("F", EptsReportUtils.map(transferOut, MAPPING1));
 
-    compositionCohortDefinition.addSearch("G", EptsReportUtils.map(G, MAPPING));
-
     compositionCohortDefinition.addSearch("H", EptsReportUtils.map(H, MAPPING));
 
     if (den) {
@@ -5794,13 +5673,13 @@ public class QualityImprovement2020CohortQueries {
     } else {
       if (line == 3) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND B2 AND G AND H) AND NOT (B4 or B5 or E or F)");
+            "(B1 AND B2 AND H) AND NOT (B4 or B5 or E or F)");
       } else if (line == 12) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND B2 AND G AND H) AND NOT (B4 or B5 or E or F)");
+            "(B1 AND B2 AND H) AND NOT (B4 or B5 or E or F)");
       } else if (line == 18) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND B4 AND G AND H) AND NOT (B5 or E or F)");
+            "(B1 AND B4 AND H) AND NOT (B5 or E or F)");
       }
     }
     return compositionCohortDefinition;
