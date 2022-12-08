@@ -64,8 +64,15 @@ public class BreastfeedingPregnantCalculation extends AbstractPatientCalculation
     for (Integer ptId : cohort) {
 
       boolean isCandidate = false;
-      Date pregnancyDate = (Date) pregnantDateMap.get(ptId).getValue();
-      Date breastfeedingDate = (Date) breastfeedingDateMap.get(ptId).getValue();
+      Date pregnancyDate = null;
+      if (pregnantDateMap.get(ptId) != null && pregnantDateMap.get(ptId).getValue() != null) {
+        pregnancyDate = (Date) pregnantDateMap.get(ptId).getValue();
+      }
+      Date breastfeedingDate = null;
+      if (breastfeedingDateMap.get(ptId) != null
+          && breastfeedingDateMap.get(ptId).getValue() != null) {
+        breastfeedingDate = (Date) breastfeedingDateMap.get(ptId).getValue();
+      }
       if (state.equals(PregnantOrBreastfeedingWomen.PREGNANTWOMEN)
           && pregnancyDate != null
           && femaleCohort.contains(ptId)

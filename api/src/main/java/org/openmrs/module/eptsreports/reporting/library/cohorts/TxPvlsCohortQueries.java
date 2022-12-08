@@ -84,7 +84,7 @@ public class TxPvlsCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
                 PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN, null),
-            "onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
         "suppression",
@@ -114,7 +114,7 @@ public class TxPvlsCohortQueries {
         EptsReportUtils.map(
             getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
                 PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN, null),
-            "onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
         "results",
@@ -399,7 +399,7 @@ public class TxPvlsCohortQueries {
         EptsReportUtils.map(
             this.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
                 PregnantOrBreastfeedingWomen.PREGNANTWOMEN, null),
-            "onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("suppression AND pregnant");
     return cd;
   }
@@ -424,7 +424,7 @@ public class TxPvlsCohortQueries {
         EptsReportUtils.map(
             this.getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
                 PregnantOrBreastfeedingWomen.PREGNANTWOMEN, null),
-            "onOrBefore=${endDate},location=${location}"));
+            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
     cd.setCompositionString("results AND pregnant");
     return cd;
   }
