@@ -645,6 +645,10 @@
 			   encounter_datetime="2019-12-18 00:00:00" creator="1" date_created="2019-12-18 14:50:26" voided="0"
 			   uuid="e422ecf9-75dd-4367-b21e-54bccabc4763" />
 
+	<encounter encounter_id="539805" encounter_type="18" patient_id="12475" location_id="21"
+			   encounter_datetime="2019-12-18 00:00:00" creator="1" date_created="2019-12-18 14:50:26" voided="0"
+			   uuid="e422ecf9-75dd-4367-b21e-54bccabc4764" />
+
 	<obs obs_id="4267228" person_id="12475" concept_id="1369" encounter_id="539804" obs_datetime="2019-11-12 00:00:00"
 		 location_id="21" value_coded="1065" comments="24 de julho" creator="1" status = "FINAL"
 		 date_created="2019-12-18 14:50:26" voided="0" uuid="661aa566-62cb-4781-b0e3-33714979a854"/>

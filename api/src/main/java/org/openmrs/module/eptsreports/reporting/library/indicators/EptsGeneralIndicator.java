@@ -14,11 +14,16 @@
 
 package org.openmrs.module.eptsreports.reporting.library.indicators;
 
+import java.util.Date;
 import java.util.List;
+import org.openmrs.Location;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.indicator.CohortIndicator;
+import org.openmrs.module.reporting.indicator.Indicator;
+import org.openmrs.module.reporting.indicator.QueryCountIndicator;
+import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -43,5 +48,18 @@ public class EptsGeneralIndicator extends BaseIndicators {
     CohortIndicator cI = getIndicator(name, cd);
     cI.addParameters(parameters);
     return cI;
+  }
+
+  public Indicator getIndicator(String name, SqlEncounterQuery sqlEncounterQuery) {
+
+    QueryCountIndicator queryCount = new QueryCountIndicator();
+
+    queryCount.setName(name);
+    queryCount.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    queryCount.addParameter(new Parameter("endDate", "End Date", Date.class));
+    queryCount.addParameter(new Parameter("location", "Location", Location.class));
+
+    queryCount.setQuery(Mapped.mapStraightThrough(sqlEncounterQuery));
+    return queryCount;
   }
 }

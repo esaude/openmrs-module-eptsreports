@@ -34,11 +34,13 @@ import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferre
 import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.evaluator.ResumoMensalTransferredOutCohortDefinitionEvaluator;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsQueriesUtil;
 import org.openmrs.module.reporting.cohort.definition.*;
 import org.openmrs.module.reporting.common.RangeComparator;
 import org.openmrs.module.reporting.common.SetComparator;
 import org.openmrs.module.reporting.definition.library.DocumentedDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
+import org.openmrs.module.reporting.query.encounter.definition.SqlEncounterQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -275,6 +277,179 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
+   *
+   *
+   * <ul>
+   *   <li>com o registo de “Profilaxia TPT” = “INH” e “Estado da Profilaxia” = “Inicio” numa
+   *       consulta clínica (Ficha Clínica) que ocorreu no período anterior do relatório e após o
+   *       início Pré-TARV (“Data Consulta” >= “Data Início Pre-TARV” e < “Data Início do
+   *       Relatório”, ou
+   *   <li>com o registo de “Profilaxia TPT”= ”3HP” e “Estado da Profilaxia” = “Inicio” numa
+   *       consulta clínica (Ficha Clínica) que ocorreu no período anterior do relatório e após o
+   *       início Pré-TARV ( “Data Consulta” >= “Data Início Pre-TARV” e < “Data Início do
+   *       Relatório”
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoStartedTptAfterPreArt() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Pacientes com registo de TPT após Pré-TARV");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("23808", hivMetadata.getPreArtStartDate().getConceptId());
+    map.put("1", hivMetadata.getHIVCareProgram().getProgramId());
+    map.put("5", hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId());
+    map.put("7", hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId());
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("1256", hivMetadata.getStartDrugs().getConceptId());
+    map.put("23985", tbMetadata.getRegimeTPTConcept().getConceptId());
+    map.put("656", tbMetadata.getIsoniazidConcept().getConceptId());
+    map.put("23954", tbMetadata.get3HPConcept().getConceptId());
+    map.put("165308", tbMetadata.getDataEstadoDaProfilaxiaConcept().getConceptId());
+
+    String query =
+        "SELECT res.patient_id "
+            + "FROM   (SELECT results.patient_id, MIN(results.enrollment_date) enrollment_date "
+            + "        FROM   (SELECT p.patient_id, o.value_datetime AS enrollment_date "
+            + "                FROM   patient p "
+            + "                       INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "                       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND e.voided = 0 "
+            + "                       AND o.voided = 0 "
+            + "                       AND e.encounter_type = ${53} "
+            + "                       AND e.location_id = :location "
+            + "                       AND o.value_datetime IS NOT NULL "
+            + "                       AND o.concept_id = ${23808} "
+            + "                UNION "
+            + "                SELECT p.patient_id, "
+            + "                       date_enrolled AS enrollment_date "
+            + "                FROM   patient_program pp "
+            + "                       JOIN patient p "
+            + "                         ON pp.patient_id = p.patient_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND pp.voided = 0 "
+            + "                       AND pp.program_id = ${1} "
+            + "                       AND pp.location_id = :location "
+            + "                UNION "
+            + "                SELECT p.patient_id, "
+            + "                       enc.encounter_datetime AS enrollment_date "
+            + "                FROM   encounter enc "
+            + "                       JOIN patient p "
+            + "                         ON p.patient_id = enc.patient_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND enc.encounter_type IN ( ${5}, ${7} ) "
+            + "                       AND enc.location_id = :location "
+            + "                       AND enc.voided = 0 "
+            + "                ) results "
+            + "        GROUP  BY results.patient_id) res "
+            + "       INNER JOIN (SELECT p.patient_id, encounter_datetime tpt_date "
+            + "                   FROM   patient p "
+            + "                          INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                          INNER JOIN obs o1 ON o1.encounter_id = e.encounter_id "
+            + "                          INNER JOIN obs o2 ON o2.encounter_id = e.encounter_id "
+            + "                   WHERE  p.voided = 0 "
+            + "                          AND e.voided = 0 "
+            + "                          AND o1.voided = 0 "
+            + "                          AND o2.voided = 0 "
+            + "                          AND e.encounter_type = ${6} "
+            + "                          AND e.encounter_datetime < DATE_SUB(:endDate, INTERVAL 1 MONTH) "
+            + "                          AND ( (( o1.concept_id = ${23985} AND o1.value_coded = ${656} )  AND ( o2.concept_id = ${165308} AND o2.value_coded = ${1256} )) "
+            + "                                 OR ( ( o1.concept_id = ${23985} AND o1.value_coded = ${23954} ) AND ( o2.concept_id = ${165308}  AND o2.value_coded = ${1256} ))"
+            + "                              )"
+            + " ) tpt "
+            + "         ON tpt.patient_id = res.patient_id "
+            + " WHERE  res.enrollment_date BETWEEN :startDate AND :endDate AND tpt.tpt_date >= res.enrollment_date"
+            + " GROUP BY res.patient_id ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    cd.setQuery(stringSubstitutor.replace(query));
+    return cd;
+  }
+
+  public CohortDefinition getPatientsWhoHadTbDiagnosticAfterPreArt() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Pacientes com registo de TPT após Pré-TARV");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("23808", hivMetadata.getPreArtStartDate().getConceptId());
+    map.put("1", hivMetadata.getHIVCareProgram().getProgramId());
+    map.put("5", hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId());
+    map.put("7", hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId());
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("23761", tbMetadata.getActiveTBConcept().getConceptId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
+    map.put("1066", hivMetadata.getNoConcept().getConceptId());
+
+    String query =
+        "SELECT res.patient_id "
+            + "FROM   (SELECT results.patient_id, MIN(results.enrollment_date) enrollment_date "
+            + "        FROM   (SELECT p.patient_id, o.value_datetime AS enrollment_date "
+            + "                FROM   patient p "
+            + "                       INNER JOIN encounter e ON p.patient_id = e.patient_id "
+            + "                       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND e.voided = 0 "
+            + "                       AND o.voided = 0 "
+            + "                       AND e.encounter_type = ${53} "
+            + "                       AND e.location_id = :location "
+            + "                       AND o.value_datetime IS NOT NULL "
+            + "                       AND o.concept_id = ${23808} "
+            + "                UNION "
+            + "                SELECT p.patient_id, "
+            + "                       date_enrolled AS enrollment_date "
+            + "                FROM   patient_program pp "
+            + "                       JOIN patient p "
+            + "                         ON pp.patient_id = p.patient_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND pp.voided = 0 "
+            + "                       AND pp.program_id = ${1} "
+            + "                       AND pp.location_id = :location "
+            + "                UNION "
+            + "                SELECT p.patient_id, "
+            + "                       enc.encounter_datetime AS enrollment_date "
+            + "                FROM   encounter enc "
+            + "                       JOIN patient p "
+            + "                         ON p.patient_id = enc.patient_id "
+            + "                WHERE  p.voided = 0 "
+            + "                       AND enc.encounter_type IN ( ${5}, ${7} ) "
+            + "                       AND enc.location_id = :location "
+            + "                       AND enc.voided = 0 "
+            + "                ) results "
+            + "        GROUP  BY results.patient_id) res "
+            + "       INNER JOIN (SELECT p.patient_id, encounter_datetime tb_date "
+            + "                   FROM   patient p "
+            + "                          INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                          INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "                   WHERE  p.voided = 0 "
+            + "                          AND e.voided = 0 "
+            + "                          AND o.voided = 0 "
+            + "                          AND e.encounter_type = ${6} "
+            + "                          AND e.encounter_datetime < DATE_SUB(:endDate, INTERVAL 1 MONTH) "
+            + "                          AND o.concept_id = ${23761} AND o.value_coded IN (${1065}, ${1066})  "
+            + "       ) tb ON tb.patient_id = res.patient_id "
+            + " WHERE  res.enrollment_date BETWEEN :startDate AND :endDate AND tb.tb_date >= res.enrollment_date"
+            + " GROUP BY res.patient_id ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    cd.setQuery(stringSubstitutor.replace(query));
+    return cd;
+  }
+
+  /**
    * <b>Name: A2II</b>
    *
    * <p><b>Description:</b> Number of patients transferred-in from another HFs during the current
@@ -338,47 +513,18 @@ public class ResumoMensalCohortQueries {
    * <p><b>Description:</b> Number of patients who initiated TARV at this HF during the current
    * month
    *
+   * <ul>
+   *   <li>Incluindo todos os utentes: que tenham tido 1o levantamento de ARVs registado no FILA ou
+   *   <li>o 1o levantamento de ARVs registado na “Ficha Recepção/ Levantou ARVs?” com “Levantou
+   *       ARV” = Sim (“Data de Levantamento”) *
+   *   <li>sendo a data mais antiga dos critérios acima dentro do período (“>= “Data Início do
+   *       Relatório” e “<= “Data Fim do Relatório”)
+   * </ul>
+   *
    * <p>Excludes All transfered In
    *
    * <ul>
-   *   <li>Select all patients with the earliest ART Start Date from the following criterias:
-   *       <ol>
-   *         <li>All patients who have their first drugs pick-up date (first encounter_datetime) by
-   *             reporting end date in Pharmacy form FILA (Encounter Type ID 18): <code>
-   * first occurrence of encounter datetime
-   *                 Encounter Type Ids = 18
-   * *</code> *
-   *         <li>All patients who have initiated the ARV drugs [ ARV PLAN (Concept ID 1255) = START
-   *             DRUGS (Concept ID 1256) at the pharmacy or clinical visits (Encounter Type IDs
-   *             6,9,18) <code>
-   * first occurrence of encounter datetime
-   *                     Encounter Type Ids = 6,9,18
-   *                     ARV PLAN (Concept Id 1255) = START DRUGS (Concept ID 1256)
-   * </code>
-   *         <li>All patients who have the first historical start drugs date (earliest concept ID
-   *             1190) set in pharmacy or in clinical forms (Encounter Type IDs 6, 9, 18, 53)
-   *             earliest “historical start date” <code>Encounter Type Ids = 6,9,18,53
-   *             The earliest “Historical Start Date” (Concept Id 1190)
-   * </code>
-   *         <li>
-   *             <p>All patients enrolled in ART Program (date_enrolled in program_id 2, from
-   *             patient program table)
-   *             <p><code>
-   * program_enrollment date
-   * program_id=2, patient_state_id=29 and date_enrolled
-   * </code>
-   *         <li>
-   *             <p>All patients with first drugs pick up date (earliest concept ID 23866
-   *             value_datetime) set in mastercard pharmacy form “Recepção/Levantou ARV” (Encounter
-   *             Type ID 52) with Levantou ARV (concept id 23865) = Yes (concept id 1065)
-   *             <p><code>
-   * earliest “Date of Pick up”
-   *                        Encounter Type Ids = 52
-   *                        The earliest “Data de Levantamento” (Concept Id 23866 value_datetime) <= endDate
-   *                        Levantou ARV (concept id 23865) = SIm (1065)
-   *
-   * </code>
-   *       </ol>
+   *   <li>
    *   <li>and check if the selected ART Start Date falls in the reporting period (>= startDate and
    *       <= endDate)
    *   <li>Exclude all patients transferred-in
@@ -404,18 +550,139 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition startedArt = genericCohortQueries.getStartedArtOnPeriod(false, true);
+    CohortDefinition startedArt = getPatientsStartedArtOnFilaOrArvPickupDuringThePeriod();
 
     CohortDefinition transferredIn =
         getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2E();
 
-    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     String mappingsEndDate = "onOrBefore=${endDate},location=${location}";
-    cd.addSearch("startedArt", map(startedArt, mappings));
+    cd.addSearch(
+        "startedArt",
+        map(startedArt, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch("transferredIn", map(transferredIn, mappingsEndDate));
 
     cd.setCompositionString("startedArt AND NOT transferredIn");
+    return cd;
+  }
+
+  /**
+   *
+   *
+   * <ul>
+   *   <li>Incluindo todos os utentes: que tenham tido 1o levantamento de ARVs registado no FILA ou
+   *   <li>o 1o levantamento de ARVs registado na “Ficha Recepção/ Levantou ARVs?” com “Levantou
+   *       ARV” = Sim (“Data de Levantamento”) *
+   *   <li>sendo a data mais antiga dos critérios acima dentro do período (“>= “Data Início do
+   *       Relatório” e “<= “Data Fim do Relatório”)
+   * </ul>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getPatientsStartedArtOnFilaOrArvPickupDuringThePeriod() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of patientes who initiated TARV - Fila and ARV Pickup");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
+    map.put("1065", hivMetadata.getYesConcept().getConceptId());
+
+    String query =
+        "       SELECT patient_id "
+            + " FROM ( "
+            + getPatientStartedTarvBeforeQuery(true)
+            + "       ) start "
+            + "WHERE start.first_pickup BETWEEN :startDate AND :endDate ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(query));
+    return cd;
+  }
+
+  public CohortDefinition getPatientsStartedArtOnFilaOrArvPickupBeforeDate() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of patientes who initiated TARV Before a date - Fila and ARV Pickup");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
+    map.put("1065", hivMetadata.getYesConcept().getConceptId());
+
+    String query =
+        new EptsQueriesUtil()
+            .patientIdQueryBuilder(getPatientStartedTarvBeforeQuery(true))
+            .getQuery();
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(query));
+    return cd;
+  }
+
+  private String getPatientStartedTarvBeforeQuery(boolean specificLocation) {
+
+    return "       SELECT first.patient_id, MIN(first.pickup_date) first_pickup "
+        + "       FROM ( "
+        + "             SELECT p.patient_id, MIN(e.encounter_datetime) AS pickup_date "
+        + "             FROM patient p "
+        + "             INNER JOIN encounter e ON e.patient_id = p.patient_id "
+        + "             WHERE e.encounter_type = ${18} "
+        + "                 AND e.encounter_datetime <= :endDate "
+        + "                 AND e.voided = 0 "
+        + "                 AND p.voided = 0 "
+            .concat(specificLocation ? " AND e.location_id = :location " : " ")
+        + "       GROUP BY p.patient_id "
+        + "       UNION "
+        + "       SELECT p.patient_id, MIN(o2.value_datetime) AS pickup_date "
+        + "       FROM patient p "
+        + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+        + "       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+        + "       INNER JOIN obs o2 ON o2.encounter_id = e.encounter_id  "
+        + "       WHERE e.encounter_type = ${52} "
+        + "           AND o.concept_id = ${23865} "
+        + "           AND o.value_coded = ${1065} "
+        + "           AND o2.concept_id = ${23866} "
+        + "           AND o2.value_datetime <= :endDate "
+        + "           AND o.voided = 0 "
+        + "           AND o2.voided = 0 "
+            .concat(specificLocation ? " AND e.location_id = :location " : " ")
+        + "           AND e.voided = 0 "
+        + "           AND p.voided = 0 "
+        + "       GROUP BY p.patient_id "
+        + "        ) first "
+        + "     GROUP BY first.patient_id ";
+  }
+
+  public CohortDefinition getPatientsWhoStartedArtOnAnyHeathFacilityRf33() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of patientes who initiated TARV - Fila and ARV Pickup");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
+    map.put("1065", hivMetadata.getYesConcept().getConceptId());
+
+    String query =
+        new EptsQueriesUtil()
+            .patientIdQueryBuilder(getPatientStartedTarvBeforeQuery(false))
+            .getQuery();
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(query));
     return cd;
   }
 
@@ -452,27 +719,14 @@ public class ResumoMensalCohortQueries {
    * month. Composition to exclude <b>B5 ({@link #getPatientsTransferredOutB5})</b>
    *
    * <ul>
-   *   <li>B2i - Select all patients registered in encounter “Master Card – Ficha Resumo” (encounter
-   *       id 53) who have the following conditions:
-   *       <ol>
-   *         <li>Transfer from other HF” (PT:“Transferido de outra US”) (Concept ID 1369) is equal
-   *             to “YES” (Concept ID 1065); AND
-   *         <li>Type of Patient Transferred From (PT”: “Tipo de Paciente Transferido”) (Concept ID
-   *             6300) = “TARV” (Concept ID 6276) AND
-   *         <li>Date of MasterCard File Opening (PT”: “Data de Abertura da Ficha na US”) (Concept
-   *             ID 23891 value_datetime) >=startDate and <= endDate
-   *       </ol>
-   *       OR
-   *   <li>B2ii - Select all patients registered as transferred-in in Program Enrollment
-   *       <p>Technical Specs: <i>Table: patient_program</i> <b>Criterias:</b> <code>
-   *       program_id=2, patient_state_id=29 and start_date >=startDate and <=endDate
-   * </code>
-   *   <li>Exclude all Transferred-in registered by end of previous month (B2i [< startDate] OR B2ii
-   *       [>startDate]) except transferred-out patients by end of previous month (B5 inclusion
-   *       criterias for < startDate) according to 13 MOH Transferred-out patients by end of the
-   *       period (Any State) defined in the common queries <a
-   *       href="https://docs.google.com/document/d/1EtpeIn-6seD5skZJteCdANhxkKXQye9RckGV2eoYj6c/edit?pli=1#">link</a>
+   *   <li>Inscritos como “Transferido de” no serviço TARV-TRATAMENTO (inscrição programa TARV) com
+   *       “Data de Transferência” >= “Data Início do Relatório” e “<= “Data Fim do Relatório”; ou
+   *   <li>Registados no formulário “Ficha de Resumo” como “Transferido de outra US”, opção “TARV”
+   *       seleccionada e com “Data de Abertura de Ficha na US”>= “Data Início do Relatório” e “<=
+   *       “Data Fim do Relatório”;
    * </ul>
+   *
+   * <p>Excluindo todos os utentes activos em TARV no fim do mês anterior (Indicador B12)
    *
    * @return {@link CohortDefinition}
    */
@@ -492,25 +746,28 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("B2", map(getTransferredInPatients(false), mapping));
 
     cd.addSearch(
-        "B2Exlcusion",
-        map(getTransferredInPatients(true), "onOrAfter=${onOrAfter},location=${location}"));
+        "B12",
+        map(
+            getPatientsWhoWereActiveByEndOfPreviousMonthB12(),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
 
-    CohortDefinition transferredOut = getPatientsTransferredOutB5(false);
-
-    cd.addSearch("B5", map(transferredOut, "onOrBefore=${onOrAfter},location=${location}"));
-
-    cd.setCompositionString("B2 AND NOT ( B2Exlcusion AND NOT B5)");
+    cd.setCompositionString("B2 AND NOT B12");
 
     return cd;
   }
 
   /**
    * O sistema irá produzir B.3) Nº de reinícios TARV durante o mês:<br>
-   * Nº de activos em TARV no fim do mês = no Indicador B.13 (: RF21) oue Nº de que sairam do TARV
-   * (saídas TARV) durante o mês = Indicador B9 RF 17<br>
-   * Excluindo os utentes: Nº de utentes activos em TARV até ao fim do mês anterior = Indicador B12
-   * RF20) Nº de utentes que iniciaram TARV nesta unidade sanitária durante o mês = Indicador B1 RF9
-   * Nº de transferidos de outras US em TARV durante o mês = Indicador B2 RF10
+   *
+   * <ul>
+   *   <li>considerando os utentes: abandonos em TARV até o fim do mês anterior (RF31)
+   *   <li>suspensos em TARV até o fim do mês anterior (RF32)
+   *   <li>e filtrando os utentes: que efectuaram um levantamento na farmácia (FILA ou Ficha Mestra
+   *       Recepção/Levantou ARV) durante o mês de reporte (“Data de Levantamento” >= “Data Início
+   *       Relatório” e <= “Data Fim Relatório”)
+   * </ul>
+   *
+   * • ou ◦
    *
    * @return CohortDefinition
    */
@@ -522,24 +779,75 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
-
-    cd.addSearch("B13", map(getActivePatientsInARTByEndOfCurrentMonth(false), mapping));
-
-    cd.addSearch("B9", map(getB9(), mapping));
-
-    cd.addSearch("B12", map(getPatientsWhoWereActiveByEndOfPreviousMonthB12(), mapping));
-
     cd.addSearch(
-        "B1", map(getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(), mapping));
-
-    cd.addSearch(
-        "B2",
+        "S",
         map(
-            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
-    cd.setCompositionString("B13 OR B9 AND NOT (B12 OR B2 OR B1)");
+            getPatientsWhoSuspendedTreatmentB6(false),
+            "onOrBefore=${startDate-1d},location=${location}"));
 
+    cd.addSearch(
+        "B7",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
+            "date=${startDate-1d},location=${location}"));
+    cd.addSearch(
+        "P",
+        map(
+            getPatientsWhoRestartedArtOnFilaOrArvPickup(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("(B7 OR S) AND P");
+
+    return cd;
+  }
+
+  public CohortDefinition getPatientsWhoRestartedArtOnFilaOrArvPickup() {
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of patientes who initiated TARV - Fila and ARV Pickup");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
+    map.put("1065", hivMetadata.getYesConcept().getConceptId());
+
+    String query =
+        "       SELECT first.patient_id"
+            + "       FROM ( "
+            + "             SELECT p.patient_id "
+            + "             FROM patient p "
+            + "             INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "             WHERE e.encounter_type = ${18} "
+            + "                 AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "                 AND e.voided = 0 "
+            + "                 AND p.voided = 0 "
+            + "                 AND e.location_id = :location "
+            + "       GROUP BY p.patient_id "
+            + "       UNION "
+            + "       SELECT p.patient_id "
+            + "       FROM patient p "
+            + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "       INNER JOIN obs o2 ON o2.encounter_id = e.encounter_id  "
+            + "       WHERE e.encounter_type = ${52} "
+            + "           AND o.concept_id = ${23865} "
+            + "           AND o.value_coded = ${1065} "
+            + "           AND o2.concept_id = ${23866} "
+            + "           AND o2.value_datetime BETWEEN :startDate AND :endDate "
+            + "           AND o.voided = 0 "
+            + "           AND o2.voided = 0 "
+            + "           AND e.location_id = :location "
+            + "           AND e.voided = 0 "
+            + "           AND p.voided = 0 "
+            + "       GROUP BY p.patient_id "
+            + "        ) first "
+            + "     GROUP BY first.patient_id ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(query));
     return cd;
   }
 
@@ -636,6 +944,121 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
     cd.setMaxDates(maxDates);
+
+    return cd;
+  }
+
+  /**
+   *
+   *
+   * <ul>
+   *   <li>incluindo os utentes activos em TARV no fim do mês anterior (Indicador B12 – RF20) ou os
+   *       utentes que iniciaram TARV durante o mês ( Indicador B1 – RF9) ou os utentes transferidos
+   *       de em TARV durante o mês ( Indicador B2 – RF10) ou os utentes que reiniciaram TARV
+   *       durante o mês ( Indicador B3 – RF11)
+   *   <li>filtrando os utentes: inscritos como ‘Transferido para’ (último estado de inscrição) no
+   *       programa SERVIÇO TARV TRATAMENTO durante o mês de reporte com “Data de Transferência” >=
+   *       “Data Início do Relatório” e <= Data Fim do Relatório”; ou
+   *       <p>*
+   *   <li>registados como [“Mudança Estado Permanência TARV” (Coluna 21) = “T” (Transferido Para)
+   *       na Ficha Clínica com “Data da Consulta Actual” (Coluna 1, durante a qual se fez o registo
+   *       da mudança do estado de permanência TARV) >= “Data Início do Relatório” e <= Data Fim do
+   *       Relatório”; ou
+   *   <li>como “Mudança Estado Permanência TARV” = “Transferido Para” na Ficha Resumo com “Data da
+   *       Transferência” >= “Data Início do Relatório” e <= “Data Fim do Relatório”
+   *   <li>excluindo os utentes que tenham tido uma consulta clínica (Ficha Clínica) ou levantamento
+   *       de ARV (FILA, Ficha Mestre – Recepção/Levantou ARVS) após a “Data de Transferência” (a
+   *       data mais recente entre os critérios acima identificados) e até o fim do mês de reporte
+   *       (“Data Fim do Relatório”)
+   * </ul>
+   */
+  public CohortDefinition getPatientsTransferedOutRF13B5(boolean useBothDates) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("B5 - Nº de transferidos para outras US em TARV durante o mês");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mapping2 = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+
+    if (useBothDates) {
+      cd.addSearch("T", map(getPatientsTransferredOutB5(true), mapping2));
+    } else {
+      cd.addSearch(
+          "T",
+          map(
+              getPatientsTransferredOutB5(false),
+              "onOrBefore=${startDate-1d},location=${location}"));
+    }
+    cd.addSearch("B12", map(getPatientsWhoWereActiveByEndOfPreviousMonthB12(), mapping));
+    cd.addSearch(
+        "B1", map(getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(), mapping));
+    cd.addSearch(
+        "B2",
+        map(
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
+            mapping2));
+    cd.addSearch("B3", map(getPatientsRestartedTarvtB3(), mapping));
+
+    cd.setCompositionString("T AND (B12 OR B1 OR B2 OR B3)");
+
+    return cd;
+  }
+
+  /**
+   *
+   *
+   * <ul>
+   *   <li>incluindo os utentes activos em TARV no fim do mês anterior (Indicador B12 – RF20) ou os
+   *       utentes que iniciaram TARV durante o mês ( Indicador B1 – RF9) ou os utentes transferidos
+   *       de em TARV durante o mês ( Indicador B2 – RF10) ou os utentes que reiniciaram TARV
+   *       durante o mês ( Indicador B3 – RF11)
+   *   <li>filtrando os utentes registados: como ‘Suspensos’ no programa SERVIÇO TARV TRATAMENTO
+   *       durante o mês de reporte com “Data de Suspensão” >= “Data Início do Relatório” e <= Data
+   *       Fim do Relatório”; ou
+   *   <li>como [“Mudança Estado Permanência TARV” (Coluna 21) = “S” (Suspenso) na Ficha Clínica com
+   *       “Data da Consulta Actual” (Coluna 1, durante a qual se fez o registo da mudança do estado
+   *       de permanência TARV) >= “Data Início do Relatório” e <= “Data Fim do Relatório” ou
+   *   <li>como “Mudança Estado Permanência TARV” = “Suspensão” na Ficha Resumo com “Data da
+   *       Suspensão” >= “Data Início do Relatório” e <= “Data Fim do Relatório”;
+   *   <li>excluindo os utentes que tenham tido um levantamento de ARV (FILA, Ficha Mestre –
+   *       Recepção/Levantou ARVS) após a “Data de Suspensão” (a data mais recente entre os
+   *       critérios acima identificados) e até o fim do mês de reporte (“Data Fim do Relatório”)
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoSuspendedTreatmentRF14B6(boolean useBothDates) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("B6 - Nº de suspensos TARV durante o mês");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mapping2 = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+
+    if (useBothDates) {
+      cd.addSearch("S", map(getPatientsWhoSuspendedTreatmentB6(true), mapping2));
+    } else {
+      cd.addSearch(
+          "S",
+          map(
+              getPatientsWhoSuspendedTreatmentB6(false),
+              " onOrBefore=${startDate-1d},location=${location}"));
+    }
+    cd.addSearch("B12", map(getPatientsWhoWereActiveByEndOfPreviousMonthB12(), mapping));
+    cd.addSearch(
+        "B1", map(getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(), mapping));
+    cd.addSearch(
+        "B2",
+        map(
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
+            mapping2));
+    cd.addSearch("B3", map(getPatientsRestartedTarvtB3(), mapping));
+
+    cd.setCompositionString("S AND (B12 OR B1 OR B2 OR B3)");
 
     return cd;
   }
@@ -948,6 +1371,55 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
+   *
+   *
+   * <ul>
+   *   <li>incluindo os utentes registados activos em TARV no fim do mês anterior (Indicador B12 –
+   *       RF20) ou os utentes que iniciaram TARV durante o mês ( Indicador B1 – RF9) ou os utentes
+   *       transferidos de em TARV durante o mês ( Indicador B2 – RF10) ou os utentes que
+   *       reiniciaram TARV durante o mês ( Indicador B3 – RF11)
+   *   <li>e filtrando os utentes
+   * </ul>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoDiedB8(boolean useBothDates) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("B8 - Nº de óbitos TARV durante o mês");
+    cd.addParameter(new Parameter("onOrAfter", "startDate", Date.class));
+    cd.addParameter(new Parameter("onOrBefore", "endDate", Date.class));
+    cd.addParameter(new Parameter("locationList", "location", Location.class));
+
+    String mapping2 =
+        "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${locationList}";
+    String mapping = "startDate=${onOrAfter},endDate=${onOrBefore},location=${locationList}";
+
+    if (useBothDates) {
+      cd.addSearch("D", map(getPatientsWhoDied(true), mapping2));
+    } else {
+      cd.addSearch(
+          "D",
+          map(
+              getPatientsWhoDied(false),
+              "onOrBefore=${onOrAfter-1d},locationList=${locationList}"));
+    }
+    cd.addSearch("B12", map(getPatientsWhoWereActiveByEndOfPreviousMonthB12(), mapping));
+    cd.addSearch(
+        "B1", map(getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1(), mapping));
+    cd.addSearch(
+        "B2",
+        map(
+            getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthB2(),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${locationList}"));
+    cd.addSearch("B3", map(getPatientsRestartedTarvtB3(), mapping));
+
+    cd.setCompositionString("D AND (B12 OR B1 OR B2 OR B3)");
+
+    return cd;
+  }
+
+  /**
    * RF 17 - O sistema irá produzir B.9) Nº de saídas TARV durante o mês, calculado automaticamente
    * através da seguinte fórmula: (B.9 = B.5 + B.6 + B.7 + B.8 )
    */
@@ -962,13 +1434,13 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B5",
         map(
-            getPatientsTransferredOutB5(true),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsTransferedOutRF13B5(true),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B6",
         map(
-            getPatientsWhoSuspendedTreatmentB6(true),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoSuspendedTreatmentRF14B6(true),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B7",
         map(
@@ -977,7 +1449,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B8",
         map(
-            getPatientsWhoDied(true),
+            getPatientsWhoDiedB8(true),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
 
     cd.setCompositionString("B5 OR B6 OR B7 OR B8");
@@ -1046,8 +1518,8 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "artStartDate",
         map(
-            genericCohortQueries.getStartedArtBeforeDate(false),
-            "onOrBefore=${startDate-1d},location=${location}"));
+            getPatientsStartedArtOnFilaOrArvPickupBeforeDate(),
+            "endDate=${startDate-1d},location=${location}"));
 
     cd.addSearch(
         "transferredIn",
@@ -1144,12 +1616,10 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "B10",
+        "RF33",
         map(
-            getPatientsWhoStartedArtByEndOfPreviousMonthB10(),
-            "startDate=${startDate},location=${location}"));
-    cd.addSearch(
-        "B2A", map(getTransferredInForB10(), "onOrAfter=${startDate-1d},location=${location}"));
+            getPatientsWhoStartedArtOnAnyHeathFacilityRf33(),
+            "endDate=${startDate-1d},location=${location}"));
 
     cd.addSearch(
         "B5A",
@@ -1169,12 +1639,41 @@ public class ResumoMensalCohortQueries {
         "B8A",
         map(getPatientsWhoDied(false), "onOrBefore=${startDate-1d},locationList=${location}"));
 
+    cd.setCompositionString("(RF33 AND NOT (B5A OR B6A OR B7A OR B8A)");
+
+    return cd;
+  }
+
+  public CohortDefinition getPatientsWhoWereActiveByEndOfMonthB13() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Number of active patients in ART by end of month");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
     cd.addSearch(
-        "drugPick",
+        "RF34",
         map(
-            getPatientsWhoHadAtLeastDrugPickUp(),
-            "startDate=${startDate-1d},location=${location}"));
-    cd.setCompositionString("((B10 OR B2A) AND drugPick) AND NOT (B5A OR B6A OR B7A OR B8A)");
+            getPatientsWhoStartedArtOnAnyHeathFacilityRf33(),
+            "endDate=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "B5A",
+        map(getPatientsTransferredOutB5(true), "onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "B6A",
+        map(
+            getPatientsWhoSuspendedTreatmentB6(false),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "B7A",
+        map(
+            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
+            "location=${location},date=${endDate}"));
+    cd.addSearch(
+        "B8A", map(getPatientsWhoDied(false), "onOrBefore=${endDate},locationList=${location}"));
+
+    cd.setCompositionString("(RF34 AND NOT (B5A OR B6A OR B7A OR B8A)");
 
     return cd;
   }
@@ -1434,6 +1933,7 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition a2 = getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
     CohortDefinition tpi = getPatientsWhoStartedTPI();
+    CohortDefinition ex = getPatientsWhoStartedTptAfterPreArt();
 
     String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
     String mappings1 = "startDate=${startDate-1m},endDate=${endDate},location=${location}";
@@ -1443,13 +1943,14 @@ public class ResumoMensalCohortQueries {
         "startDate=${onOrAfter-1m},endDate=${onOrBefore},location=${locationList}";
     cd.addSearch("A2", map(a2, mappings1));
     cd.addSearch("TPI", map(tpi, mappings));
+    cd.addSearch("extpt", map(ex, mappings1));
     cd.addSearch(
         "exclusions",
         map(
             getAdditionalExclusionCriteriaForC1(
                 transferBasedOnDateMappings, inProgramStatesMappings),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.setCompositionString("(A2 AND TPI) AND NOT exclusions");
+    cd.setCompositionString("(A2 AND TPI) AND NOT (exclusions OR extpt)");
 
     return cd;
   }
@@ -1487,9 +1988,15 @@ public class ResumoMensalCohortQueries {
             getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2(),
             "startDate=${startDate-1m},endDate=${endDate},location=${location}"));
 
+    cd.addSearch(
+        "EX",
+        map(
+            getPatientsWhoHadTbDiagnosticAfterPreArt(),
+            "startDate=${startDate-1m},endDate=${endDate},location=${location}"));
+
     cd.addSearch("TB", map(tb, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString("A2 AND TB");
+    cd.setCompositionString("(A2 AND TB) AND NOT EX");
     return cd;
   }
 
@@ -1952,9 +2459,7 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch(
         "common",
-        map(
-            getActivePatientsInARTByEndOfCurrentMonth(isMOH),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        map(getPatientsWhoWereActiveByEndOfMonthB13(), "endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "F",
@@ -1995,9 +2500,7 @@ public class ResumoMensalCohortQueries {
 
     cd.addSearch(
         "B13",
-        map(
-            getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        map(getPatientsWhoWereActiveByEndOfMonthB13(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B1",
         map(
@@ -2021,8 +2524,8 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B6",
         map(
-            getPatientsWhoSuspendedTreatmentB6(true),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+            getPatientsWhoSuspendedTreatmentRF14B6(true),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "B7",
         map(
@@ -2031,7 +2534,7 @@ public class ResumoMensalCohortQueries {
     cd.addSearch(
         "B8",
         map(
-            getPatientsWhoDied(true),
+            getPatientsWhoDiedB8(true),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
     cd.setCompositionString("B13 AND NOT(B1 OR B2 OR B3 OR B5 OR B6 OR B7 OR B8)");
     return cd;
@@ -2226,18 +2729,11 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "C",
-        map(
-            getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        map(getPatientsWhoWereActiveByEndOfMonthB13(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "VL",
         map(
             getViralLoadOrQualitative(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.addSearch(
-        "VLR",
-        map(
-            getViralLoadOrQualitativeOnfichaResumo(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -2251,13 +2747,7 @@ public class ResumoMensalCohortQueries {
                     hivMetadata.getHivViralLoadQualitative().getConceptId())),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.addSearch(
-        "R",
-        map(
-            genericCohortQueries.generalSql("R", getPatientsWithVLOn21DecemberOnFichaResumo()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("(C AND (VL OR VLR)) AND NOT (Ex2 OR R)");
+    cd.setCompositionString("(C AND VL ) AND NOT Ex2 ");
     return cd;
   }
 
@@ -2273,8 +2763,7 @@ public class ResumoMensalCohortQueries {
    * anual!) B13=B12+B4-B9)
    *
    * <ul>
-   *   <li>B13: {@link ResumoMensalCohortQueries#getActivePatientsInARTByEndOfCurrentMonth()}
-   *       <b>AND</b>
+   *   <li>B13: <b>AND</b>
    *   <li>Filter all patients registered in encounter “S.TARV – Adulto Seguimento” (encounter id 6)
    *       with the following information:
    *       <ul>
@@ -2306,9 +2795,7 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addSearch(
         "C",
-        map(
-            getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+        map(getPatientsWhoWereActiveByEndOfMonthB13(), "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "SUPP",
         map(
@@ -2318,18 +2805,6 @@ public class ResumoMensalCohortQueries {
         "QUAL",
         map(
             gePatientsWithvViralLoadQuantitative(hivMetadata.getHivViralLoadQualitative()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.addSearch(
-        "QTR",
-        map(
-            getViralLoadSuppressionOnFichaResumo(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.addSearch(
-        "QLR",
-        map(
-            getPatientsWithQualitativeVLOnFichaResumo(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -2343,14 +2818,7 @@ public class ResumoMensalCohortQueries {
                     hivMetadata.getHivViralLoadQualitative().getConceptId())),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
-    cd.addSearch(
-        "ExR",
-        map(
-            genericCohortQueries.generalSql(
-                "ExR", getPatientsWithVLSuppression21DecemberOnFichaResumo()),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
-
-    cd.setCompositionString("(C AND (SUPP OR QUAL OR QTR OR QLR)) AND NOT (Ex3 OR ExR)");
+    cd.setCompositionString("(C AND (SUPP OR QUAL)) AND NOT Ex3");
     return cd;
   }
 
@@ -2413,6 +2881,97 @@ public class ResumoMensalCohortQueries {
         getPatientsWithGivenEncounterType(
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId()));
     return cd;
+  }
+
+  /**
+   * F.2 - Dos utentes que vieram à consulta durante o mês, subgrupo que foi rastreado para TB:
+   *
+   * <ul>
+   *   <li>Incluindo todas as consultas clínicas registadas os na “Ficha Clínica” com “Data de
+   *       Consulta” (Coluna 1) >= “Data de Início de Relatório” e <= “Data Fim de Relatório” e com
+   *       “Tuberculose – Tem Sintomas?” (Coluna 9) - = “S” ou “N” e com “Tratamento de TB – I-C-F”
+   *       (Coluna 10) sem informação (para não contar os utentes que estão em Tratamento de TB e
+   *       podem ter sintomas)
+   *   <li>Nota: este indicador F2 refere-se ao número de rastreios de TB efectuados durante o mês,
+   *       ou seja, por exemplo, caso um utente tenha tido duas consultas clínicas durante o mês com
+   *       rastreio para TB em ambas as consultas, serão consideradas as duas consultas e os dois
+   *       rastreios correspondentes neste indicador
+   * </ul>
+   *
+   * @return SqlEncounterQuery
+   */
+  public SqlEncounterQuery getNumberOfVisitsDuringTheReportingMonthF1() {
+    SqlEncounterQuery sqlEncounterQuery = new SqlEncounterQuery();
+    sqlEncounterQuery.setName("F1: Number clinical appointment during the reporting month");
+    sqlEncounterQuery.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlEncounterQuery.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlEncounterQuery.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+
+    String query =
+        "SELECT e.encounter_id "
+            + "FROM encounter e "
+            + "INNER JOIN patient p ON p.patient_id = e.patient_id "
+            + "WHERE e.encounter_type = ${6} "
+            + "AND e.location_id = :location "
+            + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "AND e.voided = 0 "
+            + "AND p.voided = 0 ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+
+    sqlEncounterQuery.setQuery(sb.replace(query));
+    return sqlEncounterQuery;
+  }
+
+  public SqlEncounterQuery getNumberOfEncountersWithTbScreeningsDuringTheReportingMonthF2() {
+    SqlEncounterQuery sqlEncounterQuery = new SqlEncounterQuery();
+    sqlEncounterQuery.setName("F1: Number clinical appointment during the reporting month");
+    sqlEncounterQuery.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlEncounterQuery.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlEncounterQuery.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("23758", tbMetadata.getHasTbSymptomsConcept().getConceptId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
+    map.put("1066", hivMetadata.getNoConcept().getConceptId());
+    map.put("1268", tbMetadata.getTBTreatmentPlanConcept().getConceptId());
+
+    String query =
+        "SELECT e.encounter_id "
+            + "FROM   encounter e "
+            + "       INNER JOIN patient p "
+            + "               ON p.patient_id = e.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON o.encounter_id = e.encounter_id "
+            + "WHERE  e.encounter_type = ${6} "
+            + "       AND e.location_id = :location "
+            + "       AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "       AND o.concept_id = ${23758} "
+            + "       AND o.value_coded IN ( ${1066}, ${1065} ) "
+            + "       AND e.voided = 0 "
+            + "       AND p.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND NOT EXISTS(SELECT en.encounter_id "
+            + "                      FROM   encounter en "
+            + "                             INNER JOIN obs o2 "
+            + "                                     ON o2.encounter_id = en.encounter_id "
+            + "                      WHERE  en.encounter_type = ${6} "
+            + "                             AND en.location_id = :location "
+            + "                             AND en.encounter_datetime = e.encounter_datetime "
+            + "                             AND en.patient_id = p.patient_id "
+            + "                             AND o2.concept_id = ${1268} "
+            + "                             AND o2.value_coded IS NOT NULL "
+            + "                             AND en.voided = 0 "
+            + "                             AND o2.voided = 0)";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+
+    sqlEncounterQuery.setQuery(sb.replace(query));
+    return sqlEncounterQuery;
   }
 
   /**
@@ -2602,41 +3161,16 @@ public class ResumoMensalCohortQueries {
    * abandonos TARV durante o mês)</b>
    *
    * <ul>
-   *   <li>All patients having the most recent date between last scheduled drug pickup date (Fila)
-   *       or 30 days after last ART pickup date (Recepção – Levantou ARV) and adding 60 days and
-   *       this date being less than reporting end Date.
-   *       <ol>
-   *         <li>Select the most recent date from:
-   *             <ul>
-   *               <li>a.Last record of Next Drugs Pick Up Appointment (Concept ID 5096
-   *                   value_datetime – not empty/null) from encounters of type 18 registered by
-   *                   endDate
-   *               <li>The most recent “Data de Levantamento” (Concept Id 23866 value_datetime-not
-   *                   empty/null) occurred by endDate from encounters of type 52 , plus(+) 30 days
-   *             </ul>
-   *         <li>And add 60 days and this date should be < endDate
-   *       </ol>
-   *   <li>Except all patients who abandoned the ART by previous month:
-   *       <ol>
-   *         <li>Select the most recent date from:
-   *             <ul>
-   *               <li>Last record of Next Drugs Pick Up Appointment (Concept ID 5096 value_datetime
-   *                   – not empty/null) from encounters of type 18 registered by startDate
-   *               <li>d.The most recent “Data de Levantamento” (Concept Id 23866 value_datetime-not
-   *                   empty/null) occurred by startDate from encounters of type 52 , plus(+) 30
-   *                   days
-   *             </ul>
-   *         <li>And add 60 days and this date should be < startDate
-   *       </ol>
-   *   <li>Except all patients who were transferred-out by reporting endDate: Same criterias as
-   *       defined in B5, but instead of during the period (>=startDate and <=endDate), it should be
-   *       by reporting endDate (<=endDate)
-   *   <li>Except all patients who were suspended by reporting endDate: Same criterias as defined in
-   *       B6, but instead of during the period (>=startDate and <=endDate), it should be by
-   *       reporting endDate (<=endDate)
-   *   <li>Except all patients who died by reporting endDate: Same criterias as defined in B8, but
-   *       instead of during the period (>=startDate and <=endDate), it should be by reporting
-   *       endDate (<=endDate)
+   *   <li>incluindo os utentes activos em TARV no fim do mês anterior (Indicador B12 – RF20) e
+   *       filtrando os utentes: com a data mais recente entre
+   *   <li>a Data do Último Levantamento registada, até o fim do mês de reporte, na “Ficha
+   *       Recepção/Levantou ARVs?” com “Levantou ARV” = “S”, adicionando 30 dias, e
+   *   <li>a Data do Último Agendamento de Levantamento registado no FILA até o fim do mês de
+   *       reporte;
+   *   <li>Esta data adicionando 60 dias é menor que a “Data Fim do Relatório”;
+   *   <li>excluindo os utentes: suspensos durante o mês de reporte (Indicador B6 – RF14)
+   *   <li>óbitos durante o mês de reporte (Indicador B8 – RF16)
+   *   <li>transferidos para durante o mês de reporte ( Indicador B5 – RF13)
    * </ul>
    *
    * @return {@link CohortDefinition}
@@ -2654,23 +3188,32 @@ public class ResumoMensalCohortQueries {
         map(
             getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
             "date=${onOrBefore},location=${location}"));
-    ccd.addSearch(
-        "B7II",
-        map(
-            getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7(),
-            "date=${onOrAfter-1},location=${location}"));
 
     ccd.addSearch(
-        "B7III",
-        map(getPatientsTransferredOutB5(true), "onOrBefore=${onOrBefore},location=${location}"));
-    ccd.addSearch(
-        "B7IV",
+        "B12",
         map(
-            getPatientsWhoSuspendedTreatmentB6(false),
-            "onOrBefore=${onOrBefore},location=${location}"));
+            getPatientsWhoWereActiveByEndOfPreviousMonthB12(),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
+
     ccd.addSearch(
-        "B7V", map(getPatientsWhoDied(false), "onOrBefore=${onOrBefore},locationList=${location}"));
-    ccd.setCompositionString("B7I AND NOT (B7II OR B7III OR B7IV OR B7V)");
+        "B6",
+        map(
+            getPatientsWhoSuspendedTreatmentRF14B6(true),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
+
+    ccd.addSearch(
+        "B8",
+        map(
+            getPatientsWhoDiedB8(true),
+            "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},locationList=${location}"));
+
+    ccd.addSearch(
+        "B5",
+        map(
+            getPatientsTransferedOutRF13B5(true),
+            "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}"));
+
+    ccd.setCompositionString("(B7I AND B12) NOT (B6 OR B8 OR B5)");
 
     return ccd;
   }
@@ -2858,7 +3401,7 @@ public class ResumoMensalCohortQueries {
 
     CohortDefinition B7E = getNumberOfPatientsWhoAbandonedArtDuringPreviousMonthForB7();
 
-    CohortDefinition B8E = getPatientsWhoDied(false);
+    CohortDefinition B8E = getPatientsWhoDiedB8(false);
 
     String mappingsOnDate = "onOrBefore=${endDate},location=${location}";
     String mappingsOnOrBeforeLocationList = "onOrBefore=${endDate},locationList=${location}";
@@ -2876,7 +3419,8 @@ public class ResumoMensalCohortQueries {
     cd.addSearch("B5E", map(B5E, mappingsOnDate));
     cd.addSearch("B6E", map(B6E, mappingsOnDate));
     cd.addSearch("B7E", map(B7E, "date=${endDate},location=${location}"));
-    cd.addSearch("B8E", map(B8E, mappingsOnOrBeforeLocationList));
+    cd.addSearch(
+        "B8E", map(B8E, "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
 
     cd.setCompositionString(
         "startedArt AND (fila OR masterCardPickup) AND NOT (B5E OR B6E  OR B7E OR B8E )");

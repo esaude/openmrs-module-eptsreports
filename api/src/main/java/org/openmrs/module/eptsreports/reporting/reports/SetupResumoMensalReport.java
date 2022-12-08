@@ -21,13 +21,13 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.LocationDataSetDefinition;
+import org.openmrs.module.eptsreports.reporting.library.datasets.ResumoMensalEncounterCountDataSet;
 import org.openmrs.module.eptsreports.reporting.library.datasets.resumo.ResumoMensalDataSetDefinition;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
-import org.springframework.beans.factory.annotation.Autowired;
 
 @Deprecated
 public class SetupResumoMensalReport extends EptsDataExportManager {
@@ -36,12 +36,15 @@ public class SetupResumoMensalReport extends EptsDataExportManager {
 
   private GenericCohortQueries genericCohortQueries;
 
-  @Autowired
+  private ResumoMensalEncounterCountDataSet resumoMensalEncounterCountDataSet;
+
   public SetupResumoMensalReport(
       ResumoMensalDataSetDefinition resumoMensalDataSetDefinition,
-      GenericCohortQueries genericCohortQueries) {
+      GenericCohortQueries genericCohortQueries,
+      ResumoMensalEncounterCountDataSet resumoMensalEncounterCountDataSet) {
     this.resumoMensalDataSetDefinition = resumoMensalDataSetDefinition;
     this.genericCohortQueries = genericCohortQueries;
+    this.resumoMensalEncounterCountDataSet = resumoMensalEncounterCountDataSet;
   }
 
   @Override
@@ -74,6 +77,9 @@ public class SetupResumoMensalReport extends EptsDataExportManager {
     rd.addDataSetDefinition("HF", mapStraightThrough(new LocationDataSetDefinition()));
     rd.addDataSetDefinition(
         "R", mapStraightThrough(resumoMensalDataSetDefinition.constructResumoMensalDataset()));
+    rd.addDataSetDefinition(
+        "F",
+        mapStraightThrough(resumoMensalEncounterCountDataSet.constructEncounterCountDataset()));
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
             genericCohortQueries.getBaseCohort(), "endDate=${endDate},location=${location}"));
