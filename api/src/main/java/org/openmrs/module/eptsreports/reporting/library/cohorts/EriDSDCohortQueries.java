@@ -75,7 +75,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
             "endDate=${endDate},location=${location}"));
 
     cd.addSearch(
@@ -151,7 +151,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "B13",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
             "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("B13 AND NOT activeAndStablePatients");
@@ -270,7 +270,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "B13",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
             "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("B13");
@@ -536,7 +536,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
             "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND nextArtPickUpScheduledORdispensaTrimestral");
@@ -573,7 +573,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
             "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND nextArtPickUpScheduledORdispensaSemestral");
@@ -612,8 +612,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND nextArtPickUpScheduledORdispensaAnual");
 
@@ -648,8 +648,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND dispensaDescentralizada");
 
@@ -684,8 +684,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND dispensaComunitariaApe");
 
@@ -721,8 +721,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND nextArtPickUpScheduledORfluxoRapido");
 
@@ -753,8 +753,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND GAAC");
 
@@ -790,8 +790,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND dispensaComunitariaProvedor");
 
@@ -828,8 +828,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND brigadaMovel");
     return cd;
@@ -865,8 +865,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND clinicaMovel");
 
@@ -900,8 +900,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND abordagemFamiliar");
 
@@ -935,8 +935,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND clubeDeAdesao");
 
@@ -971,7 +971,7 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
             "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND extensaoHorario");
@@ -1006,8 +1006,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND paragemUnicaTb");
 
@@ -1042,8 +1042,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND paragemUnicaTarv");
 
@@ -1077,8 +1077,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND paragemUnicaSaaJ");
 
@@ -1112,8 +1112,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND paragemUnicaSmi");
 
@@ -1147,8 +1147,8 @@ public class EriDSDCohortQueries {
     cd.addSearch(
         "D3",
         EptsReportUtils.map(
-            resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false),
-            "startDate=${endDate},endDate=${endDate},location=${location}"));
+            resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13(),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("D3 AND doencaAvancadaHiv");
 
