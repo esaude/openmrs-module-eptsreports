@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import org.joda.time.LocalDate;
 import org.openmrs.Concept;
 import org.openmrs.EncounterType;
 import org.openmrs.Location;
@@ -182,7 +183,8 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
 
     if (!personAttribute.isEmpty(pId)) {
       PersonAttribute attr = personAttribute.get(pId).asType(PersonAttribute.class);
-      Date date = attr.getDateCreated();
+      Date date = new LocalDate(attr.getDateCreated()).toDate();
+
       try {
         KeyPop keypop = KeyPop.of(attr);
         keyPopByDate.putInList(date, new KeyPopAndSource(keypop, KeyPopSource.PERSON_ATTRIBUTE));
@@ -262,11 +264,17 @@ public class KeyPopulationCalculation extends AbstractPatientCalculation {
             pre = k.getKeyPop();
           }
         }
-        if (adulto != null) assignedKeyPop = adulto;
-        else if (apss != null) assignedKeyPop = apss;
-        else if (person != null) assignedKeyPop = person;
-        else if (segm != null) assignedKeyPop = segm;
-        else if (pre != null) assignedKeyPop = pre;
+        if (adulto != null) {
+          assignedKeyPop = adulto;
+        } else if (apss != null) {
+          assignedKeyPop = apss;
+        } else if (person != null) {
+          assignedKeyPop = person;
+        } else if (segm != null) {
+          assignedKeyPop = segm;
+        } else if (pre != null) {
+          assignedKeyPop = pre;
+        }
       }
     }
 
