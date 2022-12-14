@@ -220,10 +220,10 @@ public class APSSResumoTrimestralCohortQueries {
 
     cd.setName("C1");
 
-    String mapping = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mapping = "endDate=${endDate},location=${location}";
 
     CohortDefinition activeInART =
-        this.resumoMensalCohortQueries.getActivePatientsInARTByEndOfCurrentMonth(false);
+        this.resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13();
 
     cd.addSearch("activeInART", EptsReportUtils.map(activeInART, mapping));
 
@@ -288,14 +288,14 @@ public class APSSResumoTrimestralCohortQueries {
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition startedART = this.getPatientsWhoStartedArtByEndOfPreviousMonthB10();
+    CohortDefinition startedART =
+        this.resumoMensalCohortQueries.getPatientsWhoStartedArtByEndOfPreviousMonthB10();
     CohortDefinition patientAtAge15OrOlder = genericCohortQueries.getAgeOnReportEndDate(15, null);
     CohortDefinition registeredInFichaAPSSPP = this.getPatientsRegisteredInFichaAPSSPP();
 
     cd.addSearch(
         "startedArt",
-        EptsReportUtils.map(
-            startedART, "startDate=${startDate-3m},endDate=${endDate-3m},location=${location}"));
+        EptsReportUtils.map(startedART, "startDate=${startDate-3m},location=${location}"));
 
     cd.addSearch(
         "patientAtAge15OrOlder",
@@ -596,6 +596,7 @@ public class APSSResumoTrimestralCohortQueries {
     map.put("24011", hivMetadata.getPatientReturnedAfterVisitConcept().getConceptId());
     map.put("24012", hivMetadata.getDatePatientReturnedAfterVisitConcept().getConceptId());
     map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
+    map.put("35", hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
 
     String query =
         "SELECT "
