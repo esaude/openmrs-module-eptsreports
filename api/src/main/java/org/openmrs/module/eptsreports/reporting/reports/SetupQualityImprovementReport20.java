@@ -17,6 +17,13 @@ import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
+
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.Properties;
+
 @Deprecated
 public class SetupQualityImprovementReport20 extends EptsDataExportManager {
 
