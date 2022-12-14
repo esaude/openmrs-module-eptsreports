@@ -28,6 +28,8 @@ import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Deprecated
 public class SetupResumoMensalReport extends EptsDataExportManager {
@@ -38,6 +40,7 @@ public class SetupResumoMensalReport extends EptsDataExportManager {
 
   private ResumoMensalEncounterCountDataSet resumoMensalEncounterCountDataSet;
 
+  @Autowired
   public SetupResumoMensalReport(
       ResumoMensalDataSetDefinition resumoMensalDataSetDefinition,
       GenericCohortQueries genericCohortQueries,

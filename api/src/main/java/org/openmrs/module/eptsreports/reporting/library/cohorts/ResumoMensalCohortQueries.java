@@ -784,6 +784,12 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWhoSuspendedTreatmentB6(false),
             "onOrBefore=${startDate-1d},location=${location}"));
+    cd.addSearch(
+        "D", map(getPatientsWhoDied(false), "onOrBefore=${startDate-1d},locationList=${location}"));
+
+    cd.addSearch(
+        "T",
+        map(getPatientsTransferredOutB5(true), "onOrBefore=${startDate-1d},location=${location}"));
 
     cd.addSearch(
         "B7",
@@ -795,7 +801,7 @@ public class ResumoMensalCohortQueries {
         map(
             getPatientsWhoRestartedArtOnFilaOrArvPickup(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
-    cd.setCompositionString("(B7 OR S) AND P");
+    cd.setCompositionString("((B7 NOT (D OR T OR S)) OR S) AND P");
 
     return cd;
   }
@@ -2028,6 +2034,7 @@ public class ResumoMensalCohortQueries {
         hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
     map.put("activeTBConcept", tbMetadata.getActiveTBConcept().getConceptId());
     map.put("yesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
+    map.put("noConcept", hivMetadata.getNoConcept().getConceptId());
     String query =
         " SELECT pt.patient_id "
             + "FROM patient pt  "
@@ -2076,7 +2083,7 @@ public class ResumoMensalCohortQueries {
             + "                  AND enc.encounter_type = ${adultoSeguimentoEncounterType}  "
             + "                  AND pt.voided = 0  "
             + "                  AND o.concept_id   = ${activeTBConcept}  "
-            + "                  AND o.value_coded  =  ${yesConcept} "
+            + "                  AND o.value_coded  IN ( ${yesConcept}, ${noConcept} )"
             + "                  GROUP BY pt.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(map);
