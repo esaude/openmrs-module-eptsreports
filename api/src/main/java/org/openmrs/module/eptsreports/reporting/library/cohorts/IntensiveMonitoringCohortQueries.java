@@ -1,12 +1,5 @@
 package org.openmrs.module.eptsreports.reporting.library.cohorts;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Location;
 import org.openmrs.module.eptsreports.metadata.CommonMetadata;
@@ -22,6 +15,9 @@ import org.openmrs.module.reporting.cohort.definition.SqlCohortDefinition;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.util.*;
 
 @Component
 public class IntensiveMonitoringCohortQueries {
@@ -1030,7 +1026,7 @@ public class IntensiveMonitoringCohortQueries {
 
     CohortDefinition B5E =
         commonCohortQueries.getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
-            false, true, -12);
+            false, true, 12);
 
     CohortDefinition G = qualityImprovement2020CohortQueries.getMQ13G();
 
@@ -2714,7 +2710,7 @@ public class IntensiveMonitoringCohortQueries {
 
     CohortDefinition B5E =
         commonCohortQueries.getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
-            false, true, -12);
+            false, true, 12);
 
     CohortDefinition abandonedInTheLastSixMonthsFromFirstLineDate =
         qualityImprovement2020CohortQueries
