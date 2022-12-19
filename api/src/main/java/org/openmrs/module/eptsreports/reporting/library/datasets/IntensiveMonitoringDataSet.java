@@ -1724,8 +1724,8 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "MI15NUM14",
             EptsReportUtils.map(
-                qualityImprovement2020CohortQueries.getMQ15MdsNum14(),
-                "startDate=${startDate},revisionEndDate=${endDate},location=${location}"));
+                qualityImprovement2020CohortQueries.getMI15MdsNum14(),
+                "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
     MI15NUM14.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
 
@@ -1734,7 +1734,7 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
         "Numerator: # de pacientes inscritos em MDS para pacientes estáveis ",
         EptsReportUtils.map(
             MI15NUM14,
-            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"),
         "ageByEvaluationEndDate=2+");
 
     CohortIndicator MI15DEN15 =

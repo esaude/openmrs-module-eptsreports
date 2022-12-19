@@ -2365,13 +2365,15 @@ public class IntensiveMonitoringCohortQueries {
             + " MONTH)) most_recent GROUP BY most_recent.patient_id  ) as lastVLResult "
             + " ON lastVLResult.patient_id=p.patient_id "
             + " WHERE "
-            + " ( (o.concept_id=${856} AND o.value_numeric is not null) OR (o.concept_id = 1305 and o.value_coded is not null)) AND e.encounter_type=${6} AND  "
-            + " e.encounter_datetime BETWEEN DATE_ADD(lastVLResult.encounter_date,INTERVAL "
+            + " ( (o.concept_id=${856} AND o.value_numeric is not null) OR (o.concept_id = 1305 and o.value_coded is not null)) AND e.encounter_type=${6}  "
+            + " AND e.voided = 0  "
+            + " AND o.voided = 0  "
+            + " AND e.encounter_datetime BETWEEN DATE_ADD(lastVLResult.encounter_date,INTERVAL "
             + vlMonthsLower
             + " MONTH)  "
             + " AND DATE_ADD(lastVLResult.encounter_date,INTERVAL "
             + vlMonthsUpper
-            + " MONTH)AND e.location_id=:location";
+            + " MONTH) AND e.location_id=:location";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     String str = stringSubstitutor.replace(query);
@@ -2474,7 +2476,11 @@ public class IntensiveMonitoringCohortQueries {
     cd.addSearch("AGE2", EptsReportUtils.map(major2, MAPPINGA));
     cd.addSearch("LMDC", EptsReportUtils.map(mdcLastClinical, MAPPINGA));
     cd.addSearch("RMDC", EptsReportUtils.map(recentMdc, MAPPINGA));
-    cd.addSearch("PICKUP", EptsReportUtils.map(pickupAfterClinical, MAPPINGA));
+    cd.addSearch(
+        "PICKUP",
+        EptsReportUtils.map(
+            pickupAfterClinical,
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     if (isDenominator) {
 

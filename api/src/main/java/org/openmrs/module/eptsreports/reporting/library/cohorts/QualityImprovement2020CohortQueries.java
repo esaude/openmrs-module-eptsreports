@@ -8391,8 +8391,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "MDS",
         EptsReportUtils.map(
-            alreadyMds,
-            "startDate=${revisionEndDate-12m+1d},endDate=${revisionEndDate},location=${location}"));
+            alreadyMds, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
     cd.setCompositionString("A AND B1 AND (E1 AND E2 AND E3)  AND NOT (C OR D OR F OR G OR MDS)");
 
@@ -8471,8 +8470,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "MDS",
         EptsReportUtils.map(
-            mds,
-            "startDate=${revisionEndDate-12m+1d},endDate=${revisionEndDate},location=${location}"));
+            mds, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
     cd.setCompositionString("MQ15Den13 AND MDS");
     return cd;
@@ -8497,8 +8495,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "MDC",
         EptsReportUtils.map(
-            alreadyMdc,
-            "startDate=${revisionEndDate-12m+1d},endDate=${revisionEndDate},location=${location}"));
+            alreadyMdc, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
 
     cd.addSearch(
         "H",
@@ -8530,7 +8527,36 @@ public class QualityImprovement2020CohortQueries {
         "FAC",
         EptsReportUtils.map(
             hadFilaAfterClinical,
-            "startDate=${revisionEndDate-12m+1d},endDate=${revisionEndDate},location=${location}"));
+            "startDate=${startDate},endDate=${revisionEndDate},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    cd.setCompositionString("Mq15DenMds14 AND FAC");
+
+    return cd;
+  }
+
+  public CohortDefinition getMI15MdsNum14() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Numerator 15.14: # de pacientes inscritos em MDS ");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "Revision End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    CohortDefinition Mq15DenMds14 = getMQ15MdsDen14();
+    CohortDefinition hadFilaAfterClinical =
+        getPatientsWhoHadPickupOnFilaAfterMostRecentVlOnFichaClinica();
+
+    cd.addSearch(
+        "Mq15DenMds14",
+        EptsReportUtils.map(
+            Mq15DenMds14,
+            "startDate=${startDate},revisionEndDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "FAC",
+        EptsReportUtils.map(
+            hadFilaAfterClinical,
+            "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
     cd.setCompositionString("Mq15DenMds14 AND FAC");
 
@@ -8555,8 +8581,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "MDC",
         EptsReportUtils.map(
-            alreadyMdc,
-            "startDate=${revisionEndDate-12m+1d},endDate=${revisionEndDate},location=${location}"));
+            alreadyMdc, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
     cd.addSearch(
         "B2",
         EptsReportUtils.map(
@@ -10223,6 +10248,7 @@ public class QualityImprovement2020CohortQueries {
     cd.setName("Utentes que têm o registo de dois pedidos de CV na Ficha Clinica ");
     cd.addParameter(new Parameter("startDate", "startDate", Date.class));
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("revisionEndDate", "Revision endDate", Date.class));
 
     cd.addParameter(new Parameter("location", "location", Location.class));
 
@@ -10254,7 +10280,7 @@ public class QualityImprovement2020CohortQueries {
             + "WHERE      e.encounter_type = ${18} "
             + "AND        e.location_id = :location "
             + "AND        o.concept_id = ${5096} "
-            + "AND        e.encounter_datetime BETWEEN vl.vl_date AND :endDate "
+            + "AND        e.encounter_datetime BETWEEN vl.vl_date AND :revisionEndDate "
             + "AND        o.value_datetime BETWEEN DATE_ADD(e.encounter_datetime, INTERVAL 23 DAY) AND  DATE_ADD(e.encounter_datetime, INTERVAL 37 DAY) "
             + "AND        e.voided = 0 "
             + "AND        p.voided = 0 "
@@ -10387,7 +10413,6 @@ public class QualityImprovement2020CohortQueries {
             + "AND        ostate.concept_id = ${165322} "
             + "AND        ostate.value_coded IN (${states}) "
             + "AND        e.encounter_datetime < consultation.consultation_date "
-            + "AND        e.encounter_datetime >= :startDate "
             + "AND        otype.obs_group_id = ostate.obs_group_id "
             + "AND        e.voided = 0 "
             + "AND        p.voided = 0 "
