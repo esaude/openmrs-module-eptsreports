@@ -71,7 +71,7 @@ public class TxPvlsDataset extends BaseDataSet {
     // Denominator -------------------------------------------------------------
     // Totals
     dsd.addColumn(
-        "totalDenominator",
+        "0D",
         "Total patients with Viral load - Denominator",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
@@ -149,7 +149,7 @@ public class TxPvlsDataset extends BaseDataSet {
     // Numerator ------------------------------------------------------------
     // Totals
     dsd.addColumn(
-        "totalNumerator",
+        "0N",
         "Total patients with suppressed Viral load - Numerator",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
