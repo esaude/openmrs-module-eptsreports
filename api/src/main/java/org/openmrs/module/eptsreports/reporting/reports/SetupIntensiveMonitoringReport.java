@@ -9,6 +9,7 @@ import org.openmrs.Location;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.*;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
+import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.evaluation.parameter.Mapped;
 import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
@@ -92,6 +93,12 @@ public class SetupIntensiveMonitoringReport extends EptsDataExportManager {
         "DATIM", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));
     reportDefinition.addDataSetDefinition(
         "SM", Mapped.mapStraightThrough(new SismaCodeDatasetDefinition()));
+
+    // add a base cohort here to help in calculations running
+    reportDefinition.setBaseCohortDefinition(
+        EptsReportUtils.map(
+            genericCohortQueries.getBaseCohort(),
+            "endDate=${revisionEndDate},location=${location}"));
 
     return reportDefinition;
   }
