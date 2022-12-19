@@ -210,6 +210,7 @@ public class DsdQueries {
     SqlCohortDefinition cd = new SqlCohortDefinition();
 
     cd.setName("Transferred in patients");
+    cd.addParameter(new Parameter("onOrAfter", "Start Date", Date.class));
     cd.addParameter(new Parameter("onOrBefore", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -248,12 +249,12 @@ public class DsdQueries {
             + "		   AND type.value_coded = ${6276} "
             + "           AND opening.voided = 0 "
             + "           AND opening.concept_id = ${23891} "
-            + "           AND opening.value_datetime <= :onOrBefore "
+            + "           AND opening.value_datetime BETWEEN :onOrAfter AND :onOrBefore "
             + "	UNION "
             + "     "
             + "    SELECT pgEnrollment.patient_id "
             + "          FROM( "
-            + "          SELECT p.patient_id, min(ps.start_date) as pgEnrollmentDate "
+            + "          SELECT p.patient_id, ps.start_date as pgEnrollmentDate "
             + "			FROM patient p "
             + "          JOIN patient_program pp on p.patient_id=pp.patient_id "
             + "          JOIN patient_state ps on pp.patient_program_id=ps.patient_program_id "
@@ -261,14 +262,10 @@ public class DsdQueries {
             + "			  AND ps.voided=0 "
             + "			  AND p.voided=0 "
             + "			  AND pp.program_id=${2} "
+            + "	          AND ps.state = ${29} "
             + "			  AND location_id= :location "
-            + "			  AND ps.start_date<= :onOrBefore "
-            + "		 GROUP BY p.patient_id "
-            + "      ) pgEnrollment "
-            + "      JOIN patient_state ps on ps.patient_program_id=pgEnrollment.patient_id "
-            + "	WHERE ps.start_date=pgEnrollment.pgEnrollmentDate "
-            + "	AND ps.state = ${29} "
-            + "	AND ps.voided=0";
+            + "			  AND ps.start_date BETWEEN :onOrAfter AND :onOrBefore "
+            + "      ) pgEnrollment ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
