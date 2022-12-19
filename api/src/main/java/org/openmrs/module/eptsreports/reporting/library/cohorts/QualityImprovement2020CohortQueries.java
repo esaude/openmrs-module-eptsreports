@@ -3879,7 +3879,7 @@ public class QualityImprovement2020CohortQueries {
       compositionCohortDefinition.addSearch("H", EptsReportUtils.map(h, MAPPING8));
     }
 
-    compositionCohortDefinition.setCompositionString("B1 AND NOT B5 AND B4 AND NOT F AND H");
+    compositionCohortDefinition.setCompositionString("(B1 AND B4) AND NOT (B5 OR F) AND H");
 
     return compositionCohortDefinition;
   }
