@@ -372,8 +372,6 @@ public class PregnantDateCalculation extends AbstractPatientCalculation {
       for (Obs date : sampleCollectionDate) {
         if (obsYes.getEncounter().equals(date.getEncounter())
             && obsYes.getValueCoded().equals(yes)
-            && date.getValueDatetime().compareTo(startDate) >= 0
-            && date.getValueDatetime().compareTo(endDate) <= 0
             && (this.isInPregnantViralLoadRange(lastVlDate, date.getValueDatetime()))) {
           isPregnancyWihFsrDate = date.getValueDatetime();
           break;
