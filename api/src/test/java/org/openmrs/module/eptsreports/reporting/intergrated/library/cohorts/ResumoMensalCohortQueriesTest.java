@@ -278,7 +278,7 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
     parameters.put(new Parameter("location", "Location", Location.class), this.getLocation());
 
     EvaluatedCohort evaluatedCohort = evaluateCohortDefinition(cd, parameters);
-    assertEquals(5, evaluatedCohort.getMemberships().size());
+    assertEquals(3, evaluatedCohort.getMemberships().size());
 
     List<Integer> members =
         evaluatedCohort.getMemberships().stream()
@@ -287,8 +287,8 @@ public class ResumoMensalCohortQueriesTest extends DefinitionsTest {
 
     assertTrue(members.contains(1021));
     assertTrue(members.contains(12475));
-    assertTrue(members.contains(1009));
-    assertTrue(members.contains(1001));
+    assertFalse(members.contains(1009));
+    assertFalse(members.contains(1001));
   }
 
   @Test
