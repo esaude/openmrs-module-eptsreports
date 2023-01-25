@@ -1587,7 +1587,7 @@ public class IntensiveMonitoringCohortQueries {
 
     cd.addSearch(
         "MI13NUM",
-        EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13P4(false, level), MAPPING2));
+        EptsReportUtils.map(qualityImprovement2020CohortQueries.getMQ13P4(false, level), MAPPING3));
 
     if (!type) {
       cd.setCompositionString("MI13DEN");
