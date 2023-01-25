@@ -8542,7 +8542,24 @@ public class QualityImprovement2020CohortQueries {
     cd.addParameter(new Parameter("revisionEndDate", "Revision End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
+    List<Integer> mdsConcepts =
+        Arrays.asList(
+            hivMetadata.getGaac().getConceptId(),
+            hivMetadata.getQuarterlyDispensation().getConceptId(),
+            hivMetadata.getDispensaComunitariaViaApeConcept().getConceptId(),
+            hivMetadata.getDescentralizedArvDispensationConcept().getConceptId(),
+            hivMetadata.getRapidFlow().getConceptId(),
+            hivMetadata.getSemiannualDispensation().getConceptId());
+
+    List<Integer> states =
+        Collections.singletonList(hivMetadata.getCompletedConcept().getConceptId());
+
     CohortDefinition Mq15DenMds14 = getMQ15MdsDen14();
+
+    CohortDefinition MdsFimNum14 =
+        getPatientsWithMdcBeforeMostRecentClinicalFormWithFollowingDispensationTypesAndState(
+            mdsConcepts, states);
+
     CohortDefinition hadFilaAfterClinical =
         getPatientsWhoHadPickupOnFilaAfterMostRecentVlOnFichaClinica();
 
@@ -8553,12 +8570,17 @@ public class QualityImprovement2020CohortQueries {
             "startDate=${startDate},revisionEndDate=${revisionEndDate-1m},location=${location}"));
 
     cd.addSearch(
+        "MdsFimNum14",
+        EptsReportUtils.map(
+            MdsFimNum14, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
         "FAC",
         EptsReportUtils.map(
             hadFilaAfterClinical,
             "startDate=${startDate},endDate=${endDate},revisionEndDate=${revisionEndDate},location=${location}"));
 
-    cd.setCompositionString("Mq15DenMds14 AND FAC");
+    cd.setCompositionString("Mq15DenMds14 AND (MdsFimNum14 OR FAC)");
 
     return cd;
   }
