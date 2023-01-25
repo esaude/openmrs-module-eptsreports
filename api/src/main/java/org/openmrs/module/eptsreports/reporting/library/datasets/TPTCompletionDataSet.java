@@ -119,7 +119,7 @@ public class TPTCompletionDataSet extends BaseDataSet {
 
     dataSetDefinition.addColumn(
         "TPT5",
-        "TX_CURR With TPT Completion in Last 7 Months",
+        "TX_CURR With TPT in Last 7 Months",
         EptsReportUtils.map(txCurrWithTPTinLast7Months, mappings),
         "");
 

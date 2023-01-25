@@ -1488,7 +1488,6 @@ public class TPTEligiblePatientListCohortQueries {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(" all patients with Regime de TPT B6.1");
     sqlCohortDefinition.addParameter(new Parameter("endDate", "Before Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "After Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -1590,7 +1589,6 @@ public class TPTEligiblePatientListCohortQueries {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(" all patients with Regime de TPT B6.2");
     sqlCohortDefinition.addParameter(new Parameter("endDate", "Before Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "After Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -1658,7 +1656,7 @@ public class TPTEligiblePatientListCohortQueries {
             + "                      AND ee.encounter_datetime BETWEEN    "
             + "                          tabela.start_date AND    "
             + "              Date_add(tabela.start_date,  "
-            + "              INTERVAL 7 MONTH)) >= 2 ))   "
+            + "              INTERVAL 5 MONTH)) >= 2 ))   "
             + " GROUP  BY p.patient_id  ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
@@ -1694,7 +1692,6 @@ public class TPTEligiblePatientListCohortQueries {
     SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
     sqlCohortDefinition.setName(" all patients with INH Mensal and DT-INH B6.3");
     sqlCohortDefinition.addParameter(new Parameter("endDate", "Before Date", Date.class));
-    sqlCohortDefinition.addParameter(new Parameter("startDate", "After Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -2367,7 +2364,6 @@ public class TPTEligiblePatientListCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Patients who already completed 3HP During M3 OR M1 period");
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
-    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     String mapping = "endDate=${endDate},location=${location}";
