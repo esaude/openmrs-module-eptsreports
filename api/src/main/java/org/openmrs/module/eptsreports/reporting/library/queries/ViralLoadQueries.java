@@ -152,39 +152,83 @@ public class ViralLoadQueries {
   /**
    * <b>Description</b> Patients or routine using FSR with VL results
    *
-   * @param labEncounter
-   * @param viralLoadRequestReasonConceptId
-   * @param routineViralLoadConceptId
-   * @param unknownConceptId
    * @return String
    */
-  public static String getPatientsHavingRoutineViralLoadTestsUsingFsr(
-      int labEncounter,
-      int viralLoadRequestReasonConceptId,
-      int routineViralLoadConceptId,
-      int unknownConceptId) {
-    String query =
-        " SELECT final.patient_id FROM( "
-            + " SELECT p.patient_id, MAX(ee.encounter_datetime) AS viral_load_date "
-            + " FROM patient p "
-            + " INNER JOIN encounter ee ON p.patient_id=ee.patient_id "
-            + " INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
-            + " WHERE "
-            + " ee.voided = 0 AND "
-            + " ee.encounter_type = %d AND "
-            + " oo.voided = 0 AND "
-            + " oo.concept_id = %d AND oo.value_coded IN(%d, %d) AND "
-            + " ee.location_id = :location "
-            + " AND ee.encounter_datetime <= :endDate "
-            + " GROUP BY p.patient_id ) final";
-
-    return String.format(
-        query,
-        labEncounter,
-        viralLoadRequestReasonConceptId,
-        routineViralLoadConceptId,
-        unknownConceptId);
+  public static String getPatientsHavingRoutineViralLoadTestsUsingFsr() {
+    return "SELECT p.patient_id "
+        + "FROM   patient p "
+        + "       INNER JOIN encounter e "
+        + "               ON p.patient_id = e.patient_id "
+        + "       INNER JOIN obs o "
+        + "               ON e.encounter_id = o.encounter_id "
+        + "       INNER JOIN obs o2 "
+        + "               ON e.encounter_id = o2.encounter_id "
+        + "       INNER JOIN (SELECT max_vl_result.patient_id, "
+        + "                          Max(max_vl_result.max_vl) last_vl "
+        + "                   FROM   (SELECT p.patient_id, "
+        + "                                  Date(e.encounter_datetime) AS max_vl "
+        + "                           FROM   patient p "
+        + "                                  INNER JOIN encounter e "
+        + "                                          ON p.patient_id = e.patient_id "
+        + "                                  INNER JOIN obs o "
+        + "                                          ON e.encounter_id = o.encounter_id "
+        + "                           WHERE  p.voided = 0 "
+        + "                                  AND e.voided = 0 "
+        + "                                  AND o.voided = 0 "
+        + "                                  AND e.encounter_type IN ( ${6}, ${9}, ${13}, ${51} ) "
+        + "                                  AND ( ( o.concept_id = ${856} "
+        + "                                          AND o.value_numeric IS NOT NULL ) "
+        + "                                         OR ( o.concept_id = ${1305} "
+        + "                                              AND o.value_coded IS NOT NULL ) ) "
+        + "                                  AND Date(e.encounter_datetime) <= :endDate "
+        + "                                  AND e.location_id = :location "
+        + "                           UNION "
+        + "                           SELECT p.patient_id, "
+        + "                                  Date(o.obs_datetime) AS max_vl "
+        + "                           FROM   patient p "
+        + "                                  INNER JOIN encounter e "
+        + "                                          ON p.patient_id = e.patient_id "
+        + "                                  INNER JOIN obs o "
+        + "                                          ON e.encounter_id = o.encounter_id "
+        + "                           WHERE  p.voided = 0 "
+        + "                                  AND e.voided = 0 "
+        + "                                  AND o.voided = 0 "
+        + "                                  AND e.encounter_type IN ( ${53} ) "
+        + "                                  AND ( ( o.concept_id = ${856} "
+        + "                                          AND o.value_numeric IS NOT NULL ) "
+        + "                                         OR ( o.concept_id = ${1305} "
+        + "                                              AND o.value_coded IS NOT NULL ) ) "
+        + "                                  AND Date(o.obs_datetime) <= :endDate "
+        + "                                  AND e.location_id = :location) max_vl_result "
+        + "                   GROUP  BY max_vl_result.patient_id) last_date "
+        + "               ON p.patient_id = last_date.patient_id "
+        + "WHERE  p.voided = 0 "
+        + "       AND e.voided = 0 "
+        + "       AND o.voided = 0 "
+        + "       AND ( ( e.encounter_type IN ( ${6}, ${9}, ${13} ) "
+        + "               AND ( ( o.concept_id = ${856} "
+        + "                       AND o.value_numeric IS NOT NULL ) "
+        + "                      OR ( o.concept_id = ${1305} "
+        + "                           AND o.value_coded IS NOT NULL ) ) "
+        + "               AND Date(e.encounter_datetime) = last_date.last_vl ) "
+        + "              OR ( e.encounter_type = ${53} "
+        + "                   AND ( ( o.concept_id = ${856} "
+        + "                           AND o.value_numeric IS NOT NULL ) "
+        + "                          OR ( o.concept_id = ${1305} "
+        + "                               AND o.value_coded IS NOT NULL ) ) "
+        + "                   AND Date(o.obs_datetime) = last_date.last_vl ) "
+        + "              OR ( e.encounter_type = ${51} "
+        + "                   AND ( ( ( o.concept_id = ${856} "
+        + "                             AND o.value_numeric IS NOT NULL ) "
+        + "                            OR ( o.concept_id = ${1305} "
+        + "                                 AND o.value_coded IS NOT NULL ) ) "
+        + "                         AND ( o2.concept_id = ${23818} "
+        + "                               AND o2.value_coded IN ( ${23817}, ${1067} ) "
+        + "                               AND o2.voided = 0 ) ) "
+        + "                   AND Date(e.encounter_datetime) = last_date.last_vl ) ) "
+        + "GROUP  BY p.patient_id";
   }
+
   /**
    * <b>Descritpion</b>
    *
