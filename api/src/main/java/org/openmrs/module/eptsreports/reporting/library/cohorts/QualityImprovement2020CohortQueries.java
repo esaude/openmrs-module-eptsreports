@@ -8542,7 +8542,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addParameter(new Parameter("revisionEndDate", "Revision End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    List<Integer> mdsConcepts =
+    List<Integer> dispensationTypes =
         Arrays.asList(
             hivMetadata.getGaac().getConceptId(),
             hivMetadata.getQuarterlyDispensation().getConceptId(),
@@ -8557,8 +8557,8 @@ public class QualityImprovement2020CohortQueries {
     CohortDefinition Mq15DenMds14 = getMQ15MdsDen14();
 
     CohortDefinition MdsFimNum14 =
-        getPatientsWithMdcBeforeMostRecentClinicalFormWithFollowingDispensationTypesAndState(
-            mdsConcepts, states);
+        getPatientsWithMdcOnMostRecentClinicalFormWithFollowingDispensationTypesAndState(
+            dispensationTypes, states);
 
     CohortDefinition hadFilaAfterClinical =
         getPatientsWhoHadPickupOnFilaAfterMostRecentVlOnFichaClinica();
@@ -8572,7 +8572,7 @@ public class QualityImprovement2020CohortQueries {
     cd.addSearch(
         "MdsFimNum14",
         EptsReportUtils.map(
-            MdsFimNum14, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
+            MdsFimNum14, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "FAC",
