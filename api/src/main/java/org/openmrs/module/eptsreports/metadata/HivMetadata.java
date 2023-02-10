@@ -5194,4 +5194,20 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.dateOfNextCounselingConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 23856</b>
+   *
+   * <p><b>Name:</b> ART PICK UP AT AN ACCOMMODATION CAMP
+   *
+   * <p><b>Description:</b> ART PICK UP CONCEPT
+   *
+   * @return {@link Concept}
+   */
+  public Concept getArtPickupAccommodationCamp() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.artPickupAccommodationCamp");
+    return getConcept(uuid);
+  }
 }

@@ -3503,6 +3503,15 @@
 			UUID for DATE OF NEXT COUNSELING Concept
 		</description>
 	</globalProperty>
+
+	<globalProperty>
+		<property>@MODULE_ID@.artPickupAccommodationCamp</property>
+		<defaultValue>1f872b4f-68ed-450b-babf-ac568d455cd0</defaultValue>
+		<description>
+			UUID for ART PICKUP AT AN ACCOMMODATION CAMP Concept
+		</description>
+	</globalProperty>
+
 	<!-- <dwr> <allow> <create creator="new" javascript="DWRFormEntryService">
 		<param name="class" value="org.openmrs.module.@MODULE_ID@.web.DWRFormEntryService"/> 
 		<include method="enterForm"/> </create> </allow> <signatures> <![CDATA[ import 

@@ -629,12 +629,16 @@ public class ResumoMensalQueries {
       int returnVisitDateForArvDrugConcept,
       int arvPharmaciaEncounterType,
       int artDatePickup,
+      int artPickupConcept,
+      int yesConceptUuid,
       int masterCardDrugPickupEncounterType) {
 
     Map<String, Integer> map = new HashMap<>();
     map.put("returnVisitDateForArvDrugConcept", returnVisitDateForArvDrugConcept);
     map.put("arvPharmaciaEncounterType", arvPharmaciaEncounterType);
     map.put("artDatePickup", artDatePickup);
+    map.put("artPickupConcept", artPickupConcept);
+    map.put("yesConceptUuid", yesConceptUuid);
     map.put("masterCardDrugPickupEncounterType", masterCardDrugPickupEncounterType);
 
     StringBuilder query = new StringBuilder();
@@ -687,17 +691,79 @@ public class ResumoMensalQueries {
     query.append("                                 ON enc.patient_id = pa.patient_id   ");
     query.append("                             inner join obs obs   ");
     query.append("                                 ON obs.encounter_id = enc.encounter_id   ");
+    query.append("                             inner join obs obs2   ");
+    query.append("                                 ON obs2.encounter_id = enc.encounter_id   ");
     query.append("                         WHERE  pa.voided = 0   ");
     query.append("                             AND enc.voided = 0   ");
     query.append("                             AND obs.voided = 0   ");
+    query.append("                             AND obs2.voided = 0   ");
     query.append("                             AND obs.concept_id = ${artDatePickup}   ");
     query.append("                             AND obs.value_datetime IS NOT NULL   ");
+    query.append("                             AND obs2.concept_id = ${artPickupConcept}   ");
+    query.append("                             AND obs2.value_coded = ${yesConceptUuid}   ");
     query.append(
         "                             AND enc.encounter_type = ${masterCardDrugPickupEncounterType}   ");
     query.append("                             AND enc.location_id = :location   ");
 
     query.append("                             AND datediff(obs.value_datetime,:date) <=0");
     query.append("                        GROUP  BY pa.patient_id   ");
+    query.append("                    UNION ");
+    query.append("                    SELECT     pa.patient_id, ");
+    query.append("                              obs1.value_datetime AS value_datetime ");
+    query.append("                         FROM   patient pa   ");
+    query.append("                    INNER JOIN encounter enc ");
+    query.append("                    ON         enc.patient_id = pa.patient_id ");
+    query.append("                    INNER JOIN obs obs1 ");
+    query.append("                    ON         enc.encounter_id = obs1.encounter_id ");
+    query.append("                    INNER JOIN ");
+    query.append("                               ( ");
+    query.append("                                          SELECT     pa.patient_id, ");
+    query.append(
+        "                                                     Max(enc.encounter_datetime) encounter_datetime ");
+    query.append("                                          FROM       patient pa ");
+    query.append("                                          INNER JOIN encounter enc ");
+    query.append(
+        "                                          ON         enc.patient_id = pa.patient_id ");
+    query.append("                                          INNER JOIN obs obs ");
+    query.append(
+        "                                          ON         obs.encounter_id = enc.encounter_id ");
+    query.append("                                          WHERE      pa.voided = 0 ");
+    query.append("                                          AND        enc.voided = 0 ");
+    query.append("                                          AND        obs.voided = 0 ");
+    query.append(
+        "                                          AND        enc.encounter_type = ${arvPharmaciaEncounterType} ");
+    query.append(
+        "                                          AND        enc.location_id = :location ");
+    query.append(
+        "                                          AND        datediff(enc.encounter_datetime, :date) <= 0 ");
+    query.append(
+        "                                          GROUP BY   pa.patient_id ) AS last_fila ");
+    query.append("                    ON         last_fila.patient_id = pa.patient_id ");
+    query.append("                    WHERE        pa.voided = 0 ");
+    query.append("                    AND          enc.voided = 0 ");
+    query.append("                    AND          obs1.voided = 0 ");
+    query.append("                    AND      enc.encounter_type = ${arvPharmaciaEncounterType} ");
+    query.append(
+        "                    AND        enc.encounter_datetime = last_fila.encounter_datetime ");
+    query.append("                    AND        NOT EXISTS ");
+    query.append("                               ( ");
+    query.append("                                          SELECT     enc1.encounter_id ");
+    query.append("                                          FROM       encounter enc1 ");
+    query.append("                                          INNER JOIN obs obs1 ");
+    query.append(
+        "                                          ON         obs1.encounter_id = enc1.encounter_id ");
+    query.append("                                          WHERE      obs1.voided = 0 ");
+    query.append("                                          AND        enc1.voided = 0 ");
+    query.append(
+        "                                          AND        obs1.concept_id = ${returnVisitDateForArvDrugConcept} ");
+    query.append(
+        "                                          AND        obs1.value_datetime IS NOT NULL ");
+    query.append(
+        "                                          AND        enc1.encounter_type = ${arvPharmaciaEncounterType} ");
+    query.append(
+        "                                          AND        enc1.location_id = :location ");
+    query.append(
+        "                                          AND        enc1.encounter_datetime = last_fila.encounter_datetime) ");
     query.append("                    ) most_recent   ");
     query.append("                GROUP BY most_recent.patient_id   ");
     query.append("                HAVING datediff(final_encounter_date,:date) < 0  ");
