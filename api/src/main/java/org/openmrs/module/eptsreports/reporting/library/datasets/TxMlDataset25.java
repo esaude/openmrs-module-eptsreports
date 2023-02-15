@@ -81,7 +81,7 @@ public class TxMlDataset25 extends BaseDataSet {
         "Dead",
         EptsReportUtils.map(
             eptsGeneralIndicator.getIndicator(
-                "missed and dead",
+                "dead",
                 EptsReportUtils.map(
                     txMlCohortQueries
                         .getPatientsWhoMissedNextAppointmentAndDiedDuringReportingPeriod(),
