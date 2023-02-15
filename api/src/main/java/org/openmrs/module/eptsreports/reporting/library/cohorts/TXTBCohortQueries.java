@@ -693,6 +693,26 @@ public class TXTBCohortQueries {
   }
 
   /**
+   * <b>Description:</b> Negative Investigation Research result <b>(concept_id = 6277)</b> Negativo
+   * <b>(concept_id = 1065)</b> in the follow-up (Adult and Children)
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition negativeInvestigationResult() {
+    CohortDefinition cd =
+        genericCohortQueries.hasCodedObs(
+            tbMetadata.getResearchResultConcept(),
+            TimeModifier.ANY,
+            SetComparator.IN,
+            Arrays.asList(
+                hivMetadata.getAdultoSeguimentoEncounterType(),
+                hivMetadata.getPediatriaSeguimentoEncounterType()),
+            Arrays.asList(tbMetadata.getNegativeConcept()));
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
    * <b>Description:</b> At least one “S” or “N” selected for TB Screening (Rastreio de TB) during
    * the reporting period consultations
    *
@@ -1161,6 +1181,9 @@ public class TXTBCohortQueries {
         "tb-investigation",
         EptsReportUtils.map(positiveInvestigationResultComposition(), generalParameterMapping));
     definition.addSearch(
+        "tb-investigation-negative",
+        EptsReportUtils.map(negativeInvestigationResult(), generalParameterMapping));
+    definition.addSearch(
         "started-tb-treatment",
         EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
     definition.addSearch(
@@ -1230,8 +1253,7 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "transferred-out",
         EptsReportUtils.map(
-            getPatientsTransferredOut(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            getTransferredOut(), "startDate=${startDate},endDate=${endDate},location=${location}"));
     definition.addSearch(
         "pulmonary-tb-date",
         EptsReportUtils.map(
@@ -1244,7 +1266,7 @@ public class TXTBCohortQueries {
             "startDate=${startDate-6m},endDate=${startDate-1d},location=${location}"));
 
     definition.setCompositionString(
-        "(art-list AND (tb-screening OR tb-investigation OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tb-treatment-start "
+        "(art-list AND (tb-screening OR tb-investigation OR tb-investigation-negative OR started-tb-treatment OR in-tb-program OR pulmonary-tb OR marked-as-tb-treatment-start "
             + "OR (tuberculosis-symptomys OR active-tuberculosis OR tb-observations OR application-for-laboratory-research OR tb-genexpert-test OR tb-genexpert-lab-test OR tb-xpert-mtb OR culture-test OR culture-test-lab "
             + "OR test-tb-lam OR test-tb-lam-lab OR test-bk OR x-ray-chest) OR result-for-basiloscopia)) "
             + "NOT ((transferred-out NOT (started-tb-treatment OR in-tb-program)) OR started-tb-treatment-previous-period OR in-tb-program-previous-period OR pulmonary-tb-date OR marked-as-tratamento-tb-inicio)");
@@ -1257,11 +1279,79 @@ public class TXTBCohortQueries {
    *
    * <blockquote>
    *
-   * All Transferred-out <b>(Patient_State.state = 7)</b> in ART Service Program
-   * <b>(Patient_program.program_id = 2)</b>
+   * <p>The system will identify patients who are Transferred Out as follows:
    *
-   * <p>(and had no registred drug pickup Mastercard Date<b>(concept_id = 23866)</b> From
-   * <b>(EncounterType_id = 52)</b>) after the transferred Out date within reporting period
+   * <ul>
+   *   <li>Patients enrolled on ART Program (Service TARV- Tratamento) with the following last
+   *       status: Transferred Out or
+   *   <li>Patients who have “Mudança no Estado de Permanência TARV” filled out in Ficha Resumo or
+   *       Ficha Clinica – Master Card for the following reasons that are specified in the patient
+   *       chart: patient Transferred Out or
+   *   <li>Patients who have REASON PATIENT MISSED VISIT (MOTIVOS DA FALTA) as “Transferido para
+   *       outra US” or “Auto-transferência” marked in the last Home Visit Card by reporting end
+   *       date. Use the “data da visita” when the patient reason was marked on the home visit card
+   *       as the reference date.
+   * </ul>
+   *
+   * <br>
+   *
+   * <p>The system will identify the most recent date from the different sources as the date of
+   * Transferred Out. Patients who are “marked” as transferred out who have an ARV pick-up
+   * registered in FILA or have a clinical consultation after the date the patient was “marked” as
+   * transferred out will not be considered as Transferred Out.<br>
+   *
+   * <p>The system will consider patient as transferred out as above defined only if the most recent
+   * date between (next scheduled ART pick-up on FILA + 1 day) and (the most recent ART pickup date
+   * on Ficha Recepção – Levantou ARVs + 31 days) falls during the reporting period.
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getTransferredOut() {
+    CompositionCohortDefinition definition = new CompositionCohortDefinition();
+    addGeneralParameters(definition);
+    definition.setName("TxTB - Transferred Out");
+    definition.addSearch(
+        "transferred-out",
+        EptsReportUtils.map(
+            getPatientsTransferredOut(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    definition.addSearch(
+        "transferred-out-fila-arv",
+        EptsReportUtils.map(
+            getPatientsTransferredOutFilaArvPickUp(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    definition.setCompositionString("transferred-out AND transferred-out-fila-arv");
+
+    return definition;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <p>The system will identify patients who are Transferred Out as follows:
+   *
+   * <ul>
+   *   <li>Patients enrolled on ART Program (Service TARV- Tratamento) with the following last
+   *       status: Transferred Out or
+   *   <li>Patients who have “Mudança no Estado de Permanência TARV” filled out in Ficha Resumo or
+   *       Ficha Clinica – Master Card for the following reasons that are specified in the patient
+   *       chart: patient Transferred Out or
+   *   <li>Patients who have REASON PATIENT MISSED VISIT (MOTIVOS DA FALTA) as “Transferido para
+   *       outra US” or “Auto-transferência” marked in the last Home Visit Card by reporting end
+   *       date. Use the “data da visita” when the patient reason was marked on the home visit card
+   *       as the reference date.
+   * </ul>
+   *
+   * <br>
+   *
+   * <p>The system will identify the most recent date from the different sources as the date of
+   * Transferred Out. Patients who are “marked” as transferred out who have an ARV pick-up
+   * registered in FILA or have a clinical consultation after the date the patient was “marked” as
+   * transferred out will not be considered as Transferred Out.<br>
    *
    * </blockquote>
    *
@@ -1299,6 +1389,9 @@ public class TXTBCohortQueries {
     map.put("stateOfStayOfArtPatient", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
     map.put("defaultingMotiveConcept", hivMetadata.getDefaultingMotiveConcept().getConceptId());
     map.put(
+        "returnVisitDateForArvDrugConcept",
+        hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
+    map.put(
         "buscaActivaEncounterType", hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId());
     map.put("artProgram", hivMetadata.getARTProgram().getProgramId());
     map.put(
@@ -1308,112 +1401,191 @@ public class TXTBCohortQueries {
             .getProgramWorkflowStateId());
 
     String query =
-        "  SELECT mostrecent.patient_id "
-            + "FROM ("
-            + " SELECT lastest.patient_id ,Max(lastest.last_date) as  last_date "
-            + " FROM (  "
-            + "    SELECT p.patient_id , Max(ps.start_date) AS last_date  "
-            + "    FROM patient p   "
-            + "        INNER JOIN patient_program pg   "
-            + "            ON p.patient_id=pg.patient_id   "
-            + "        INNER JOIN patient_state ps   "
-            + "            ON pg.patient_program_id=ps.patient_program_id   "
-            + "    WHERE pg.voided=0   "
-            + "        AND ps.voided=0   "
-            + "        AND p.voided=0   "
-            + "        AND pg.program_id= ${artProgram}  "
-            + "        AND ps.state = ${transferredOutToAnotherHealthFacilityWorkflowState}   "
-            + "        AND ps.start_date <= :endDate    "
-            + "        AND pg.location_id= :location   "
-            + "    group by p.patient_id  "
-            + "  "
-            + "    UNION  "
-            + "  "
-            + "    SELECT  p.patient_id,  Max(o.obs_datetime) AS last_date  "
-            + "    FROM patient p    "
-            + "        INNER JOIN encounter e   "
-            + "            ON e.patient_id=p.patient_id   "
-            + "        INNER JOIN obs o   "
-            + "            ON o.encounter_id=e.encounter_id   "
-            + "    WHERE  p.voided = 0   "
-            + "        AND e.voided = 0   "
-            + "        AND o.voided = 0   "
-            + "        AND e.encounter_type = ${masterCardEncounterType}   "
-            + "        AND o.concept_id = ${stateOfStayOfPreArtPatient}  "
-            + "        AND o.value_coded =  ${transferredOutConcept}   "
-            + "        AND o.obs_datetime BETWEEN :startDate AND :endDate   "
-            + "        AND e.location_id =  :location   "
-            + "    GROUP BY p.patient_id  "
-            + "    UNION   "
-            + "    SELECT  p.patient_id , Max(e.encounter_datetime) AS last_date  "
-            + "    FROM patient p    "
-            + "        INNER JOIN encounter e   "
-            + "            ON e.patient_id=p.patient_id   "
-            + "        INNER JOIN obs o   "
-            + "            ON o.encounter_id=e.encounter_id   "
-            + "    WHERE  p.voided = 0   "
-            + "        AND e.voided = 0   "
-            + "        AND o.voided = 0   "
-            + "        AND e.encounter_type = ${adultoSeguimentoEncounterType}  "
-            + "        AND o.concept_id = ${stateOfStayOfArtPatient}  "
-            + "        AND o.value_coded = ${transferredOutConcept}   "
-            + "        AND e.encounter_datetime BETWEEN :startDate AND :endDate   "
-            + "        AND e.location_id =  :location  "
-            + "    GROUP BY p.patient_id   "
-            + "  "
-            + "    UNION  "
-            + "  "
-            + "    SELECT p.patient_id, Max(e.encounter_datetime) last_date   "
-            + "    FROM patient p   "
-            + "        INNER JOIN encounter e   "
-            + "              ON p.patient_id = e.patient_id   "
-            + "        INNER JOIN obs o   "
-            + "              ON e.encounter_id = o.encounter_id   "
-            + "    WHERE o.concept_id = ${defaultingMotiveConcept}  "
-            + "    	   AND e.location_id = :location   "
-            + "        AND e.encounter_type= ${buscaActivaEncounterType}   "
-            + "        AND e.encounter_datetime BETWEEN :startDate AND :endDate "
-            + "		   AND o.value_coded IN (${transferredOutConcept} ,${autoTransferConcept})  "
-            + "        AND e.voided=0   "
-            + "        AND o.voided=0   "
-            + "        AND p.voided=0   "
-            + "    GROUP BY p.patient_id "
-            + ") lastest   "
-            + "WHERE lastest.patient_id NOT  IN("
-            + " "
-            + "  			     SELECT  p.patient_id    "
-            + "	                 FROM patient p      "
-            + "	                     INNER JOIN encounter e     "
-            + "	                         ON e.patient_id=p.patient_id     "
-            + "	                 WHERE  p.voided = 0     "
-            + "	                     AND e.voided = 0     "
-            + "	                     AND e.encounter_type IN (${adultoSeguimentoEncounterType},"
-            + "${pediatriaSeguimentoEncounterType},"
-            + "${pharmaciaEncounterType})    "
-            + "	                     AND e.encounter_datetime > lastest.last_date "
-            + " AND e.encounter_datetime <=  :endDate    "
-            + "	                     AND e.location_id =  :location    "
-            + "	                 GROUP BY p.patient_id "
-            + " UNION "
-            + "        			 SELECT  p.patient_id    "
-            + "	                 FROM patient p       "
-            + "	                      INNER JOIN encounter e      "
-            + "	                          ON e.patient_id=p.patient_id      "
-            + "	                      INNER JOIN obs o      "
-            + "	                          ON o.encounter_id=e.encounter_id      "
-            + "	                  WHERE  p.voided = 0      "
-            + "	                      AND e.voided = 0      "
-            + "	                      AND o.voided = 0      "
-            + "	                      AND e.encounter_type = ${masterCardDrugPickupEncounterType}     "
-            + "	                      AND o.concept_id = ${artDatePickup}     "
-            + "	                      AND o.value_datetime > lastest.last_date  "
-            + " AND o.value_datetime <= :endDate      "
-            + "	                      AND e.location_id =  :location     "
-            + "	                  GROUP BY p.patient_id   "
-            + ")  "
-            + " GROUP BY lastest.patient_id"
-            + " )mostrecent "
-            + " GROUP BY mostrecent.patient_id";
+        "SELECT   transferred_out.patient_id "
+            + "             FROM     ( "
+            + "                                 SELECT     latest.patient_id , "
+            + "                                            Max(latest.last_date) AS last_date "
+            + "                                 FROM       ( "
+            + "                                                       SELECT     p.patient_id , "
+            + "                                                                  Max(ps.start_date) AS last_date "
+            + "                                                       FROM       patient p "
+            + "                                                       INNER JOIN patient_program pg "
+            + "                                                       ON         p.patient_id=pg.patient_id "
+            + "                                                       INNER JOIN patient_state ps "
+            + "                                                       ON         pg.patient_program_id=ps.patient_program_id "
+            + "                                                       WHERE      pg.voided=0 "
+            + "                                                       AND        ps.voided=0 "
+            + "                                                       AND        p.voided=0 "
+            + "                                                       AND        pg.program_id= ${artProgram} "
+            + "                                                       AND        ps.state = ${transferredOutToAnotherHealthFacilityWorkflowState} "
+            + "                                                       AND        ps.start_date <= :endDate "
+            + "                                                       AND        pg.location_id= :location "
+            + "                                                       GROUP BY   p.patient_id "
+            + "                                                       UNION "
+            + "                                                       SELECT     p.patient_id, "
+            + "                                                                  max(o.obs_datetime) AS last_date "
+            + "                                                       FROM       patient p "
+            + "                                                       INNER JOIN encounter e "
+            + "                                                       ON         e.patient_id=p.patient_id "
+            + "                                                       INNER JOIN obs o "
+            + "                                                       ON         o.encounter_id=e.encounter_id "
+            + "                                                       WHERE      p.voided = 0 "
+            + "                                                       AND        e.voided = 0 "
+            + "                                                       AND        o.voided = 0 "
+            + "                                                       AND        e.encounter_type = ${masterCardEncounterType} "
+            + "                                                       AND        o.concept_id = ${stateOfStayOfPreArtPatient} "
+            + "                                                       AND        o.value_coded = ${transferredOutConcept} "
+            + "                                                       AND        o.obs_datetime BETWEEN :startDate AND        :endDate "
+            + "                                                       AND        e.location_id = :location "
+            + "                                                       GROUP BY   p.patient_id "
+            + "                                                       UNION "
+            + "                                                       SELECT     p.patient_id , "
+            + "                                                                  max(e.encounter_datetime) AS last_date "
+            + "                                                       FROM       patient p "
+            + "                                                       INNER JOIN encounter e "
+            + "                                                       ON         e.patient_id=p.patient_id "
+            + "                                                       INNER JOIN obs o "
+            + "                                                       ON         o.encounter_id=e.encounter_id "
+            + "                                                       WHERE      p.voided = 0 "
+            + "                                                       AND        e.voided = 0 "
+            + "                                                       AND        o.voided = 0 "
+            + "                                                       AND        e.encounter_type = ${adultoSeguimentoEncounterType} "
+            + "                                                       AND        o.concept_id = ${stateOfStayOfArtPatient} "
+            + "                                                       AND        o.value_coded = ${transferredOutConcept} "
+            + "                                                       AND        e.encounter_datetime BETWEEN :startDate AND        :endDate "
+            + "                                                       AND        e.location_id = :location "
+            + "                                                       GROUP BY   p.patient_id "
+            + "                                                       UNION "
+            + "                                                       SELECT     p.patient_id, "
+            + "                                                                  max(e.encounter_datetime) last_date "
+            + "                                                       FROM       patient p "
+            + "                                                       INNER JOIN encounter e "
+            + "                                                       ON         p.patient_id = e.patient_id "
+            + "                                                       INNER JOIN obs o "
+            + "                                                       ON         e.encounter_id = o.encounter_id "
+            + "                                                       WHERE      o.concept_id = ${defaultingMotiveConcept} "
+            + "                                                       AND        e.location_id = :location "
+            + "                                                       AND        e.encounter_type= ${buscaActivaEncounterType} "
+            + "                                                       AND        e.encounter_datetime BETWEEN :startDate AND        :endDate "
+            + "                                                       AND        o.value_coded IN (${transferredOutConcept}, "
+            + "                                                                                    ${autoTransferConcept}) "
+            + "                                                       AND        e.voided=0 "
+            + "                                                       AND        o.voided=0 "
+            + "                                                       AND        p.voided=0 "
+            + "                                                       GROUP BY   p.patient_id ) latest "
+            + "                                                       WHERE      latest.patient_id NOT IN "
+            + "                                                                         ( "
+            + "                                                                         SELECT     p.patient_id "
+            + "                                                                         FROM       patient p "
+            + "                                                                         INNER JOIN encounter e "
+            + "                                                                         ON         e.patient_id=p.patient_id "
+            + "                                                                         WHERE      p.voided = 0 "
+            + "                                                                         AND        e.voided = 0 "
+            + "                                                                         AND        e.encounter_type IN (${adultoSeguimentoEncounterType}, "
+            + "                                                       ${pediatriaSeguimentoEncounterType}, "
+            + "                                                       ${pharmaciaEncounterType}) "
+            + "                                                       AND        e.encounter_datetime > last_date "
+            + "                                                       AND        e.encounter_datetime <= :endDate "
+            + "                                                       AND        e.location_id = :location "
+            + "                                                       GROUP BY   p.patient_id ) "
+            + "                                                       GROUP BY   latest.patient_id "
+            + "                                            ) transferred_out "
+            + "             GROUP BY transferred_out.patient_id";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    String mappedQuery = stringSubstitutor.replace(query);
+
+    sqlCohortDefinition.setQuery(mappedQuery);
+
+    return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <p>The system will identify the most recent date from the different sources as the date of
+   * Transferred Out.
+   *
+   * <p>Patients who are “marked” as transferred out who have an ARV pick-up registered in FILA or
+   * have a clinical consultation after the date the patient was “marked” as transferred out will
+   * not be considered as Transferred Out.
+   *
+   * <p>The system will consider patient as transferred out as above defined only if the most recent
+   * date between (next scheduled ART pick-up on FILA + 1 day) and (the most recent ART pickup date
+   * on Ficha Recepção – Levantou ARVs + 31 days) falls during the reporting period.
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getPatientsTransferredOutFilaArvPickUp() {
+
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+
+    sqlCohortDefinition.setName(
+        "Patient Transferred Out With most recent date between Fila AND ARV PickUp ");
+    sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put(
+        "adultoSeguimentoEncounterType",
+        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "pediatriaSeguimentoEncounterType",
+        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put(
+        "pharmaciaEncounterType", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put("artDatePickup", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put(
+        "masterCardDrugPickupEncounterType",
+        hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put(
+        "returnVisitDateForArvDrugConcept",
+        hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
+
+    String query =
+        "SELECT final.patient_id "
+            + "FROM ( "
+            + "         SELECT most_recent.patient_id, "
+            + "                Max(most_recent.value_datetime) AS value_datetime "
+            + "         FROM (SELECT p.patient_id, "
+            + "                      date_add(max(o.value_datetime), interval 1 day)  AS value_datetime "
+            + "               FROM patient p "
+            + "                        INNER JOIN encounter e "
+            + "                                   ON e.patient_id = p.patient_id "
+            + "                        INNER JOIN obs o "
+            + "                                   ON o.encounter_id = e.encounter_id "
+            + "               WHERE p.voided = 0 "
+            + "                 AND e.voided = 0 "
+            + "                 AND o.voided = 0 "
+            + "                 AND e.encounter_type = ${pharmaciaEncounterType} "
+            + "                 AND o.concept_id = ${returnVisitDateForArvDrugConcept} "
+            + "                 AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "                 AND e.location_id = :location "
+            + "               GROUP BY p.patient_id "
+            + "               UNION "
+            + "               SELECT p.patient_id, "
+            + "                      date_add(max(o.value_datetime), interval 31 day) AS value_datetime "
+            + "               FROM patient p "
+            + "                        INNER JOIN encounter e "
+            + "                                   ON e.patient_id = p.patient_id "
+            + "                        INNER JOIN obs o "
+            + "                                   ON o.encounter_id = e.encounter_id "
+            + "               WHERE p.voided = 0 "
+            + "                 AND e.voided = 0 "
+            + "                 AND o.voided = 0 "
+            + "                 AND e.encounter_type = ${masterCardDrugPickupEncounterType} "
+            + "                 AND o.concept_id = ${artDatePickup} "
+            + "                 AND o.value_datetime BETWEEN :startDate AND :endDate "
+            + "                 AND e.location_id = :location "
+            + "               GROUP BY p.patient_id) AS most_recent "
+            + "               GROUP BY most_recent.patient_id "
+            + "     ) final "
+            + " WHERE final.value_datetime BETWEEN :startDate AND :endDate ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
     String mappedQuery = stringSubstitutor.replace(query);
@@ -1595,18 +1767,32 @@ public class TXTBCohortQueries {
   /**
    * <b>Technical Specs</b>
    *
+   * <p>Patients Disaggregation – Diagnostic Test
+   *
+   * <p>TX_TB_FR13
+   *
    * <blockquote>
    *
-   * Get patients who have a GeneXpert Positivo or Negativo registered in the investigations - Ficha
-   * Clinica - Mastercard OR
+   * The system will identify patients with any diagnostic Test sent disaggregation as follows:
+   * (mWRD (with or without other testing):patients will be included who during the reporting
+   * period:
    *
-   * <p>Have a GeneXpert request registered in the investigations - Ficha Clinica - Mastercard
+   * <ul>
+   *   <li>have a ‘GeneXpert Positivo’ registered in the Investigações – resultados laboratoriais -
+   *       Ficha Clínica – Mastercard; or
+   *   <li>have a ‘GeneXpert Negativo’ registered in the Investigações – resultados laboratoriais
+   *       Ficha Clínica – Mastercard; or
+   *   <li>have a GeneXpert request registered in the Investigações – Pedidos Laboratoriais - Ficha
+   *       Clínica – Mastercard; or
+   *   <li>have a GeneXpert result ANY VALUE registered in the Laboratory Form or
+   *   <li>have a XpertMTB result ANY VALUE registered in the Laboratory Form
+   * </ul>
    *
    * </blockquote>
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getGenExpert() {
+  public CohortDefinition getmWRD() {
     CohortDefinition cd =
         getPatientsWhoHaveGeneXpert(
             hivMetadata.getApplicationForLaboratoryResearch(),
@@ -1639,10 +1825,31 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * <b>Description:</b> Get patients who have a Additional Test AND Not GeneXpert AND Not Smear
-   * Microscopy Only
+   * <b>Technical Specs</b>
    *
-   * <p><b>Technical Specs</b>
+   * <p>Patients Disaggregation – Diagnostic Test
+   *
+   * <p>TX_TB_FR13
+   *
+   * <blockquote>
+   *
+   * <p>Additional test other than mWRD : patients will be included who during the reporting period:
+   *
+   * <ul>
+   *   <li>have Investigações - Pedidos Laboratoriais request marked for ‘TB LAM’ or ‘Cultura’ or
+   *   <li>have Investigações - Resultados Laboratoriais results (ANY RESULT) recorded for ‘TB LAM’
+   *       or ‘Cultura’ or
+   *   <li>have a Cultura result ANY VALUE registered in the Laboratory Form or
+   *   <li>have a TB LAM result ANY VALUE registered in the Laboratory Form AND
+   *   <li>do not have a GeneXpert, Xpert MTB and Baciloscopia result registered in the Laboratory
+   *       Form and
+   *   <li>do not have Investigações – Pedidos Laboratorais request marked for ‘GeneXpert’ and ‘BK’
+   *       and
+   *   <li>do not have Investigações – Resultados Laboratoriais result recorded for ‘GeneXpert’ and
+   *       ‘BK’
+   * </ul>
+   *
+   * </blockquote>
    *
    * @return {@link CohortDefinition}
    */
@@ -1714,19 +1921,18 @@ public class TXTBCohortQueries {
   }
 
   /**
-   * <b>Description:</b> BR-9 GenExpert MTB/RIF - Get patients from denominator AND
-   * positive_screened AND genexpert
+   * <b>Description:</b> BR-9 mWRD - Get patients from denominator AND positive_screened AND mWRD
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition genExpert() {
+  public CohortDefinition mWRD() {
     CompositionCohortDefinition definition = new CompositionCohortDefinition();
-    definition.setName("genExpert()");
+    definition.setName("mWRD()");
     definition.addSearch(
         "denominator", EptsReportUtils.map(getDenominator(), generalParameterMapping));
-    definition.addSearch("genExpert", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
+    definition.addSearch("mWRD", EptsReportUtils.map(getmWRD(), generalParameterMapping));
     addGeneralParameters(definition);
-    definition.setCompositionString("denominator AND genExpert");
+    definition.setCompositionString("denominator AND mWRD");
     return definition;
   }
 
@@ -2006,11 +2212,10 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "applicationForLaboratoryResearchCohort",
         EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
-    definition.addSearch(
-        "genExpertCohort", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
+    definition.addSearch("mWRDCohort", EptsReportUtils.map(getmWRD(), generalParameterMapping));
 
     definition.setCompositionString(
-        "(basiloscopiaCohort OR basiloscopiaLabCohort OR applicationForLaboratoryResearchCohort) NOT genExpertCohort");
+        "(basiloscopiaCohort OR basiloscopiaLabCohort OR applicationForLaboratoryResearchCohort) NOT mWRDCohort");
     return definition;
   }
 
@@ -2089,8 +2294,7 @@ public class TXTBCohortQueries {
     definition.addSearch(
         "applicationForLaboratoryResearchCohort",
         EptsReportUtils.map(applicationForLaboratoryResearchCohort, generalParameterMapping));
-    definition.addSearch(
-        "genExpertCohort", EptsReportUtils.map(getGenExpert(), generalParameterMapping));
+    definition.addSearch("mWRDCohort", EptsReportUtils.map(getmWRD(), generalParameterMapping));
     definition.addSearch(
         "smearMicroscopyOnlyCohort",
         EptsReportUtils.map(getSmearMicroscopyOnly(), generalParameterMapping));
@@ -2099,7 +2303,7 @@ public class TXTBCohortQueries {
         EptsReportUtils.map(basiloscopiaExamCohort, generalParameterMapping));
 
     definition.setCompositionString(
-        "(tbLamTestCohort OR tbLamLabTestCohort OR cultureTestCohort OR cultureLabTestCohort OR applicationForLaboratoryResearchCohort OR basiloscopiaExamCohort) NOT genExpertCohort NOT smearMicroscopyOnlyCohort");
+        "(tbLamTestCohort OR tbLamLabTestCohort OR cultureTestCohort OR cultureLabTestCohort OR applicationForLaboratoryResearchCohort OR basiloscopiaExamCohort) NOT mWRDCohort NOT smearMicroscopyOnlyCohort");
     return definition;
   }
 

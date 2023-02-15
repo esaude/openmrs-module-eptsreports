@@ -54,12 +54,12 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.6 SEMI-ANNUAL";
+    return "PEPFAR MER 2.6.1 SEMI-ANNUAL";
   }
 
   @Override
   public String getDescription() {
-    return "PEPFAR MER 2.6 Semi-Annual Report";
+    return "PEPFAR MER 2.6.1 Semi-Annual Report";
   }
 
   @Deprecated

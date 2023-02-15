@@ -184,7 +184,7 @@ public class TbMetadata extends ProgramsMetadata {
   /**
    * <b>concept_id = 23723</b>
    *
-   * <p><b>Name:</b> TB GENEXPERT TEST
+   * <p><b>Name:</b> TB MWRD TEST
    *
    * <p><b>Description:</b> Test for the diagnosis of tuberculosis
    *

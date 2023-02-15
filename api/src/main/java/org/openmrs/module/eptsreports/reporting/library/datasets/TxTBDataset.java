@@ -113,9 +113,9 @@ public class TxTBDataset extends BaseDataSet {
         eptsGeneralIndicator.getIndicator(
             "smearMicroscopyOnly",
             EptsReportUtils.map(txTbCohortQueries.smearMicroscopyOnly(), mappings));
-    CohortIndicator genExpert =
+    CohortIndicator mWRD =
         eptsGeneralIndicator.getIndicator(
-            "genExpert", EptsReportUtils.map(txTbCohortQueries.genExpert(), mappings));
+            "mWRD", EptsReportUtils.map(txTbCohortQueries.mWRD(), mappings));
     CohortIndicator otherAdditionalTest =
         eptsGeneralIndicator.getIndicator(
             "otherAdditionalTest",
@@ -173,9 +173,9 @@ public class TxTBDataset extends BaseDataSet {
         "");
 
     dataSetDefinition.addColumn(
-        "TXB_DEN_GENE_EXPERT",
-        "TX_TB: Denominator (Diagnostic Test - Gene Xpert MTB/RIF Assay)",
-        EptsReportUtils.map(genExpert, mappings),
+        "TXB_DEN_M_WRD",
+        "TX_TB: Denominator (Diagnostic Test - M WRD)",
+        EptsReportUtils.map(mWRD, mappings),
         "");
 
     dataSetDefinition.addColumn(
