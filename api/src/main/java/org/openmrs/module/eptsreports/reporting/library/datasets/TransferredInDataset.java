@@ -90,7 +90,7 @@ public class TransferredInDataset extends BaseDataSet {
         new ColumnParameters("tenT014YearsM", "10-14 Male", "gender=M|age=10-14", "04");
 
     // Adults Male
-    // 15-19, 20-24,25-29,30-34,35-39,40-44,45-49, >=50, Unknown age
+    // 15-19, 20-24,25-29,30-34,35-39,40-44,45-49,50-54,55-59,60-64 >=65, Unknown age
     ColumnParameters fifteenTo19YearsM =
         new ColumnParameters("fifteenTo19YearsM", "15-19 Male", "gender=M|age=15-19", "05");
     ColumnParameters twentyTo24YearsM =
@@ -105,51 +105,63 @@ public class TransferredInDataset extends BaseDataSet {
         new ColumnParameters("foutyTo44M", "40 - 44 male", "gender=M|age=40-44", "10");
     ColumnParameters fouty5To49M =
         new ColumnParameters("fouty5To49M", "45 - 49 male", "gender=M|age=45-49", "11");
-    ColumnParameters above50M =
-        new ColumnParameters("above50M", "50+ male", "gender=M|age=50+", "12");
+    ColumnParameters fiftyTo54M =
+        new ColumnParameters("fiftyTo54M", "50 - 54 male", "gender=M|age=50-54", "12");
+    ColumnParameters fifty5To59M =
+        new ColumnParameters("fifty5To59M", "55 - 59 male", "gender=M|age=55-59", "13");
+    ColumnParameters sixtyTo64M =
+        new ColumnParameters("sixtyTo64M", "60 - 64 male", "gender=M|age=60-64", "14");
+    ColumnParameters above65M =
+        new ColumnParameters("above65M", "65+ male", "gender=M|age=65+", "15");
     ColumnParameters unknownM =
-        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "13");
+        new ColumnParameters("unknownM", "Unknown age male", "gender=M|age=UK", "16");
 
     // Children Female
     ColumnParameters under1YearF =
-        new ColumnParameters("under1YearF", "<1 Female", "gender=F|age=<1", "14");
+        new ColumnParameters("under1YearF", "<1 Female", "gender=F|age=<1", "18");
     ColumnParameters oneT04YearsF =
-        new ColumnParameters("oneT04YearsF", "1-4 Female", "gender=F|age=1-4", "15");
+        new ColumnParameters("oneT04YearsF", "1-4 Female", "gender=F|age=1-4", "19");
     ColumnParameters fiveT09YearsF =
-        new ColumnParameters("fiveT09YearsF", "5-9 Female", "gender=F|age=5-9", "16");
+        new ColumnParameters("fiveT09YearsF", "5-9 Female", "gender=F|age=5-9", "20");
     ColumnParameters tenT014YearsF =
-        new ColumnParameters("tenT014YearsF", "10-14 Female", "gender=F|age=10-14", "17");
+        new ColumnParameters("tenT014YearsF", "10-14 Female", "gender=F|age=10-14", "21");
 
     // Adults Female
-    // 15-19, 20-24,25-29,30-34,35-39,40-44,45-49, >=50, Unknown age
+    // 15-19, 20-24,25-29,30-34,35-39,40-44,45-49,50-54,55-59,60-64 >=65, Unknown age
     ColumnParameters fifteenTo19YearsF =
-        new ColumnParameters("fifteenTo19YearsF", "15-19 female", "gender=F|age=15-19", "18");
+        new ColumnParameters("fifteenTo19YearsF", "15-19 female", "gender=F|age=15-19", "22");
     ColumnParameters twentyTo24YearsF =
-        new ColumnParameters("twentyTo24YearsF", "20 - 24 female", "gender=F|age=20-24", "19");
+        new ColumnParameters("twentyTo24YearsF", "20 - 24 female", "gender=F|age=20-24", "23");
     ColumnParameters twenty5To29F =
-        new ColumnParameters("twenty5To29F", "25 - 29 female", "gender=F|age=25-29", "20");
+        new ColumnParameters("twenty5To29F", "25 - 29 female", "gender=F|age=25-29", "24");
     ColumnParameters thirtyTo34F =
-        new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "21");
+        new ColumnParameters("thirtyTo34F", "30 - 34 female", "gender=F|age=30-34", "25");
     ColumnParameters thirty5To39F =
-        new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "22");
+        new ColumnParameters("thirty5To39F", "35 - 39 female", "gender=F|age=35-39", "26");
     ColumnParameters foutyTo44F =
-        new ColumnParameters("foutyTo44F", "40 - 44 female", "gender=F|age=40-44", "23");
+        new ColumnParameters("foutyTo44F", "40 - 44 female", "gender=F|age=40-44", "27");
     ColumnParameters fouty5To49F =
-        new ColumnParameters("fouty5To49F", "45 - 49 female", "gender=F|age=45-49", "24");
-    ColumnParameters above50F =
-        new ColumnParameters("above50F", "50+ female", "gender=F|age=50+", "25");
+        new ColumnParameters("fouty5To49F", "45 - 49 female", "gender=F|age=45-49", "28");
+    ColumnParameters fiftyTo54F =
+        new ColumnParameters("fiftyTo54F", "50 - 54 female", "gender=F|age=50-54", "29");
+    ColumnParameters fifty5To59F =
+        new ColumnParameters("fifty5To59F", "55 - 59 female", "gender=F|age=55-59", "30");
+    ColumnParameters sixtyTo64F =
+        new ColumnParameters("sixtyTo64F", "60 - 64 female", "gender=F|age=60-64", "31");
+    ColumnParameters above65F =
+        new ColumnParameters("above65F", "65+ female", "gender=F|age=65+", "32");
     ColumnParameters unknownF =
-        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "26");
+        new ColumnParameters("unknownF", "Unknown age female", "gender=F|age=UK", "33");
 
     // Getting subtotals
     ColumnParameters subTotalF =
-        new ColumnParameters("subTotalF", "Sub Total female", "gender=F", "27");
+        new ColumnParameters("subTotalF", "Sub Total female", "gender=F", "34");
 
     ColumnParameters subTotalM =
-        new ColumnParameters("subTotalM", "Sub Total male", "gender=M", "28");
+        new ColumnParameters("subTotalM", "Sub Total male", "gender=M", "17");
 
     // Getting the totals
-    ColumnParameters totals = new ColumnParameters("totals", "Total", "", "29");
+    ColumnParameters totals = new ColumnParameters("totals", "Total", "", "35");
 
     return Arrays.asList(
         under1YearM,
@@ -167,7 +179,10 @@ public class TransferredInDataset extends BaseDataSet {
         thirty5To39M,
         foutyTo44M,
         fouty5To49M,
-        above50M,
+        fiftyTo54M,
+        fifty5To59M,
+        sixtyTo64M,
+        above65M,
         unknownM,
         fifteenTo19YearsF,
         twentyTo24YearsF,
@@ -176,7 +191,10 @@ public class TransferredInDataset extends BaseDataSet {
         thirty5To39F,
         foutyTo44F,
         fouty5To49F,
-        above50F,
+        fiftyTo54F,
+        fifty5To59F,
+        sixtyTo64F,
+        above65F,
         unknownF,
         subTotalF,
         subTotalM,

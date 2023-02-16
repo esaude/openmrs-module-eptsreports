@@ -29,17 +29,20 @@ public class TransferredInCohortQueries {
   private TxCurrCohortQueries txCurrCohortQueries;
   private CommonCohortQueries commonCohortQueries;
   private TxRttCohortQueries txRttCohortQueries;
+  private TXTBCohortQueries txtbCohortQueries;
 
   @Autowired
   public TransferredInCohortQueries(
       ResumoMensalCohortQueries resumoMensalCohortQueries,
       TxCurrCohortQueries txCurrCohortQueries,
       CommonCohortQueries commonCohortQueries,
-      TxRttCohortQueries txRttCohortQueries) {
+      TxRttCohortQueries txRttCohortQueries,
+      TXTBCohortQueries txtbCohortQueries) {
     this.resumoMensalCohortQueries = resumoMensalCohortQueries;
     this.txCurrCohortQueries = txCurrCohortQueries;
     this.commonCohortQueries = commonCohortQueries;
     this.txRttCohortQueries = txRttCohortQueries;
+    this.txtbCohortQueries = txtbCohortQueries;
   }
 
   /**
@@ -70,8 +73,7 @@ public class TransferredInCohortQueries {
 
     CohortDefinition txCurr = txCurrCohortQueries.getTxCurrCompositionCohort("txCurr", true);
 
-    CohortDefinition transferredOut =
-        commonCohortQueries.getMohTransferredOutPatientsByEndOfPeriod();
+    CohortDefinition transferredOut = txtbCohortQueries.getTransferredOut();
 
     CohortDefinition homeVisitTrfOut =
         txCurrCohortQueries.getPatientsTransferedOutInLastHomeVisitCard();
@@ -81,7 +83,7 @@ public class TransferredInCohortQueries {
 
     String mappingsTrfIn = "onOrAfter=${onOrAfter},onOrBefore=${onOrBefore},location=${location}";
     String mappingsCurr = "onOrBefore=${onOrBefore-3m},location=${location}";
-    String mappingsTrfOut = "onOrBefore=${onOrAfter-1d},location=${location}";
+    String mappingsTrfOut = "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
     String mappingsHomeVisitTrfOut = "onOrBefore=${onOrAfter-1d},location=${location}";
     String mappingsClinicalVisit =
         "startDate=${onOrAfter},endDate=${onOrBefore},location=${location}";
