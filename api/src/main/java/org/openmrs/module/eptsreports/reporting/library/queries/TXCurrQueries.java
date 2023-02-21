@@ -1,7 +1,9 @@
 package org.openmrs.module.eptsreports.reporting.library.queries;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.text.StringSubstitutor;
 
 public class TXCurrQueries {
@@ -102,6 +104,22 @@ public class TXCurrQueries {
         transferredOutToAnotherHealthFacilityWorkflowState,
         suspendedTreatmentWorkflowState,
         artDeadWorkflowState);
+  }
+
+  public static String getPatientsTransferredOutOnProgramEnrollment(
+      int artProgram, List<Integer> states) {
+
+    String concepts = StringUtils.join(states, ",");
+
+    String query =
+        " select p.patient_id from patient p "
+            + " inner join patient_program pg on p.patient_id=pg.patient_id "
+            + " inner join patient_state ps on pg.patient_program_id=ps.patient_program_id "
+            + " where pg.voided=0 and ps.voided=0 and p.voided=0 and pg.program_id=%d "
+            + " and ps.state IN (%s) and ps.start_date<=:onOrBefore "
+            + "and pg.location_id=:location group by p.patient_id ";
+
+    return String.format(query, artProgram, concepts);
   }
 
   /**
@@ -366,6 +384,8 @@ public class TXCurrQueries {
       int returnVisitDateConcept,
       int adultoSeguimentoEncounterType,
       int aRVPediatriaSeguimentoEncounterType,
+      int artDatePickup,
+      int msterCardDrugPickupEncounterType,
       int numDays) {
 
     Map<String, Integer> map = new HashMap<>();
@@ -374,6 +394,8 @@ public class TXCurrQueries {
     map.put("returnVisitDateConcept", returnVisitDateConcept);
     map.put("adultoSeguimentoEncounterType", adultoSeguimentoEncounterType);
     map.put("aRVPediatriaSeguimentoEncounterType", aRVPediatriaSeguimentoEncounterType);
+    map.put("artDatePickup", artDatePickup);
+    map.put("msterCardDrugPickupEncounterType", msterCardDrugPickupEncounterType);
     map.put("numDays", numDays);
 
     String query =
@@ -427,6 +449,23 @@ public class TXCurrQueries {
             + "                            o.encounter_id = e.encounter_id and "
             + "                            o.concept_id = ${returnVisitDateConcept} and "
             + "                            o.voided = 0 "
+            + "                        UNION "
+            + "                        SELECT pa.patient_id, "
+            + "                            Date_add(Max(obs.value_datetime), interval 30 day) value_datetime "
+            + "                        FROM   patient pa "
+            + "                            inner join encounter enc "
+            + "                                ON enc.patient_id = pa.patient_id "
+            + "                            inner join obs obs "
+            + "                                ON obs.encounter_id = enc.encounter_id "
+            + "                        WHERE  pa.voided = 0 "
+            + "                            AND enc.voided = 0 "
+            + "                            AND obs.voided = 0 "
+            + "                            AND obs.concept_id = ${artDatePickup} "
+            + "                            AND obs.value_datetime IS NOT NULL "
+            + "                            AND enc.encounter_type = ${msterCardDrugPickupEncounterType}  "
+            + "                            AND enc.location_id = :location "
+            + "                            AND obs.value_datetime <= :onOrBefore "
+            + "                       GROUP  BY pa.patient_id "
             + "                   ) most_recent "
             + "               GROUP BY most_recent.patient_id "
             + "               HAVING final_encounter_date < :onOrBefore "
@@ -445,14 +484,18 @@ public class TXCurrQueries {
       int adultoSeguimentoEncounterType,
       int ARVPediatriaSeguimentoEncounterType,
       int aRVPharmaciaEncounterType,
+      int masterCardDrugPickupEncounterType,
       int returnVisitDateConcept,
-      int returnVisitDateForArvDrugConcept) {
+      int returnVisitDateForArvDrugConcept,
+      int artDatePickup) {
     Map<String, Integer> map = new HashMap<>();
     map.put("6", adultoSeguimentoEncounterType);
     map.put("9", ARVPediatriaSeguimentoEncounterType);
     map.put("18", aRVPharmaciaEncounterType);
     map.put("1410", returnVisitDateConcept);
     map.put("5096", returnVisitDateForArvDrugConcept);
+    map.put("52", masterCardDrugPickupEncounterType);
+    map.put("23866", artDatePickup);
 
     String query =
         "SELECT pat.patient_id "
@@ -508,6 +551,18 @@ public class TXCurrQueries {
             + "                AND        o1.voided = 0 "
             + "                AND        o1.concept_id IN(${5096}) "
             + "                AND        o1.location_id = :location "
+            + "            UNION "
+            + "            SELECT     pa.patient_id FROM       patient pa "
+            + "                INNER JOIN encounter en ON         pa.patient_id = en.patient_id "
+            + "                INNER JOIN obs ob ON         en.encounter_id = ob.encounter_id "
+            + "            WHERE      pa.voided=0 "
+            + "                AND        en.voided = 0 "
+            + "                AND        ob.voided = 0 "
+            + "                AND        en.location_id = :location "
+            + "                AND        en.encounter_type = ${52} "
+            + "                AND        ob.concept_id     = ${23866} "
+            + "                AND        ob.value_datetime IS NOT NULL "
+            + "            AND        ob.value_datetime <= :onOrBefore "
             + " ) fn  )  ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);

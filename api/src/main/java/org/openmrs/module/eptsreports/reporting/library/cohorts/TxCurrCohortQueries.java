@@ -136,7 +136,7 @@ public class TxCurrCohortQueries {
         .put(
             "6",
             EptsReportUtils.map(
-                getPatientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate(),
+                getPatientsSuspendedOrDeadOnProgramEnrollment(),
                 "onOrBefore=${onOrBefore},location=${location}"));
     txCurrComposition
         .getSearches()
@@ -224,15 +224,23 @@ public class TxCurrCohortQueries {
     txCurrComposition
         .getSearches()
         .put(
-            "transferredOut",
+            "mostRecentSchedule",
             EptsReportUtils.map(
                 getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(),
+                "onOrBefore=${onOrBefore},location=${location}"));
+
+    txCurrComposition
+        .getSearches()
+        .put(
+            "transferredOutProgram",
+            EptsReportUtils.map(
+                getTransferredOutOnProgramEnrollment(),
                 "onOrBefore=${onOrBefore},location=${location}"));
 
     String compositionString;
     if (currentSpec) {
       compositionString =
-          "(1 OR 2 OR 3 OR 4 OR 5) AND NOT ((6 OR 7 OR 8 OR 9 OR 11 OR ((10 OR 15) AND transferredOut)) AND NOT 12) AND NOT (13 OR 14)";
+          "(1 OR 2 OR 3 OR 4 OR 5) AND NOT ((6 OR 7 OR 8 OR 9 OR 11 OR ((10 OR 15 OR transferredOutProgram) AND mostRecentSchedule)) AND NOT 12) AND NOT (13 OR 14)";
     } else {
       compositionString = "(111 OR 2 OR 3 OR 4) AND (NOT (555 OR (666 AND (NOT (777 OR 888)))))";
     }
@@ -631,6 +639,8 @@ public class TxCurrCohortQueries {
             commonMetadata.getReturnVisitDateConcept().getConceptId(),
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
             numDays));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -668,8 +678,10 @@ public class TxCurrCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId(),
+            hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId(),
             hivMetadata.getReturnVisitDateConcept().getConceptId(),
-            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId()));
+            hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId(),
+            hivMetadata.getArtDatePickupMasterCard().getConceptId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
     definition.addParameter(new Parameter("location", "location", Location.class));
@@ -1643,12 +1655,85 @@ public class TxCurrCohortQueries {
             + "               GROUP BY   p.patient_id "
             + " )  considered_transferred "
             + " GROUP BY considered_transferred.patient_id "
-            + " ) final " +
-                " WHERE final.max_date <= :onOrBefore  ";
+            + " ) final "
+            + " WHERE final.max_date <= :onOrBefore  ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
     definition.setQuery(stringSubstitutor.replace(query));
+
+    return definition;
+  }
+
+  /**
+   * <b>Description:</b>
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <b>6 –</b> All deaths <b>(Patient_State.state = 10)</b>, Transferred-out
+   * <b>(Patient_State.state = 7)</b> and Suspensions <b>(Patient_State.state = 8)</b>
+   *
+   * <p>Registered in Patient Program State by reporting end date <b>Patient_State.start_date <=
+   * endDate Patient_state.end_date</b> is null
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  @DocumentedDefinition(
+      value = "patientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate")
+  public CohortDefinition getTransferredOutOnProgramEnrollment() {
+
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientsDeadTransferredOutSuspensionsInProgramStateByReportingEndDate");
+
+    definition.setQuery(
+        TXCurrQueries.getPatientsTransferredOutOnProgramEnrollment(
+            hivMetadata.getARTProgram().getProgramId(),
+            Arrays.asList(
+                hivMetadata
+                    .getTransferredOutToAnotherHealthFacilityWorkflowState()
+                    .getProgramWorkflowStateId())));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * <b>Description:</b>
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <b>6 –</b> All deaths <b>(Patient_State.state = 10)</b>, Transferred-out
+   * <b>(Patient_State.state = 7)</b> and Suspensions <b>(Patient_State.state = 8)</b>
+   *
+   * <p>Registered in Patient Program State by reporting end date <b>Patient_State.start_date <=
+   * endDate Patient_state.end_date</b> is null
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getPatientsSuspendedOrDeadOnProgramEnrollment() {
+
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientsDeadSuspensionsInProgramStateByReportingEndDate");
+
+    definition.setQuery(
+        TXCurrQueries.getPatientsTransferredOutOnProgramEnrollment(
+            hivMetadata.getARTProgram().getProgramId(),
+            Arrays.asList(
+                hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId(),
+                hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId())));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
 
     return definition;
   }
