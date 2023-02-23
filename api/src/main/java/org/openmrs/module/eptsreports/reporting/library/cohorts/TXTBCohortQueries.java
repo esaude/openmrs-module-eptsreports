@@ -713,6 +713,29 @@ public class TXTBCohortQueries {
   }
 
   /**
+   * <b>Description:</b> At least one “NEG” selected for “Resultado da Investigação para TB de BK
+   * e/ou RX?” during the reporting period consultations;
+   *
+   * <p><b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * response 664: "NEG" for question: 6277
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition negativeInvestigationResultComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    CohortDefinition N = negativeInvestigationResult();
+    cd.addSearch("N", map(N, codedObsParameterMapping));
+    cd.setCompositionString("N");
+    addGeneralParameters(cd);
+    return cd;
+  }
+
+  /**
    * <b>Description:</b> At least one “S” or “N” selected for TB Screening (Rastreio de TB) during
    * the reporting period consultations
    *
@@ -1182,7 +1205,7 @@ public class TXTBCohortQueries {
         EptsReportUtils.map(positiveInvestigationResultComposition(), generalParameterMapping));
     definition.addSearch(
         "tb-investigation-negative",
-        EptsReportUtils.map(negativeInvestigationResult(), generalParameterMapping));
+        EptsReportUtils.map(negativeInvestigationResultComposition(), generalParameterMapping));
     definition.addSearch(
         "started-tb-treatment",
         EptsReportUtils.map(tbTreatmentStartDateWithinReportingDate(), generalParameterMapping));
