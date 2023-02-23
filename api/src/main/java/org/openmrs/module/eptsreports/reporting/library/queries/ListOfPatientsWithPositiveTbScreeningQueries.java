@@ -33,7 +33,7 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
     map.put("1406", hivMetadata.getOtherDiagnosis().getConceptId());
     map.put("42", tbMetadata.getPulmonaryTB().getConceptId());
     String query =
-        "SELECT p.patient_id,o.obs_datetime AS recent_date "
+        "SELECT p.patient_id,o.obs_datetime AS earliest_date "
             + "FROM   patient p "
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = p.patient_id "
@@ -68,7 +68,7 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
     map.put("1268", hivMetadata.getTBTreatmentPlanConcept().getConceptId());
     map.put("1256", hivMetadata.getStartDrugs().getConceptId());
     String query =
-        "SELECT p.patient_id,o.obs_datetime AS recent_date "
+        "SELECT p.patient_id,o.obs_datetime AS earliest_date "
             + "FROM   patient p "
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = p.patient_id "
@@ -97,7 +97,7 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
     Map<String, Integer> map = new HashMap<>();
     map.put("5", tbMetadata.getTBProgram().getProgramId());
     String query =
-        "SELECT pg.patient_id,pg.date_enrolled AS recent_date "
+        "SELECT pg.patient_id,pg.date_enrolled AS earliest_date "
             + "FROM   patient p "
             + "       INNER JOIN patient_program pg "
             + "               ON pg.patient_id = p.patient_id "
@@ -127,7 +127,7 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
     map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
 
     String query =
-        "SELECT p.patient_id,e.encounter_datetime AS recent_date "
+        "SELECT p.patient_id,e.encounter_datetime AS earliest_date "
             + "FROM   patient p "
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = p.patient_id "
@@ -162,7 +162,7 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
     map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
 
     String query =
-        "SELECT p.patient_id,e.encounter_datetime AS recent_date "
+        "SELECT p.patient_id,e.encounter_datetime AS earliest_date "
             + "FROM   patient p "
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = p.patient_id "
@@ -209,7 +209,7 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
     map.put("161", tbMetadata.getLymphadenopathy().getConceptId());
 
     String query =
-        "SELECT p.patient_id,e.encounter_datetime AS recent_date "
+        "SELECT p.patient_id,e.encounter_datetime AS earliest_date "
             + "FROM   patient p "
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = p.patient_id "
@@ -248,7 +248,7 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
     map.put("12", tbMetadata.getXRayChest().getConceptId());
 
     String query =
-        "SELECT p.patient_id,e.encounter_datetime AS recent_date "
+        "SELECT p.patient_id,e.encounter_datetime AS earliest_date "
             + "FROM   patient p "
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = p.patient_id "
@@ -293,7 +293,7 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
     map.put("1138", tbMetadata.getIndeterminate().getConceptId());
 
     String query =
-        "SELECT p.patient_id,e.encounter_datetime AS recent_date "
+        "SELECT p.patient_id,e.encounter_datetime AS earliest_date "
             + "FROM   patient p "
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = p.patient_id "
@@ -333,7 +333,7 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
     map.put("307", hivMetadata.getResultForBasiloscopia().getConceptId());
 
     String query =
-        "SELECT p.patient_id,e.encounter_datetime AS recent_date "
+        "SELECT p.patient_id,e.encounter_datetime AS earliest_date "
             + "FROM   patient p "
             + "       INNER JOIN encounter e "
             + "               ON e.patient_id = p.patient_id "
@@ -353,8 +353,8 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
   }
 
   /**
-   * Patients marked as “Tratamento TB= Inicio (I) ” in Ficha Clinica Master Card between the Last
-   * Positive TB Screening Date (Value of Column H) and report generation date
+   * Patients marked as “Tratamento TB= Inicio (I) ” in Ficha Clinica Master Card between the
+   * Earliest Positive TB Screening Date (Value of Column H) and report generation date
    *
    * <p>Encounter Type ID = 6 <br>
    * TB Treament Plan ID = 1268 <br>
@@ -376,12 +376,12 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
             + "       INNER JOIN obs o "
             + "               ON o.encounter_id = e.encounter_id "
             + "       INNER JOIN ( "
-            + " SELECT positive.patient_id, MAX(positive.recent_date) as recent_date FROM ( "
+            + " SELECT positive.patient_id, MIN(positive.earliest_date) as earliest_date FROM ( "
             + getTbPositiveScreeningFromSourcesQuery()
             + " ) positive GROUP BY positive.patient_id ) positiveScreening ON positiveScreening.patient_id = p.patient_id "
             + "WHERE  e.encounter_type = ${6} "
             + "       AND e.location_id = :location "
-            + "       AND o.obs_datetime >= positiveScreening.recent_date AND o.obs_datetime <= :generationDate "
+            + "       AND o.obs_datetime >= positiveScreening.earliest_date AND o.obs_datetime <= :generationDate "
             + "       AND o.concept_id = ${1268} "
             + "       AND o.value_coded = ${1256} "
             + "       AND p.voided = 0 "
@@ -394,8 +394,8 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
 
   /**
    * Patients with Pulmonary TB Date in Patient Clinical Record of ART date TB (Condicoes medicas
-   * importantes) – Ficha Resumo Mastercard between the Last Positive TB Screening Date (Value of
-   * Column H) and report generation date
+   * importantes) – Ficha Resumo Mastercard between the Earliest Positive TB Screening Date (Value
+   * of Column H) and report generation date
    *
    * <p>• Encounter Type ID = 53<br>
    * Concept ID for Pulmonary TB = 421406 <br>
@@ -417,12 +417,12 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
             + "       INNER JOIN obs o "
             + "               ON o.encounter_id = e.encounter_id "
             + "       INNER JOIN ( "
-            + " SELECT positive.patient_id, MAX(positive.recent_date) as recent_date FROM ( "
+            + " SELECT positive.patient_id, MIN(positive.earliest_date) as earliest_date FROM ( "
             + getTbPositiveScreeningFromSourcesQuery()
             + " ) positive GROUP BY positive.patient_id ) positiveScreening ON positiveScreening.patient_id = p.patient_id "
             + "WHERE  e.encounter_type = ${53} "
             + "       AND e.location_id = :location "
-            + "       AND o.obs_datetime >= positiveScreening.recent_date AND o.obs_datetime <= :generationDate "
+            + "       AND o.obs_datetime >= positiveScreening.earliest_date AND o.obs_datetime <= :generationDate "
             + "       AND o.concept_id = ${1406} "
             + "       AND o.value_coded = ${42} "
             + "       AND p.voided = 0 "
@@ -434,8 +434,8 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
   }
 
   /**
-   * “TB Program Enrollment Date” (Data de Admissão) In SESP – Program Enrollment between the Last
-   * Positive TB Screening Date (Value of Column H) and report generation date
+   * “TB Program Enrollment Date” (Data de Admissão) In SESP – Program Enrollment between the
+   * Earliest Positive TB Screening Date (Value of Column H) and report generation date
    *
    * @return {@link String}
    */
@@ -448,13 +448,13 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
             + "       INNER JOIN patient_program pg "
             + "               ON pg.patient_id = p.patient_id "
             + "       INNER JOIN ( "
-            + " SELECT positive.patient_id, MAX(positive.recent_date) as recent_date FROM ( "
+            + " SELECT positive.patient_id, MIN(positive.earliest_date) as earliest_date FROM ( "
             + getTbPositiveScreeningFromSourcesQuery()
             + " ) positive GROUP BY positive.patient_id ) positiveScreening ON positiveScreening.patient_id = pg.patient_id "
             + "WHERE  pg.voided = 0 "
             + "       AND p.voided = 0 "
             + "       AND pg.program_id = ${5} "
-            + "       AND pg.date_enrolled  >= positiveScreening.recent_date AND pg.date_enrolled <= :generationDate "
+            + "       AND pg.date_enrolled  >= positiveScreening.earliest_date AND pg.date_enrolled <= :generationDate "
             + "       AND pg.location_id = :location ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
@@ -463,7 +463,7 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
 
   /**
    * Patients with at least one response to the following questions in Ficha Clinica Master Card
-   * between the Last Positive TB Screening Date (Value of Column H) and report generation date
+   * between the Earliest Positive TB Screening Date (Value of Column H) and report generation date
    *
    * <p>Encounter Type ID = 6 <br>
    * TUBERCULOSIS SYMPTOMS (concept_id = 23761) Answers YES (id = 1065)
@@ -484,12 +484,12 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
             + "       INNER JOIN obs o "
             + "               ON o.encounter_id = e.encounter_id "
             + "       INNER JOIN ( "
-            + " SELECT positive.patient_id, MAX(positive.recent_date) as recent_date FROM ( "
+            + " SELECT positive.patient_id, MIN(positive.earliest_date) as earliest_date FROM ( "
             + getTbPositiveScreeningFromSourcesQuery()
             + " ) positive GROUP BY positive.patient_id ) positiveScreening ON positiveScreening.patient_id = p.patient_id "
             + "WHERE  e.encounter_type = ${6} "
             + "       AND e.location_id = :location "
-            + "       AND e.encounter_datetime >= positiveScreening.recent_date AND e.encounter_datetime <= :generationDate "
+            + "       AND e.encounter_datetime >= positiveScreening.earliest_date AND e.encounter_datetime <= :generationDate "
             + "       AND  o.concept_id = ${23761} "
             + "       AND o.value_coded IN( ${1065} )  "
             + "       AND p.voided = 0 "
@@ -530,5 +530,60 @@ public class ListOfPatientsWithPositiveTbScreeningQueries {
         .union(getPatientsWithTbGenexpertAndDate())
         .union(getPatientsWithBaciloscopiaOrGenexpertOrCultureTestOrTestTbLamDate())
         .buildQuery();
+  }
+
+  /**
+   * <b>Generate one union separeted query based on the given queries</b>
+   *
+   * <p>Patients who started TB Treatment in the previous 6 months
+   *
+   * @return {@link String}
+   */
+  public String getPatientsTbTratment6MonthsPriorToReportStartDate() {
+
+    return new EptsQueriesUtil()
+        .unionBuilder(getPatientMarkedAsTbTreatmentStartAndDate())
+        .union(getPatientsClinicalRecordArtWithTbTratment())
+        .union(getPatientWithPulmonaryTbdDate())
+        .union(getPatientWithTbProgramEnrollmentAndDate())
+        .buildQuery();
+  }
+
+  /**
+   * <b>Patients who started TB Treatment in the previous 6 months</b>
+   *
+   * <p>Include all patients who in “Patient Clinical Record of ART - Ficha de Seguimento (Adults
+   * and Pediatric)” have at least TB Treatment (Tratamento de TB) Start Date (Data de Início) in
+   * the 6 months prior to the report start date (>=startDate – 6 months and <startDate)
+   *
+   * <p>• Encounter Type ID's = 6 and 9 <br>
+   * • TB Drug Start Date ID = 1113 <br>
+   * • value_datetime >= startDate - 6months and <=startDate <br>
+   *
+   * @return {@link String}
+   */
+  public String getPatientsClinicalRecordArtWithTbTratment() {
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("1113", hivMetadata.getTBDrugStartDateConcept().getConceptId());
+
+    String query =
+        "SELECT p.patient_id,o.value_datetime AS earliest_date "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON o.encounter_id = e.encounter_id "
+            + "WHERE p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND e.encounter_type IN (${6}, ${9})  "
+            + "       AND e.location_id = :location "
+            + "       AND o.concept_id = ${1113} "
+            + "       AND o.value_datetime >= :startDate AND o.value_datetime <= :endDate ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    return sb.replace(query);
   }
 }
