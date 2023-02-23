@@ -106,12 +106,12 @@ public class SetupMERQuarterly26 extends EptsDataExportManager {
 
   @Override
   public String getName() {
-    return "PEPFAR MER 2.6 Quarterly";
+    return "PEPFAR MER 2.6.1 Quarterly";
   }
 
   @Override
   public String getDescription() {
-    return "MER 2.6 Quarterly Report";
+    return "MER 2.6.1 Quarterly Report";
   }
 
   @Override
