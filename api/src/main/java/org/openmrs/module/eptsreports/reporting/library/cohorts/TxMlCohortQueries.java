@@ -72,21 +72,45 @@ public class TxMlCohortQueries {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
     CohortDefinition transferredOut = getTransferredOutPatientsComposition();
     String mappings = "onOrBefore=${endDate},location=${location}";
-    String mappings2 = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    String mappings2 = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String previousPeriodMappings =
+        "startDate=${startDate-3m},endDate=${startDate-1d},location=${location}";
     CohortDefinition dead = getDeadPatientsComposition();
 
     cd.addSearch("missedAppointment", Mapped.mapStraightThrough(missedAppointment));
     cd.addSearch("noScheduled", EptsReportUtils.map(noScheduled, mappings));
     cd.addSearch("startedArt", EptsReportUtils.map(startedArt, mappings));
     cd.addSearch(
-        "transferredOut",
+        "transferredOutPreviousPeriod",
+        EptsReportUtils.map(transferredOut, previousPeriodMappings));
+
+    cd.addSearch("transferredOutReportingPeriod", EptsReportUtils.map(transferredOut, mappings2));
+
+    cd.addSearch("deadPreviousPeriod", EptsReportUtils.map(dead, previousPeriodMappings));
+    cd.addSearch("deadReportingPeriod", EptsReportUtils.map(dead, mappings2));
+
+    cd.addSearch(
+        "transferredOutBetweenArtpickupAndRecepcaoLevantouReportingPeriod",
         EptsReportUtils.map(
-            transferredOut,
-            "startDate=${startDate-3m},endDate=${startDate-1d},location=${location}"));
-    cd.addSearch("dead", EptsReportUtils.map(dead, "endDate=${startDate-1d},location=${location}"));
+            getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(), mappings2));
+
+    cd.addSearch(
+        "transferredOutBetweenArtpickupAndRecepcaoLevantouPreviousPeriod",
+        EptsReportUtils.map(
+            getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(),
+            previousPeriodMappings));
+
+    cd.addSearch(
+        "suspendedReportingPeriod",
+        EptsReportUtils.map(getSuspendedPatientsComposition(), mappings2));
+    cd.addSearch(
+        "suspendedPreviousPeriod",
+        EptsReportUtils.map(getSuspendedPatientsComposition(), previousPeriodMappings));
 
     cd.setCompositionString(
-        "((missedAppointment OR noScheduled) AND startedArt) AND NOT (dead OR transferredOut)");
+        "((missedAppointment OR noScheduled OR deadReportingPeriod OR suspendedReportingPeriod OR "
+            + "(transferredOutReportingPeriod AND transferredOutBetweenArtpickupAndRecepcaoLevantouReportingPeriod)) AND startedArt) "
+            + "AND NOT ((deadPreviousPeriod OR suspendedPreviousPeriod) OR (transferredOutPreviousPeriod AND transferredOutBetweenArtpickupAndRecepcaoLevantouPreviousPeriod))");
 
     return cd;
   }
@@ -151,7 +175,11 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-
+    cd.addSearch(
+        "missedAppointmentLessTransfers",
+        EptsReportUtils.map(
+            getPatientsWhoMissedNextAppointmentAndNoScheduledDrugPickupOrNextConsultation(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.addSearch(
         "dead",
         EptsReportUtils.map(
@@ -164,7 +192,7 @@ public class TxMlCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "dead AND NOT patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation");
+        "(missedAppointmentLessTransfers AND dead) AND NOT patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation");
 
     return cd;
   }
@@ -569,29 +597,13 @@ public class TxMlCohortQueries {
             + "	                         ON e.patient_id=p.patient_id     "
             + "	                 WHERE  p.voided = 0     "
             + "	                     AND e.voided = 0     "
-            + "	                     AND e.encounter_type IN (${adultoSeguimentoEncounterType},"
-            + "${pediatriaSeguimentoEncounterType},"
-            + "${pharmaciaEncounterType})    "
+            + "	                     AND e.encounter_type IN (${adultoSeguimentoEncounterType}, "
+            + " ${pediatriaSeguimentoEncounterType}, "
+            + " ${pharmaciaEncounterType})    "
             + "	                     AND e.encounter_datetime > lastest.last_date "
             + " AND e.encounter_datetime <=  :endDate    "
             + "	                     AND e.location_id =  :location    "
             + "	                 GROUP BY p.patient_id "
-            + " UNION "
-            + "        			 SELECT  p.patient_id    "
-            + "	                 FROM patient p       "
-            + "	                      INNER JOIN encounter e      "
-            + "	                          ON e.patient_id=p.patient_id      "
-            + "	                      INNER JOIN obs o      "
-            + "	                          ON o.encounter_id=e.encounter_id      "
-            + "	                  WHERE  p.voided = 0      "
-            + "	                      AND e.voided = 0      "
-            + "	                      AND o.voided = 0      "
-            + "	                      AND e.encounter_type = ${masterCardDrugPickupEncounterType}     "
-            + "	                      AND o.concept_id = ${artDatePickup}     "
-            + "	                      AND o.value_datetime > lastest.last_date  "
-            + " AND o.value_datetime <= :endDate      "
-            + "	                      AND e.location_id =  :location     "
-            + "	                  GROUP BY p.patient_id   "
             + ")  "
             + " GROUP BY lastest.patient_id"
             + " )mostrecent "
@@ -662,7 +674,7 @@ public class TxMlCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     cd.addSearch(
-        "deadOrSuspendedByPatientProgramState",
+        "deadByPatientProgramState",
         EptsReportUtils.map(
             getPatientsDeadInProgramStateByReportingEndDate(),
             "onOrBefore=${endDate},location=${location}"));
@@ -681,6 +693,55 @@ public class TxMlCohortQueries {
         EptsReportUtils.map(
             txCurrCohortQueries.getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
             "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "exclusion",
+        EptsReportUtils.map(
+            getExclusionForDeadOrSuspendedPatients(true),
+            "endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "(deadByPatientDemographics OR deadByPatientProgramState OR deadRegisteredInLastHomeVisitCard"
+            + " OR deadRegisteredInFichaResumoAndFichaClinicaMasterCard) AND NOT exclusion");
+
+    return cd;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <b>a.</b> All deaths registered in Patient Program State by reporting end date
+   *
+   * <p><b>
+   *
+   * <p>b.</b> All deaths registered in Patient Demographics by reporting end date
+   *
+   * <p><b>
+   *
+   * <p>c.</b> All deaths registered in Last Home Visit Card by reporting end date
+   *
+   * <p><b>
+   *
+   * <p>d.</b> All deaths registered in Ficha Resumo and Ficha Clinica of Master Card by reporting
+   * end date
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getSuspendedPatientsComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get patients who are dead according to criteria a,b,c,d and e");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "suspendedByPatientProgramState",
+        EptsReportUtils.map(
+            getPatientsSuspendedInProgramStateByReportingEndDate(),
+            "onOrBefore=${endDate},location=${location}"));
 
     cd.addSearch(
         "suspendedRegisteredInFichaResumoAndFichaClinicaMasterCard",
@@ -690,32 +751,29 @@ public class TxMlCohortQueries {
 
     cd.addSearch(
         "exclusion",
-        EptsReportUtils.map(getExcuisionDeadPatients(), "endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(
+            getExclusionForDeadOrSuspendedPatients(false),
+            "endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "(deadByPatientDemographics OR deadOrSuspendedByPatientProgramState OR deadRegisteredInLastHomeVisitCard"
-            + " OR deadRegisteredInFichaResumoAndFichaClinicaMasterCard OR suspendedRegisteredInFichaResumoAndFichaClinicaMasterCard) AND NOT exclusion");
+        "(suspendedByPatientProgramState OR suspendedRegisteredInFichaResumoAndFichaClinicaMasterCard) AND NOT exclusion");
 
     return cd;
   }
 
-  private CohortDefinition getExcuisionDeadPatients() {
+  private CohortDefinition getExclusionForDeadOrSuspendedPatients(boolean exclusionForDead) {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
-    cd.setName("Excuision Dead patients");
+    cd.setName("get Exclusion For Dead Or Suspended patients");
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
     map.put("2", hivMetadata.getARTProgram().getProgramId());
-    map.put("8", hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId());
-    map.put("10", hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId());
     map.put("21", hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId());
     map.put("36", hivMetadata.getVisitaApoioReintegracaoParteAEncounterType().getEncounterTypeId());
     map.put("37", hivMetadata.getVisitaApoioReintegracaoParteBEncounterType().getEncounterTypeId());
     map.put("2031", hivMetadata.getReasonPatientNotFound().getConceptId());
-    map.put("1366", hivMetadata.getPatientHasDiedConcept().getConceptId());
-    map.put("1709", hivMetadata.getSuspendedTreatmentConcept().getConceptId());
     map.put(
         "23944", hivMetadata.getReasonPatientNotFoundByActivist2ndVisitConcept().getConceptId());
     map.put(
@@ -726,6 +784,17 @@ public class TxMlCohortQueries {
     map.put("6272", hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId());
     map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+
+    if (exclusionForDead) {
+      map.put("programState", hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId());
+      map.put("state", hivMetadata.getPatientHasDiedConcept().getConceptId());
+
+    } else {
+      map.put(
+          "programState",
+          hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId());
+      map.put("state", hivMetadata.getSuspendedTreatmentConcept().getConceptId());
+    }
 
     String query =
         "SELECT outter.patient_id "
@@ -742,7 +811,7 @@ public class TxMlCohortQueries {
             + "            AND ps.voided=0  "
             + "            AND p.voided=0  "
             + "            AND pg.program_id= ${2}  "
-            + "            AND ps.state IN (${10}, ${8})  "
+            + "            AND ps.state = ${programState} "
             + "            AND ps.start_date<=:endDate  "
             + "            AND pg.location_id= :location  "
             + "        GROUP BY p.patient_id "
@@ -765,9 +834,9 @@ public class TxMlCohortQueries {
             + "            INNER  JOIN obs o ON ee.encounter_id = o.encounter_id   "
             + "        WHERE   "
             + "            (  "
-            + "                (o.concept_id = ${2031} AND o.value_coded = ${1366}) OR  "
-            + "                (o.concept_id = ${23944} AND o.value_coded = ${1366}) OR  "
-            + "                (o.concept_id = ${23945} AND o.value_coded = ${1366})  "
+            + "                (o.concept_id = ${2031} AND o.value_coded = ${state}) OR  "
+            + "                (o.concept_id = ${23944} AND o.value_coded = ${state}) OR  "
+            + "                (o.concept_id = ${23945} AND o.value_coded = ${state})  "
             + "            )   "
             + "            AND o.voided=0  "
             + "            AND ee.voided = 0  "
@@ -784,7 +853,7 @@ public class TxMlCohortQueries {
             + "        WHERE e.encounter_type = ${6}  "
             + "            AND e.encounter_datetime <= :endDate  "
             + "            AND o.concept_id = ${6273} "
-            + "            AND o.value_coded IN ( ${1366}, ${1709} )   "
+            + "            AND o.value_coded = ${state}  "
             + "            AND e.location_id =  :location   "
             + "            AND p.voided=0    "
             + "            AND e.voided=0   "
@@ -800,7 +869,7 @@ public class TxMlCohortQueries {
             + "        WHERE e.encounter_type = ${53}   "
             + "            AND o.obs_datetime <= :endDate  "
             + "            AND o.concept_id = ${6272}  "
-            + "            AND o.value_coded IN ( ${1366}, ${1709} )  "
+            + "            AND o.value_coded =${state}   "
             + "            AND e.location_id =  :location   "
             + "            AND p.voided=0    "
             + "            AND e.voided=0   "
@@ -1358,7 +1427,36 @@ public class TxMlCohortQueries {
     definition.setQuery(
         TxMlQueries.getPatientsListBasedOnProgramAndStateByReportingEndDate(
             hivMetadata.getARTProgram().getProgramId(),
-            hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId(),
+            hivMetadata.getArtDeadWorkflowState().getProgramWorkflowStateId()));
+
+    definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    definition.addParameter(new Parameter("location", "location", Location.class));
+
+    return definition;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * All deaths <b>(Patient_State.state = 10)</b> in ART Service Program
+   * <b>(Patient_program.program_id = 2)</b> registered in Patient Program State by reporting end
+   * date
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  @DocumentedDefinition(value = "patientsSuspendedInProgramStateByReportingEndDate")
+  public CohortDefinition getPatientsSuspendedInProgramStateByReportingEndDate() {
+
+    SqlCohortDefinition definition = new SqlCohortDefinition();
+    definition.setName("patientsDeadInProgramStateByReportingEndDate");
+
+    definition.setQuery(
+        TxMlQueries.getPatientsListBasedOnProgramAndStateByReportingEndDate(
+            hivMetadata.getARTProgram().getProgramId(),
             hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId()));
 
     definition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
@@ -1749,7 +1847,6 @@ public class TxMlCohortQueries {
             + "                 AND        o.voided = 0 "
             + "                 AND        e.encounter_type = ${18} "
             + "                 AND        o.concept_id = ${5096} "
-            + "                 AND        e.encounter_datetime >= :startDate "
             + "                 AND        e.encounter_datetime <= :endDate "
             + "                 AND        e.location_id = :location "
             + "               GROUP BY   p.patient_id "
@@ -1766,7 +1863,6 @@ public class TxMlCohortQueries {
             + "                 AND        o.voided = 0 "
             + "                 AND        e.encounter_type = ${52} "
             + "                 AND        o.concept_id = ${23866} "
-            + "                 AND        o.value_datetime >= :startDate "
             + "                 AND        o.value_datetime  <= :endDate  "
             + "                 AND        e.location_id = :location "
             + "               GROUP BY   p.patient_id "
@@ -1779,6 +1875,7 @@ public class TxMlCohortQueries {
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
     definition.setQuery(stringSubstitutor.replace(query));
+    System.out.println(definition.getQuery());
 
     return definition;
   }
