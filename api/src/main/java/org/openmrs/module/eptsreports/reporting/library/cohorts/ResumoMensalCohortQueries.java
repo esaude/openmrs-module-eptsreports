@@ -25,11 +25,8 @@ import java.util.Map;
 import org.apache.commons.text.StringSubstitutor;
 import org.openmrs.Concept;
 import org.openmrs.Location;
-import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.metadata.TbMetadata;
-import org.openmrs.module.eptsreports.reporting.calculation.CodedObsOnFirstOrSecondEncounterCalculation;
-import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.EptsTransferredInCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.ResumoMensalTransferredOutCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.cohort.evaluator.ResumoMensalTransferredOutCohortDefinitionEvaluator;
@@ -1936,7 +1933,7 @@ public class ResumoMensalCohortQueries {
     CohortDefinition tpi = getPatientsWhoStartedTPI();
     CohortDefinition ex = getPatientsWhoStartedTptAfterPreArt();
 
-    String mappings = "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}";
+    String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
     String mappings1 = "startDate=${startDate-1m},endDate=${endDate},location=${location}";
     String transferBasedOnDateMappings =
         "onOrAfter=${onOrAfter-1m},onOrBefore=${onOrBefore},locationList=${locationList}";
@@ -2104,23 +2101,6 @@ public class ResumoMensalCohortQueries {
   }
 
   /**
-   * <b>Description:<b> Number of patients that have ACTIVE TB = YES in their FIRST or SECOND S.TARV
-   * – Adulto Seguimento encounter
-   *
-   * @return {@link CohortDefinition}
-   */
-  private CohortDefinition getPatientsDiagnosedForActiveTB() {
-    CodedObsOnFirstOrSecondEncounterCalculation calculation =
-        Context.getRegisteredComponents(CodedObsOnFirstOrSecondEncounterCalculation.class).get(0);
-    CalculationCohortDefinition cd = new CalculationCohortDefinition(calculation);
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
-    cd.addParameter(new Parameter("location", "location", Location.class));
-
-    return cd;
-  }
-
-  /**
    * <b>Description:</b> Patients that have ISONIAZID USE = START DRUGS in their FIRST or SECOND
    * S.TARV – Adulto Seguimento (encounter id 6)
    *
@@ -2140,14 +2120,73 @@ public class ResumoMensalCohortQueries {
    * @return {@link CohortDefinition}
    */
   public CohortDefinition getPatientsWhoStartedTPI() {
-    CodedObsOnFirstOrSecondEncounterCalculation calculation =
-        Context.getRegisteredComponents(CodedObsOnFirstOrSecondEncounterCalculation.class).get(0);
-    CalculationCohortDefinition cd = new CalculationCohortDefinition(calculation);
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("Patients who starte TPI");
-    cd.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
-    cd.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("1256", hivMetadata.getStartDrugs().getConceptId());
+    map.put("23985", tbMetadata.getRegimeTPTConcept().getConceptId());
+    map.put("656", tbMetadata.getIsoniazidConcept().getConceptId());
+    map.put("23954", tbMetadata.get3HPConcept().getConceptId());
+    map.put("165308", tbMetadata.getDataEstadoDaProfilaxiaConcept().getConceptId());
+
+    String query =
+        "SELECT pt.patient_id "
+            + "FROM   patient pt "
+            + "       INNER JOIN (SELECT p.patient_id, MIN(e.encounter_datetime) "
+            + "                   FROM   patient p "
+            + "                          INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                   WHERE  e.encounter_type = ${6} "
+            + "                          AND e.location_id = :location "
+            + "                          AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "                          AND p.voided = 0 "
+            + "                          AND e.voided = 0 "
+            + "                   GROUP  BY p.patient_id "
+            + "                   UNION "
+            + "                   SELECT e.patient_id, MIN(e.encounter_datetime) "
+            + "                   FROM   encounter e "
+            + "                          INNER JOIN (SELECT p.patient_id, MIN(e.encounter_datetime) "
+            + "                                              min_encounter_date "
+            + "                                      FROM   patient p "
+            + "                                             INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                                      WHERE  e.encounter_type = ${6} "
+            + "                                             AND e.location_id = :location "
+            + "                                             AND e.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "                                             AND p.voided = 0 "
+            + "                                             AND e.voided = 0 "
+            + "                                      GROUP  BY p.patient_id) min_encounter "
+            + "                                  ON min_encounter.patient_id = e.patient_id "
+            + "                   WHERE  e.voided = 0 "
+            + "                          AND e.encounter_type = ${6} "
+            + "                          AND e.encounter_datetime > min_encounter.min_encounter_date "
+            + "                          AND e.encounter_datetime >= :endDate "
+            + "                   GROUP  BY e.patient_id) second_encounter "
+            + "               ON pt.patient_id = second_encounter.patient_id "
+            + "               INNER JOIN encounter enc "
+            + "               ON enc.patient_id = pt.patient_id "
+            + "       INNER JOIN obs o1 "
+            + "               ON o1.encounter_id = enc.encounter_id "
+            + "       INNER JOIN obs o2 "
+            + "               ON o2.encounter_id = enc.encounter_id "
+            + "WHERE  o1.voided = 0 "
+            + "       AND o2.voided = 0 "
+            + "       AND enc.voided = 0 "
+            + "       AND enc.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "       AND enc.encounter_type = ${6} "
+            + "       AND pt.voided = 0 "
+            + "       AND ( "
+            + "            	( ( o1.concept_id = ${23985} AND o1.value_coded = ${656} ) AND ( o2.concept_id = ${165308} AND o2.value_coded = ${1256} ) ) "
+            + "          OR ( ( o1.concept_id = ${23985} AND o1.value_coded = ${23954} ) AND ( o2.concept_id = ${165308} AND o2.value_coded = ${1256} ) ) "
+            + "            ) "
+            + "GROUP  BY pt.patient_id";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(query));
     return cd;
   }
 
