@@ -136,23 +136,7 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.append("                           AND e.location_id = :location ");
     q.append("                           AND e.encounter_datetime > transferout_date ");
     q.append("                           AND e.encounter_datetime <= :onOrBefore ");
-    q.append("                         UNION ");
-    q.append("                         SELECT p.patient_id ");
-    q.append("                         FROM patient p ");
-    q.append("                                  JOIN encounter e ");
-    q.append("                                       ON p.patient_id = e.patient_id ");
-    q.append("                                  JOIN obs o ");
-    q.append("                                       ON e.encounter_id = o.encounter_id ");
-    q.append("                         WHERE p.voided = 0 ");
-    q.append("                           AND e.voided = 0 ");
-    q.append("                           AND o.voided = 0 ");
-    q.append("                           AND e.encounter_type = :mcDrugPickup ");
-    q.append("                           AND e.location_id = :location ");
-    q.append("                           AND o.concept_id = :drugPickup ");
-    q.append("                           AND o.value_datetime ");
-    q.append("                             > transferout_date ");
-    q.append("                           AND o.value_datetime ");
-    q.append("                             <= :onOrBefore)");
+    q.append("                                                 )");
 
     q.addParameter("art", hivMetadata.getARTProgram().getProgramId());
 
@@ -168,9 +152,6 @@ public class ResumoMensalTransferredOutCohortDefinitionEvaluator
     q.addParameter(
         "childSeg", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     q.addParameter("fila", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
-    q.addParameter(
-        "mcDrugPickup", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
-    q.addParameter("drugPickup", hivMetadata.getArtDatePickupMasterCard().getConceptId());
     q.addParameter("location", cd.getLocation());
     q.addParameter("onOrAfter", cd.getOnOrAfter());
     q.addParameter("onOrBefore", DateUtil.getEndOfDayIfTimeExcluded(cd.getOnOrBefore()));

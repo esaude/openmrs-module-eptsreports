@@ -877,4 +877,298 @@ public class ResumoMensalQueries {
     StringSubstitutor sb = new StringSubstitutor(map);
     return sb.replace(query);
   }
+
+  /**
+   * Inscritos no serviço TARV-CUIDADOS (inscrição programa Pré-TARV) com “Data de Inscrição
+   * Pré-TARV” < “Data Início do Relatório”
+   *
+   * @return String
+   */
+  public String getProgramEnrollmentDate() {
+    String sql =
+        "SELECT p.patient_id, pp.date_enrolled AS enrollment_date "
+            + "FROM   patient p "
+            + "       INNER JOIN patient_program pp "
+            + "               ON p.patient_id = pp.patient_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND pp.voided = 0 "
+            + "       AND pp.location_id = :location "
+            + "       AND pp.program_id = ${1} "
+            + "       AND pp.date_enrolled <= :endDate ";
+    StringSubstitutor sb = new StringSubstitutor(getMetadataMap());
+    return sb.replace(sql);
+  }
+
+  /**
+   * Com abertura do processo clínico (formulário hospital de dia) com “Data de Registo” < “Data
+   * Início do Relatório”
+   *
+   * @return String
+   */
+  public String getClinicalFileEnrollmentDate() {
+    String sql =
+        "SELECT p.patient_id, e.encounter_datetime AS enrollment_date "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON e.patient_id = p.patient_id "
+            + "WHERE  e.encounter_type IN( ${5}, ${7} ) "
+            + "       AND encounter_datetime <= :endDate "
+            + "       AND e.location_id = :location "
+            + "       AND p.voided = 0 "
+            + "       AND e.voided = 0 ";
+    StringSubstitutor sb = new StringSubstitutor(getMetadataMap());
+    return sb.replace(sql);
+  }
+
+  /**
+   * registados no formulário “Ficha Resumo” Secção “Cuidados de HIV” com “Data do Início Pré-TARV”
+   * < “Data Início do Relatório”;
+   *
+   * @return String
+   */
+  public String getMastercardEnrollmentDate() {
+    String sql =
+        "SELECT p.patient_id, o.value_datetime AS enrollment_date "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON p.patient_id = e.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON o.encounter_id = e.encounter_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND e.encounter_type = ${53} "
+            + "       AND e.location_id = :location "
+            + "       AND o.value_datetime IS NOT NULL "
+            + "       AND o.concept_id = ${23808} "
+            + "       AND o.value_datetime <= :endDate ";
+    StringSubstitutor sb = new StringSubstitutor(getMetadataMap());
+    return sb.replace(sql);
+  }
+
+  /**
+   * registados no formulário “Ficha Resumo” com “Data Início TARV” < “Data Início do Relatório” e
+   * sem nenhum levantamento na farmácia (FILA e Recepção/Levantou ARV) antes (<) da “Data Início do
+   * Relatório” ou
+   *
+   * @return- String
+   */
+  public String getMastercardArtStartWithoutPickupDate() {
+    String sql =
+        "SELECT p.patient_id, o.value_datetime AS enrollment_date "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "       LEFT JOIN (SELECT en.patient_id "
+            + "                  FROM   encounter en "
+            + "                  INNER JOIN obs o2 ON o2.encounter_id = en.encounter_id "
+            + "                  INNER JOIN obs o3 ON o3.encounter_id = en.encounter_id "
+            + "                  WHERE  en.encounter_type = ${52} "
+            + "                         AND o2.concept_id = ${23866} AND o2.value_datetime < :endDate AND o2.voided = 0 "
+            + "                         AND o3.concept_id = ${23865} AND o3.value_coded = ${1065} AND o3.voided = 0  "
+            + "                         AND en.location_id = :location "
+            + "                         AND en.voided = 0 "
+            + "                   GROUP BY en.patient_id "
+            + "                 ) arv_pickup ON arv_pickup.patient_id = p.patient_id "
+            + "      LEFT JOIN (SELECT en.patient_id "
+            + "                  FROM   encounter en "
+            + "                  WHERE  en.encounter_type = ${18} "
+            + "                         AND en.location_id = :location "
+            + "                         AND en.voided = 0 "
+            + "                   GROUP BY en.patient_id "
+            + "                 ) fila_pickup ON fila_pickup.patient_id = p.patient_id "
+            + "WHERE  e.encounter_type = ${53} "
+            + "       AND e.location_id = :location "
+            + "       AND o.concept_id = ${1190} "
+            + "       AND o.value_datetime <= :endDate "
+            + "       AND p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND arv_pickup.patient_id IS NULL "
+            + "       AND fila_pickup.patient_id IS NULL ";
+
+    StringSubstitutor sb = new StringSubstitutor(getMetadataMap());
+    return sb.replace(sql);
+  }
+
+  /**
+   * inscritos no serviço TARV-TRATAMENTO (inscrição programa TARV) com “Data de Inscrição TARV” <
+   * “Data Início do Relatório” e sem nenhum levantamento na farmácia (FILA e Recepção/Levantou ARV)
+   * antes (<) “Data Início do Relatório” ou
+   *
+   * @return String
+   */
+  public String getEnrollmentOnTarvProgramDate() {
+    String sql =
+        "SELECT p.patient_id, pp.date_enrolled AS enrollment_date "
+            + "FROM   patient p "
+            + "       INNER JOIN patient_program pp ON p.patient_id = pp.patient_id "
+            + "       LEFT JOIN (SELECT en.patient_id "
+            + "                  FROM   encounter en "
+            + "                         INNER JOIN obs o2 ON o2.encounter_id = en.encounter_id "
+            + "                         INNER JOIN obs o3 ON o3.encounter_id = en.encounter_id "
+            + "                  WHERE        en.encounter_type = ${52} "
+            + "                               AND o2.concept_id = ${23866} "
+            + "                               AND o2.value_datetime <= :endDate "
+            + "                               AND o2.voided = 0 "
+            + "                               AND o3.concept_id = ${23865} "
+            + "                               AND o3.value_coded = ${1065} "
+            + "                               AND o3.voided = 0  "
+            + "                               AND en.location_id = :location "
+            + "                               AND en.voided = 0 "
+            + "                  GROUP BY en.patient_id "
+            + "                 ) arv_pickup  ON arv_pickup.patient_id = p.patient_id "
+            + "      LEFT JOIN (SELECT en.patient_id "
+            + "                  FROM   encounter en "
+            + "                  WHERE  en.encounter_type = ${18} "
+            + "                         AND en.location_id = :location "
+            + "                         AND en.voided = 0 "
+            + "                   GROUP BY en.patient_id "
+            + "                 ) fila_pickup ON fila_pickup.patient_id = p.patient_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND pp.voided = 0 "
+            + "       AND p.voided = 0 "
+            + "       AND pp.location_id = :location "
+            + "       AND pp.program_id = ${2} "
+            + "       AND pp.date_enrolled <= :endDate "
+            + "       AND arv_pickup.patient_id IS NULL"
+            + "       AND fila_pickup.patient_id IS NULL";
+
+    StringSubstitutor sb = new StringSubstitutor(getMetadataMap());
+    return sb.replace(sql);
+  }
+
+  /**
+   * Registados no formulário “Ficha Resumo” com “Data Início TARV” < “Data Início do Relatório” e
+   * sem informação registada nas seguintes fontes: ▪ “Data Inicio Pre-TARV” na “Ficha Resumo” e ▪
+   * Sem inscrição no programa “TARV-CUIDADOS” e ▪ Sem abertura do processo clínico (formulário
+   * hospital de dia)
+   *
+   * @return String
+   */
+  public String getEnrollmentOnMastercardWithoutPreTarvAndPickupDate() {
+    String sql =
+        "SELECT p.patient_id, o.value_datetime AS enrollment_date  "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "       INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "       LEFT JOIN (SELECT en.patient_id "
+            + "                  FROM   encounter en "
+            + "                  WHERE   en.encounter_type IN ( ${5}, ${7}  "
+            + "                           AND en.encounter_datetime <= :endDate )"
+            + "                           AND en.location_id = :location "
+            + "                           AND en.voided = 0"
+            + "                  GROUP BY en.patient_id "
+            + "                ) no_file ON no_file.patient_id = p.patient_id "
+            + "       LEFT JOIN (SELECT en.patient_id "
+            + "                  FROM   encounter en "
+            + "                         INNER JOIN obs o2 ON o2.encounter_id = en.encounter_id "
+            + "                         INNER JOIN obs o3 ON o3.encounter_id = en.encounter_id "
+            + "                  WHERE  en.encounter_type = ${53} "
+            + "                         AND o2.concept_id = ${23808} "
+            + "                         AND o2.value_datetime <= :endDate "
+            + "                         AND o2.voided = 0 "
+            + "                         AND en.location_id = :location "
+            + "                         AND en.voided = 0"
+            + "                  GROUP BY en.patient_id "
+            + "                ) no_mastercard ON no_mastercard.patient_id = p.patient_id "
+            + "       LEFT JOIN(SELECT p.patient_id "
+            + "                 FROM   patient p "
+            + "                        INNER JOIN patient_program pp ON p.patient_id = pp.patient_id "
+            + "                 WHERE  p.voided = 0 "
+            + "                        AND pp.voided = 0 "
+            + "                        AND pp.location_id = :location "
+            + "                        AND pp.program_id = ${1} "
+            + "                        AND pp.date_enrolled <= :endDate ) no_program "
+            + "              ON no_program.patient_id = p.patient_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND p.voided = 0 "
+            + "       AND e.location_id = :location "
+            + "       AND e.encounter_type = ${53} "
+            + "       AND o.concept_id = ${1190} "
+            + "       AND o.value_datetime <= :endDate "
+            + "       AND no_mastercard.patient_id IS NULL "
+            + "       AND no_file.patient_id IS NULL "
+            + "       AND no_program.patient_id IS NULL";
+
+    StringSubstitutor sb = new StringSubstitutor(getMetadataMap());
+    return sb.replace(sql);
+  }
+
+  /**
+   * inscritos no serviço TARV-TRATAMENTO (inscrição programa TARV) com “Data de Inscrição TARV” <
+   * “Data Início do Relatório” e sem informação registada nas seguintes fontes: - “Data Inicio
+   * Pre-TARV” na “Ficha Resumo” e - Inscrição no programa “TARV-CUIDADOS” e - Abertura do processo
+   * clínico (formulário hospital de dia)
+   *
+   * @return String
+   */
+  public String getEnrollmentOnTarvWithoutFileAndPreTarvDate() {
+    String sql =
+        "SELECT p.patient_id, pp.date_enrolled AS enrollment_date  "
+            + "FROM   patient p "
+            + "       INNER JOIN patient_program pp ON p.patient_id = pp.patient_id "
+            + "       LEFT JOIN (SELECT en.patient_id "
+            + "                  FROM   encounter en "
+            + "                         INNER JOIN obs o2 ON o2.encounter_id = en.encounter_id "
+            + "                  WHERE  en.encounter_type IN ( ${5}, ${7} ) "
+            + "                         AND en.encounter_datetime <= :endDate  "
+            + "                         AND en.location_id = :location "
+            + "                         AND en.voided = 0 "
+            + "                  GROUP BY en.patient_id                                 "
+            + "                     ) no_file ON no_file.patient_id = p.patient_id "
+            + "       LEFT JOIN (SELECT en.patient_id "
+            + "                  FROM   encounter en "
+            + "                         INNER JOIN obs o2 ON o2.encounter_id = en.encounter_id "
+            + "                  WHERE   en.encounter_type = ${53} "
+            + "                          AND o2.concept_id = ${23808} "
+            + "                          AND o2.value_datetime <= :endDate "
+            + "                          AND o2.voided = 0  "
+            + "                          AND en.location_id = :location "
+            + "                          AND en.voided = 0 "
+            + "            GROUP BY en.patient_id                                 "
+            + "                     ) no_mastercard ON no_mastercard.patient_id = p.patient_id "
+            + "       LEFT JOIN(SELECT p.patient_id "
+            + "                 FROM   patient p "
+            + "                        INNER JOIN patient_program pp ON p.patient_id = pp.patient_id "
+            + "                 WHERE  p.voided = 0 "
+            + "                        AND pp.voided = 0 "
+            + "                        AND pp.location_id = :location "
+            + "                        AND pp.program_id = ${1} "
+            + "                        AND pp.date_enrolled <= :endDate "
+            + "                 GROUP  BY p.patient_id"
+            + "       ) no_program ON no_program.patient_id = p.patient_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND pp.voided = 0 "
+            + "       AND pp.program_id = ${2} "
+            + "       AND pp.date_enrolled <= :endDate "
+            + "       AND pp.location_id = :location "
+            + "       AND no_file.patient_id IS NULL "
+            + "       AND no_mastercard.patient_id IS NULL "
+            + "       AND no_program.patient_id IS NULL";
+
+    StringSubstitutor sb = new StringSubstitutor(getMetadataMap());
+    return sb.replace(sql);
+  }
+
+  private Map<String, Integer> getMetadataMap() {
+    Map<String, Integer> map = new HashMap<>();
+
+    HivMetadata hivMetadata = new HivMetadata();
+
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("23808", hivMetadata.getPreArtStartDate().getConceptId());
+    map.put("5", hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId());
+    map.put("7", hivMetadata.getARVPediatriaInitialEncounterType().getEncounterTypeId());
+    map.put("1", hivMetadata.getHIVCareProgram().getProgramId());
+    map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
+    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
+    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
+    map.put("23865", hivMetadata.getArtPickupConcept().getConceptId());
+    map.put("1190", hivMetadata.getARVStartDateConcept().getConceptId());
+    map.put("1065", hivMetadata.getYesConcept().getConceptId());
+    map.put("2", hivMetadata.getARTProgram().getProgramId());
+
+    return map;
+  }
 }
