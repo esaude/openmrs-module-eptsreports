@@ -19,9 +19,13 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OnArtForAtleastXmonthsCalculation extends AbstractPatientCalculation {
+  private static final String monthsAmount = "atLeastXMonthsOnART";
+
   @Override
   public CalculationResultMap evaluate(
-      Collection<Integer> cohort, Map<String, Object> params, PatientCalculationContext context) {
+      Collection<Integer> cohort,
+      Map<String, Object> parameterValues,
+      PatientCalculationContext context) {
 
     //    Date onOrBefore = context.getNow(); //
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
@@ -51,11 +55,12 @@ public class OnArtForAtleastXmonthsCalculation extends AbstractPatientCalculatio
       if (artStartDateResult != null && patientBirthdate != null) {
         Date artStartDate = (Date) artStartDateResult.getValue();
         if (artStartDate != null && onOrBefore != null && patientBirthdate != null) {
-          Date onArt3Months = EptsCalculationUtils.addMonths(artStartDate, 3);
+          Integer months = (Integer) parameterValues.get(monthsAmount);
+          Date onArtForXMonths = EptsCalculationUtils.addMonths(artStartDate, months);
 
           Integer ageInYears = ageInYearsAtDate(patientBirthdate, onOrBefore);
 
-          if ((onArt3Months.compareTo(onOrBefore) <= 0 && ageInYears >= 2)) {
+          if ((onArtForXMonths.compareTo(onOrBefore) <= 0 && ageInYears >= 2)) {
             onArtAtleastMonths = true;
           }
         }

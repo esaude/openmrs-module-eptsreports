@@ -25,7 +25,6 @@ public class PregnantQueries {
       int pregnancyDueDateConcept,
       int adultInitialEncounter,
       int adultSegEncounter,
-      int fichaResumo,
       int pregnant,
       int fsr,
       int sampleCollectDateAndTime,
@@ -69,8 +68,6 @@ public class PregnantQueries {
             + "     AND historical_date.voided=0 AND historical_date.concept_id= "
             + historicalARTStartDate
             + "     AND historical_date.value_datetime IS NOT NULL "
-            + "     AND e.encounter_type = "
-            + fichaResumo
             + " AND historical_date.value_datetime between :startDate AND :endDate AND e.location_id=:location AND pe.gender='F' GROUP BY p.patient_id "
             + "     UNION "
             + "     Select p.patient_id,  MAX(e.encounter_datetime) as pregnancy_date "
@@ -239,8 +236,6 @@ public class PregnantQueries {
             + breastFeedingConcept
             + "      AND o.value_coded= "
             + yesConcept
-            + "      AND e.encounter_type = "
-            + fichaResumo
             + "      AND hist.concept_id= "
             + historicalARTStartDate
             + "      AND pe.gender='F' AND hist.value_datetime IS NOT NULL ";

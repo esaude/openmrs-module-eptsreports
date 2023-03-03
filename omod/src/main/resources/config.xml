@@ -3447,6 +3447,14 @@
 			UUID for Doença Avançada Por HIV concept
 		</description>
 	</globalProperty>
+	<!-- 165340 -->
+	<globalProperty>
+		<property>eptsreports.bimonthlyDispensationUuid</property>
+		<defaultValue>687d72a2-c123-42b1-8083-968c4588b243</defaultValue>
+		<description>
+			UUID for Dispensa Bimensal
+		</description>
+	</globalProperty>
 
 	<globalProperty>
 		<property>@MODULE_ID@.negativeDiagnosisConceptUuid</property>

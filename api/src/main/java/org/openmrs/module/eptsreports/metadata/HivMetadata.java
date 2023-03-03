@@ -5101,6 +5101,23 @@ public class HivMetadata extends ProgramsMetadata {
             .getGlobalProperty("eptsreports.doencaAvancadaPorHIVConceptUuid");
     return getConcept(uuid);
   }
+
+  /**
+   * <b>concept_id = 165340</b>
+   *
+   * <p><b>Name:</b> Dispensa Bimensal
+   *
+   * <p><b>Description:</b>
+   *
+   * @return {@link Concept}
+   */
+  public Concept getBimonthlyDispensationConcept() {
+    String uuid =
+        Context.getAdministrationService()
+            .getGlobalProperty("eptsreports.bimonthlyDispensationUuid");
+    return getConcept(uuid);
+  }
+
   /**
    * <b>concept_id = 23885</b>
    *

@@ -7,6 +7,7 @@ import java.util.List;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.AgeDimensionCohortInterface;
 import org.openmrs.module.eptsreports.reporting.library.dimensions.EptsCommonDimension;
+import org.openmrs.module.eptsreports.reporting.library.dimensions.TxRetDimensionCohort;
 import org.openmrs.module.eptsreports.reporting.library.indicators.EptsGeneralIndicator;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.dataset.definition.CohortIndicatorDataSetDefinition;
@@ -75,9 +76,13 @@ public class EriDSDDataset extends BaseDataSet {
   private static final String N19 =
       "N19: Number of all patients currently on ART who are included in DSD model: Doença Avançada de HIV (DAH)";
 
+  private static final String N20 =
+      "N20: Number of active patients on ART who are included in DSD model: Dispensa Bimestral (DB)";
+
   @Autowired private EriDSDCohortQueries eriDSDCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
   @Autowired private EptsCommonDimension eptsCommonDimension;
+  @Autowired private TxRetDimensionCohort txRetDimensionCohort;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -98,6 +103,11 @@ public class EriDSDDataset extends BaseDataSet {
         "pregnantBreastfeedingTb",
         mapStraightThrough(
             eptsCommonDimension.getDSDNonPregnantNonBreastfeedingAndNotOnTbDimension()));
+    dsd.addDimension(
+        "pregnantOrBreastFeeding",
+        EptsReportUtils.map(
+            txRetDimensionCohort.pregnantOrBreastFeeding(),
+            "startDate=${endDate-24m+1d},endDate=${endDate-12m},location=${location}"));
 
     dsd.setName("total");
     dsd.addColumn(
@@ -229,6 +239,53 @@ public class EriDSDDataset extends BaseDataSet {
                 "D3BW",
                 EptsReportUtils.map(
                     eriDSDCohortQueries.getPatientsWhoAreBreastfeedingD3(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "D4T",
+        "DSD D4 Total",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "DSD D4 Total", EptsReportUtils.map(eriDSDCohortQueries.getD4(), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "D4BWA",
+        "D4 Breastfeeding Woman Adults (>=15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "D4BWA",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingD4(), mappings)),
+            mappings),
+        "age=15+");
+    dsd.addColumn(
+        "D4BWC",
+        "D4 Breastfeeding Woman Children (<15)",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "D4BWC",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreBreastfeedingD4(), mappings)),
+            mappings),
+        "age=<15");
+    dsd.addColumn(
+        "N1PW",
+        "N1 Pregnant Women",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N1PW",
+                EptsReportUtils.map(eriDSDCohortQueries.getPatientsWhoArePregnant(1), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N1BW",
+        "N1 Breastfeeding Women",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N1BW",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreBreastfeeding(1), mappings)),
             mappings),
         "");
     dsd.addColumn(
@@ -573,6 +630,25 @@ public class EriDSDDataset extends BaseDataSet {
                     eriDSDCohortQueries.getPatientsWhoAreBreastfeeding(19), mappings)),
             mappings),
         "");
+    dsd.addColumn(
+        "N20PW",
+        "N20 Pregnant Women",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N20PW",
+                EptsReportUtils.map(eriDSDCohortQueries.getPatientsWhoArePregnant(20), mappings)),
+            mappings),
+        "");
+    dsd.addColumn(
+        "N20BW",
+        "N20 Breastfeeding Women",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N20BW",
+                EptsReportUtils.map(
+                    eriDSDCohortQueries.getPatientsWhoAreBreastfeeding(20), mappings)),
+            mappings),
+        "");
 
     addRow(dsd, "N1", N1, mapStraightThrough(getN1()), getDisags());
     addRow(dsd, "N2", N2, mapStraightThrough(getN2()), getDisags());
@@ -593,6 +669,7 @@ public class EriDSDDataset extends BaseDataSet {
     addRow(dsd, "N17", N17, mapStraightThrough(getN17()), getDisags());
     addRow(dsd, "N18", N18, mapStraightThrough(getN18()), getDisags());
     addRow(dsd, "N19", N19, mapStraightThrough(getN19()), getDisags());
+    addRow(dsd, "N20", N20, mapStraightThrough(getN20()), getDisags());
 
     return dsd;
   }
@@ -697,6 +774,11 @@ public class EriDSDDataset extends BaseDataSet {
         "N19", mapStraightThrough(eriDSDCohortQueries.getN19()));
   }
 
+  private CohortIndicator getN20() {
+    return eptsGeneralIndicator.getIndicator(
+        "N20", mapStraightThrough(eriDSDCohortQueries.getN20()));
+  }
+
   private List<ColumnParameters> getDisags() {
     return Arrays.asList(
         // !        new ColumnParameters("Total", "Total", "pregnantBreastfeedingTb=NPNBNTB", "01"),
@@ -748,6 +830,16 @@ public class EriDSDDataset extends BaseDataSet {
             "Not Eligible 10-14",
             "Not Eligible 10-14",
             "eligible=NE|pregnantBreastfeedingTb=NPNBNTB|age=10-14",
-            "12"));
+            "12"),
+        new ColumnParameters(
+            "Eligible Adults Breastfeeding",
+            "Eligible Adults Breastfeeding",
+            "eligible=E|pregnantOrBreastFeeding=LACTANTE|age=15+",
+            "13"),
+        new ColumnParameters(
+            "Eligible Children Breastfeeding",
+            "Eligible Children Breastfeeding",
+            "eligible=E|pregnantOrBreastFeeding=LACTANTE|age=<15",
+            "14"));
   }
 }

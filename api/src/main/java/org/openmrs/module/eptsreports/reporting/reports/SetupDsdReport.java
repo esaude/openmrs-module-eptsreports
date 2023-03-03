@@ -101,7 +101,7 @@ public class SetupDsdReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "DSD_Report_v1.2.xls", "DSD-Report", getExcelDesignUuid(), null);
+              reportDefinition, "DSD_Report_v1.5.xls", "DSD-Report", getExcelDesignUuid(), null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
