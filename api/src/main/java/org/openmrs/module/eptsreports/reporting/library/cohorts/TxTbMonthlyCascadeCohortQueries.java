@@ -51,11 +51,11 @@ public class TxTbMonthlyCascadeCohortQueries {
     chd.addSearch(
         TxCurrComposition.NEWART.getKey(),
         EptsReportUtils.map(
-            newOnArt, "startDate=${endDate-6m-1d},endDate=${endDate},location=${location}"));
+            newOnArt, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     chd.addSearch(
         TxCurrComposition.PREVIOUSLYART.getKey(),
-        EptsReportUtils.map(previouslyOnArt, "endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(previouslyOnArt, "endDate=${endDate-6m},location=${location}"));
 
     chd.setCompositionString(indicator1and2Composition.getCompositionString());
     return chd;
@@ -97,11 +97,11 @@ public class TxTbMonthlyCascadeCohortQueries {
     chd.addSearch(
         TxTbComposition.NEWART.getKey(),
         EptsReportUtils.map(
-            newOnArt, "startDate=${endDate-6m-1d},endDate=${endDate},location=${location}"));
+            newOnArt, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     chd.addSearch(
         TxTbComposition.PREVIOUSLYART.getKey(),
-        EptsReportUtils.map(previouslyOnArt, "endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(previouslyOnArt, "endDate=${endDate-6m},location=${location}"));
 
     chd.addSearch(
         TxCurrComposition.TXCURR.getKey(),
@@ -132,11 +132,11 @@ public class TxTbMonthlyCascadeCohortQueries {
     chd.addSearch(
         TxTbComposition.NEWART.getKey(),
         EptsReportUtils.map(
-            newOnArt, "startDate=${endDate-6m-1d},endDate=${endDate},location=${location}"));
+            newOnArt, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     chd.addSearch(
         TxTbComposition.PREVIOUSLYART.getKey(),
-        EptsReportUtils.map(previouslyOnArt, "endDate=${endDate},location=${location}"));
+        EptsReportUtils.map(previouslyOnArt, "endDate=${endDate-6m},location=${location}"));
 
     chd.addSearch(
         TxCurrComposition.TXCURR.getKey(),
@@ -167,7 +167,7 @@ public class TxTbMonthlyCascadeCohortQueries {
     cd.addSearch(
         "newOnArt",
         EptsReportUtils.map(
-            newOnArt, "startDate=${endDate-6m-1d},endDate=${endDate},location=${location}"));
+            newOnArt, "startDate=${endDate-6m+1d},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("txcurr AND newOnArt");
     return cd;
@@ -186,7 +186,7 @@ public class TxTbMonthlyCascadeCohortQueries {
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition sent = txtbCohortQueries.specimenSent();
-    CohortDefinition semear = getSmearMicroscopy();
+    CohortDefinition semear = txtbCohortQueries.getSmearMicroscopyOnly();
     CohortDefinition positiveResult = txtbCohortQueries.positiveResultsReturned();
     CohortDefinition tbLam = getPetientsHaveTBLAM();
     CohortDefinition others = getPatientsInOthersWithoutGenexPert();
@@ -213,7 +213,7 @@ public class TxTbMonthlyCascadeCohortQueries {
             others, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
-        SemearTbLamGXPertComposition.GENEXPERT.getKey(),
+        SemearTbLamGXPertComposition.MWRD.getKey(),
         EptsReportUtils.map(
             genex, "startDate=${startDate},endDate=${endDate},location=${location}"));
 
@@ -302,8 +302,7 @@ public class TxTbMonthlyCascadeCohortQueries {
         "transferredFromFichaResumo",
         EptsReportUtils.map(transferredFromFichaResumo, "endDate=${endDate},location=${location}"));
 
-    cd.setCompositionString(
-        "startedArtLast6Months AND NOT(transferredFromProgram OR transferredFromFichaResumo)");
+    cd.setCompositionString("startedArtLast6Months");
     return cd;
   }
   /**
@@ -353,7 +352,7 @@ public class TxTbMonthlyCascadeCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
-        "exameBaciloscopia OR haveBKTestRequest OR haveBKTestResult AND NOT (dontHaveGENEXPERTInLabForm AND dontHaveGeneXpertPositive AND dontHaveApplication4LabResearch ");
+        "(exameBaciloscopia OR haveBKTestRequest OR haveBKTestResult) AND NOT (dontHaveGENEXPERTInLabForm AND dontHaveGeneXpertPositive AND dontHaveApplication4LabResearch) ");
 
     return cd;
   }
@@ -446,7 +445,7 @@ public class TxTbMonthlyCascadeCohortQueries {
     CohortDefinition onArtBeforeEndDate = getPatientsOnArtBeforeEndDate();
     cd.addSearch(
         "onArtBeforeEndDate",
-        EptsReportUtils.map(onArtBeforeEndDate, "endDate=${endDate-6m},location=${location}"));
+        EptsReportUtils.map(onArtBeforeEndDate, "endDate=${endDate},location=${location}"));
     cd.setCompositionString("onArtBeforeEndDate");
     return cd;
   }
@@ -1659,16 +1658,7 @@ public class TxTbMonthlyCascadeCohortQueries {
             + "                       AND e.location_id = :location "
             + "                GROUP  BY p.patient_id "
             + "                UNION "
-            + "                SELECT p.patient_id, "
-            + "                       historical.min_date AS art_date "
-            + "                FROM   patient p "
-            + "                       INNER JOIN encounter e "
-            + "                               ON e.patient_id = p.patient_id "
-            + "                       INNER JOIN obs o "
-            + "                               ON o.encounter_id = e.encounter_id "
-            + "                       INNER JOIN(SELECT p.patient_id, "
-            + "                                         e.encounter_id, "
-            + "                                         Min(o.value_datetime) min_date "
+            + "                SELECT p.patient_id, Min(o.value_datetime) min_date "
             + "                                  FROM   patient p "
             + "                                         INNER JOIN encounter e "
             + "                                                 ON e.patient_id = p.patient_id "
@@ -1681,20 +1671,10 @@ public class TxTbMonthlyCascadeCohortQueries {
             + "                                         AND o.value_datetime <= :endDate "
             + "                                         AND e.voided = 0 "
             + "                                         AND p.voided = 0 "
-            + "                                  GROUP  BY p.patient_id) historical "
-            + "                               ON historical.patient_id = p.patient_id "
-            + "                WHERE  e.encounter_type IN( ${6}, ${9}, ${18}, ${53} ) "
-            + "                       AND o.concept_id = ${1190} "
-            + "                       AND e.location_id = :location "
-            + "                       AND o.value_datetime <= :endDate "
-            + "                       AND e.voided = 0 "
-            + "                       AND p.voided = 0 "
-            + "                       AND historical.encounter_id = e.encounter_id "
-            + "                       AND o.value_datetime = historical.min_date "
-            + "                GROUP  BY p.patient_id "
+            + "                                  GROUP  BY p.patient_id "
             + "                UNION "
             + "                SELECT p.patient_id, "
-            + "                       MIN(ps.start_date) AS art_date "
+            + "                       MIN(pg.date_enrolled) AS art_date "
             + "                FROM   patient p "
             + "                       INNER JOIN patient_program pg "
             + "                               ON p.patient_id = pg.patient_id "
@@ -1704,6 +1684,7 @@ public class TxTbMonthlyCascadeCohortQueries {
             + "                       AND pg.voided = 0 "
             + "                       AND pg.program_id = ${2} "
             + "                       AND pg.date_enrolled <= :endDate "
+            + "                GROUP  BY p.patient_id "
             + "                UNION "
             + "                SELECT p.patient_id, "
             + "                       Min(o.value_datetime) AS art_date "
@@ -1712,16 +1693,10 @@ public class TxTbMonthlyCascadeCohortQueries {
             + "                               ON e.patient_id = p.patient_id "
             + "                       INNER JOIN obs o "
             + "                               ON o.encounter_id = e.encounter_id "
-            + "                       INNER JOIN obs oyes "
-            + "                               ON oyes.encounter_id = e.encounter_id "
-            + "                                  AND o.person_id = oyes.person_id "
             + "                WHERE  e.encounter_type = ${52} "
             + "                       AND o.concept_id = ${23866} "
             + "                       AND o.value_datetime <= :endDate "
             + "                       AND o.voided = 0 "
-            + "                       AND oyes.concept_id = ${23865} "
-            + "                       AND oyes.value_coded = ${1065} "
-            + "                       AND oyes.voided = 0 "
             + "                       AND e.location_id = :location "
             + "                       AND e.voided = 0 "
             + "                       AND p.voided = 0 "
@@ -2316,10 +2291,10 @@ public class TxTbMonthlyCascadeCohortQueries {
         return "Select all patients from TX CURR";
       }
     },
-    GENEXPERT {
+    MWRD {
       @Override
       public String getKey() {
-        return "GENEXPERT";
+        return "MWRD";
       }
 
       @Override
@@ -2429,7 +2404,7 @@ public class TxTbMonthlyCascadeCohortQueries {
         return "Select all patients from TX CURR";
       }
     },
-    FIVE_AND_GENEXPERT {
+    FIVE_AND_MWRD {
       @Override
       public String getKey() {
         return "";
@@ -2437,7 +2412,7 @@ public class TxTbMonthlyCascadeCohortQueries {
 
       @Override
       public String getCompositionString() {
-        return GENEXPERT.getKey() + " AND " + FIVE.getKey();
+        return MWRD.getKey() + " AND " + FIVE.getKey();
       }
 
       @Override
@@ -2493,7 +2468,7 @@ public class TxTbMonthlyCascadeCohortQueries {
         return "Select all patients from TX CURR";
       }
     },
-    SIXA_AND_GENEXPERT {
+    SIXA_AND_MWRD {
       @Override
       public String getKey() {
         return "";
@@ -2501,7 +2476,7 @@ public class TxTbMonthlyCascadeCohortQueries {
 
       @Override
       public String getCompositionString() {
-        return GENEXPERT.getKey() + " AND " + SIXA.getKey();
+        return MWRD.getKey() + " AND " + SIXA.getKey();
       }
 
       @Override
@@ -2567,7 +2542,7 @@ public class TxTbMonthlyCascadeCohortQueries {
         return "Select all patients from TX CURR";
       }
     },
-    SIXB_AND_GENEXPERT {
+    SIXB_AND_MWRD {
       @Override
       public String getKey() {
         return "";
@@ -2581,7 +2556,7 @@ public class TxTbMonthlyCascadeCohortQueries {
             + " AND NOT "
             + SIXA.getKey()
             + " AND "
-            + GENEXPERT.getKey();
+            + MWRD.getKey();
       }
 
       @Override
@@ -2670,7 +2645,7 @@ public class TxTbMonthlyCascadeCohortQueries {
         return "Select all patients from TX CURR";
       }
     },
-    SEVEN_AND_GENEXPERT {
+    SEVEN_AND_MWRD {
       @Override
       public String getKey() {
         return "";
@@ -2682,7 +2657,7 @@ public class TxTbMonthlyCascadeCohortQueries {
             + " AND NOT "
             + TxTbComposition.NUMERATOR.getKey()
             + " AND "
-            + GENEXPERT.getKey();
+            + MWRD.getKey();
       }
 
       @Override
