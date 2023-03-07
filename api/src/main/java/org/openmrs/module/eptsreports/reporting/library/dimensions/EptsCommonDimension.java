@@ -15,19 +15,7 @@ import static org.openmrs.module.reporting.evaluation.parameter.Mapped.mapStraig
 
 import java.util.Date;
 import org.openmrs.Location;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri2MonthsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.Eri4MonthsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.EriCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.EriDSDCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenderCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.HivCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.MISAUKeyPopsCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.PrepCtCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TbPrevCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxCurrCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxNewCohortQueries;
-import org.openmrs.module.eptsreports.reporting.library.cohorts.TxPvlsCohortQueries;
+import org.openmrs.module.eptsreports.reporting.library.cohorts.*;
 import org.openmrs.module.eptsreports.reporting.library.queries.TbPrevQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
@@ -68,6 +56,7 @@ public class EptsCommonDimension {
   private PrepCtCohortQueries prepCtCohortQueries;
 
   private TbPrevQueries tbPrevQueries;
+  @Autowired private TxPvlsBySourceLabOrFsrCohortQueries txPvlsBySourceLabOrFsrCohortQueries;
 
   @Autowired
   @Qualifier("commonAgeDimensionCohort")
@@ -853,6 +842,34 @@ public class EptsCommonDimension {
     dim.addCohortDefinition("TD", mapStraightThrough(truckDriverTargetGroupCohort));
     dim.addCohortDefinition("CS", mapStraightThrough(serodiscordantCouplesTargetGroupCohort));
 
+    return dim;
+  }
+
+  /**
+   * <b>Patients disaggregation – routine</b>
+   *
+   * <p>The system will identify patients with routine type of VL test as following:
+   *
+   * <ul>
+   *   <li>all patients who have the most recent VL test result registered on Laboratory or FSR
+   *       (with the Reason for requesting viral load as routine viral load or UNKNOWN) Forms within
+   *       past 12 months.
+   * </ul>
+   *
+   * @return {@link CohortDefinitionDimension}
+   */
+  public CohortDefinitionDimension getViralLoadRoutineTargetReasonsDimensionForPvlsBySource() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("Patients disaggregation – routine");
+    dim.addParameter(new Parameter("startDate", "onOrAfter", Date.class));
+    dim.addParameter(new Parameter("endDate", "onOrBefore", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    CohortDefinition routineViralLoadCohort =
+        txPvlsBySourceLabOrFsrCohortQueries.getRoutineDisaggregationForPvlsBySource();
+    CohortDefinition targetedViralLoadCohort =
+        txPvlsBySourceLabOrFsrCohortQueries.getPatientsOnTargetByFsr();
+    dim.addCohortDefinition("VLR", mapStraightThrough(routineViralLoadCohort));
+    dim.addCohortDefinition("VLT", mapStraightThrough(targetedViralLoadCohort));
     return dim;
   }
 }

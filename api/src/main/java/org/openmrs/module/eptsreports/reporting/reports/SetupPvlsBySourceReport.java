@@ -79,7 +79,7 @@ public class SetupPvlsBySourceReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "TX_PVLS_BY_SOURCE_Template.xls",
+              "Template_TX_PVLS_by_Source_v1.1.xls",
               "TX PVLS BY SOURCE",
               getExcelDesignUuid(),
               null);

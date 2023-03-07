@@ -106,7 +106,8 @@ public class TxPvlsBySourceQueries {
             + " SELECT p.patient_id FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN "
             + " obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND "
-            + " e.encounter_type IN (${53}) AND o.concept_id=${856} AND o.value_numeric IS NOT NULL AND "
+            + " o.concept_id IN(${856}, ${1305}) "
+            + " AND (o.value_numeric IS NOT NULL OR o.value_coded IS NOT NULL) AND "
             + " o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
             + " e.location_id=:location ";
     StringSubstitutor sb = new StringSubstitutor(map);
@@ -157,10 +158,10 @@ public class TxPvlsBySourceQueries {
             + " (SELECT p.patient_id, MAX(o.obs_datetime) AS data_carga FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN "
             + " obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND "
-            + " e.encounter_type IN (${53}) AND o.concept_id=${856} AND o.value_numeric IS NOT NULL AND "
+            + " e.encounter_type IN (${53}) AND o.concept_id IN (${856} , ${1305}) AND (o.value_numeric IS NOT NULL OR o.value_coded IS NOT NULL) AND "
             + " o.obs_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
             + " AND e.location_id=:location GROUP BY p.patient_id) comb INNER JOIN obs ON obs.person_id=comb.patient_id AND obs.obs_datetime= "
-            + " comb.data_carga  WHERE obs.voided=0 AND obs.concept_id IN (${856}) "
+            + " comb.data_carga  WHERE obs.voided=0 AND obs.concept_id IN (${856} , ${1305}) "
             + " AND obs.location_id=:location AND "
             + " (obs.value_numeric IS NOT NULL OR obs.value_coded IS NOT NULL) GROUP BY patient_id)fn GROUP BY patient_id)fn1 "
             + " INNER JOIN obs os ON os.person_id=fn1.patient_id WHERE fn1.data_carga=os.obs_datetime AND os.concept_id IN(${856}, ${1305}) "
@@ -183,26 +184,91 @@ public class TxPvlsBySourceQueries {
       int fsrEncounter,
       int viralLoadRequestReasonConceptId,
       int routineViralLoadConceptId,
-      int unknownConceptId) {
+      int unknownConceptId,
+      int misauLaboratorioEncounterType,
+      int hivViralLoadConcept,
+      int hivViralLoadQualitative) {
     Map<String, String> map = new HashMap<>();
     map.put("51", String.valueOf(fsrEncounter));
     map.put("23818", String.valueOf(viralLoadRequestReasonConceptId));
     map.put("23817", String.valueOf(routineViralLoadConceptId));
     map.put("1067", String.valueOf(unknownConceptId));
+    map.put("13", String.valueOf(misauLaboratorioEncounterType));
+    map.put("856", String.valueOf(hivViralLoadConcept));
+    map.put("1305", String.valueOf(hivViralLoadQualitative));
     String query =
-        " SELECT final.patient_id FROM( "
-            + " SELECT p.patient_id, MAX(ee.encounter_datetime) AS viral_load_date "
-            + " FROM patient p "
-            + " INNER JOIN encounter ee ON p.patient_id=ee.patient_id "
-            + " INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
-            + " WHERE "
-            + " ee.voided = 0 AND "
-            + " ee.encounter_type = ${51} AND "
-            + " oo.voided = 0 AND "
-            + " oo.concept_id = ${23818} AND oo.value_coded IN(${23817}, ${1067}) AND "
-            + " ee.location_id = :location "
-            + " AND ee.encounter_datetime <= :endDate "
-            + " GROUP BY p.patient_id ) final";
+        "SELECT p.patient_id  "
+            + "FROM   patient p  "
+            + "           INNER JOIN encounter e  "
+            + "                      ON p.patient_id = e.patient_id  "
+            + "           INNER JOIN obs oo  "
+            + "                      ON e.encounter_id = oo.encounter_id  "
+            + "           INNER JOIN (  "
+            + "    SELECT p.patient_id, max(e.encounter_datetime) as most_recent  "
+            + "    FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN  "
+            + "          obs o ON e.encounter_id=o.encounter_id  "
+            + "    WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND  "
+            + "            e.encounter_type IN ( ${13}, ${51}) AND  "
+            + "        ((o.concept_id= ${856} AND o.value_numeric IS NOT NULL) OR (o.concept_id=${1305} AND o.value_coded IS NOT NULL)) AND  "
+            + "            e.encounter_datetime <= :endDate AND  "
+            + "            e.location_id=:location  "
+            + "    group by p.patient_id  "
+            + ") lastVl on lastVl.patient_id = p.patient_id  "
+            + "where p.voided=0 AND e.voided=0 AND oo.voided=0  "
+            + "  AND e.encounter_type = ${51}  "
+            + "  AND e.encounter_datetime = lastVl.most_recent  "
+            + "  AND  oo.concept_id = ${23818}  "
+            + "  AND oo.value_coded IN(${23817}, ${1067})  "
+            + "  AND e.location_id = :location  "
+            + "  AND e.encounter_datetime between date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) and :endDate  "
+            + "GROUP BY p.patient_id";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    return sb.replace(query);
+  }
+
+  public static String getPatientsHavingRoutineViralLoadTestsUsinglab(
+      int misauLaboratorioEncounterType,
+      int hivViralLoadConcept,
+      int hivViralLoadQualitative,
+      int fsrEncounter) {
+
+    Map<String, String> map = new HashMap<>();
+    map.put("13", String.valueOf(misauLaboratorioEncounterType));
+    map.put("856", String.valueOf(hivViralLoadConcept));
+    map.put("1305", String.valueOf(hivViralLoadQualitative));
+    map.put("51", String.valueOf(fsrEncounter));
+
+    String query =
+        "SELECT p.patient_id    "
+            + "FROM   patient p    "
+            + "           INNER JOIN encounter e    "
+            + "                      ON p.patient_id = e.patient_id    "
+            + "           INNER JOIN obs oo    "
+            + "                      ON e.encounter_id = oo.encounter_id    "
+            + "           INNER JOIN (    "
+            + "    SELECT p.patient_id, max(e.encounter_datetime) as most_recent    "
+            + "    FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN    "
+            + "          obs o ON e.encounter_id=o.encounter_id    "
+            + "    WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND    "
+            + "            e.encounter_type IN ( ${13}, ${51}) AND    "
+            + "        ((o.concept_id = ${856} AND o.value_numeric IS NOT NULL) OR (o.concept_id= ${1305} AND o.value_coded IS NOT NULL)) AND    "
+            + "            e.encounter_datetime <= :endDate    "
+            + "      AND    "
+            + "            e.location_id=:location   "
+            + "    group by p.patient_id    "
+            + ") lastVl on lastVl.patient_id = p.patient_id    "
+            + "    "
+            + "where p.voided=0 AND e.voided=0 AND oo.voided=0    "
+            + "  AND e.encounter_type = ${13}    "
+            + "  AND ( ( oo.concept_id = ${856}    "
+            + "    AND oo.value_numeric IS NOT NULL )    "
+            + "    OR ( oo.concept_id = ${1305}    "
+            + "        AND oo.value_coded IS NOT NULL ) )    "
+            + "  AND e.encounter_datetime = lastVl.most_recent  "
+            + "  AND e.encounter_datetime between date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) and :endDate   "
+            + "  AND e.location_id = :location    "
+            + "GROUP BY p.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     return sb.replace(query);
@@ -221,26 +287,45 @@ public class TxPvlsBySourceQueries {
       int fsrEncounter,
       int viralLoadRequestReasonConceptId,
       int routineViralLoadConceptId,
-      int unknownConceptId) {
+      int unknownConceptId,
+      int misauLaboratorioEncounterType,
+      int hivViralLoadConcept,
+      int hivViralLoadQualitative) {
     Map<String, String> map = new HashMap<>();
     map.put("51", String.valueOf(fsrEncounter));
     map.put("23818", String.valueOf(viralLoadRequestReasonConceptId));
     map.put("23817", String.valueOf(routineViralLoadConceptId));
     map.put("1067", String.valueOf(unknownConceptId));
+    map.put("13", String.valueOf(misauLaboratorioEncounterType));
+    map.put("856", String.valueOf(hivViralLoadConcept));
+    map.put("1305", String.valueOf(hivViralLoadQualitative));
+
     String query =
-        " SELECT final.patient_id FROM( "
-            + " SELECT p.patient_id, MAX(ee.encounter_datetime) AS viral_load_date "
-            + " FROM patient p "
-            + " INNER JOIN encounter ee ON p.patient_id=ee.patient_id "
-            + " INNER JOIN obs oo ON ee.encounter_id = oo.encounter_id "
-            + " WHERE "
-            + " ee.voided = 0 AND "
-            + " ee.encounter_type = ${51} AND "
-            + " oo.voided = 0 AND "
-            + " oo.concept_id = ${23818} AND oo.value_coded NOT IN(${23817}, ${1067}) AND "
-            + " ee.location_id = :location "
-            + " AND ee.encounter_datetime <= :endDate "
-            + " GROUP BY p.patient_id ) final";
+        "SELECT p.patient_id  "
+            + "FROM   patient p  "
+            + "           INNER JOIN encounter e  "
+            + "                      ON p.patient_id = e.patient_id  "
+            + "           INNER JOIN obs oo  "
+            + "                      ON e.encounter_id = oo.encounter_id  "
+            + "           INNER JOIN (  "
+            + "    SELECT p.patient_id, max(e.encounter_datetime) as most_recent  "
+            + "    FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN  "
+            + "          obs o ON e.encounter_id=o.encounter_id  "
+            + "    WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND  "
+            + "            e.encounter_type IN ( ${13}, ${51}) AND  "
+            + "        ((o.concept_id= ${856} AND o.value_numeric IS NOT NULL) OR (o.concept_id=${1305} AND o.value_coded IS NOT NULL)) AND  "
+            + "            e.encounter_datetime <= :endDate AND  "
+            + "            e.location_id=:location  "
+            + "    group by p.patient_id  "
+            + ") lastVl on lastVl.patient_id = p.patient_id  "
+            + "where p.voided=0 AND e.voided=0 AND oo.voided=0  "
+            + "  AND e.encounter_type = ${51}  "
+            + "  AND e.encounter_datetime = lastVl.most_recent  "
+            + "  AND  oo.concept_id = ${23818}  "
+            + "  AND oo.value_coded NOT IN(${23817}, ${1067})  "
+            + "  AND e.location_id = :location  "
+            + "  AND e.encounter_datetime between date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) and :endDate  "
+            + "GROUP BY p.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     return sb.replace(query);
