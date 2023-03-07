@@ -407,17 +407,21 @@ public class TXTBQueries {
    * @return String
    */
   public static String testTBLAM(
-      Integer encounterTypeId, Integer testTBLAM, Integer positive, Integer negative) {
+      Integer encounterTypeId,
+      Integer testTBLAM,
+      Integer positive,
+      Integer negative,
+      Integer indeterminate) {
     return String.format(
         "SELECT p.patient_id FROM patient p INNER JOIN encounter e "
             + "ON p.patient_id = e.patient_id "
             + "INNER JOIN obs o "
             + "ON e.encounter_id = o.encounter_id "
             + "WHERE e.location_id = :location AND e.encounter_type = %s "
-            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s)) "
+            + "AND (o.concept_id = %s  AND (o.value_coded = %s OR o.value_coded = %s OR o.value_coded = %s)) "
             + "AND e.encounter_datetime BETWEEN :startDate AND :endDate "
             + "AND p.voided = 0 AND e.voided = 0 AND o.voided = 0",
-        encounterTypeId, testTBLAM, positive, negative);
+        encounterTypeId, testTBLAM, positive, negative, indeterminate);
   }
 
   /**

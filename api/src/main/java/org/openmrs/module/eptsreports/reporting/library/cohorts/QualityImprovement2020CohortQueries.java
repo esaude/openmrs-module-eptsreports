@@ -3378,6 +3378,7 @@ public class QualityImprovement2020CohortQueries {
   /**
    * H1 - One Consultation (Encounter_datetime (from encounter type 35)) on the same date when the
    * Viral Load with >=1000 result was recorded (oldest date from B2)
+   *
    * @param vlQuantity Quantity of viral load to evaluate
    * @return CohortDefinition
    */
@@ -3432,6 +3433,7 @@ public class QualityImprovement2020CohortQueries {
   /**
    * H2- Another consultation (Encounter_datetime (from encounter type 35)) > “1st consultation”
    * (oldest date from H1)+20 days and <=“1st consultation” (oldest date from H1)+33days
+   *
    * @param vlQuantity Quantity of viral load to evaluate
    * @return CohortDefinition
    */
@@ -3498,6 +3500,7 @@ public class QualityImprovement2020CohortQueries {
   /**
    * H3- Another consultation (Encounter_datetime (from encounter type 35)) > “2nd consultation”
    * (oldest date from H2)+20 days and <=“2nd consultation” (oldest date from H2)+33days
+   *
    * @param vlQuantity Quantity of viral load to evaluate
    * @return CohortDefinition
    */
