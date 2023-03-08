@@ -92,12 +92,12 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "transferredOutBetweenArtpickupAndRecepcaoLevantouReportingPeriod",
         EptsReportUtils.map(
-            getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(), mappings2));
+            getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(true), mappings2));
 
     cd.addSearch(
-        "transferredOutBetweenArtpickupAndRecepcaoLevantouPreviousPeriod",
+        "transferredOutBeforeArtpickupAndRecepcaoLevantouPreviousPeriod",
         EptsReportUtils.map(
-            getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(),
+            getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(false),
             previousPeriodMappings));
 
     cd.addSearch(
@@ -110,7 +110,7 @@ public class TxMlCohortQueries {
     cd.setCompositionString(
         "((missedAppointment OR noScheduled OR deadReportingPeriod OR suspendedReportingPeriod OR "
             + "(transferredOutReportingPeriod AND transferredOutBetweenArtpickupAndRecepcaoLevantouReportingPeriod)) AND startedArt) "
-            + "AND NOT ((deadPreviousPeriod OR suspendedPreviousPeriod) OR (transferredOutPreviousPeriod AND transferredOutBetweenArtpickupAndRecepcaoLevantouPreviousPeriod))");
+            + "AND NOT ((deadPreviousPeriod OR suspendedPreviousPeriod) OR (transferredOutPreviousPeriod AND transferredOutBeforeArtpickupAndRecepcaoLevantouPreviousPeriod))");
 
     return cd;
   }
@@ -273,7 +273,7 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "transferOutBetweenArtpickupAndRecepcaoLevantou",
         EptsReportUtils.map(
-            getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(),
+            getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(true),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
@@ -1814,7 +1814,8 @@ public class TxMlCohortQueries {
    *
    * @return {@link CohortDefinition}
    */
-  public CohortDefinition getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou() {
+  public CohortDefinition getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(
+      boolean duringPeriod) {
 
     SqlCohortDefinition definition = new SqlCohortDefinition();
     definition.setName(
@@ -1869,8 +1870,8 @@ public class TxMlCohortQueries {
             + " )  considered_transferred "
             + " GROUP BY considered_transferred.patient_id "
             + " ) final "
-            + " WHERE final.max_date >= :startDate "
-            + " AND  final.max_date  <= :endDate  ";
+            + " WHERE  ".concat(duringPeriod ? " final.max_date >= :startDate  AND " : " ")
+            + " final.max_date  <= :endDate  ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
