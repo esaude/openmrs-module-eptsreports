@@ -15,6 +15,7 @@ import org.openmrs.module.reporting.evaluation.parameter.Parameter;
 import org.openmrs.module.reporting.report.ReportDesign;
 import org.openmrs.module.reporting.report.definition.ReportDefinition;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 @Deprecated
 public class SetupQualityImprovementReport20 extends EptsDataExportManager {
@@ -75,7 +76,7 @@ public class SetupQualityImprovementReport20 extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "Template_MQ_2022.xls",
+              "Template_MQ_2023.xls",
               "Melhoria de Qualidade - 2022",
               getExcelDesignUuid(),
               null);
