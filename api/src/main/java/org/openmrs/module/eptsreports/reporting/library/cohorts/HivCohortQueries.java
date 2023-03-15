@@ -98,6 +98,23 @@ public class HivCohortQueries {
   }
 
   /**
+   * <b>Description:</b> Number of adult and pediatric ART patients with a viral load result
+   * documented in the patient medical record and/ or laboratory records in the past 12 months.
+   *
+   * @return {@link CohortDefinition}
+   */
+  @DocumentedDefinition(value = "viralLoadWithin12Months")
+  public CohortDefinition getPatientsViralLoadWithin12MonthsBySource() {
+    SqlCohortDefinition sql = new SqlCohortDefinition();
+    sql.setName("viralLoadWithin12Months");
+    sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sql.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sql.addParameter(new Parameter("location", "Location", Location.class));
+    sql.setQuery(ViralLoadQueries.getPatientsHavingViralLoadInLast12MonthsBySource());
+    return sql;
+  }
+
+  /**
    * Adult and pediatric patients on ART who have re-initiated the treatment.
    *
    * @return CohortDefinition

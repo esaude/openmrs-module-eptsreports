@@ -365,7 +365,7 @@ public class TxPvlsBySourceQueries {
             + " SELECT p.patient_id FROM  patient p INNER JOIN encounter e ON p.patient_id=e.patient_id INNER JOIN "
             + " obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided=0 AND e.voided=0 AND o.voided=0 AND "
-            + " e.encounter_type IN (${53}) AND o.concept_id=${856} AND o.value_numeric IS NOT NULL AND "
+            + " e.encounter_type IN (${53}) AND ((o.concept_id=${856} AND o.value_numeric IS NOT NULL) OR (o.concept_id=${1305} AND o.value_coded IS NOT NULL)) AND "
             + " o.obs_datetime <=:endDate AND "
             + " e.location_id=:location ";
 

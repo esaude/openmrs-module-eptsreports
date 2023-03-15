@@ -150,6 +150,56 @@ public class ViralLoadQueries {
   }
 
   /**
+   * <b>Description:</b> Patients having viral load within the 12 months period
+   *
+   * @param labEncounter
+   * @param adultSeguimentoEncounter
+   * @param pediatriaSeguimentoEncounter
+   * @param mastercardEncounter
+   * @param fsrEncounter
+   * @param vlConceptQuestion
+   * @param vlQualitativeConceptQuestion
+   * @return {@link String}
+   */
+  public static String getPatientsHavingViralLoadInLast12MonthsBySource() {
+
+    HivMetadata hivMetadata = new HivMetadata();
+    Map<String, Integer> map = new HashMap<>();
+
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("1305", hivMetadata.getHivViralLoadQualitative().getConceptId());
+
+    String query =
+        "SELECT p.patient_id FROM  patient p "
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 "
+            + " AND e.voided=0 "
+            + " AND o.voided=0 "
+            + " AND e.encounter_type IN (${6}, ${9}) "
+            + " AND ((o.concept_id=${856} AND o.value_numeric IS NOT NULL) OR (o.concept_id=${1305} AND o.value_coded IS NOT NULL)) "
+            + " AND DATE(e.encounter_datetime) BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
+            + " e.location_id=:location "
+            + " UNION "
+            + " SELECT p.patient_id FROM  patient p "
+            + " INNER JOIN encounter e ON p.patient_id=e.patient_id "
+            + " INNER JOIN obs o ON e.encounter_id=o.encounter_id "
+            + " WHERE p.voided=0 "
+            + " AND e.voided=0 "
+            + " AND o.voided=0 "
+            + " AND e.encounter_type IN (${53}) "
+            + " AND ((o.concept_id=${856} AND o.value_numeric IS NOT NULL) OR (o.concept_id=${1305} AND o.value_coded IS NOT NULL)) "
+            + "AND DATE(o.obs_datetime) BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate "
+            + " AND e.location_id=:location ";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    return sb.replace(query);
+  }
+
+  /**
    * <b>Description</b> Patients or routine using FSR with VL results
    *
    * @return String

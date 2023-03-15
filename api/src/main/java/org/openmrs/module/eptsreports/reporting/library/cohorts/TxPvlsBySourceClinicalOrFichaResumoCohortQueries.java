@@ -315,7 +315,7 @@ public class TxPvlsBySourceClinicalOrFichaResumoCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getRoutineByClinicalForms() {
+  public CohortDefinition getRoutineByClinicalForms() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));

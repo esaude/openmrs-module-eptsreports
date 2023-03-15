@@ -308,6 +308,93 @@ public class TxPvlsCohortQueries {
     return sql;
   }
 
+  public CohortDefinition getPatientsWhoAreOnRoutineOnMasterCardAndClinicalEncounter() {
+    SqlCohortDefinition sqlc = new SqlCohortDefinition();
+    sqlc.setName("Patients who have viral load results OR FSR coded values");
+    sqlc.setName("Routine for all patients using FSR form");
+    sqlc.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    sqlc.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlc.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("1305", hivMetadata.getHivViralLoadQualitative().getConceptId());
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    String sql =
+        "SELECT p.patient_id "
+            + "FROM   patient p "
+            + "       INNER JOIN encounter e "
+            + "               ON p.patient_id = e.patient_id "
+            + "       INNER JOIN obs o "
+            + "               ON e.encounter_id = o.encounter_id "
+            + "       INNER JOIN obs o2 "
+            + "               ON e.encounter_id = o2.encounter_id "
+            + "       INNER JOIN (SELECT max_vl_result.patient_id, "
+            + "                          Max(max_vl_result.max_vl) last_vl "
+            + "                   FROM   (SELECT p.patient_id, "
+            + "                                  Date(e.encounter_datetime) AS max_vl "
+            + "                           FROM   patient p "
+            + "                                  INNER JOIN encounter e "
+            + "                                          ON p.patient_id = e.patient_id "
+            + "                                  INNER JOIN obs o "
+            + "                                          ON e.encounter_id = o.encounter_id "
+            + "                           WHERE  p.voided = 0 "
+            + "                                  AND e.voided = 0 "
+            + "                                  AND o.voided = 0 "
+            + "                                  AND e.encounter_type IN ( ${6}, ${9} ) "
+            + "                                  AND ( ( o.concept_id = ${856} "
+            + "                                          AND o.value_numeric IS NOT NULL ) "
+            + "                                         OR ( o.concept_id = ${1305} "
+            + "                                              AND o.value_coded IS NOT NULL ) ) "
+            + "                                  AND Date(e.encounter_datetime) <= :endDate "
+            + "                                  AND e.location_id = :location "
+            + "                           UNION "
+            + "                           SELECT p.patient_id, "
+            + "                                  Date(o.obs_datetime) AS max_vl "
+            + "                           FROM   patient p "
+            + "                                  INNER JOIN encounter e "
+            + "                                          ON p.patient_id = e.patient_id "
+            + "                                  INNER JOIN obs o "
+            + "                                          ON e.encounter_id = o.encounter_id "
+            + "                           WHERE  p.voided = 0 "
+            + "                                  AND e.voided = 0 "
+            + "                                  AND o.voided = 0 "
+            + "                                  AND e.encounter_type IN ( ${53} ) "
+            + "                                  AND ( ( o.concept_id = ${856} "
+            + "                                          AND o.value_numeric IS NOT NULL ) "
+            + "                                         OR ( o.concept_id = ${1305} "
+            + "                                              AND o.value_coded IS NOT NULL ) ) "
+            + "                                  AND Date(o.obs_datetime) <= :endDate "
+            + "                                  AND e.location_id = :location) max_vl_result "
+            + "                   GROUP  BY max_vl_result.patient_id) last_date "
+            + "               ON p.patient_id = last_date.patient_id "
+            + "WHERE  p.voided = 0 "
+            + "       AND e.voided = 0 "
+            + "       AND o.voided = 0 "
+            + "       AND    ( e.encounter_type IN ( ${6}, ${9} "
+            + "               AND ( ( o.concept_id = ${856} "
+            + "                       AND o.value_numeric IS NOT NULL ) "
+            + "                      OR ( o.concept_id = ${1305} "
+            + "                           AND o.value_coded IS NOT NULL ) ) "
+            + "               AND Date(e.encounter_datetime) = last_date.last_vl ) "
+            + "              OR ( e.encounter_type = ${53} "
+            + "                   AND ( ( o.concept_id = ${856} "
+            + "                           AND o.value_numeric IS NOT NULL ) "
+            + "                          OR ( o.concept_id = ${1305} "
+            + "                               AND o.value_coded IS NOT NULL ) ) "
+            + "                   AND Date(o.obs_datetime) = last_date.last_vl )) "
+            + "GROUP  BY p.patient_id";
+
+    sqlc.setQuery(sb.replace(sql));
+
+    return sqlc;
+  }
+
   /**
    * <b>Description</b> Get patients who are on target Composition
    *
@@ -328,6 +415,31 @@ public class TxPvlsCohortQueries {
         "routine",
         EptsReportUtils.map(
             getPatientsWhoAreOnRoutine(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.setCompositionString("results AND NOT routine");
+    return cd;
+  }
+
+  /**
+   * <b>Description</b> Get patients who are on target Composition
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoAreOnTargetBySource() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("All patients on Target");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch(
+        "results",
+        EptsReportUtils.map(
+            hivCohortQueries.getPatientsViralLoadWithin12MonthsBySource(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "routine",
+        EptsReportUtils.map(
+            getPatientsWhoAreOnRoutineOnMasterCardAndClinicalEncounter(),
             "startDate=${startDate},endDate=${endDate},location=${location}"));
     cd.setCompositionString("results AND NOT routine");
     return cd;

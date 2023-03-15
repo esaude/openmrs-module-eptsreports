@@ -421,6 +421,19 @@ public class EptsCommonDimension {
     return dim;
   }
 
+  public CohortDefinitionDimension getViralLoadRoutineTargetReasonsBySourceDimension() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.addParameter(new Parameter("startDate", "onOrAfter", Date.class));
+    dim.addParameter(new Parameter("endDate", "onOrBefore", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    CohortDefinition routineViralLoadCohort =
+        txPvlsQueries.getPatientsWhoAreOnRoutineOnMasterCardAndClinicalEncounter();
+    CohortDefinition targetedViralLoadCohort = txPvlsQueries.getPatientsWhoAreOnTargetBySource();
+    dim.addCohortDefinition("VLR", mapStraightThrough(routineViralLoadCohort));
+    dim.addCohortDefinition("VLT", mapStraightThrough(targetedViralLoadCohort));
+    return dim;
+  }
+
   public CohortDefinitionDimension getDispensingQuantityDimension() {
     CohortDefinitionDimension dim = new CohortDefinitionDimension();
     dim.setName("ARV Dispensing quantity dimension");
