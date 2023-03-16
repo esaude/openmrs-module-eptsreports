@@ -69,6 +69,7 @@ public class OnArtForMoreThanXmonthsCalculation extends AbstractPatientCalculati
             context);
     Date onOrBefore = (Date) context.getFromCache("onOrBefore");
     Date oneYearBefore = EptsCalculationUtils.addMonths(onOrBefore, -12);
+    oneYearBefore = EptsCalculationUtils.addDays(oneYearBefore, 1);
     CalculationResultMap lastVl =
         ePTSCalculationService.lastObs(
             encounterTypeList,
