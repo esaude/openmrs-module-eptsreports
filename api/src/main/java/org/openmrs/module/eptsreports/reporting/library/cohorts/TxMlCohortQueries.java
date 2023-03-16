@@ -1876,7 +1876,6 @@ public class TxMlCohortQueries {
     StringSubstitutor stringSubstitutor = new StringSubstitutor(valuesMap);
 
     definition.setQuery(stringSubstitutor.replace(query));
-    System.out.println(definition.getQuery());
 
     return definition;
   }

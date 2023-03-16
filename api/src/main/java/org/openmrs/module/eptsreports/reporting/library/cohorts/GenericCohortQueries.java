@@ -907,4 +907,75 @@ public class GenericCohortQueries {
             hivMetadata.getPatientFoundYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId()));
   }
+
+  /**
+   * <b>Idade do Utente na Primeira Consulta</b>
+   *
+   * <p>
+   * <li>Idade = “Data Primeira Consulta” - Data de Nascimento
+   * <li>Nota1: A idade será calculada em anos.
+   * <li>Nota2: “Data Primeira Consulta” é a data da primeira consulta clínica do utente, ou seja, o
+   *     primeiro registo, de sempre, de consulta clínica (Ficha Clínica) decorrido no período de
+   *     inclusão (>= “Data Fim Revisão” menos (-) 12 meses mais (+) 1 dia e <= “Data Fim Revisão”
+   *     menos (-) 9 meses.)
+   *
+   * @param minAge Minimum age of a patient based on First Clinical consultation
+   * @param maxAge Maximum age of a patient based on First Clinical consultation
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getAgeOnFirstClinicalConsultation(Integer minAge, Integer maxAge) {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName("Age on First Clinical Consultation");
+    sqlCohortDefinition.addParameter(new Parameter("onOrAfter", "onOrAfter", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("onOrBefore", "onOrBefore", Date.class));
+    sqlCohortDefinition.addParameter(
+        new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("minAge", minAge);
+    map.put("maxAge", maxAge);
+
+    String query =
+        "SELECT p.person_id "
+            + "FROM person p "
+            + "     INNER JOIN ( "
+            + "           SELECT pa.patient_id,  "
+            + "                  MIN(enc.encounter_datetime) AS first_consultation  "
+            + "           FROM   patient pa  "
+            + "                      INNER JOIN encounter enc  "
+            + "                                 ON enc.patient_id =  pa.patient_id  "
+            + "                      INNER JOIN obs  "
+            + "                                 ON obs.encounter_id = enc.encounter_id  "
+            + "           WHERE pa.voided = 0  "
+            + "             AND enc.voided = 0  "
+            + "             AND obs.voided = 0  "
+            + "             AND enc.encounter_type = ${6}  "
+            + "             AND enc.encounter_datetime <= :revisionEndDate "
+            + "             AND enc.location_id = :location  "
+            + "           GROUP  BY pa.patient_id  "
+            + "     ) AS final ON p.person_id = final.patient_id "
+            + "WHERE  final.first_consultation >= :onOrAfter  "
+            + "  AND final.first_consultation <= :onOrBefore"
+            + " AND ";
+
+    if (minAge != null && maxAge != null) {
+      query +=
+          "     TIMESTAMPDIFF(YEAR, p.birthdate, final.first_consultation) >= ${minAge}  "
+              + "         AND   "
+              + "   TIMESTAMPDIFF(YEAR, p.birthdate, final.first_consultation) <= ${maxAge} ";
+
+    } else if (minAge == null && maxAge != null) {
+      query += "   TIMESTAMPDIFF(YEAR, p.birthdate, final.first_consultation) <= ${maxAge} ";
+    } else if (minAge != null && maxAge == null) {
+      query += "   TIMESTAMPDIFF(YEAR, p.birthdate, final.first_consultation) >= ${minAge}  ";
+    }
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+
+    sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
+
+    return sqlCohortDefinition;
+  }
 }
