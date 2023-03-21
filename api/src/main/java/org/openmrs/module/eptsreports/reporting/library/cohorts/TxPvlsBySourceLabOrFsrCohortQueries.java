@@ -405,9 +405,8 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
         EptsReportUtils.map(
             getPatientsWithViralLoadSuppressionForLabAndFsrNumeratorWhoAreOnArtMoreThan3Months(),
             mappings));
-    cd.addSearch(
-        "RoutineByLab",
-        EptsReportUtils.map(txPvlsCohortQueries.getPatientsWhoAreOnRoutine(), mappings));
+
+    cd.addSearch("RoutineByLab", EptsReportUtils.map(getRoutineByLab(), mappings));
     cd.addSearch("RoutineByFsr", EptsReportUtils.map(getRoutineByFsr(), mappings));
     cd.setCompositionString("supp AND (RoutineByLab OR RoutineByFsr)");
     return cd;
@@ -431,11 +430,23 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
         EptsReportUtils.map(
             getPatientsWithViralLoadSuppressionForLabAndFsrNumeratorWhoAreOnArtMoreThan3Months(),
             mappings));
+
     cd.addSearch(
-        "RoutineByLab",
-        EptsReportUtils.map(txPvlsCohortQueries.getPatientsWhoAreOnRoutine(), mappings));
-    cd.addSearch("RoutineByFsr", EptsReportUtils.map(getRoutineByFsr(), mappings));
-    cd.setCompositionString("supp AND NOT (RoutineByLab OR RoutineByFsr)");
+        "onArtLongEnough",
+        EptsReportUtils.map(
+            txPvlsCohortQueries.getPatientsWhoAreMoreThan3MonthsOnArt(
+                Arrays.asList(
+                    hivMetadata.getMisauLaboratorioEncounterType(),
+                    hivMetadata.getFsrEncounterType())),
+            "onOrBefore=${endDate},location=${location}"));
+
+    cd.addSearch(
+        "target",
+        EptsReportUtils.map(
+            getPatientsOnTargetByFsr(),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(supp AND onArtLongEnough) AND target");
     return cd;
   }
 
