@@ -492,6 +492,23 @@ public class EptsCommonDimension {
             genericCohortQueries.getAgeInMonths(0, 9), "effectiveDate=${effectiveDate}"));
     return dim;
   }
+
+  /** Dimension for Age in months */
+  public CohortDefinitionDimension ageInMonthsBasedOnArt() {
+    CohortDefinitionDimension dim = new CohortDefinitionDimension();
+    dim.setName("Patients having age in months");
+    dim.addParameter(new Parameter("startDate", "Start  Date", Date.class));
+    dim.addParameter(new Parameter("endDate", "End  Date", Date.class));
+    dim.addParameter(new Parameter("location", "Location", Location.class));
+    dim.addCohortDefinition(
+        "10m-",
+        EptsReportUtils.map(
+            genericCohortQueries
+                .getAgeInMonthsBasedOnArtStartDateIgualGreaterThanLoweBoundAndLessThanUpperBound(
+                    0, 10),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
+    return dim;
+  }
   /**
    * Dimension for returning patients age based on their ART start date
    *
