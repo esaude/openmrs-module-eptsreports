@@ -304,6 +304,117 @@ public class ResumoMensalCohortQueries {
     return cd;
   }
 
+  public CohortDefinition getPatientsWhoHadTPTonFirstOrSecondEncounterAfterPreTarv() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("Number of patients who Had TPT After initiated Pre-TARV ");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("1256", hivMetadata.getStartDrugs().getConceptId());
+    map.put("23985", tbMetadata.getRegimeTPTConcept().getConceptId());
+    map.put("656", tbMetadata.getIsoniazidConcept().getConceptId());
+    map.put("23954", tbMetadata.get3HPConcept().getConceptId());
+    map.put("165308", tbMetadata.getDataEstadoDaProfilaxiaConcept().getConceptId());
+
+    ResumoMensalQueries rmq = new ResumoMensalQueries();
+
+    String unionQuery =
+        new EptsQueriesUtil()
+            .unionBuilder(rmq.getClinicalFileEnrollmentDate())
+            .union(rmq.getMastercardEnrollmentDate())
+            .union(rmq.getProgramEnrollmentDate())
+            .union(rmq.getMastercardArtStartWithoutPickupDate())
+            .union(rmq.getEnrollmentOnTarvProgramDate())
+            .union(rmq.getEnrollmentOnMastercardWithoutPreTarvAndPickupDate())
+            .union(rmq.getEnrollmentOnTarvWithoutFileAndPreTarvDate())
+            .buildQuery();
+
+    String sql =
+        ""
+            + "SELECT tpt.patient_id "
+            + "FROM   (SELECT encounters.patient_id, "
+            + "               Min(first_date)  first_date, "
+            + "               Min(second_date) second_date "
+            + "        FROM   (SELECT earliest.patient_id, "
+            + "                       second_encounter.date1, "
+            + "                       second_encounter.date2     second_date, "
+            + "                       first_encounter.first_date first_date "
+            + "                FROM   (SELECT min_enrollment.patient_id, "
+            + "                               Min(enrollment_date) date_enrolled "
+            + "                        FROM   ( "
+            + unionQuery
+            + " ) "
+            + "                               min_enrollment "
+            + "                        GROUP  BY min_enrollment.patient_id "
+            + "                        HAVING date_enrolled BETWEEN Date_sub(:startDate, INTERVAL 1 MONTH) AND :endDate) earliest "
+            + "                       LEFT JOIN(SELECT p.patient_id, "
+            + "                                        e1.encounter_datetime first_date "
+            + "                                 FROM   patient p "
+            + "                                        INNER JOIN encounter e1 "
+            + "                                                ON e1.patient_id = p.patient_id "
+            + "                                 WHERE  e1.encounter_type = ${6} "
+            + "                                        AND e1.location_id = :location "
+            + "                                        AND e1.encounter_datetime >= Date_sub(:startDate, INTERVAL 1 MONTH)   AND e1.encounter_datetime <= :endDate "
+            + "                                        AND p.voided = 0 "
+            + "                                        AND e1.voided = 0) first_encounter "
+            + "                              ON first_encounter.patient_id = earliest.patient_id "
+            + "                       LEFT JOIN (SELECT p.patient_id, "
+            + "                                         e1.encounter_datetime date1, "
+            + "                                         e2.encounter_datetime date2 "
+            + "                                  FROM   patient p "
+            + "                                         INNER JOIN encounter e1 "
+            + "                                                 ON e1.patient_id = p.patient_id "
+            + "                                         INNER JOIN encounter e2 "
+            + "                                                 ON e2.patient_id = p.patient_id "
+            + "                                  WHERE  e1.encounter_type = ${6} "
+            + "                                         AND e2.encounter_type = ${6} "
+            + "                                         AND e1.location_id = :location "
+            + "                                         AND e2.location_id = :location "
+            + "                                         AND e1.encounter_datetime >= Date_sub(:startDate, INTERVAL 1 MONTH)  AND e1.encounter_datetime <= :endDate "
+            + "                                         AND e2.encounter_datetime >= Date_sub(:startDate, INTERVAL 1 MONTH) AND e2.encounter_datetime <= :endDate "
+            + "                                         AND p.voided = 0 "
+            + "                                         AND e1.voided = 0 "
+            + "                                         AND e2.voided = 0 "
+            + "                                         AND e1.encounter_datetime < "
+            + "                                             e2.encounter_datetime) "
+            + "                       second_encounter ON earliest.patient_id = second_encounter.patient_id "
+            + "                WHERE  second_encounter.date2 >= earliest.date_enrolled "
+            + "                        OR first_encounter.first_date >= earliest.date_enrolled) encounters "
+            + "        GROUP  BY encounters.patient_id) tpt "
+            + "       INNER JOIN encounter enc "
+            + "               ON enc.patient_id = tpt.patient_id "
+            + "       INNER JOIN obs o1 "
+            + "               ON o1.encounter_id = enc.encounter_id "
+            + "       INNER JOIN obs o2 "
+            + "               ON o2.encounter_id = enc.encounter_id "
+            + "WHERE  o1.voided = 0 "
+            + "       AND o2.voided = 0 "
+            + "       AND enc.voided = 0 "
+            + "       AND enc.encounter_type = ${6} "
+            + "       AND ( enc.encounter_datetime = tpt.first_date "
+            + "              OR enc.encounter_datetime = tpt.second_date ) "
+            + "       AND enc.encounter_datetime BETWEEN :startDate AND :endDate "
+            + "       AND ( ( ( o1.concept_id = ${23985} "
+            + "                 AND o1.value_coded = ${656} ) "
+            + "               AND ( o2.concept_id = ${165308} "
+            + "                     AND o2.value_coded = ${1256} ) ) "
+            + "              OR ( ( o1.concept_id = ${23985} "
+            + "                     AND o1.value_coded = ${23954} ) "
+            + "                   AND ( o2.concept_id = ${165308} "
+            + "                         AND o2.value_coded = ${1256} ) ) )";
+    ;
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+
+    cd.setQuery(sb.replace(sql));
+
+    return cd;
+  }
+
   /**
    *
    *
@@ -1923,8 +2034,9 @@ public class ResumoMensalCohortQueries {
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
-    CohortDefinition a2 = getPatientsWhoInitiatedPreTarvAtAfacilityDuringCurrentMonthA2();
-    CohortDefinition tpi = getPatientsWhoStartedTPI();
+    CohortDefinition transferred =
+        getNumberOfPatientsTransferredInFromOtherHealthFacilitiesDuringCurrentMonthA2();
+    CohortDefinition tpi = getPatientsWhoHadTPTonFirstOrSecondEncounterAfterPreTarv();
     CohortDefinition ex = getPatientsWhoStartedTptAfterPreArt();
 
     String mappings = "startDate=${startDate},endDate=${endDate},location=${location}";
@@ -1933,7 +2045,9 @@ public class ResumoMensalCohortQueries {
         "onOrAfter=${onOrAfter-1m},onOrBefore=${onOrBefore},locationList=${locationList}";
     String inProgramStatesMappings =
         "startDate=${onOrAfter-1m},endDate=${onOrBefore},location=${locationList}";
-    cd.addSearch("A2", map(a2, mappings1));
+    cd.addSearch(
+        "transferred",
+        map(transferred, "onOrAfter=${startDate-1m},onOrBefore=${endDate},location=${location}"));
     cd.addSearch("TPI", map(tpi, mappings));
     cd.addSearch("extpt", map(ex, mappings1));
     cd.addSearch(
@@ -1942,7 +2056,7 @@ public class ResumoMensalCohortQueries {
             getAdditionalExclusionCriteriaForC1(
                 transferBasedOnDateMappings, inProgramStatesMappings),
             "onOrAfter=${startDate},onOrBefore=${endDate},locationList=${location}"));
-    cd.setCompositionString("(A2 AND TPI) AND NOT (exclusions OR extpt)");
+    cd.setCompositionString("TPI AND NOT (exclusions OR extpt OR transferred)");
 
     return cd;
   }
