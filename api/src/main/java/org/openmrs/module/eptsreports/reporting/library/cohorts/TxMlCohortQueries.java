@@ -72,9 +72,10 @@ public class TxMlCohortQueries {
     CohortDefinition startedArt = genericCohortQueries.getStartedArtBeforeDate(false);
     CohortDefinition transferredOut = getTransferredOutPatientsComposition();
     String mappings = "onOrBefore=${endDate},location=${location}";
-    String mappings2 = "startDate=${startDate},endDate=${endDate},location=${location}";
+    String mappings2 =
+        "startDate=${startDate},endDate=${endDate},reportEndDate=${endDate},location=${location}";
     String previousPeriodMappings =
-        "startDate=${startDate-3m},endDate=${startDate-1d},location=${location}";
+        "startDate=${startDate-3m},endDate=${startDate-1d},reportEndDate=${endDate},location=${location}";
     CohortDefinition dead = getDeadPatientsComposition();
 
     cd.addSearch("missedAppointment", Mapped.mapStraightThrough(missedAppointment));
@@ -92,13 +93,14 @@ public class TxMlCohortQueries {
     cd.addSearch(
         "transferredOutBetweenArtpickupAndRecepcaoLevantouReportingPeriod",
         EptsReportUtils.map(
-            getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(true), mappings2));
+            getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(true),
+            "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "transferredOutBeforeArtpickupAndRecepcaoLevantouPreviousPeriod",
         EptsReportUtils.map(
             getTransferredOutBetweenNextPickupDateFilaAndRecepcaoLevantou(false),
-            previousPeriodMappings));
+            "startDate=${startDate-3m},endDate=${startDate-1d},location=${location}"));
 
     cd.addSearch(
         "suspendedReportingPeriod",
@@ -230,7 +232,7 @@ public class TxMlCohortQueries {
         "transferOut",
         EptsReportUtils.map(
             getTransferredOutPatientsComposition(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},reportEndDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
         "(missedAppointmentLessTransfers AND refusedOrStoppedTreatment) AND NOT (dead OR transferOut)");
@@ -256,7 +258,7 @@ public class TxMlCohortQueries {
         "transferredOut",
         EptsReportUtils.map(
             getTransferredOutPatientsComposition(),
-            "startDate=${startDate},endDate=${endDate},location=${location}"));
+            "startDate=${startDate},endDate=${endDate},reportEndDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "patientWhoAfterMostRecentDateHaveDrugPickupOrConsultation",
@@ -485,6 +487,7 @@ public class TxMlCohortQueries {
         "Patient Transferred Out With No Drug Pick After The Transferred out Date ");
     sqlCohortDefinition.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("reportEndDate", "Report End Date", Date.class));
     sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -601,7 +604,7 @@ public class TxMlCohortQueries {
             + " ${pediatriaSeguimentoEncounterType}, "
             + " ${pharmaciaEncounterType})    "
             + "	                     AND e.encounter_datetime > lastest.last_date "
-            + " AND e.encounter_datetime <=  :endDate    "
+            + " AND e.encounter_datetime <=  :reportEndDate    "
             + "	                     AND e.location_id =  :location    "
             + "	                 GROUP BY p.patient_id "
             + ")  "
@@ -670,6 +673,7 @@ public class TxMlCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Get patients who are dead according to criteria a,b,c,d and e");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("reportEndDate", "Report End Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -697,7 +701,7 @@ public class TxMlCohortQueries {
         "exclusion",
         EptsReportUtils.map(
             getExclusionForDeadOrSuspendedPatients(true),
-            "endDate=${endDate},location=${location}"));
+            "endDate=${endDate},reportEndDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
         "(deadByPatientDemographics OR deadByPatientProgramState OR deadRegisteredInLastHomeVisitCard"
@@ -734,6 +738,7 @@ public class TxMlCohortQueries {
     CompositionCohortDefinition cd = new CompositionCohortDefinition();
     cd.setName("Get patients who are dead according to criteria a,b,c,d and e");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("reportEndDate", "Report End Date", Date.class));
     cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
@@ -753,7 +758,7 @@ public class TxMlCohortQueries {
         "exclusion",
         EptsReportUtils.map(
             getExclusionForDeadOrSuspendedPatients(false),
-            "endDate=${endDate},location=${location}"));
+            "endDate=${endDate},reportEndDate=${endDate},location=${location}"));
 
     cd.setCompositionString(
         "(suspendedByPatientProgramState OR suspendedRegisteredInFichaResumoAndFichaClinicaMasterCard) AND NOT exclusion");
@@ -766,6 +771,7 @@ public class TxMlCohortQueries {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("get Exclusion For Dead Or Suspended patients");
     cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("reportEndDate", " Report end Date", Date.class));
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
@@ -894,7 +900,7 @@ public class TxMlCohortQueries {
             + "    AND   ( "
             + "                e.encounter_type IN (${6},${9},${18})  "
             + "                AND  e.encounter_datetime >  outter.l_date   "
-            + "                AND e.encounter_datetime <= :endDate   "
+            + "                AND e.encounter_datetime <= :reportEndDate   "
             + "             )    "
             + "    AND e.location_id =   :location  "
             + "GROUP BY outter.patient_id ";
