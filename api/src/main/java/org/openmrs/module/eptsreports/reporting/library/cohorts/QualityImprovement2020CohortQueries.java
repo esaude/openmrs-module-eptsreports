@@ -3722,7 +3722,7 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
             hivMetadata.getArtStatus().getConceptId());
 
-    CohortDefinition f = commonCohortQueries.getTranferredOutPatients();
+    CohortDefinition f = getTranferredOutPatients();
     CohortDefinition g = getMQC11NG();
 
     if (reportResource.equals(EptsReportConstants.MIMQ.MQ)) {
