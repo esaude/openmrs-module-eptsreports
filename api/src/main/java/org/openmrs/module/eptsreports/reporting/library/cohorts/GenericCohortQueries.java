@@ -469,7 +469,6 @@ public class GenericCohortQueries {
    * @param maxAge Maximum age of a patient based on ART Start Date
    * @return CohortDefinition
    */
-
   public CohortDefinition
       getAgeInMonthsBasedOnArtStartDateIgualGreaterThanLoweBoundAndLessThanUpperBound(
           Integer minAge, Integer maxAge) {
