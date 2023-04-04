@@ -2926,7 +2926,7 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
             hivMetadata.getArtStatus().getConceptId());
 
-    CohortDefinition transfOut = commonCohortQueries.getTranferredOutPatients();
+    CohortDefinition transfOut = getTranferredOutPatients();
 
     CohortDefinition abandonedTarv = getPatientsWhoAbandonedTarvOnArtStartDate();
     CohortDefinition abandonedFirstLine = getPatientsWhoAbandonedTarvOnOnFirstLineDate();
@@ -4963,13 +4963,9 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition restartdedExclusion = getPatientsWhoRestartedTarvAtLeastSixMonths();
 
-    CohortDefinition B4E =
-        commonCohortQueries.getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
-            true, false, 12);
-
     CohortDefinition B5E =
         commonCohortQueries.getMOHPatientsWithVLRequestorResultBetweenClinicalConsultations(
-            false, true, 6);
+            false, true, 12);
 
     CohortDefinition G = getMQ13G();
 
@@ -5052,11 +5048,6 @@ public class QualityImprovement2020CohortQueries {
             B3E, "startDate=${endDate},endDate=${revisionEndDate},location=${location}"));
 
     compositionCohortDefinition.addSearch(
-        "B4E",
-        EptsReportUtils.map(
-            B4E, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
-
-    compositionCohortDefinition.addSearch(
         "B5E",
         EptsReportUtils.map(
             B5E, "startDate=${startDate},endDate=${revisionEndDate},location=${location}"));
@@ -5091,21 +5082,21 @@ public class QualityImprovement2020CohortQueries {
     if (den) {
       if (line == 1) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND ( (B2NEW AND NOT ABANDONEDTARV) OR  ( (RESTARTED AND NOT RESTARTEDTARV) OR (B3 AND NOT B3E AND NOT ABANDONED1LINE) ))  AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND age");
+            "(B1 AND ( (B2NEW AND NOT ABANDONEDTARV) OR  ( (RESTARTED AND NOT RESTARTEDTARV) OR (B3 AND NOT B3E AND NOT ABANDONED1LINE) )) AND NOT B5E) AND NOT (C OR D) AND age");
       } else if (line == 6 || line == 7 || line == 8) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND ( (B2NEW AND NOT ABANDONEDTARV) OR  ( (RESTARTED AND NOT RESTARTEDTARV) OR (B3 AND NOT B3E AND NOT ABANDONED1LINE) ))  AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND age");
+            "(B1 AND ( (B2NEW AND NOT ABANDONEDTARV) OR  ( (RESTARTED AND NOT RESTARTEDTARV) OR (B3 AND NOT B3E AND NOT ABANDONED1LINE) )) AND NOT B5E) AND NOT (C OR D) AND age");
       } else if (line == 4 || line == 13) {
         compositionCohortDefinition.setCompositionString(
-            "((B1 AND (secondLineB2 AND NOT B2E AND NOT ABANDONED2LINE)) AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND age");
+            "((B1 AND (secondLineB2 AND NOT B2E AND NOT ABANDONED2LINE)) AND NOT B5E) AND NOT (C OR D) AND age");
       }
     } else {
       if (line == 1 || line == 6 || line == 7 || line == 8) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND ( (B2NEW AND NOT ABANDONEDTARV) OR  ( (RESTARTED AND NOT RESTARTEDTARV) OR (B3 AND NOT B3E AND NOT ABANDONED1LINE) ))  AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND G AND age");
+            "(B1 AND ( (B2NEW AND NOT ABANDONEDTARV) OR  ( (RESTARTED AND NOT RESTARTEDTARV) OR (B3 AND NOT B3E AND NOT ABANDONED1LINE) )) AND NOT B5E) AND NOT (C OR D) AND G AND age");
       } else if (line == 4 || line == 13) {
         compositionCohortDefinition.setCompositionString(
-            "((B1 AND (secondLineB2 AND NOT B2E AND NOT ABANDONED2LINE)) AND NOT B4E AND NOT B5E) AND NOT (C OR D) AND G AND age");
+            "((B1 AND (secondLineB2 AND NOT B2E AND NOT ABANDONED2LINE)) AND NOT B5E) AND NOT (C OR D) AND G AND age");
       }
     }
 
@@ -5637,22 +5628,24 @@ public class QualityImprovement2020CohortQueries {
     if (den) {
       if (line == 3) {
         compositionCohortDefinition.setName(
-            "(B1 and B2)  and NOT (B4 or B5 or E or F) and Age > 14**");
+            "# de Adultos (15/+anos) na 1ª linha de TARV com registo resultado de CV acima de 1000");
       } else if (line == 12) {
         compositionCohortDefinition.setName(
-            "(B1 and B2)  and NOT (B4 or B5 or E or F) and Age >= 2 and Age <= 15*");
+            "# de crianças (>2 anos de idade) na 1ª linha de TARV com registo de resultado de CV ≥1000");
       } else if (line == 18) {
-        compositionCohortDefinition.setName("(B1 and B4)  and NOT (B5 or E or F)");
+        compositionCohortDefinition.setName(
+            "# de MG na 1ª linha de TARV com registo de resultado de CV >50");
       }
     } else {
       if (line == 3) {
         compositionCohortDefinition.setName(
-            "(B1 AND B2 AND H)  AND NOT (B4 or B5 or E or F) and Age >= 15*");
+            "# de Adultos (15/+anos) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV ≥1000 cps/ml");
       } else if (line == 12) {
         compositionCohortDefinition.setName(
-            "(B1 AND B2 AND H)  and NOT (B4 or B5 or E or F) and Age > 2 and Age < 14*");
+            "# de crianças (>2 anos de idade) na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV ≥1000");
       } else if (line == 18) {
-        compositionCohortDefinition.setName("(B1 AND B4 AND H)  and NOT (B5 or E or F)");
+        compositionCohortDefinition.setName(
+            "# de MG na 1ª linha de TARV com registo de pedido de CV entre o 3º e o 4º mês após terem recebido o último resultado de CV >50");
       }
     }
     compositionCohortDefinition.addParameter(new Parameter("startDate", "startDate", Date.class));
@@ -5661,7 +5654,9 @@ public class QualityImprovement2020CohortQueries {
         new Parameter("revisionEndDate", "revisionEndDate", Date.class));
     compositionCohortDefinition.addParameter(new Parameter("location", "location", Location.class));
 
-    CohortDefinition adults = this.ageCohortQueries.createXtoYAgeCohort("adullts", 2, 14);
+    CohortDefinition children = this.ageCohortQueries.createXtoYAgeCohort("children", 2, 14);
+
+    CohortDefinition adult = this.ageCohortQueries.createXtoYAgeCohort("adult", 15, 200);
 
     CohortDefinition patientsFromFichaClinicaLinhaTerapeutica =
         getPatientsFromFichaClinicaWithLastTherapeuticLineSetAsFirstLine_B1();
@@ -5682,6 +5677,22 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getYesConcept().getConceptId(),
             commonMetadata.getBreastfeeding().getConceptId());
 
+    CohortDefinition pregnantWithCargaViralHigherThan50 =
+        QualityImprovement2020Queries.getMQ13DenB4_P4(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            commonMetadata.getPregnantConcept().getConceptId(),
+            50);
+
+    CohortDefinition breastfeedingWithCargaViralHigherThan50 =
+        QualityImprovement2020Queries.getMQ13DenB5_P4(
+            hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
+            hivMetadata.getHivViralLoadConcept().getConceptId(),
+            hivMetadata.getYesConcept().getConceptId(),
+            commonMetadata.getBreastfeeding().getConceptId(),
+            50);
+
     CohortDefinition transferredIn =
         QualityImprovement2020Queries.getTransferredInPatients(
             hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
@@ -5690,11 +5701,14 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
             hivMetadata.getArtStatus().getConceptId());
 
-    CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
+    CohortDefinition transferOut = getTranferredOutPatients();
 
     CohortDefinition H = getMQ13P4H();
+
     compositionCohortDefinition.addSearch(
-        "adults", EptsReportUtils.map(adults, "effectiveDate=${revisionEndDate}"));
+        "children", EptsReportUtils.map(children, "effectiveDate=${revisionEndDate}"));
+    compositionCohortDefinition.addSearch(
+        "adult", EptsReportUtils.map(adult, "effectiveDate=${revisionEndDate}"));
     compositionCohortDefinition.addSearch(
         "B1", EptsReportUtils.map(patientsFromFichaClinicaLinhaTerapeutica, MAPPING1));
 
@@ -5713,26 +5727,33 @@ public class QualityImprovement2020CohortQueries {
 
     compositionCohortDefinition.addSearch("H", EptsReportUtils.map(H, MAPPING));
 
+    compositionCohortDefinition.addSearch(
+        "B4CV50", EptsReportUtils.map(pregnantWithCargaViralHigherThan50, MAPPING1));
+
+    compositionCohortDefinition.addSearch(
+        "B5CV50", EptsReportUtils.map(breastfeedingWithCargaViralHigherThan50, MAPPING1));
+
     if (den) {
       if (line == 3) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND B2) AND NOT (B4 or B5 or E or F)");
+            "((B1 AND B2) AND NOT (B4 or B5 or E or F)) AND adult");
       } else if (line == 12) {
         compositionCohortDefinition.setCompositionString(
-            "((B1 AND B2) AND NOT (B4 or B5 or E or F)) AND adults");
+            "((B1 AND B2) AND NOT (B4 or B5 or E or F)) AND children");
       } else if (line == 18) {
-        compositionCohortDefinition.setCompositionString("(B1 AND B4) AND NOT (B5 or E or F)");
+        compositionCohortDefinition.setCompositionString(
+            "(B1 AND B4CV50) AND NOT (B5CV50 or E or F)");
       }
     } else {
       if (line == 3) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND B2 AND H) AND NOT (B4 or B5 or E or F)");
+            "((B1 AND B2 AND H) AND NOT (B4 or B5 or E or F)) AND adult");
       } else if (line == 12) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND B2 AND H) AND NOT (B4 or B5 or E or F)");
+            "((B1 AND B2 AND H) AND NOT (B4 or B5 or E or F)) AND children ");
       } else if (line == 18) {
         compositionCohortDefinition.setCompositionString(
-            "(B1 AND B4 AND H) AND NOT (B5 or E or F)");
+            "(B1 AND B4CV50 AND H) AND NOT (B5CV50 or E or F)");
       }
     }
     return compositionCohortDefinition;
@@ -5876,11 +5897,9 @@ public class QualityImprovement2020CohortQueries {
   }
 
   /**
-   * (B4=J from Numerator) - Select all patients with clinical consultation (encounter type 6) with
-   * concept “PEDIDO DE INVESTIGACOES LABORATORIAIS” (Concept Id 23722) and value coded “HIV CARGA
-   * VIRAL” (Concept Id 856) on the first occurrence of concept “GESTANTE” (Concept Id 1982) and
-   * value coded “SIM” ( Concept Id 1065) encounter_datetime during the inclusion period
-   * (encounter_datetime from B2)
+   * filtrando os utentes que têm o registo de “Pedido de Investigações Laboratoriais” igual a
+   * “Carga Viral” na primeira consulta clínica com registo de grávida durante o período de inclusão
+   * (“Data 1ª Consulta Grávida”).
    *
    * @return CohortDefinition
    */
@@ -5902,40 +5921,44 @@ public class QualityImprovement2020CohortQueries {
     StringSubstitutor sb = new StringSubstitutor(map);
 
     String query =
-        " SELECT p.patient_id "
-            + " FROM patient p "
-            + " INNER JOIN ( "
-            + "             SELECT p.patient_id, MIN(e.encounter_datetime) AS first_gestante "
-            + "             FROM patient p  "
-            + "             INNER JOIN encounter e ON e.patient_id = p.patient_id  "
-            + "             INNER JOIN obs o ON e.encounter_id = o.encounter_id  "
-            + "             WHERE   p.voided = 0  "
-            + "                     AND e.voided = 0  "
-            + "                     AND o.voided = 0  "
-            + "                     AND e.encounter_type = ${6}   "
-            + "                     AND o.concept_id = ${1982}   "
-            + "                     AND o.value_coded = ${1065}   "
-            + "                     AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
-            + "                     AND e.location_id = :location   "
-            + "             GROUP BY p.patient_id "
-            + "           ) AS gestante ON gestante.patient_id = p.patient_id "
-            + " INNER JOIN ( "
-            + "             SELECT p.patient_id, e.encounter_datetime as carga_viral "
-            + "             FROM patient p "
-            + "             INNER JOIN encounter e ON p.patient_id = e.patient_id "
-            + "             INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "             WHERE  p.voided = 0  "
-            + "                    AND e.voided = 0  "
-            + "                    AND o.voided = 0 "
-            + "                    AND e.encounter_type = ${6}   "
-            + "                    AND o.concept_id = ${23722}  "
-            + "                    AND o.value_coded = ${856} "
-            + "                    AND e.encounter_datetime BETWEEN :startDate AND :endDate  "
-            + "                    AND e.location_id = :location  "
-            + "             GROUP  BY p.patient_id   "
-            + "           ) AS lab ON lab.patient_id = p.patient_id "
-            + " WHERE p.voided = 0 "
-            + "       AND gestante.first_gestante = lab.carga_viral";
+        "SELECT     p.patient_id "
+            + "FROM       patient p "
+            + "INNER JOIN encounter e "
+            + "ON         p.patient_id = e.patient_id "
+            + "INNER JOIN obs o "
+            + "ON         e.encounter_id = o.encounter_id "
+            + "INNER JOIN "
+            + "           ( "
+            + "                  SELECT pregnant.patient_id, "
+            + "                         pregnant.first_gestante "
+            + "                  FROM   ( "
+            + "                                    SELECT     p.patient_id, "
+            + "                                               Min(e.encounter_datetime) AS first_gestante "
+            + "                                    FROM       patient p "
+            + "                                    INNER JOIN encounter e "
+            + "                                    ON         e.patient_id = p.patient_id "
+            + "                                    INNER JOIN obs o "
+            + "                                    ON         e.encounter_id = o.encounter_id "
+            + "                                    WHERE      p.voided = 0 "
+            + "                                    AND        e.voided = 0 "
+            + "                                    AND        o.voided = 0 "
+            + "                                    AND        e.encounter_type = ${6} "
+            + "                                    AND        o.concept_id = ${1982} "
+            + "                                    AND        o.value_coded = ${1065} "
+            + "                                    AND        e.encounter_datetime <= :endDate "
+            + "                                    AND        e.location_id = :location "
+            + "                                    GROUP BY   p.patient_id ) pregnant "
+            + "                  WHERE  pregnant.first_gestante BETWEEN :startDate AND    :endDate ) pregnancy "
+            + "ON         pregnancy.patient_id = p.patient_id "
+            + "WHERE      p.voided = 0 "
+            + "AND        e.voided = 0 "
+            + "AND        o.voided = 0 "
+            + "AND        e.encounter_type = ${6} "
+            + "AND        o.concept_id = ${23722} "
+            + "AND        o.value_coded = ${856} "
+            + "AND        e.encounter_datetime = pregnancy.first_gestante "
+            + "AND        e.location_id = :location "
+            + "GROUP BY   p.patient_id";
 
     cd.setQuery(sb.replace(query));
     return cd;
@@ -5990,7 +6013,6 @@ public class QualityImprovement2020CohortQueries {
 
     cd.addSearch("A", EptsReportUtils.map(startedART, MAPPING));
     cd.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
-    cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
     cd.addSearch(
         "E",
         EptsReportUtils.map(
@@ -6000,7 +6022,7 @@ public class QualityImprovement2020CohortQueries {
 
     cd.addSearch("ABANDONED", EptsReportUtils.map(pregnantAbandonedDuringPeriod, MAPPING));
 
-    cd.setCompositionString("((A AND NOT ABANDONED) AND C) AND NOT (D OR E OR F)");
+    cd.setCompositionString("((A AND NOT ABANDONED) AND C) AND NOT (E OR F)");
 
     return cd;
   }
@@ -6022,7 +6044,11 @@ public class QualityImprovement2020CohortQueries {
 
     cd.addSearch("B2", EptsReportUtils.map(getMQC13P2DenB2(), MAPPING));
 
-    cd.setCompositionString("B2");
+    CohortDefinition pregnantAbandonedDuringPeriod =
+        getPatientsWhoAbandonedTarvBetween3MonthsBeforePregnancyDate();
+    cd.addSearch("ABANDONED", EptsReportUtils.map(pregnantAbandonedDuringPeriod, MAPPING));
+
+    cd.setCompositionString("B2 AND NOT ABANDONED");
 
     return cd;
   }
@@ -6637,7 +6663,6 @@ public class QualityImprovement2020CohortQueries {
 
     cd.addSearch("A", EptsReportUtils.map(getMOHArtStartDate(), MAPPING));
     cd.addSearch("C", EptsReportUtils.map(pregnant, MAPPING));
-    cd.addSearch("D", EptsReportUtils.map(breastfeeding, MAPPING));
     cd.addSearch(
         "E",
         EptsReportUtils.map(
@@ -6648,7 +6673,7 @@ public class QualityImprovement2020CohortQueries {
 
     cd.addSearch("ABANDONED", EptsReportUtils.map(pregnantAbandonedDuringPeriod, MAPPING));
 
-    cd.setCompositionString("((A AND NOT ABANDONED)AND C AND H) AND NOT (D OR E OR F)");
+    cd.setCompositionString("((A AND NOT ABANDONED)AND C AND H) AND NOT (E OR F)");
     return cd;
   }
 
@@ -10090,6 +10115,78 @@ public class QualityImprovement2020CohortQueries {
             hivMetadata.getStateOfStayOfArtPatient().getConceptId(),
             hivMetadata.getAbandonedConcept().getConceptId(),
             hivMetadata.getStateOfStayOfPreArtPatient().getConceptId()));
+
+    return cd;
+  }
+
+  /**
+   * <b> RF7.2 EXCLUSION FOR PREGNANT PATIENTS WHO ABANDONED DURING ART START DATE PERIOD</b>
+   *
+   * <p>Excepto as utentes abandono em TARV durante o período (seguindo os critérios
+   * definidosBetween 1st clina no RF7.2) nos últimos 3 meses (entre “Data 1ª Consulta Grávida” – 3
+   * meses e “Data 1ª Consulta Grávida”).<br>
+   * <br>
+   *
+   * <p>Nota 1: “Data 1ª Consulta Grávida” deve ser a primeira consulta de sempre com registo de
+   * grávida e essa consulta deve ter ocorrido no período de inclusão. <br>
+   *
+   * @return CohortDefinition
+   */
+  public CohortDefinition getPatientsWhoAbandonedTarvBetween3MonthsBeforePregnancyDate() {
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("All patients who abandoned TARV on Art Start Date For Pregnants");
+    cd.addParameter(new Parameter("startDate", "startDate", Date.class));
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("6273", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
+    map.put("1707", hivMetadata.getAbandonedConcept().getConceptId());
+    map.put("6272", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
+    map.put("1190", hivMetadata.getARVStartDateConcept().getConceptId());
+    map.put("1065", hivMetadata.getPatientFoundYesConcept().getConceptId());
+    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
+    map.put("23722", hivMetadata.getApplicationForLaboratoryResearch().getConceptId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+
+    String a =
+        "SELECT abandoned.patient_id from (  "
+            + "                                                               SELECT p.patient_id, max(e.encounter_datetime) as last_encounter FROM patient p  "
+            + "                                                                                                                                         INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "                                                                                                                                         INNER JOIN obs o on e.encounter_id = o.encounter_id  "
+            + "                                                                                                                                         INNER JOIN (  "
+            + QualityImprovement2020Queries.getPregnancyDuringPeriod()
+            + "                                                               ) end_period ON end_period.patient_id = p.patient_id  "
+            + "                                                               WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0  "
+            + "                                                                 AND e.encounter_type = ${6}  "
+            + "                                                                 AND o.concept_id = ${6273}  "
+            + "                                                                 AND o.value_coded = ${1707}  "
+            + "                                                                 AND e.location_id = :location  "
+            + "                                                                 AND e.encounter_datetime > DATE_SUB(end_period.first_gestante, INTERVAL 3 MONTH)  "
+            + "                                                                 AND e.encounter_datetime <= end_period.first_gestante  "
+            + "                                                               GROUP BY p.patient_id  "
+            + "                                                               UNION  "
+            + "                                                               SELECT p.patient_id, max(o.obs_datetime) as last_encounter FROM patient p  "
+            + "                                                                                                                                   INNER JOIN encounter e ON e.patient_id = p.patient_id  "
+            + "                                                                                                                                   INNER JOIN obs o on e.encounter_id = o.encounter_id  "
+            + "                                                                                                                                   INNER JOIN (  "
+            + QualityImprovement2020Queries.getPregnancyDuringPeriod()
+            + "                                                               ) end_period ON end_period.patient_id = p.patient_id  "
+            + "                                                               WHERE p.voided = 0 AND e.voided = 0 AND o.voided = 0  "
+            + "                                                                 AND e.encounter_type = ${53}  "
+            + "                                                                 AND o.concept_id = ${6272}  "
+            + "                                                                 AND o.value_coded = ${1707}  "
+            + "                                                                 AND e.location_id = :location  "
+            + "                                                                 AND e.encounter_datetime > DATE_SUB(end_period.first_gestante, INTERVAL 3 MONTH)  "
+            + "                                                                 AND e.encounter_datetime <= end_period.first_gestante  "
+            + "                                                               GROUP BY p.patient_id  "
+            + "                                                           ) abandoned GROUP BY abandoned.patient_id";
+
+    StringSubstitutor sb = new StringSubstitutor(map);
+    cd.setQuery(sb.replace(a));
 
     return cd;
   }

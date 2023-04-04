@@ -1364,29 +1364,27 @@ public class QualityImprovement2020Queries {
   }
 
   /**
-   * <b> O sistema irá identificar utentes que abandonaram o tratamento TARV durante o período da
-   * seguinte forma: </b>
+   * <b> O sistema irá identificar utentes que abandonaram o tratamento TARV durante o período de
+   * revisão seguinte forma: </b>
    *
    * <blockquote>
    *
-   * <p>incluindo os utentes com Último registo de “Mudança de Estado de Permanência” = “Abandono”
-   * na Ficha Clínica durante o período (“Data Consulta”>=”Data Início Período” e “Data
-   * Consulta”<=”Data Fim Período”
+   * <p>incluindo os utentes com registo de “Mudança de Estado de Permanência” = “Abandono” na Ficha
+   * Clínica nos 6 meses anteriores a data a última consulta. (“Data Consulta Abandono” >= “Data
+   * Última Consulta” menos 6 meses e <= “Data última Consulta”).
    *
    * <blockquote>
    *
-   * <p>incluindo os utentes com Último registo de “Mudança de Estado de Permanência” = “Abandono”
-   * na Ficha Resumo durante o período (“Data de Mudança de Estado Permanência”>=”Data Início
-   * Período” e “Data Consulta”<=”Data Fim Período”
+   * <p>Nota MISAU: Data da última consulta recuar 6 meses [data última consulta menos (-) 6 meses]
    *
-   * <p>Nota: O período é definido conforme o requisito onde os utentes abandonos em TARV no fim do
-   * período serão excluídos:
-   * <li>1. para exclusão nos utentes que iniciaram a 1ª linha de TARV, a “Data Início Período” será
-   *     igual a “Data Início TARV” e “Data Fim do Período” será igual a “Data Início TARV”+6meses.
+   * <blockquote>
    *
-   *     <p>Patient ART Start Date is the oldest date from the set of criterias defined in the
-   *     common query: 1/1 Patients who initiated ART and ART Start Date as earliest from the
-   *     following criterias is by End of the period (reporting endDate)
+   * <p>incluindo os utentes com registo de “Mudança de Estado de Permanência” = “Abandono” na Ficha
+   * Resumo durante o período (“Data de Mudança de Estado Permanência Abandono” (“Data Consulta
+   * Abandono” >= “Data Última Consulta” menos 6 meses e <= “Data última Consulta”)
+   *
+   * <p>Nota: “Data Última Consulta” é a data da última consulta clínica ocorrida durante o período
+   * de revisão.
    *
    * @param adultoSeguimentoEncounterType The Adulto Seguimento Encounter Type 6
    * @param masterCardEncounterType The Ficha Resumo Encounter Type 53
@@ -1426,7 +1424,8 @@ public class QualityImprovement2020Queries {
             + "                                       AND o.value_coded = ${1707} "
             + "                                       AND e.location_id = :location "
             + "       AND e.encounter_datetime >= end_period.first_pickup "
-            + "                                       AND e.encounter_datetime <= DATE_ADD(end_period.first_pickup, INTERVAL 6 MONTH) "
+            + "                                       AND e.encounter_datetime >= DATE_SUB(end_period.first_pickup, INTERVAL 6 MONTH) "
+            + "                                       AND e.encounter_datetime <= end_period.first_pickup "
             + "                                     GROUP BY p.patient_id "
             + "UNION "
             + "     SELECT p.patient_id, max(o.obs_datetime) as last_encounter FROM patient p "
@@ -1441,7 +1440,8 @@ public class QualityImprovement2020Queries {
             + "                                       AND o.value_coded = ${1707} "
             + "                                       AND e.location_id = :location "
             + "       AND o.obs_datetime >= end_period.first_pickup "
-            + "                                       AND o.obs_datetime <= DATE_ADD(end_period.first_pickup, INTERVAL 6 MONTH)"
+            + "                                       AND o.obs_datetime >= DATE_SUB(end_period.first_pickup, INTERVAL 6 MONTH) "
+            + "                                       AND o.obs_datetime <= end_period.first_pickup "
             + "                                     GROUP BY p.patient_id "
             + "                                 ) abandoned GROUP BY abandoned.patient_id";
 
@@ -2324,6 +2324,38 @@ public class QualityImprovement2020Queries {
         + "              AND o.voided = 0) arv_start_date ON arv_start_date.patient_id = pa.patient_id "
         + "          AND DATE(arv_start_date.arv_date) <= DATE_SUB(last_clinical.last_visit, INTERVAL 6 MONTH) "
         + " GROUP BY pa.patient_id ";
+  }
+
+  public static String getPregnancyDuringPeriod() {
+    return "       SELECT patient_id, first_gestante "
+        + " FROM ("
+        + "         SELECT p.patient_id, MIN(e.encounter_datetime) AS first_gestante "
+        + "         FROM  patient p "
+        + "               INNER JOIN person per on p.patient_id=per.person_id "
+        + "               INNER JOIN encounter e ON e.patient_id = p.patient_id "
+        + "               INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+        + "               INNER JOIN obs o2 ON e.encounter_id = o2.encounter_id "
+        + "         WHERE p.voided = 0 "
+        + "           AND per.voided=0 AND per.gender = 'F' "
+        + "           AND e.voided = 0 AND o.voided  = 0 "
+        + "           AND o2.voided  = 0 "
+        + "           AND e.encounter_type = ${6} "
+        + "           AND o.concept_id = ${1982} "
+        + "           AND o.value_coded = ${1065} "
+        + "           AND o2.concept_id = ${23722} "
+        + "           AND o2.value_coded = ${856} "
+        + "           AND e.location_id = :location "
+        + "         GROUP BY p.patient_id) gest  "
+        + " WHERE gest.first_gestante >= :startDate "
+        + "   AND gest.first_gestante <= :endDate "
+        + "   AND gest.first_gestante > DATE_ADD((SELECT MIN(o.value_datetime) as art_date "
+        + "                                       FROM encounter e "
+        + "                                           INNER JOIN obs o ON e.encounter_id = o.encounter_id "
+        + "                                       WHERE gest.patient_id = e.patient_id "
+        + "                                         AND e.voided = 0 AND o.voided = 0 "
+        + "                                         AND e.encounter_type = ${53} AND o.concept_id = ${1190} "
+        + "                                         AND o.value_datetime IS NOT NULL AND o.value_datetime <= :endDate AND e.location_id = :location "
+        + "                                       LIMIT 1), interval 3 MONTH) ";
   }
 
   public static SqlCohortDefinition getDisclosureOfHIVDiagnosisToChildrenAdolescents() {
