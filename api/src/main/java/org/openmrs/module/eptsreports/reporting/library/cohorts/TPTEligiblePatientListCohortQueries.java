@@ -1404,7 +1404,7 @@ public class TPTEligiblePatientListCohortQueries {
             + " ) AS tabela "
             + "                       ON tabela.patient_id = p.patient_id "
             + "                       WHERE e.location_id= :location AND e.encounter_type IN (${6}, ${9}, ${53}) AND e.voided=0 AND o.voided=0    "
-            + "                       GROUP BY p.patient_id) result   "
+            + "                       ) result   "
             + "            WHERE  "
             + "                 ( ( "
             + "                   SELECT     Count(ee.patient_id) "
