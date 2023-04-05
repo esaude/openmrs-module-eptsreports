@@ -63,7 +63,7 @@ public class TxPvlsBySourceQueries {
             + " e.encounter_datetime BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
             + " e.location_id=:location GROUP BY p.patient_id "
             + ") ultima_carga "
-            + " INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND obs.obs_datetime=ultima_carga.data_carga "
+            + " INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND DATE(obs.obs_datetime) = DATE(ultima_carga.data_carga) "
             + " WHERE obs.voided=0 AND obs.concept_id IN (${856}, ${1305}) "
             + " AND obs.location_id=:location AND ((obs.value_numeric IS NOT NULL AND obs.value_numeric < 1000) OR obs.value_coded IS NOT NULL) ";
 
