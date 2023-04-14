@@ -51,11 +51,11 @@ public class ViralLoadQueries {
 
     String query =
         "SELECT fn1.patient_id FROM( "
-            + " SELECT  patient_id, MAX(data_carga) AS data_carga FROM( "
+            + " SELECT  patient_id, DATE(MAX(data_carga)) AS data_carga FROM( "
             + " SELECT patient_id,data_carga FROM "
-            + " (SELECT carga.patient_id, MAX(carga.data_carga) data_carga "
+            + " (SELECT carga.patient_id, DATE(MAX(carga.data_carga)) data_carga "
             + " FROM "
-            + " (SELECT p.patient_id, MAX(o.obs_datetime) data_carga "
+            + " (SELECT p.patient_id, DATE(MAX(o.obs_datetime)) data_carga "
             + " FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + " INNER JOIN obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided=0 "
@@ -67,7 +67,7 @@ public class ViralLoadQueries {
             + " AND DATE(e.encounter_datetime) BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
             + " e.location_id=:location GROUP BY p.patient_id "
             + " UNION "
-            + "SELECT p.patient_id, MAX(o.obs_datetime) data_carga "
+            + "SELECT p.patient_id, DATE(MAX(o.obs_datetime)) data_carga "
             + " FROM patient p INNER JOIN encounter e ON p.patient_id=e.patient_id "
             + " INNER JOIN obs o ON e.encounter_id=o.encounter_id "
             + " WHERE p.voided=0 "
@@ -79,7 +79,7 @@ public class ViralLoadQueries {
             + " AND DATE(o.obs_datetime) BETWEEN date_add(date_add(:endDate, interval -12 MONTH), interval 1 day) AND :endDate AND "
             + " e.location_id=:location GROUP BY p.patient_id "
             + ") carga GROUP BY carga.patient_id ) ultima_carga "
-            + " INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND obs.obs_datetime= "
+            + " INNER JOIN obs ON obs.person_id=ultima_carga.patient_id AND DATE(obs.obs_datetime) = "
             + " ultima_carga.data_carga  "
             + " WHERE obs.voided=0 AND obs.concept_id IN (${856}, ${1305}) "
             + " AND obs.location_id=:location AND (obs.value_numeric IS NOT NULL OR obs.value_coded IS NOT NULL) "
@@ -94,10 +94,12 @@ public class ViralLoadQueries {
             + " comb.data_carga  WHERE obs.voided=0 AND obs.concept_id IN (${856}) "
             + " AND obs.location_id=:location AND "
             + " (obs.value_numeric IS NOT NULL OR obs.value_coded IS NOT NULL) GROUP BY patient_id)fn GROUP BY patient_id)fn1 "
-            + " INNER JOIN obs os ON os.person_id=fn1.patient_id WHERE fn1.data_carga=os.obs_datetime AND os.concept_id IN(${856}, ${1305}) "
+            + " INNER JOIN obs os ON os.person_id=fn1.patient_id WHERE fn1.data_carga=DATE(os.obs_datetime) AND os.concept_id IN(${856}, ${1305}) "
             + " AND (os.value_numeric < 1000 OR os.value_coded IS NOT NULL) AND os.location_id=:location AND voided=0 ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
+
+    System.out.println(sb.replace(query));
     return sb.replace(query);
   }
 

@@ -5,6 +5,8 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.joda.time.LocalDate;
 import org.openmrs.EncounterType;
 import org.openmrs.api.context.Context;
 import org.openmrs.calculation.patient.PatientCalculationContext;
@@ -64,8 +66,15 @@ public class BreastfeedingPregnantCalculation4MQ extends AbstractPatientCalculat
     for (Integer ptId : cohort) {
 
       boolean isCandidate = false;
-      Date pregnancyDate = (Date) pregnantDateMap.get(ptId).getValue();
-      Date breastfeedingDate = (Date) breastfeedingDateMap.get(ptId).getValue();
+      Date pregnancyDate = null;
+      if (pregnantDateMap.get(ptId) != null && pregnantDateMap.get(ptId).getValue() != null) {
+        pregnancyDate = new LocalDate(pregnantDateMap.get(ptId).getValue()).toDate();
+      }
+      Date breastfeedingDate = null;
+      if (breastfeedingDateMap.get(ptId) != null
+              && breastfeedingDateMap.get(ptId).getValue() != null) {
+        breastfeedingDate = new LocalDate(breastfeedingDateMap.get(ptId).getValue()).toDate();
+      }
       if (state.equals(PregnantOrBreastfeedingWomen.PREGNANTWOMEN)
           && pregnancyDate != null
           && femaleCohort.contains(ptId)
