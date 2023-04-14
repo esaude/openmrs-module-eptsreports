@@ -104,7 +104,7 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
                 Arrays.asList(
                     hivMetadata.getMisauLaboratorioEncounterType(),
                     hivMetadata.getFsrEncounterType())),
-            "onOrBefore=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     cd.setCompositionString("supp AND onArtLongEnough");
     return cd;
   }
@@ -138,7 +138,7 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
                 Arrays.asList(
                     hivMetadata.getMisauLaboratorioEncounterType(),
                     hivMetadata.getFsrEncounterType())),
-            "onOrBefore=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     cd.setCompositionString("results AND onArtLongEnough");
     return cd;
   }
@@ -298,7 +298,7 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
                 Arrays.asList(
                     hivMetadata.getMisauLaboratorioEncounterType(),
                     hivMetadata.getFsrEncounterType())),
-            "onOrBefore=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     cd.addSearch("RoutineByLab", EptsReportUtils.map(getRoutineByLab(), mappings));
     cd.addSearch("RoutineByFsr", EptsReportUtils.map(getRoutineByFsr(), mappings));
     cd.setCompositionString("(results AND onArtLongEnough) AND (RoutineByLab OR RoutineByFsr)");
@@ -377,7 +377,7 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
                 Arrays.asList(
                     hivMetadata.getMisauLaboratorioEncounterType(),
                     hivMetadata.getFsrEncounterType())),
-            "onOrBefore=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     cd.addSearch(
         "target",
         EptsReportUtils.map(
@@ -438,7 +438,7 @@ public class TxPvlsBySourceLabOrFsrCohortQueries {
                 Arrays.asList(
                     hivMetadata.getMisauLaboratorioEncounterType(),
                     hivMetadata.getFsrEncounterType())),
-            "onOrBefore=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "target",

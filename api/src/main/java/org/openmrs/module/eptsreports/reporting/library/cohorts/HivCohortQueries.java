@@ -28,11 +28,9 @@ import static org.openmrs.module.eptsreports.reporting.calculation.generic.Targe
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.TargetGroupCalculation.TargetGroup.SERODISCORDANT;
 import static org.openmrs.module.eptsreports.reporting.calculation.generic.TargetGroupCalculation.TargetGroup.TRUCK_DRIVER;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import org.apache.commons.text.StringSubstitutor;
+import org.openmrs.EncounterType;
 import org.openmrs.Location;
 import org.openmrs.Program;
 import org.openmrs.ProgramWorkflowState;
@@ -43,6 +41,7 @@ import org.openmrs.module.eptsreports.reporting.calculation.generic.TargetGroupC
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
 import org.openmrs.module.eptsreports.reporting.library.queries.ResumoMensalQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
+import org.openmrs.module.eptsreports.reporting.utils.EptsQueriesUtil;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.cohort.definition.CohortDefinition;
 import org.openmrs.module.reporting.cohort.definition.CompositionCohortDefinition;
@@ -93,7 +92,20 @@ public class HivCohortQueries {
     sql.addParameter(new Parameter("startDate", "Start Date", Date.class));
     sql.addParameter(new Parameter("endDate", "End Date", Date.class));
     sql.addParameter(new Parameter("location", "Location", Location.class));
-    sql.setQuery(ViralLoadQueries.getPatientsHavingViralLoadInLast12Months());
+
+    List<EncounterType> encounters =
+        Arrays.asList(
+            hivMetadata.getMisauLaboratorioEncounterType(),
+            hivMetadata.getAdultoSeguimentoEncounterType(),
+            hivMetadata.getPediatriaSeguimentoEncounterType(),
+            hivMetadata.getMasterCardEncounterType(),
+            hivMetadata.getFsrEncounterType());
+    String vlQuery =
+        new EptsQueriesUtil()
+            .patientIdQueryBuilder(
+                ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(encounters))
+            .getQuery();
+    sql.setQuery(vlQuery);
     return sql;
   }
 

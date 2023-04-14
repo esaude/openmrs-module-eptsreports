@@ -23,8 +23,8 @@ import org.openmrs.api.context.Context;
 import org.openmrs.module.eptsreports.metadata.HivMetadata;
 import org.openmrs.module.eptsreports.reporting.calculation.mq.BreastfeedingPregnantCalculation4MQ;
 import org.openmrs.module.eptsreports.reporting.calculation.pvls.BreastfeedingPregnantCalculation;
-import org.openmrs.module.eptsreports.reporting.calculation.pvls.OnArtForMoreThanXmonthsCalculation;
 import org.openmrs.module.eptsreports.reporting.cohort.definition.CalculationCohortDefinition;
+import org.openmrs.module.eptsreports.reporting.library.queries.CommonQueries;
 import org.openmrs.module.eptsreports.reporting.library.queries.ViralLoadQueries;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportConstants.PregnantOrBreastfeedingWomen;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
@@ -44,10 +44,14 @@ public class TxPvlsCohortQueries {
 
   private HivMetadata hivMetadata;
 
+  private CommonQueries commonQueries;
+
   @Autowired
-  public TxPvlsCohortQueries(HivCohortQueries hivCohortQueries, HivMetadata hivMetadata) {
+  public TxPvlsCohortQueries(
+      HivCohortQueries hivCohortQueries, HivMetadata hivMetadata, CommonQueries commonQueries) {
     this.hivCohortQueries = hivCohortQueries;
     this.hivMetadata = hivMetadata;
+    this.commonQueries = commonQueries;
   }
 
   /**
@@ -58,13 +62,28 @@ public class TxPvlsCohortQueries {
    */
   public CohortDefinition getPatientsWhoAreMoreThan3MonthsOnArt(
       List<EncounterType> encounterTypeList) {
-    CalculationCohortDefinition cd =
-        new CalculationCohortDefinition(
-            "On ART for at least 3 months for pvls",
-            Context.getRegisteredComponents(OnArtForMoreThanXmonthsCalculation.class).get(0));
-    cd.addParameter(new Parameter("onOrBefore", "On or before Date", Date.class));
+
+    SqlCohortDefinition cd = new SqlCohortDefinition();
+    cd.setName("ART for less than 3 months");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
     cd.addParameter(new Parameter("location", "Location", Location.class));
-    cd.addCalculationParameter("listOfEncounters", encounterTypeList);
+
+    String artStart = commonQueries.getARTStartDate(true);
+    String viralLoad = ViralLoadQueries.getPatientsHavingViralLoadInLast12Months(encounterTypeList);
+
+    String query =
+        "SELECT vl.patient_id FROM ( "
+            + "                                   SELECT patient_id, MAX(vl_date) vl_date"
+            + "                                   FROM ( "
+            + viralLoad
+            + "                                        ) viral GROUP BY viral.patient_id"
+            + "                                  ) vl "
+            + "     INNER JOIN ("
+            + artStart
+            + ") art ON art.patient_id = vl.patient_id "
+            + "WHERE TIMESTAMPDIFF(DAY, art.first_pickup, vl.vl_date) >= 90";
+
+    cd.setQuery(query);
     return cd;
   }
 
@@ -161,7 +180,7 @@ public class TxPvlsCohortQueries {
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMasterCardEncounterType(),
                     hivMetadata.getFsrEncounterType())),
-            "onOrBefore=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     cd.setCompositionString("supp AND onArtLongEnough");
     return cd;
   }
@@ -197,7 +216,7 @@ public class TxPvlsCohortQueries {
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMasterCardEncounterType(),
                     hivMetadata.getFsrEncounterType())),
-            "onOrBefore=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     cd.setCompositionString("results AND onArtLongEnough");
     return cd;
   }
@@ -233,7 +252,7 @@ public class TxPvlsCohortQueries {
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMasterCardEncounterType(),
                     hivMetadata.getFsrEncounterType())),
-            "onOrBefore=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     cd.addSearch("Routine", EptsReportUtils.map(getPatientsWhoAreOnRoutine(), mappings));
     cd.setCompositionString("(results AND onArtLongEnough) AND Routine");
     return cd;
@@ -270,7 +289,7 @@ public class TxPvlsCohortQueries {
                     hivMetadata.getPediatriaSeguimentoEncounterType(),
                     hivMetadata.getMasterCardEncounterType(),
                     hivMetadata.getFsrEncounterType())),
-            "onOrBefore=${endDate},location=${location}"));
+            "endDate=${endDate},location=${location}"));
     cd.addSearch("Target", EptsReportUtils.map(getPatientsWhoAreOnTarget(), mappings));
     cd.setCompositionString("(results AND onArtLongEnough) AND Target");
     return cd;
