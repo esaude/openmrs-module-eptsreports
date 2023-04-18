@@ -289,13 +289,15 @@ public class APSSResumoTrimestralCohortQueries {
     cd.addParameter(new Parameter("location", "location", Location.class));
 
     CohortDefinition startedART =
-        this.resumoMensalCohortQueries.getPatientsWhoStartedArtByEndOfPreviousMonthB10();
+        this.resumoMensalCohortQueries
+            .getPatientsWhoInitiatedTarvAtThisFacilityDuringCurrentMonthB1();
     CohortDefinition patientAtAge15OrOlder = genericCohortQueries.getAgeOnReportEndDate(15, null);
     CohortDefinition registeredInFichaAPSSPP = this.getPatientsRegisteredInFichaAPSSPP();
 
     cd.addSearch(
         "startedArt",
-        EptsReportUtils.map(startedART, "startDate=${startDate-3m},location=${location}"));
+        EptsReportUtils.map(
+            startedART, "startDate=${startDate-3m},endDate=${endDate-3m},location=${location}"));
 
     cd.addSearch(
         "patientAtAge15OrOlder",
@@ -1096,7 +1098,6 @@ public class APSSResumoTrimestralCohortQueries {
         "prevencaoPositivaSeguimentoEncounterType",
         hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
     map.put("yesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
-    map.put("noConcept", hivMetadata.getNoConcept().getConceptId());
     map.put("memberShipPlanConcept", hivMetadata.getMemberShipPlanConcept().getConceptId());
     map.put(
         "counseledOnSideEffectsOfArtConcept",
@@ -1144,11 +1145,11 @@ public class APSSResumoTrimestralCohortQueries {
             + "    AND e.voided = 0 "
             + "    AND o.voided = 0 "
             + "    AND e.encounter_type = ${prevencaoPositivaSeguimentoEncounterType} "
-            + "    AND (o.concept_id = ${memberShipPlanConcept} AND o.value_coded IN (${yesConcept},${noConcept}) "
+            + "    AND ((o.concept_id = ${memberShipPlanConcept} AND o.value_coded = ${yesConcept}) "
             + "        OR "
-            + "        o.concept_id = ${counseledOnSideEffectsOfArtConcept} AND o.value_coded IN (${yesConcept},${noConcept}) "
+            + "        (o.concept_id = ${counseledOnSideEffectsOfArtConcept} AND o.value_coded = ${yesConcept}) "
             + "        OR "
-            + "        o.concept_id = ${adherenceEvaluationConcept} AND o.value_coded IN (${goodConcept}, ${arvAdherenceRiskConcept}, ${badConcept}) "
+            + "        (o.concept_id = ${adherenceEvaluationConcept} AND o.value_coded IN (${goodConcept}, ${arvAdherenceRiskConcept}, ${badConcept}) )"
             + "        ) "
             + "    AND encounter_datetime "
             + "        > (SELECT DATE_ADD(min(art_startdate.min_date), INTERVAL 30 DAY) as min_min_date  "
