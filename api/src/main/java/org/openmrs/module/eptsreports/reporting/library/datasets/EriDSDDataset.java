@@ -289,25 +289,6 @@ public class EriDSDDataset extends BaseDataSet {
             mappings),
         "");
     dsd.addColumn(
-        "N2PW",
-        "N2 Pregnant Women",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N2PW",
-                EptsReportUtils.map(eriDSDCohortQueries.getPatientsWhoArePregnant(2), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
-        "N2BW",
-        "N2 Breastfeeding Women",
-        EptsReportUtils.map(
-            eptsGeneralIndicator.getIndicator(
-                "N2BW",
-                EptsReportUtils.map(
-                    eriDSDCohortQueries.getPatientsWhoAreBreastfeeding(2), mappings)),
-            mappings),
-        "");
-    dsd.addColumn(
         "N3PW",
         "N3 Pregnant Women",
         EptsReportUtils.map(
@@ -781,65 +762,103 @@ public class EriDSDDataset extends BaseDataSet {
 
   private List<ColumnParameters> getDisags() {
     return Arrays.asList(
-        // !        new ColumnParameters("Total", "Total", "pregnantBreastfeedingTb=NPNBNTB", "01"),
         new ColumnParameters("Total", "Total", "", "01"),
         new ColumnParameters("Eligible Sub-Total", "Eligible Sub-Total", "eligible=E", "02"),
-        new ColumnParameters(
-            "Eligible Adults",
-            "Eligible Adults",
-            "eligible=E|pregnantBreastfeedingTb=NPNBNTB|age=15+",
-            "03"),
-        new ColumnParameters(
-            "Eligible 2-4",
-            "Eligible 2-4",
-            "eligible=E|pregnantBreastfeedingTb=NPNBNTB|age=2-4",
-            "04"),
-        new ColumnParameters(
-            "Eligible 5-9",
-            "Eligible 5-9",
-            "eligible=E|pregnantBreastfeedingTb=NPNBNTB|age=5-9",
-            "05"),
-        new ColumnParameters(
-            "Eligible 10-14",
-            "Eligible 10-14",
-            "eligible=E|pregnantBreastfeedingTb=NPNBNTB|age=10-14",
-            "06"),
+        new ColumnParameters("Eligible Adults", "Eligible Adults", "eligible=E|age=15+", "03"),
+        new ColumnParameters("Eligible 2-4", "Eligible 2-4", "eligible=E|age=2-4", "04"),
+        new ColumnParameters("Eligible 5-9", "Eligible 5-9", "eligible=E|age=5-9", "05"),
+        new ColumnParameters("Eligible 10-14", "Eligible 10-14", "eligible=E|age=10-14", "06"),
         new ColumnParameters(
             "Not Eligible Sub-Total", "Not Eligible Sub-Total", "eligible=NE", "07"),
         new ColumnParameters(
             "Not Eligible Adults",
             "Not Eligible Adults",
-            "eligible=NE|pregnantBreastfeedingTb=NPNBNTB|age=15+",
+            "eligible=NE|pregnantBreastfeedingTb=NPNB|age=15+",
             "08"),
         new ColumnParameters(
             "Not Eligible <2",
             "Not Eligible <2",
-            "eligible=NE|pregnantBreastfeedingTb=NPNBNTB|age=<2",
+            "eligible=NE|pregnantBreastfeedingTb=NPNB|age=<2",
             "09"),
         new ColumnParameters(
             "Not Eligible 2-4",
             "Not Eligible 2-4",
-            "eligible=NE|pregnantBreastfeedingTb=NPNBNTB|age=2-4",
+            "eligible=NE|pregnantBreastfeedingTb=NPNB|age=2-4",
             "10"),
         new ColumnParameters(
             "Not Eligible 5-9",
             "Not Eligible 5-9",
-            "eligible=NE|pregnantBreastfeedingTb=NPNBNTB|age=5-9",
+            "eligible=NE|pregnantBreastfeedingTb=NPNB|age=5-9",
             "11"),
         new ColumnParameters(
             "Not Eligible 10-14",
             "Not Eligible 10-14",
-            "eligible=NE|pregnantBreastfeedingTb=NPNBNTB|age=10-14",
+            "eligible=NE|pregnantBreastfeedingTb=NPNB|age=10-14",
             "12"),
         new ColumnParameters(
-            "Eligible Adults Breastfeeding",
-            "Eligible Adults Breastfeeding",
-            "eligible=E|pregnantOrBreastFeeding=LACTANTE|age=15+",
+            "Not Eligible Pregnant Women",
+            "Not Eligible Pregnant Women",
+            "eligible=NE|pregnantBreastfeedingTb=P",
+            "15"),
+        new ColumnParameters(
+            "Not Eligible Breastfeeding Women",
+            "Not Eligible Breastfeeding Women",
+            "eligible=NE|pregnantBreastfeedingTb=B",
+            "16"),
+
+        // N9 - N19 disags
+        new ColumnParameters("Adults", "Adults", "pregnantBreastfeedingTb=NPNB|age=15+", "26"),
+        new ColumnParameters("<2", "<2", "pregnantBreastfeedingTb=NPNB|age=<2", "27"),
+        new ColumnParameters("2-4", "2-4", "pregnantBreastfeedingTb=NPNB|age=2-4", "28"),
+        new ColumnParameters("5-9", "5-9", "pregnantBreastfeedingTb=NPNB|age=5-9", "29"),
+        new ColumnParameters("10-14", "10-14", "pregnantBreastfeedingTb=NPNB|age=10-14", "30"),
+        new ColumnParameters("Pregnant Women", "Pregnant Women", "pregnantBreastfeedingTb=P", "31"),
+        new ColumnParameters(
+            "Breastfeeding Women", "Breastfeeding Women", "pregnantBreastfeedingTb=B", "32"),
+
+        // N20 disags
+        new ColumnParameters(
+            "Eligible D4 Sub-Total", "Eligible D4 Sub-Total", "eligible=ED4", "17"),
+        new ColumnParameters(
+            "Eligible D4 Adults", "Eligible D4 Adults", "eligible=ED4|age=15+", "18"),
+        new ColumnParameters(
+            "Eligible D4 Adults", "Eligible D4 Adults", "eligible=ED4|age=<15", "19"),
+        new ColumnParameters(
+            "Not Eligible D4 Sub-Total", "Not Eligible D4 Sub-Total", "eligible=NED4", "20"),
+        new ColumnParameters(
+            "Not Eligible D4 Adults",
+            "Not Eligible D4 Adults",
+            "eligible=NED4|pregnantBreastfeedingTb=NPNB|age=15+",
+            "21"),
+        new ColumnParameters(
+            "Not Eligible D4 <2",
+            "Not Eligible D4 <2",
+            "eligible=NED4|pregnantBreastfeedingTb=NPNB|age=<2",
+            "22"),
+        new ColumnParameters(
+            "Not Eligible D4 2-4",
+            "Not Eligible D4 2-4",
+            "eligible=NED4|pregnantBreastfeedingTb=NPNB|age=2-4",
+            "23"),
+        new ColumnParameters(
+            "Not Eligible D4 5-9",
+            "Not Eligible D4 5-9",
+            "eligible=NED4|pregnantBreastfeedingTb=NPNB|age=5-9",
+            "24"),
+        new ColumnParameters(
+            "Not Eligible D4 10-14",
+            "Not Eligible D4 10-14",
+            "eligible=NED4|pregnantBreastfeedingTb=NPNB|age=10-14",
+            "25"),
+        new ColumnParameters(
+            "Not Eligible D4 Pregnant Women",
+            "Not Eligible D4 Pregnant Women",
+            "eligible=NED4|pregnantBreastfeedingTb=P",
             "13"),
         new ColumnParameters(
-            "Eligible Children Breastfeeding",
-            "Eligible Children Breastfeeding",
-            "eligible=E|pregnantOrBreastFeeding=LACTANTE|age=<15",
+            "Not Eligible D4 Breastfeeding Women",
+            "Not Eligible D4 Breastfeeding Women",
+            "eligible=NED4|pregnantBreastfeedingTb=B",
             "14"));
   }
 }

@@ -33,7 +33,6 @@
 	<concept concept_id="2160" retired="0" datatype_id="4" class_id="11" is_set="0" creator="1" date_created="2010-12-08 09:28:48" changed_by="1" date_changed="2018-10-08 12:48:44" uuid="e1e20e4c-1d5f-11e0-b929-000c29ad1d07" />
 	<concept concept_id="2180" retired="0" datatype_id="6" class_id="7" is_set="0" creator="1" date_created="2010-12-09 10:30:09" uuid="e1e22850-1d5f-11e0-b929-000c29ad1d07" />
 	<concept concept_id="1695" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2008-10-23 15:00:16" changed_by="1" date_changed="2019-01-07 23:01:42" uuid="e1dd5ab4-1d5f-11e0-b929-000c29ad1d07" />
-	<concept concept_id="5497" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2004-08-12 00:00:00" version="0.1" changed_by="1" date_changed="2019-02-14 14:14:14" uuid="e1e68f26-1d5f-11e0-b929-000c29ad1d07" />
 	<concept concept_id="730" retired="0" datatype_id="1" class_id="1" is_set="0" creator="1" date_created="2004-04-08 00:00:00" version="0.1" changed_by="1" date_changed="2019-02-14 14:15:25" uuid="e1d48fba-1d5f-11e0-b929-000c29ad1d07" />
 	<concept concept_id="1844" retired="0" datatype_id="2" class_id="4" is_set="0" creator="1" date_created="2008-11-19 15:43:25" changed_by="1" date_changed="2016-10-31 17:09:41" uuid="e1dec764-1d5f-11e0-b929-000c29ad1d07" />
 	<concept concept_id="6336" retired="0" datatype_id="2" class_id="4" is_set="0" creator="1" date_created="2013-09-13 14:30:16" changed_by="1" date_changed="2013-09-13 14:30:16" uuid="0b1a2c8c-55d2-42a8-a3d6-62828f52d49a" />
@@ -534,7 +533,7 @@
 	<global_property property="eptsreports.busca" property_value="e1e20e4c-1d5f-11e0-b929-000c29ad1d07" description="UUID for the BUSCA concept" uuid="a33481e3-2e21-4dc6-869f-caf8ee45cb0b" />
 	<global_property property="eptsreports.cardDeliveryDate" property_value="e1e22850-1d5f-11e0-b929-000c29ad1d07" description="UUID for the DELIVERY DATE OF THE CARD HOME VISIT THE HEALTH UNIT concept" uuid="263c5451-27ab-4869-9fbc-2575e3afb229" />
 	<global_property property="eptsreports.cd4AbsoluteOBSUuid" property_value="e1dd5ab4-1d5f-11e0-b929-000c29ad1d07" description="UUID for the  CD4 ABSOLUTE OBS concept" uuid="bf95638a-3d78-4343-8d0e-ef6905cfe9b3" />
-	<global_property property="eptsreports.cd4AbsolutoUuid" property_value="e1e68f26-1d5f-11e0-b929-000c29ad1d07" description="UUID for the  CD4 ABSOLUTO   concept" uuid="a57101f1-c8aa-4fad-b445-a3b1c00c35a0" />
+
 	<global_property property="eptsreports.cd4CountConceptUuid" property_value="e1e68f26-1d5f-11e0-b929-000c29ad1d07" description="UUID for the WHO STAGE 1 ADULT concept" uuid="44735a36-9bb6-4e58-a7e1-bce0faf1b686" />
 	<global_property property="eptsreports.cd4PercentUuid" property_value="e1d48fba-1d5f-11e0-b929-000c29ad1d07" description="UUID for the CD4% concept" uuid="84b3af29-88d2-4033-a35f-e863d0a4640b" />
 	<global_property property="eptsreports.chronicMalnutritionConceptUuid" property_value="e1dec764-1d5f-11e0-b929-000c29ad1d07" description="UUID for the CHRONIC MALNUTRITION concept" uuid="1766cd88-fabc-48e0-aefa-43d34500e3f9" />

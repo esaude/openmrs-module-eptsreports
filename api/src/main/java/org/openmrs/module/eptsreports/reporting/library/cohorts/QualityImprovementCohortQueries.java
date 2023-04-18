@@ -1370,7 +1370,6 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId(),
             hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId(),
-            hivMetadata.getCD4AbsoluteConcept().getConceptId(),
             hivMetadata.getCD4AbsoluteOBSConcept().getConceptId(),
             hivMetadata.getHivViralLoadConcept().getConceptId()));
     return sqlCohortDefinition;
@@ -2217,7 +2216,7 @@ public class QualityImprovementCohortQueries {
             hivMetadata.getARVPlanConcept().getConceptId(),
             hivMetadata.getStartDrugsConcept().getConceptId(),
             hivMetadata.getARVStartDateConcept().getConceptId(),
-            hivMetadata.getCD4AbsoluteConcept().getConceptId(),
+            hivMetadata.getCD4AbsoluteOBSConcept().getConceptId(),
             hivMetadata.getARTProgram().getProgramId()));
 
     return sqlCohortDefinition;

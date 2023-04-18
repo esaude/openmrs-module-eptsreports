@@ -149,7 +149,7 @@ public class EptsCommonDimension {
         ageDimensionCohort.createXtoYAgeCohort("patients with age between 5 and 9", 5, 9));
     dim.addCohortDefinition(
         DimensionKeyForAge.bellow10Years.getKey(),
-        ageDimensionCohort.createXtoYAgeCohort("patients with age below 15", null, 9));
+        ageDimensionCohort.createXtoYAgeCohort("patients with age below 10", null, 9));
     dim.addCohortDefinition(
         DimensionKeyForAge.bellow15Years.getKey(),
         ageDimensionCohort.createXtoYAgeCohort("patients with age below 15", null, 14));
@@ -461,10 +461,14 @@ public class EptsCommonDimension {
     dim.addParameter(new Parameter("endDate", "End Date", Date.class));
     dim.addParameter(new Parameter("location", "Location", Location.class));
     CohortDefinition eligible = eriDSDCohortQueries.getD1();
+    CohortDefinition eligibleD4 = eriDSDCohortQueries.getD4();
     CohortDefinition notEligible = eriDSDCohortQueries.getD2();
+    CohortDefinition notEligibleD4 = eriDSDCohortQueries.getD3NotD4();
 
     dim.addCohortDefinition("E", mapStraightThrough(eligible));
+    dim.addCohortDefinition("ED4", mapStraightThrough(eligibleD4));
     dim.addCohortDefinition("NE", mapStraightThrough(notEligible));
+    dim.addCohortDefinition("NED4", mapStraightThrough(notEligibleD4));
     return dim;
   }
 
@@ -476,8 +480,15 @@ public class EptsCommonDimension {
     dim.addParameter(new Parameter("location", "Location", Location.class));
     CohortDefinition pregnantBreastfeedingTb =
         eriDSDCohortQueries.getPregnantAndBreastfeedingAndOnTBTreatment();
+    CohortDefinition pregnantBreastfeeding = eriDSDCohortQueries.getPregnantAndBreastfeeding();
+    CohortDefinition pregnant = eriDSDCohortQueries.getDSDPregnant();
+    CohortDefinition breastfeeding = eriDSDCohortQueries.getDSDBreastfeeding();
     CohortDefinition inverse = new InverseCohortDefinition(pregnantBreastfeedingTb);
+    CohortDefinition inversePB = new InverseCohortDefinition(pregnantBreastfeeding);
     dim.addCohortDefinition("NPNBNTB", mapStraightThrough(inverse));
+    dim.addCohortDefinition("NPNB", mapStraightThrough(inversePB));
+    dim.addCohortDefinition("P", mapStraightThrough(pregnant));
+    dim.addCohortDefinition("B", mapStraightThrough(breastfeeding));
     return dim;
   }
 

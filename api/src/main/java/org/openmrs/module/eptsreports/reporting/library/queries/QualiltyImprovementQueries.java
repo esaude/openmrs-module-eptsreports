@@ -1465,7 +1465,6 @@ public class QualiltyImprovementQueries {
       int adultoSeguimentoEncounterType,
       int arvPediatriaSeguimentoEncounterType,
       int misauLaboratorioEncounterType,
-      int cd4AbsoluteConcept,
       int cd4AbsoluteOBSConcept,
       int hivViralLoadConcept) {
 
@@ -1483,8 +1482,6 @@ public class QualiltyImprovementQueries {
         + arvPediatriaSeguimentoEncounterType
         + ") and  "
         + "	o.concept_id in ("
-        + cd4AbsoluteConcept
-        + ","
         + cd4AbsoluteOBSConcept
         + ") and o.value_numeric is not null and  "
         + "	e.encounter_datetime between date_add(:startDate, interval -12 MONTH) and :startDate and e.location_id=:location "
@@ -1492,8 +1489,6 @@ public class QualiltyImprovementQueries {
         + ") ultima_carga "
         + "inner join obs on obs.person_id=ultima_carga.patient_id and obs.obs_datetime=ultima_carga.data_carga "
         + "where 	obs.voided=0 and obs.concept_id in ("
-        + cd4AbsoluteConcept
-        + ","
         + cd4AbsoluteOBSConcept
         + ") and obs.location_id=:location and obs.value_numeric>200 "
         + " "

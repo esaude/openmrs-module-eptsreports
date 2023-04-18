@@ -1012,21 +1012,6 @@ public class HivMetadata extends ProgramsMetadata {
   }
 
   /**
-   * <b>concept_id = 5497</b>
-   *
-   * <p><b>Name:</b> CD4 COUNT
-   *
-   * <p><b>Description:</b>
-   *
-   * @return {@link Concept}
-   */
-  public Concept getCD4AbsoluteConcept() {
-    String uuid =
-        Context.getAdministrationService().getGlobalProperty("eptsreports.cd4AbsolutoUuid");
-    return getConcept(uuid);
-  }
-
-  /**
    * <b>concept_id = 730</b>
    *
    * <p><b>Name:</b> CD4 %

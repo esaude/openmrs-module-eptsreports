@@ -52,19 +52,19 @@ public class CommonQueries {
       int masterCardEncounterType,
       int pulmonaryTBConceptId) {
     Map<String, Integer> map = new HashMap<>();
-    map.put("adultoSeguimentoEncounterTypeId", adultoSeguimentoEncounterTypeId);
-    map.put("arvPediatriaSeguimentoEncounterTypeId", arvPediatriaSeguimentoEncounterTypeId);
-    map.put("tbStartDateConceptId", tbStartDateConceptId);
-    map.put("tbEndDateConceptId", tbEndDateConceptId);
-    map.put("tbProgramId", tbProgramId);
-    map.put("patientStateId", patientStateId);
-    map.put("activeTBConceptId", activeTBConceptId);
-    map.put("yesConceptId", yesConceptId);
-    map.put("tbTreatmentPlanConceptId", tbTreatmentPlanConceptId);
-    map.put("startDrugsConceptId", startDrugsConceptId);
-    map.put("continueRegimenConceptId", continueRegimenConceptId);
-    map.put("masterCardEncounterType", masterCardEncounterType);
-    map.put("pulmonaryTBConceptId", pulmonaryTBConceptId);
+    map.put("6", adultoSeguimentoEncounterTypeId);
+    map.put("9", arvPediatriaSeguimentoEncounterTypeId);
+    map.put("1113", tbStartDateConceptId);
+    map.put("6120", tbEndDateConceptId);
+    map.put("5", tbProgramId);
+    map.put("16", patientStateId);
+    map.put("23761", activeTBConceptId);
+    map.put("1065", yesConceptId);
+    map.put("1268", tbTreatmentPlanConceptId);
+    map.put("1256", startDrugsConceptId);
+    map.put("1257", continueRegimenConceptId);
+    map.put("53", masterCardEncounterType);
+    map.put("42", pulmonaryTBConceptId);
 
     String query =
         "SELECT p.patient_id "
@@ -72,22 +72,22 @@ public class CommonQueries {
             + "JOIN encounter e ON p.patient_id = e.patient_id "
             + "JOIN obs "
             + "start ON e.encounter_id = start.encounter_id "
-            + "WHERE e.encounter_type IN (${adultoSeguimentoEncounterTypeId}, "
-            + "                           ${arvPediatriaSeguimentoEncounterTypeId}) "
-            + "  AND start.concept_id = ${tbStartDateConceptId} "
+            + "WHERE e.encounter_type IN (${6}, "
+            + "                           ${9}) "
+            + "  AND start.concept_id = ${1113} "
             + "  AND start.voided = 0"
             + "  AND e.voided = 0"
             + "  AND start.value_datetime IS NOT NULL "
-            + "  AND start.value_datetime BETWEEN date_sub(:endDate, INTERVAL 6 MONTH) AND :endDate "
+            + "  AND start.value_datetime BETWEEN date_sub(:endDate, INTERVAL 7 MONTH) AND :endDate "
             + "  AND e.location_id=  :location  "
             + "  AND p.patient_id NOT IN "
             + "    (SELECT p1.patient_id "
             + "     FROM patient p1 "
             + "     JOIN encounter e1 ON p1.patient_id = e1.patient_id "
             + "     JOIN obs o ON e1.encounter_id = o.encounter_id "
-            + "     WHERE e1.encounter_type IN (${adultoSeguimentoEncounterTypeId}, "
-            + "                                 ${arvPediatriaSeguimentoEncounterTypeId}) "
-            + "       AND o.concept_id = ${tbEndDateConceptId} "
+            + "     WHERE e1.encounter_type IN (${6}, "
+            + "                                 ${9}) "
+            + "       AND o.concept_id = ${6120} "
             + "       AND (o.value_datetime IS NOT NULL "
             + "            OR o.value_datetime >   :endDate) "
             + "       AND e.location_id=  :location  ) "
@@ -96,10 +96,10 @@ public class CommonQueries {
             + "FROM patient p "
             + "JOIN patient_program pp ON p.patient_id=pp.patient_id "
             + "JOIN patient_state ps ON pp.patient_program_id=ps.patient_program_id "
-            + "WHERE pp.program_id=${tbProgramId} "
-            + "  AND ps.state=${patientStateId} "
+            + "WHERE pp.program_id=${5} "
+            + "  AND ps.state=${16} "
             + "  AND pp.location_id=  :location  "
-            + "  AND pp.date_enrolled BETWEEN   date_sub(:endDate, INTERVAL 6 MONTH) AND   :endDate "
+            + "  AND pp.date_enrolled BETWEEN   date_sub(:endDate, INTERVAL 7 MONTH) AND   :endDate "
             + "  AND (pp.date_completed IS NULL "
             + "       OR pp.date_completed >   :endDate) "
             + "  AND p.voided=0 "
@@ -116,19 +116,19 @@ public class CommonQueries {
             + "        FROM patient p "
             + "        INNER JOIN encounter e ON p.patient_id = e.patient_id "
             + "        INNER JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "        WHERE o.concept_id = ${activeTBConceptId} "
+            + "        WHERE o.concept_id = ${23761} "
             + "            AND e.location_id =   :location  "
-            + "            AND e.encounter_type IN (${adultoSeguimentoEncounterTypeId},${arvPediatriaSeguimentoEncounterTypeId}) "
-            + "            AND e.encounter_datetime BETWEEN date_sub(:endDate, INTERVAL 6 MONTH) AND   :endDate "
+            + "            AND e.encounter_type IN (${6},${9}) "
+            + "            AND e.encounter_datetime BETWEEN date_sub(:endDate, INTERVAL 7 MONTH) AND   :endDate "
             + "            AND p.voided = 0 "
             + "            and e.voided = 0 "
             + "            and o.voided = 0 "
             + "        GROUP BY p.patient_id) last  "
             + "                ON p.patient_id = last.patient_id "
             + "    AND e.encounter_datetime = last.encounter_datetime "
-            + "WHERE o.value_coded = ${yesConceptId} "
-            + "    AND o.concept_id = ${activeTBConceptId} "
-            + "    AND e.encounter_type IN (${adultoSeguimentoEncounterTypeId},${arvPediatriaSeguimentoEncounterTypeId}) "
+            + "WHERE o.value_coded = ${1065} "
+            + "    AND o.concept_id = ${23761} "
+            + "    AND e.encounter_type IN (${6},${9}) "
             + "    AND e.voided=0 "
             + "    AND o.voided=0 "
             + "    AND p.voided=0 "
@@ -145,19 +145,19 @@ public class CommonQueries {
             + "   FROM patient p "
             + "   JOIN encounter e ON p.patient_id = e.patient_id "
             + "   JOIN obs o ON e.encounter_id = o.encounter_id "
-            + "   WHERE o.concept_id = ${tbTreatmentPlanConceptId} "
+            + "   WHERE o.concept_id = ${1268} "
             + "     AND e.location_id =   :location  "
-            + "     AND e.encounter_type IN (${adultoSeguimentoEncounterTypeId}, "
-            + "                              ${arvPediatriaSeguimentoEncounterTypeId}) "
-            + "     AND o.obs_datetime BETWEEN   date_sub(:endDate, INTERVAL 6 MONTH) AND   :endDate"
+            + "     AND e.encounter_type IN (${6}, "
+            + "                              ${9}) "
+            + "     AND o.obs_datetime BETWEEN   date_sub(:endDate, INTERVAL 7 MONTH) AND   :endDate"
             + "     AND p.voided=0 "
             + "     AND e.voided=0 "
             + "     AND o.voided=0 "
             + "   GROUP BY p.patient_id) last ON p.patient_id = last.patient_id "
             + "AND o.obs_datetime = last.obs_datetime "
-            + "WHERE o.value_coded IN(${startDrugsConceptId},${continueRegimenConceptId}) "
-            + "  AND o.concept_id = ${tbTreatmentPlanConceptId} "
-            + "  AND e.encounter_type IN (${adultoSeguimentoEncounterTypeId},${arvPediatriaSeguimentoEncounterTypeId}) "
+            + "WHERE o.value_coded IN(${1256},${1257}) "
+            + "  AND o.concept_id = ${1268} "
+            + "  AND e.encounter_type IN (${6},${9}) "
             + "  AND e.voided=0 "
             + "  AND o.voided=0 "
             + "  AND p.voided=0 "
@@ -169,14 +169,14 @@ public class CommonQueries {
             + "             ON p.patient_id = e.patient_id "
             + "       INNER JOIN obs o "
             + "             ON e.encounter_id = o.encounter_id "
-            + " WHERE o.concept_id = ${pulmonaryTBConceptId} "
+            + " WHERE o.concept_id = ${42} "
             + "       AND e.location_id =   :location  "
-            + "       AND e.encounter_type = ${masterCardEncounterType} "
-            + "       AND o.obs_datetime BETWEEN date_sub(:endDate, INTERVAL 6 MONTH) AND :endDate "
+            + "       AND e.encounter_type = ${53} "
+            + "       AND o.obs_datetime BETWEEN date_sub(:endDate, INTERVAL 7 MONTH) AND :endDate "
             + "       AND p.voided = 0 "
             + "       AND e.voided = 0 "
             + "       AND o.voided = 0 "
-            + "       AND o.value_coded = ${yesConceptId}";
+            + "       AND o.value_coded = ${1065}";
 
     StringSubstitutor sb = new StringSubstitutor(map);
     String replaced = sb.replace(query);
