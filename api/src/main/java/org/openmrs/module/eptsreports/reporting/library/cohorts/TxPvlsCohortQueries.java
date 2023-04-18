@@ -103,10 +103,7 @@ public class TxPvlsCohortQueries {
 
     cd.addSearch(
         "breastfeeding",
-        EptsReportUtils.map(
-            getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN, null),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+        EptsReportUtils.map(getBreastfeedingPatients(), "endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "suppression",
@@ -133,10 +130,7 @@ public class TxPvlsCohortQueries {
 
     cd.addSearch(
         "breastfeeding",
-        EptsReportUtils.map(
-            getPatientsWhoArePregnantOrBreastfeedingBasedOnParameter(
-                PregnantOrBreastfeedingWomen.BREASTFEEDINGWOMEN, null),
-            "onOrAfter=${startDate},onOrBefore=${endDate},location=${location}"));
+        EptsReportUtils.map(getBreastfeedingPatients(), "endDate=${endDate},location=${location}"));
 
     cd.addSearch(
         "results",
@@ -576,7 +570,6 @@ public class TxPvlsCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("state", state);
     cd.addCalculationParameter("encounterTypeList", encounterTypeList);
-
     return cd;
   }
   /**
@@ -597,7 +590,350 @@ public class TxPvlsCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
     cd.addCalculationParameter("state", state);
     cd.addCalculationParameter("encounterTypeList", encounterTypeList);
-
     return cd;
+  }
+
+  /**
+   * <b>PVLS_FR9</b>
+   *
+   * <blockquote>
+   *
+   * <p>The system will identify female patients who are breastfeeding as following:
+   *
+   * <ul>
+   *   <li>Patients who have the “Delivery date” registered in the initial or follow-up
+   *       consultations (Processo Clinico Parte A or Ficha de Seguimento Adulto) and where the
+   *       delivery date is within the period range or
+   *   <li>Patients who started ART for being breastfeeding as specified in “CRITÉRIO PARA INÍCIO DE
+   *       TRATAMENTO ARV” in the initial or follow-up consultations (Processo Clinico Parte A or
+   *       Ficha de Seguimento Adulto) that occurred within period range or chart: patient
+   *       Transferred Out or
+   *   <li>Patients who have been registered as breastfeeding in follow up consultation (Ficha de
+   *       Seguimento Adulto) within the period range.
+   *   <li>Have registered as breastfeeding in Ficha Resumo or Ficha Clinica within the period range
+   *       OR
+   *   <li>Patients enrolled on Prevention of the Vertical Transmission/Elimination of the Vertical
+   *       Transmission (PTV/ETV) program with state 27 (gave birth) within the period range.
+   *   <li>Patient who have “Actualmente está a amamentar” marked as “Sim” on FSR Form and Data de
+   *       Colheita is during the period range.
+   * </ul>
+   *
+   * <br>
+   *
+   * <p>If the patient has both states (pregnant and breastfeeding) the most recent one should be
+   * considered. For patients who have both state (pregnant and breastfeeding) marked on the same
+   * day, the system will consider the patient as pregnant.<br>
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getBreastfeedingPatients() {
+    SqlCohortDefinition sqlCohortDefinition = new SqlCohortDefinition();
+    sqlCohortDefinition.setName(" Patients disaggregation - breastfeeding");
+    sqlCohortDefinition.addParameter(new Parameter("endDate", "End Date", Date.class));
+    sqlCohortDefinition.addParameter(new Parameter("location", "Location", Location.class));
+
+    Map<String, Integer> map = new HashMap<>();
+    map.put("1600", hivMetadata.getPregnancyDueDate().getConceptId());
+    map.put("1279", hivMetadata.getNumberOfWeeksPregnant().getConceptId());
+    map.put("1982", hivMetadata.getPregnantConcept().getConceptId());
+    map.put("6331", hivMetadata.getBpostiveConcept().getConceptId());
+    map.put("1190", hivMetadata.getARVStartDateConcept().getConceptId());
+    map.put("6", hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
+    map.put("5", hivMetadata.getARVAdultInitialEncounterType().getEncounterTypeId());
+    map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
+    map.put("51", hivMetadata.getFsrEncounterType().getEncounterTypeId());
+    map.put("5599", hivMetadata.getPriorDeliveryDateConcept().getConceptId());
+    map.put("23821", hivMetadata.getSampleCollectionDateAndTime().getConceptId());
+    map.put("6332", hivMetadata.getBreastfeeding().getConceptId());
+    map.put("1065", hivMetadata.getYesConcept().getConceptId());
+    map.put("6334", hivMetadata.getCriteriaForArtStart().getConceptId());
+    map.put("8", hivMetadata.getPtvEtvProgram().getProgramId());
+    map.put("27", hivMetadata.getPatientGaveBirthWorkflowState().getProgramWorkflowStateId());
+    map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+    map.put("13", hivMetadata.getMisauLaboratorioEncounterType().getEncounterTypeId());
+    map.put("856", hivMetadata.getHivViralLoadConcept().getConceptId());
+    map.put("1305", hivMetadata.getHivViralLoadQualitative().getConceptId());
+
+    String query =
+        " SELECT breastfeeding.patient_id FROM( "
+            + "                   SELECT vl.patient_id, "
+            + "                            MAX(vl.last_date) AS last_vl, MAX(bf.breastfeeding_date) as bf_date "
+            + "                     FROM "
+            + "                      (SELECT vl.patient_id, MAX(vl.last_date) AS last_date "
+            + "             FROM ( "
+            + "               SELECT "
+            + "                 p.patient_id, "
+            + "                 CASE "
+            + "                   WHEN e.encounter_type = ${53} THEN o.obs_datetime "
+            + "                   ELSE e.encounter_datetime "
+            + "                 END AS last_date "
+            + "               FROM "
+            + "                 patient p "
+            + "                 INNER JOIN encounter e ON e.patient_id = p.patient_id "
+            + "                 INNER JOIN obs o ON o.encounter_id = e.encounter_id "
+            + "               WHERE "
+            + "                 ( "
+            + "                   (e.encounter_type IN (${6},${9}, ${13}, ${51}) AND e.encounter_datetime "
+            + "                     BETWEEN DATE_SUB(:endDate, INTERVAL 12 MONTH) AND :endDate) "
+            + "                   OR (e.encounter_type = ${53} AND o.obs_datetime "
+            + "                     BETWEEN DATE_SUB(:endDate, INTERVAL 12 MONTH) AND :endDate) "
+            + "                 ) "
+            + "                 AND ( "
+            + "                   (o.concept_id = ${856} AND o.value_numeric IS NOT NULL) "
+            + "                   OR (o.concept_id = ${1305} AND o.value_coded IS NOT NULL) "
+            + "                 ) "
+            + "                 AND e.voided = 0 "
+            + "                 AND p.voided = 0 "
+            + "                 AND o.voided = 0 "
+            + "             ) vl "
+            + "             GROUP BY vl.patient_id) vl "
+            + "                             INNER JOIN( "
+            + "                               SELECT lactantes.patient_id, "
+            + "                                       lactantes.last_date AS breastfeeding_date "
+            + "                                FROM   (SELECT p.patient_id, "
+            + "                                               o.value_datetime AS last_date "
+            + "                                        FROM   patient p "
+            + "                                               inner join person p2 "
+            + "                                                       ON p2.person_id = p.patient_id "
+            + "                                               inner join encounter e "
+            + "                                                       ON e.patient_id = p.patient_id "
+            + "                                               inner join obs o "
+            + "                                                       ON o.encounter_id = e.encounter_id "
+            + "                                        WHERE  p2.gender = 'F' "
+            + "                                               AND e.encounter_type IN ( ${5}, ${6} ) "
+            + "                                               AND e.location_id = :location "
+            + "                                               AND o.concept_id = 5599 "
+            + "                                               AND o.value_datetime <= :endDate "
+            + "                                               AND o.voided = 0 "
+            + "                                               AND p.voided = 0 "
+            + "                                               AND e.voided = 0 "
+            + "                                               AND p2.voided = 0 "
+            + "                                        UNION "
+            + "                                        SELECT p.patient_id, "
+            + "                                               e.encounter_datetime AS last_date "
+            + "                                        FROM   patient p "
+            + "                                               inner join person p2 "
+            + "                                                       ON p2.person_id = p.patient_id "
+            + "                                               inner join encounter e "
+            + "                                                       ON e.patient_id = p.patient_id "
+            + "                                               inner join obs o "
+            + "                                                       ON o.encounter_id = e.encounter_id "
+            + "                                        WHERE  p2.gender = 'F' "
+            + "                                               AND e.encounter_type = ${6} "
+            + "                                               AND e.location_id = :location "
+            + "                                               AND o.concept_id = ${6332} "
+            + "                                               AND o.value_coded = ${1065} "
+            + "                                               AND e.encounter_datetime <= :endDate "
+            + "                                               AND o.voided = 0 "
+            + "                                               AND e.voided = 0 "
+            + "                                               AND p.voided = 0 "
+            + "                                               AND p2.voided = 0 "
+            + "                                        UNION "
+            + "                                        SELECT p.patient_id, "
+            + "                                               e.encounter_datetime AS last_date "
+            + "                                        FROM   patient p "
+            + "                                               inner join person p2 "
+            + "                                                       ON p2.person_id = p.patient_id "
+            + "                                               inner join encounter e "
+            + "                                                       ON e.patient_id = p.patient_id "
+            + "                                               inner join obs o "
+            + "                                                       ON o.encounter_id = e.encounter_id "
+            + "                                        WHERE  p2.gender = 'F' "
+            + "                                               AND e.encounter_type IN ( ${5}, ${6} ) "
+            + "                                               AND o.concept_id = ${6334} "
+            + "                                               AND o.value_coded = ${6332} "
+            + "                                               AND p.voided = 0 "
+            + "                                               AND e.voided = 0 "
+            + "                                               AND o.voided = 0 "
+            + "                                               AND p2.voided = 0 "
+            + "                                               AND e.location_id = :location "
+            + "                                               AND e.encounter_datetime <= :endDate "
+            + "                                        UNION "
+            + "                                        SELECT pp.patient_id, "
+            + "                                               ps.start_date AS last_date "
+            + "                                        FROM   patient_program pp "
+            + "                                               inner join person p "
+            + "                                                       ON p.person_id = pp.patient_id "
+            + "                                               inner join patient_state ps "
+            + "                                                       ON ps.patient_program_id = pp.patient_program_id "
+            + "                                        WHERE  p.gender = 'F' "
+            + "                                               AND pp.program_id = ${8} "
+            + "                                               AND ps.state = ${27} "
+            + "                                               AND pp.location_id = :location "
+            + "                                               AND pp.voided = 0 "
+            + "                                               AND ps.voided = 0 "
+            + "                                               AND p.voided = 0 "
+            + "                                               AND ps.start_date <= :endDate "
+            + "                                        UNION "
+            + "                                      SELECT p.patient_id, hist.value_datetime AS last_date "
+            + "                                    FROM patient p "
+            + "                                    INNER JOIN person pe "
+            + "                                        ON p.patient_id=pe.person_id "
+            + "                                    INNER JOIN encounter e "
+            + "                                        ON p.patient_id=e.patient_id "
+            + "                                    INNER JOIN obs o "
+            + "                                        ON e.encounter_id=o.encounter_id "
+            + "                                    INNER JOIN obs hist "
+            + "                                        ON e.encounter_id=hist.encounter_id "
+            + "                                    WHERE p.voided = 0 "
+            + "                                    AND e.voided = 0 "
+            + "                                    AND o.voided = 0 "
+            + "                                    AND pe.voided = 0 "
+            + "                                    AND hist.voided=0 "
+            + "                                    AND o.concept_id = ${6332} "
+            + "                                    AND o.value_coded = ${1065} "
+            + "                                    AND e.encounter_type = ${53} "
+            + "                                    AND hist.concept_id = ${1190} "
+            + "                                    AND hist.value_datetime <= :endDate "
+            + "                                        UNION "
+            + "                                        SELECT p.patient_id, "
+            + "                                               DATE(o2.value_datetime) AS last_date "
+            + "                                        FROM   patient p "
+            + "                                               inner join encounter e "
+            + "                                                       ON e.patient_id = p.patient_id "
+            + "                                               inner join person p2 ON p2.person_id=p.patient_id "
+            + "                                               inner join obs o "
+            + "                                                       ON o.encounter_id = e.encounter_id "
+            + "                                               inner join obs o2 "
+            + "                                                       ON o2.encounter_id = e.encounter_id "
+            + "                                        WHERE  e.encounter_type = ${51} "
+            + "                                               AND  o.concept_id = ${6332} "
+            + "                                                     AND o.value_coded = ${1065} "
+            + "                                               AND  o2.concept_id = ${23821} "
+            + "                                                     AND DATE(o2.value_datetime) <= :endDate "
+            + "                                               AND p2.gender = 'F' "
+            + "                                               AND p.voided = 0 "
+            + "                                               AND e.voided = 0 "
+            + "                                               AND o.voided = 0 "
+            + "                                               AND o2.voided = 0 "
+            + "                                               AND e.location_id = :location "
+            + "                                               )lactantes "
+            + "                             ) bf ON "
+            + "                             vl.patient_id=bf.patient_id "
+            + "                             WHERE  bf.breastfeeding_date BETWEEN DATE_SUB(vl.last_date, INTERVAL 18 MONTH) AND vl.last_date "
+            + "                     GROUP  BY vl.patient_id ) breastfeeding "
+            + "                     WHERE "
+            + "                      NOT EXISTS  (SELECT e.patient_id "
+            + "                                                          FROM   encounter e "
+            + "                                                                 inner join obs o "
+            + "                                                                         ON o.encounter_id = e.encounter_id "
+            + "                                                          WHERE  e.encounter_type IN ( ${5}, ${6} ) "
+            + "                                                                 AND ( o.concept_id = ${1982} "
+            + "                                                                       AND o.value_coded = ${1065} ) "
+            + "                                                                 AND e.location_id = :location "
+            + "                                                                 AND e.voided = 0 "
+            + "                                                                 AND o.voided = 0 "
+            + "                                                                 AND breastfeeding.patient_id = e.patient_id "
+            + "                                                                 AND e.encounter_datetime >= breastfeeding.bf_date "
+            + "                                                                 AND e.encounter_datetime BETWEEN DATE_SUB(breastfeeding.last_vl, INTERVAL 9 MONTH) AND breastfeeding.last_vl "
+            + " "
+            + "                                                         UNION "
+            + "                                                           SELECT e.patient_id "
+            + "                                                          FROM   encounter e "
+            + "                                                                 inner join obs o "
+            + "                                                                         ON o.encounter_id = e.encounter_id "
+            + "                                                                 WHERE e.encounter_type IN ( ${5}, ${6} ) "
+            + "                                                                 AND  o.concept_id = ${1279} "
+            + "                                                                 AND e.location_id = :location "
+            + "                                                                 AND e.voided = 0 "
+            + "                                                                 AND o.voided = 0 "
+            + "                                                                 AND breastfeeding.patient_id = e.patient_id "
+            + "                                                                 AND e.encounter_datetime >= breastfeeding.bf_date "
+            + "                                                                 AND e.encounter_datetime BETWEEN DATE_SUB(breastfeeding.last_vl, INTERVAL 9 MONTH) AND breastfeeding.last_vl "
+            + "                                                          UNION "
+            + "                                                          SELECT e.patient_id "
+            + "                                                          FROM   encounter e "
+            + "                                                                 inner join obs o "
+            + "                                                                         ON o.encounter_id = e.encounter_id "
+            + "                                                                 WHERE e.encounter_type IN ( ${5}, ${6} ) "
+            + "                                                                 AND o.concept_id = ${1600} "
+            + "                                                                 AND e.location_id = :location "
+            + "                                                                 AND e.voided = 0 "
+            + "                                                                 AND o.voided = 0 "
+            + "                                                                 AND breastfeeding.patient_id = e.patient_id "
+            + "                                                                 AND e.encounter_datetime >= breastfeeding.bf_date "
+            + "                                                                 AND e.encounter_datetime BETWEEN DATE_SUB(breastfeeding.last_vl, INTERVAL 9 MONTH) AND breastfeeding.last_vl "
+            + "                                                          UNION "
+            + "                                                          SELECT e.patient_id "
+            + "                                                          FROM   encounter e "
+            + "                                                                 inner join obs o "
+            + "                                                                         ON o.encounter_id = e.encounter_id "
+            + "                                                                 WHERE e.encounter_type = ${6} "
+            + "                                                                 AND o.concept_id = ${6334} "
+            + "																AND o.value_coded = ${6331} "
+            + "                                                                 AND e.location_id = :location "
+            + "                                                                 AND e.voided = 0 "
+            + "                                                                 AND o.voided = 0 "
+            + "                                                                 AND breastfeeding.patient_id = e.patient_id "
+            + "                                                                 AND e.encounter_datetime >= breastfeeding.bf_date "
+            + "                                                                 AND e.encounter_datetime BETWEEN DATE_SUB(breastfeeding.last_vl, INTERVAL 9 MONTH) AND breastfeeding.last_vl "
+            + "                                                          UNION "
+            + "                                                          SELECT pp.patient_id "
+            + "                                                          FROM   patient_program pp "
+            + "                                                                 WHERE pp.program_id = ${8} "
+            + "                                                                 AND pp.voided = 0 "
+            + "                                                                 AND breastfeeding.patient_id = pp.patient_id "
+            + "                                                                 AND pp.date_enrolled >= breastfeeding.bf_date "
+            + "                                                                 AND pp.date_enrolled BETWEEN DATE_SUB(breastfeeding.last_vl, INTERVAL 9 MONTH) AND breastfeeding.last_vl "
+            + "                                                          UNION "
+            + "                                                          SELECT e.patient_id "
+            + "                                                          FROM   encounter e "
+            + "                                                                 inner join obs o "
+            + "                                                                         ON o.encounter_id = e.encounter_id "
+            + "                                                                 inner join obs o2 "
+            + "                                                                         ON o2.encounter_id = e.encounter_id "
+            + "                                                                 WHERE e.encounter_type = ${53} "
+            + "                                                                 AND  o.concept_id = ${1982} "
+            + "                                                                 AND o.value_coded = ${1065} "
+            + "                                                                 AND  o2.concept_id = ${1190} "
+            + "                                                                 AND o2.value_datetime BETWEEN DATE_SUB(breastfeeding.last_vl, INTERVAL 9 MONTH) AND breastfeeding.last_vl "
+            + "                                                                 AND e.location_id = :location "
+            + "                                                                 AND e.voided = 0 "
+            + "                                                                 AND o.voided = 0 "
+            + "                                                                 AND o2.voided = 0 "
+            + "                                                                 AND breastfeeding.patient_id = e.patient_id "
+            + "                                                                 AND o2.value_datetime >= breastfeeding.bf_date "
+            + "                                                          UNION "
+            + "                                                          SELECT e.patient_id "
+            + "                                                          FROM   encounter e "
+            + "                                                                 inner join obs o "
+            + "                                                                         ON o.encounter_id = e.encounter_id "
+            + "                                                                 WHERE e.encounter_type = ${6} "
+            + "                                                                 AND  o.concept_id = ${1982} "
+            + "																 AND o.value_coded = ${1065} "
+            + "                                                                 AND e.location_id = :location "
+            + "                                                                 AND e.voided = 0 "
+            + "                                                                 AND o.voided = 0 "
+            + "                                                                 AND breastfeeding.patient_id = e.patient_id "
+            + "                                                                 AND e.encounter_datetime >= breastfeeding.bf_date "
+            + "                                                                 AND e.encounter_datetime BETWEEN DATE_SUB(breastfeeding.last_vl, INTERVAL 9 MONTH) AND breastfeeding.last_vl "
+            + "                                                          UNION "
+            + "                                                          SELECT e.patient_id "
+            + "                                                          FROM   encounter e "
+            + "                                                                 inner join obs o "
+            + "                                                                         ON o.encounter_id = e.encounter_id "
+            + "                                                                 inner join obs o2 "
+            + "                                                                         ON o2.encounter_id = e.encounter_id "
+            + "                                                                 WHERE e.encounter_type = ${51} "
+            + "                                                                 AND  o.concept_id = ${1982} "
+            + "                                                                 AND o.value_coded = ${1065} "
+            + "                                                                 AND  o2.concept_id = ${23821} "
+            + "                                                                 AND DATE(o2.value_datetime) BETWEEN DATE_SUB(breastfeeding.last_vl, INTERVAL 9 MONTH) AND breastfeeding.last_vl "
+            + "                                                                 AND e.location_id = :location "
+            + "                                                                 AND e.voided = 0 "
+            + "                                                                 AND o.voided = 0 "
+            + "                                                                 AND o2.voided = 0 "
+            + "                                                                 AND breastfeeding.patient_id = e.patient_id "
+            + "                                                                 AND DATE(o2.value_datetime) >= breastfeeding.bf_date "
+            + "                                                        ) ";
+
+    StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
+    String mappedQuery = stringSubstitutor.replace(query);
+
+    sqlCohortDefinition.setQuery(mappedQuery);
+
+    return sqlCohortDefinition;
   }
 }
