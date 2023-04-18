@@ -81,10 +81,10 @@ public class ListOfPatientsDefaultersOrIITTemplateDataSet extends BaseDataSet {
         "onOrBefore=${endDate},location=${location}",
         new CalculationResultConverter());
 
-    // 4 - Sex - Sheet 1: Column D */
+    // 5 - Sex - Sheet 1: Column E */
     pdd.addColumn("gender", new GenderDataDefinition(), "", new GenderConverter());
 
-    // 5 - Age - Sheet 1: Column E */
+    // 4 - Age - Sheet 1: Column D */
     pdd.addColumn(
         "age", listChildrenOnARTandFormulationsDataset.getAge(), "endDate=${endDate}", null);
 

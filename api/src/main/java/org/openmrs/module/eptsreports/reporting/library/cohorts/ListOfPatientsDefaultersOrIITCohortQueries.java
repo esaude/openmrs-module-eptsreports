@@ -425,10 +425,8 @@ public class ListOfPatientsDefaultersOrIITCohortQueries {
     map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
-    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
     map.put("6272", hivMetadata.getStateOfStayPriorArtPatientConcept().getConceptId());
     map.put("6273", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
-    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
 
     String query =
         "SELECT patient_id "
@@ -524,23 +522,7 @@ public class ListOfPatientsDefaultersOrIITCohortQueries {
             + "                                            AND "
             + "                                                  e.encounter_datetime > transferout_date "
             + "                                            AND "
-            + "                                                  e.encounter_datetime <= curdate() "
-            + "                                          UNION "
-            + "                                          SELECT p.patient_id "
-            + "                                          FROM   patient p "
-            + "                                                     JOIN encounter e "
-            + "                                                          ON p.patient_id = "
-            + "                                                             e.patient_id "
-            + "                                                     JOIN obs o "
-            + "                                                          ON e.encounter_id = "
-            + "                                                             o.encounter_id "
-            + "                                          WHERE  p.voided = 0 "
-            + "                                            AND e.voided = 0 "
-            + "                                            AND e.encounter_type =  ${52} "
-            + "                                            AND e.location_id = :location "
-            + "                                            AND o.concept_id =  ${23866} "
-            + "                                            AND o.value_datetime > transferout_date "
-            + "                                            AND o.value_datetime <= curdate()); ";
+            + "                                                  e.encounter_datetime <= curdate())";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -579,15 +561,14 @@ public class ListOfPatientsDefaultersOrIITCohortQueries {
             .getProgramWorkflowStateId());
     map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
-    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("1706", hivMetadata.getTransferredOutConcept().getConceptId());
     map.put("6272", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
     map.put("6273", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
-    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
     map.put("21", hivMetadata.getBuscaActivaEncounterType().getEncounterTypeId());
     map.put("23863", hivMetadata.getAutoTransferConcept().getConceptId());
     map.put("2016", hivMetadata.getDefaultingMotiveConcept().getConceptId());
+    map.put("5096", hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
 
     String query =
         "  SELECT patient_id  "
@@ -679,41 +660,25 @@ public class ListOfPatientsDefaultersOrIITCohortQueries {
             + "                                                                 e.patient_id  "
             + "                                                     WHERE  p.voided = 0  "
             + "                                                            AND e.voided = 0  "
-            + "                                                            AND e.encounter_type =  ${6}   "
+            + "                                                            AND e.encounter_type IN (${6}, ${9})   "
             + "                                                            AND e.location_id = :location  "
             + "                                                            AND  "
             + "                         e.encounter_datetime > transferout_date  "
             + "                                                            AND  "
             + "                         e.encounter_datetime <= CURRENT_DATE()  "
-            + "                                                     UNION  "
-            + "                                                     SELECT p.patient_id  "
-            + "                                                     FROM   patient p  "
-            + "                                                            JOIN encounter e  "
-            + "                                                              ON p.patient_id =  "
-            + "                                                                 e.patient_id  "
-            + "                                                            JOIN obs o  "
-            + "                                                              ON e.encounter_id =  "
-            + "                                                                 o.encounter_id  "
-            + "                                                     WHERE  p.voided = 0  "
-            + "                                                            AND e.voided = 0  "
-            + "                                                            AND e.encounter_type =  ${52}   "
-            + "                                                            AND e.location_id = :location  "
-            + "                                                            AND o.concept_id =  ${23866}   "
-            + "                                                            AND o.value_datetime >  "
-            + "                                                                transferout_date  "
-            + "                                                            AND o.value_datetime <= CURRENT_DATE()"
-            + "                                                                "
             + "                                                                UNION"
-            + "                                                                "
             + "                                                          SELECT p.patient_id"
             + "                                                            FROM   patient p"
-            + "                                                                    JOIN encounter e ON p.patient_id = e.patient_id"
+            + "                                                                    JOIN encounter e ON p.patient_id = e.patient_id "
+            + "                                                                    JOIN obs o ON e.encounter_id = o.encounter_id "
             + "                                                            WHERE  p.voided = 0"
-            + "                                                                    AND e.voided = 0"
-            + "                                                                    AND e.encounter_type IN (${9},${18})"
-            + "                                                                    AND e.location_id = :location"
-            + "                                                                    AND e.encounter_datetime > transferout_date"
-            + "                                                                    AND e.encounter_datetime <= CURRENT_DATE()) ";
+            + "                                                                    AND e.voided = 0 "
+            + "                                                                    AND o.voided = 0 "
+            + "                                                                    AND e.encounter_type = ${18} "
+            + "                                                                    AND o.concept_id = ${5096} "
+            + "                                                                    AND e.location_id = :location "
+            + "                                                                    AND o.value_datetime > DATE_SUB(transferout_date, INTERVAL 1 DAY) "
+            + "                                                                    AND o.value_datetime <= CURRENT_DATE()) ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
 
@@ -749,12 +714,10 @@ public class ListOfPatientsDefaultersOrIITCohortQueries {
     map.put("8", hivMetadata.getSuspendedTreatmentWorkflowState().getProgramWorkflowStateId());
     map.put("9", hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
     map.put("18", hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
-    map.put("52", hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
     map.put("53", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
     map.put("1709", hivMetadata.getSuspendedTreatmentConcept().getConceptId());
     map.put("6272", hivMetadata.getStateOfStayOfPreArtPatient().getConceptId());
     map.put("6273", hivMetadata.getStateOfStayOfArtPatient().getConceptId());
-    map.put("23866", hivMetadata.getArtDatePickupMasterCard().getConceptId());
 
     String query =
         "  SELECT patient_id  "
@@ -823,47 +786,14 @@ public class ListOfPatientsDefaultersOrIITCohortQueries {
             + "                            GROUP BY p.patient_id"
             + "                           ) transferout  "
             + "                   GROUP  BY transferout.patient_id) max_transferout  "
-            + "           WHERE  max_transferout.patient_id NOT IN (SELECT p.patient_id  "
-            + "                                                     FROM   patient p  "
-            + "                                                            JOIN encounter e  "
-            + "                                                              ON p.patient_id =  "
-            + "                                                                 e.patient_id  "
-            + "                                                     WHERE  p.voided = 0  "
-            + "                                                            AND e.voided = 0  "
-            + "                                                            AND e.encounter_type =  ${6}   "
-            + "                                                            AND e.location_id = :location  "
-            + "                                                            AND  "
-            + "                         e.encounter_datetime > transferout_date  "
-            + "                                                            AND  "
-            + "                         e.encounter_datetime <= CURRENT_DATE()  "
-            + "                                                     UNION  "
-            + "                                                     SELECT p.patient_id  "
-            + "                                                     FROM   patient p  "
-            + "                                                            JOIN encounter e  "
-            + "                                                              ON p.patient_id =  "
-            + "                                                                 e.patient_id  "
-            + "                                                            JOIN obs o  "
-            + "                                                              ON e.encounter_id =  "
-            + "                                                                 o.encounter_id  "
-            + "                                                     WHERE  p.voided = 0  "
-            + "                                                            AND e.voided = 0  "
-            + "                                                            AND e.encounter_type =  ${52}   "
-            + "                                                            AND e.location_id = :location  "
-            + "                                                            AND o.concept_id =  ${23866}   "
-            + "                                                            AND o.value_datetime >  "
-            + "                                                                transferout_date  "
-            + "                                                            AND o.value_datetime <= CURRENT_DATE()"
-            + "                                                                "
-            + "                                                                UNION"
-            + "                                                                "
-            + "                                                          SELECT p.patient_id"
+            + "           WHERE  max_transferout.patient_id NOT IN ( SELECT p.patient_id "
             + "                                                            FROM   patient p"
             + "                                                                    JOIN encounter e ON p.patient_id = e.patient_id"
             + "                                                            WHERE  p.voided = 0"
             + "                                                                    AND e.voided = 0"
-            + "                                                                    AND e.encounter_type IN (${9},${18})"
-            + "                                                                    AND e.location_id = :location"
-            + "                                                                    AND e.encounter_datetime > transferout_date"
+            + "                                                                    AND e.encounter_type = ${18} "
+            + "                                                                    AND e.location_id = :location "
+            + "                                                                    AND e.encounter_datetime > transferout_date "
             + "                                                                    AND e.encounter_datetime <= CURRENT_DATE()) ";
 
     StringSubstitutor stringSubstitutor = new StringSubstitutor(map);
@@ -1768,75 +1698,73 @@ public class ListOfPatientsDefaultersOrIITCohortQueries {
   /**
    * <b>10: Tipo de Dispensa</b>
    *
-   * <p>PRINT Dispensa Mensal/ Dispensa Trimestral/ Dispensa Semestral IF THE PATIENT HAS ONE OF THE
-   * FOLLOWING OPTIONS:
+   * <p>The system will show Tipo de Dispensa as follows:
    *
-   * <p>Select the most recent from the following source: the most recent Drug Pick Pick up on Fila
-   * ( encounter type 18, max encounter_datetime<= endDate) the most recent Consultation on Ficha
-   * Clinica ( encounter type 6, max encounter_datetime<= endDate)
+   * <p>
    *
-   * <p>If the most recent source is FILA then: Print Dispensa Mensal if a minus b < 83 days where a
-   * is the most recent Drug Pick Up on FILA ( encounter type 18, max encounter_datetime<=endDate)
-   * and b is “RETURN VISIT DATE FOR ARV DRUG” (concept_id 5096, value_datetime) from the most
-   * recent FILA ( encounter type 18, max encounter_datetime <= endDate) Encounter Type Id = 18
-   * MAXIMUM Encounter DATE (encounter.encounter_datetime <= endDate) = a RETURN VISIT DATE FOR ARV
-   * DRUG (Concept_id=5096) Value_datetime =b Difference between a and b is <83
+   * <ul>
+   *   Dispensa Mensal if
+   *   <li>next ART pick-up is scheduled for <53 days after the date of their last ART drug pick-up
+   *       (FILA) or
+   *   <li>marked as DM on Ficha Clinica Mastercard on last “Tipo de Dispensa”
+   * </ul>
    *
-   * <p>Print Dispensa Trimestral if a minus b >= 83 days and <= 173 days, where a is the most
-   * recent Drug Pick Up on FILA ( encounter type 18, max encounter_datetime <= endDate) and b is
-   * “RETURN VISIT DATE FOR ARV DRUG” (concept_id 5096, value_datetime) from the most recent FILA (
-   * encounter type 18, max encounter_datetime <= endDate)
+   * <p>
    *
-   * <p>Encounter Type Id = 18 MAXIMUM Encounter DATE (encounter.encounter_datetime <= endDate) = a
-   * RETURN VISIT DATE FOR ARV DRUG (Concept_id=5096) Value_datetime =b Difference between a and b
-   * is >=83 and <=173 days
+   * <ul>
+   *   Dispensa Bimestral if
+   *   <li>next ART pick-up is scheduled for 53-82 days after the date of their last ART drug
+   *       pick-up (FILA) or
+   *   <li>with one of the MDCs is marked as “DB - Dispensa Bimestral” with Estado do MDC as Iniciar
+   *       (I) or Continuar (C) in the last Ficha Clinica by report end date
+   * </ul>
    *
-   * <p>Print Dispensa Semestral if a minus b > 173 days, where a is the most recent Drug Pick Up on
-   * FILA ( encounter type 18, max encounter_datetime <= endDate) and b is “RETURN VISIT DATE FOR
-   * ARV DRUG” (concept_id 5096, value_datetime) from the most recent FILA ( encounter type 18, max
-   * encounter_datetime <= endDate)
+   * <p>
    *
-   * <p>Encounter Type Id = 18 MAXIMUM Encounter DATE (encounter.encounter_datetime) <= endDate= a
-   * RETURN VISIT DATE FOR ARV DRUG (Concept_id=5096) Value_datetime =b Difference between a and b
-   * is >173 days
+   * <ul>
+   *   Dispensa Trimestral if
+   *   <li>next ART pick-up is scheduled for 83-173 days after the date of their last ART drug
+   *       pick-up (FILA) or
+   *   <li>marked as “Dispensa Trimestral (DT)” in last “Tipo de Dispensa” in Ficha Clinica
+   *       Mastercard, or
+   *   <li>with one of the MDCs is marked as “DT - Dispensa Trimestral de ARV” with Estado do MDC as
+   *       Iniciar (I) or Continuar (C) in the last Ficha Clinica by report end date
+   * </ul>
    *
-   * <p>If the most recent source is FICHA CLINICA then: Print Dispensa Mensal if “Tipo de
-   * Levantamento” (concept_id=23739) is marked as “DM” (concept_id=1098) on the most recent
-   * consultation on FICHA CLINICA ( encounter type 6, max encounter_datetime <= endDate) Encounter
-   * Type Id = 6 Max encounter_datetime <= endDate Last TYPE OF DISPENSATION (id=23739) Value.coded
-   * = MONTHLY (id=1098) OR
+   * <p>
    *
-   * <p>with one of the MDCs is marked as “DT - Dispensa Trimestral de ARV” with Estado do MDC as *
-   * Iniciar (I) or Continuar (C) in the last Ficha Clinica with MDCs registered
+   * <ul>
+   *   Dispensa Semestral if
+   *   <li>next ART pick-up is scheduled for 174 - 334 days after the date of their last ART drug
+   *       pick-up (FILA) or
+   *   <li>marked as “Dispensa Semestral (DS)” in last “Tipo de Dispensa” in Ficha Clinica
+   *       Mastercard or
+   *   <li>with one of the MDCs is marked as “DS - Dispensa Semestral de ARV” with Estado do MDC as
+   *       Iniciar (I) or Continuar (C) in the last Ficha Clinica by report end date
+   * </ul>
    *
-   * <p>Print Dispensa Trimestral if “Tipo de Levantamento” (concept_id=23739) is marked as “DT”
-   * (concept_id=23720) on the most recent consultation on FICHA CLINICA ( encounter type 6, max
-   * encounter_datetime <= endDate) Encounter Type Id = 6 Max encounter_datetime <= endDate Last
-   * TYPE OF DISPENSATION (id=23739) Value.coded = QUARTERLY (id=23720) or marked in last “Dispensa
-   * Trimestral (DT)” (concept_id=23720) as Iniciar (I) (concept_id=1256) or Continuar (C)
-   * (concept_id=1257) in Ficha Clinica Mastercard ( encounter type 6, max encounter_datetime <=
-   * endDate) Encounter Type Id = 6 Max encounter_datetime <= endDate Last QUARTERLY DISPENSATION
-   * (DT) (id=23720) Value.coded= START DRUGS (id=1256) OR Value.coded= (CONTINUE REGIMEN id=1257)
+   * <p>
    *
-   * <p>Print Dispensa Semestral if “Tipo de Levantamento” (concept_id=23739) is marked as “DS”
-   * (concept_id=23720) on the most recent consultation on FICHA CLINICA ( encounter type 6, max
-   * encounter_datetime <= endDate) Encounter Type Id = 6 Max encounter_datetime <= endDate Last
-   * TYPE OF DISPENSATION (id=23739) Value.coded = SEMESTRAL (id=23888) or marked in last “Dispensa
-   * Semestral (DS)” (concept_id=23730) as Iniciar (I) (concept_id=1256) or Continuar (C)
-   * (concept_id=1257) in Ficha Clinica Mastercard ( encounter type 6, max encounter_datetime <=
-   * endDate) Encounter Type Id = 6 Max encounter_datetime <= endDate Last SEMESTRAL DISPENSATION
-   * (DT) (id=23888) Value.coded= START DRUGS (id=1256) OR Value.coded= (CONTINUE REGIMEN id=1257)
-   * OR
+   * <ul>
+   *   Dispensa Anual if
+   *   <li>next ART pick-up is scheduled for >334 days after the date of their last ART drug pick-up
+   *       (FILA) or
+   *   <li>with one of the MDCs is marked as “DA - Dispensa Anual de ARV” with Estado do MDC as
+   *       Iniciar (I) or Continuar (C) in the last Ficha Clinica by report end date
+   * </ul>
    *
-   * <p>with one of the MDCs is marked as “DS - Dispensa Semestral de ARV” with Estado do MDC as *
-   * Iniciar (I) or Continuar (C) in the last Ficha Clinica with MDCs registered <b>Print Dispensa
-   * Anual </b>
+   * <p>The system will select the source with the most recent ART pick up /visit date prior to the
+   * reporting end date.
    *
-   * <p>next ART pick-up is scheduled for >334 days after the date of their last ART drug pick-up
-   * (FILA) or
+   * <p>For patients who have more than one source on the same most recent ART pick up /visit date
+   * with Tipo de Dispensa or MDC, the system will only use FILA to determine patients Type of
+   * Dispensation. If the patient has Tipo de Dispensa and MDC (DA or DS or DT or DB) on the same
+   * consultation date, the system will use the Tipo de Dispensa to determine the patients Type of
+   * Dispensation.
    *
-   * <p>owith one of the MDCs is marked as “DA - Dispensa Anual de ARV” with Estado do MDC as
-   * Iniciar (I) or Continuar (C) in the last Ficha Clinica with MDCs registered
+   * <p>Note: Patients will only be considered for one Type of Dispensation. In case there are
+   * multiple MDCs registered in MDC section, the system will consider the first record registered
+   * in database.
    *
    * @return {@link DataDefinition}
    */
@@ -1854,6 +1782,7 @@ public class ListOfPatientsDefaultersOrIITCohortQueries {
     map.put("5096", hivMetadata.getReturnVisitDateForArvDrugConcept().getConceptId());
     map.put("23739", hivMetadata.getTypeOfDispensationConcept().getConceptId());
     map.put("23730", hivMetadata.getQuarterlyDispensation().getConceptId());
+    map.put("165340", hivMetadata.getBimonthlyDispensationConcept().getConceptId());
     map.put("23888", hivMetadata.getSemiannualDispensation().getConceptId());
     map.put("1098", hivMetadata.getMonthlyConcept().getConceptId());
     map.put("23720", hivMetadata.getQuarterlyConcept().getConceptId());
@@ -1886,12 +1815,65 @@ public class ListOfPatientsDefaultersOrIITCohortQueries {
             + "           AND (( en.encounter_type = ${18} "
             + "             AND ob.concept_id = ${5096} "
             + "             AND ob.value_datetime IS NOT NULL "
-            + "             AND Timestampdiff(DAY, most_recent.encounter_date,ob.value_datetime) < 83 "
+            + "             AND Timestampdiff(DAY, most_recent.encounter_date,ob.value_datetime) < 53 "
             + "                    ) OR ( "
             + "                            en.encounter_type = ${6} "
             + "                        AND ob.concept_id = ${23739} "
             + "                        AND ob.value_coded = ${1098} "
             + "                    )) GROUP BY en.patient_id "
+            + "       UNION "
+            + "       SELECT   dispensa_bimestral.patient_id , "
+            + "                'Dispensa Bimestral' AS dispensa "
+            + "       FROM     ( "
+            + "                    SELECT     en.patient_id "
+            + "                    FROM       ( "
+            + "                                   SELECT     e.patient_id, "
+            + "                                              max(e.encounter_datetime) AS encounter_date "
+            + "                                   FROM       patient p "
+            + "                                                  INNER JOIN encounter e "
+            + "                                                             ON         p.patient_id = e.patient_id "
+            + "                                   WHERE      e.encounter_type = ${18} "
+            + "                                     AND        p.voided = 0 "
+            + "                                     AND        e.voided = 0 "
+            + "                                     AND        e.location_id = :location "
+            + "                                     AND        date(e.encounter_datetime) <= :endDate "
+            + "                                   GROUP BY   p.patient_id "
+            + "                                   UNION "
+            + "                                   SELECT     e.patient_id, "
+            + "                                              max(e.encounter_datetime) encounter_date "
+            + "                                   FROM       patient p "
+            + "                                                  INNER JOIN encounter e "
+            + "                                                             ON         p.patient_id = e.patient_id "
+            + "                                                  INNER JOIN obs o "
+            + "                                                             ON         e.encounter_id = o.encounter_id "
+            + "                                   WHERE      e.encounter_type = ${6} "
+            + "                                     AND        ( "
+            + "                                               o.value_coded IN ( ${1256} , "
+            + "                                                                  ${1257} ) "
+            + "                                           OR         o.concept_id = ${23739} ) "
+            + "                                     AND        p.voided = 0 "
+            + "                                     AND        o.voided = 0 "
+            + "                                     AND        e.voided = 0 "
+            + "                                     AND        e.location_id = :location "
+            + "                                     AND        date(e.encounter_datetime) <= :endDate "
+            + "                                   GROUP BY   p.patient_id) AS last_encounter "
+            + "                                   INNER JOIN encounter en "
+            + "                                              ON         en.patient_id = last_encounter.patient_id "
+            + "                                                  AND        date(en.encounter_datetime) = date(last_encounter.encounter_date) "
+            + "                                   INNER JOIN obs ob "
+            + "                                              ON         ob.encounter_id = en.encounter_id "
+            + "                    WHERE      en.voided = 0 "
+            + "                      AND        ob.voided = 0 "
+            + "                      AND        en.location_id = :location "
+            + "                      AND        ( "
+            + "                                en.encounter_type = ${18} "
+            + "                            AND        ob.concept_id = ${5096} "
+            + "                            AND        ob.value_datetime IS NOT NULL "
+            + "                            AND        timestampdiff(day, date(last_encounter.encounter_date), ob.value_datetime) BETWEEN 53 AND 82) "
+            + "                    GROUP BY   en.patient_id "
+            + "                    UNION "
+            + getDispensationTypeOnMDCQuery(hivMetadata.getBimonthlyDispensationConcept())
+            + "         ) dispensa_bimestral  GROUP BY dispensa_bimestral.patient_id "
             + " "
             + "         UNION "
             + " "
