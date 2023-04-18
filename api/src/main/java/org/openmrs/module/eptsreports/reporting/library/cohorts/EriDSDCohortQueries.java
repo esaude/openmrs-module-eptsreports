@@ -638,6 +638,8 @@ public class EriDSDCohortQueries {
       cd.addSearch("onART", EptsReportUtils.map(getN19(), mappings));
     } else if (indicatorFlag == 20) {
       cd.addSearch("onART", EptsReportUtils.map(getN20(), mappings));
+    } else if (indicatorFlag == 21) {
+      cd.addSearch("onART", EptsReportUtils.map(getN21(), mappings));
     }
 
     cd.addSearch(
@@ -705,6 +707,8 @@ public class EriDSDCohortQueries {
       cd.addSearch("onART", EptsReportUtils.map(getN19(), mappings));
     } else if (indicatorFlag == 20) {
       cd.addSearch("onART", EptsReportUtils.map(getN20(), mappings));
+    } else if (indicatorFlag == 21) {
+      cd.addSearch("onART", EptsReportUtils.map(getN21(), mappings));
     }
 
     cd.addSearch(
@@ -1425,6 +1429,43 @@ public class EriDSDCohortQueries {
 
     cd.setCompositionString("B13 AND nextArtPickUpScheduledORdispensaBimensal");
 
+    return cd;
+  }
+
+  /**
+   * <b>Name: N21</b>
+   *
+   * <p><b>Description:</b> Number of patients active on ART who are included in at least one DSD
+   * model (DB, DT, DS, DA, DD, DCP, DCA, BM, CM, AF, FR, GA, CA, EH, TB, CT, SAAJ, SMI).
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getN21() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName(
+        "N21: Number of patients active on ART who are included in at least one DSD model (DB, DT, DS, DA, DD, DCP, DCA, BM, CM, AF, FR, GA, CA, EH, TB, C&T, SAAJ, SMI).");
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+    cd.addSearch("N2", mapStraightThrough(getN2()));
+    cd.addSearch("N3", mapStraightThrough(getN3()));
+    cd.addSearch("N4", mapStraightThrough(getN4()));
+    cd.addSearch("N5", mapStraightThrough(getN5()));
+    cd.addSearch("N6", mapStraightThrough(getN6()));
+    cd.addSearch("N7", mapStraightThrough(getN7()));
+    cd.addSearch("N8", mapStraightThrough(getN8()));
+    cd.addSearch("N9", mapStraightThrough(getN9()));
+    cd.addSearch("N10", mapStraightThrough(getN10()));
+    cd.addSearch("N11", mapStraightThrough(getN11()));
+    cd.addSearch("N12", mapStraightThrough(getN12()));
+    cd.addSearch("N13", mapStraightThrough(getN13()));
+    cd.addSearch("N14", mapStraightThrough(getN14()));
+    cd.addSearch("N15", mapStraightThrough(getN15()));
+    cd.addSearch("N16", mapStraightThrough(getN16()));
+    cd.addSearch("N17", mapStraightThrough(getN17()));
+    cd.addSearch("N18", mapStraightThrough(getN18()));
+    cd.addSearch("N20", mapStraightThrough(getN20()));
+    cd.setCompositionString(
+        "(N2 OR N3 OR N4 OR N5 OR N6 OR N7 OR N8 OR N9 OR N10 OR N11 OR N12 OR N13 OR N14 OR N15 OR N16 OR N17 OR N18 OR N20)");
     return cd;
   }
 

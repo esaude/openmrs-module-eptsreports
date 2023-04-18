@@ -79,6 +79,9 @@ public class EriDSDDataset extends BaseDataSet {
   private static final String N20 =
       "N20: Number of active patients on ART who are included in DSD model: Dispensa Bimestral (DB)";
 
+  private static final String N21 =
+      "N21: Number of patients active on ART who are included in at least one DSD model (DB, DT, DS, DA, DD, DCP, DCA, BM, CM, AF, FR, GA, CA, EH, TB, C&T, SAAJ, SMI).";
+
   @Autowired private EriDSDCohortQueries eriDSDCohortQueries;
   @Autowired private EptsGeneralIndicator eptsGeneralIndicator;
   @Autowired private EptsCommonDimension eptsCommonDimension;
@@ -630,6 +633,15 @@ public class EriDSDDataset extends BaseDataSet {
                     eriDSDCohortQueries.getPatientsWhoAreBreastfeeding(20), mappings)),
             mappings),
         "");
+    dsd.addColumn(
+        "N21PW",
+        "N21 Pregnant Women",
+        EptsReportUtils.map(
+            eptsGeneralIndicator.getIndicator(
+                "N21PW",
+                EptsReportUtils.map(eriDSDCohortQueries.getPatientsWhoArePregnant(21), mappings)),
+            mappings),
+        "");
 
     addRow(dsd, "N1", N1, mapStraightThrough(getN1()), getDisags());
     addRow(dsd, "N2", N2, mapStraightThrough(getN2()), getDisags());
@@ -651,6 +663,7 @@ public class EriDSDDataset extends BaseDataSet {
     addRow(dsd, "N18", N18, mapStraightThrough(getN18()), getDisags());
     addRow(dsd, "N19", N19, mapStraightThrough(getN19()), getDisags());
     addRow(dsd, "N20", N20, mapStraightThrough(getN20()), getDisags());
+    addRow(dsd, "N21", N21, mapStraightThrough(getN21()), getDisags());
 
     return dsd;
   }
@@ -758,6 +771,11 @@ public class EriDSDDataset extends BaseDataSet {
   private CohortIndicator getN20() {
     return eptsGeneralIndicator.getIndicator(
         "N20", mapStraightThrough(eriDSDCohortQueries.getN20()));
+  }
+
+  private CohortIndicator getN21() {
+    return eptsGeneralIndicator.getIndicator(
+        "N21", mapStraightThrough(eriDSDCohortQueries.getN21()));
   }
 
   private List<ColumnParameters> getDisags() {
