@@ -7840,6 +7840,16 @@ public class QualityImprovement2020CohortQueries {
     return cd;
   }
 
+  /**
+   * <b>Categoria 9 Denominador - Pedido e Resultado de CD4 - MG</b>
+   * <li>Pedido de CD4 = “% de MG HIV+ que teve registo de pedido do primeiro CD4 na data da
+   *     primeira consulta clínica/abertura da Ficha Mestra”
+   * <li>Resultado de CD4 = “% de MG HIV+ que teve conhecimento do resultado do primeiro CD4 dentro
+   *     de 33 dias após a data da primeira CPN (primeira consulta com registo de Gravidez”
+   *
+   * @param flag parameter to receive the indicator numbe
+   * @return {@link CohortDefinition}
+   */
   public CohortDefinition getCd4RequestAndResultForPregnantsCat9Den(int flag) {
 
     CompositionCohortDefinition cd = new CompositionCohortDefinition();

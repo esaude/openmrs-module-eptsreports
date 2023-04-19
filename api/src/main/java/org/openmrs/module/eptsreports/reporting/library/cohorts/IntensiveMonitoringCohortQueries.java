@@ -31,6 +31,8 @@ public class IntensiveMonitoringCohortQueries {
 
   private TbMetadata tbMetadata;
 
+  private GenericCohortQueries genericCohortQueries;
+
   private final String MAPPING2 =
       "startDate=${revisionEndDate-5m+1d},endDate=${revisionEndDate-4m},location=${location}";
 
@@ -45,12 +47,14 @@ public class IntensiveMonitoringCohortQueries {
       HivMetadata hivMetadata,
       CommonCohortQueries commonCohortQueries,
       CommonMetadata commonMetadata,
-      TbMetadata tbMetadata) {
+      TbMetadata tbMetadata,
+      GenericCohortQueries genericCohortQueries) {
     this.qualityImprovement2020CohortQueries = qualityImprovement2020CohortQueries;
     this.hivMetadata = hivMetadata;
     this.commonCohortQueries = commonCohortQueries;
     this.commonMetadata = commonMetadata;
     this.tbMetadata = tbMetadata;
+    this.genericCohortQueries = genericCohortQueries;
   }
 
   @PostConstruct
@@ -3106,6 +3110,372 @@ public class IntensiveMonitoringCohortQueries {
             "startDate=${startDate},endDate=${endDate},location=${location}"));
 
     cd.setCompositionString("DENOMINATOR AND PREVIOUSVL");
+
+    return cd;
+  }
+
+  /**
+   * <b>MQ9Den: M&I Report - Categoria 9 Denominador 1 to 4</b><br>
+   *
+   * <ul>
+   *   <li>9.1. % de adultos HIV+ em TARV que tiveram conhecimento do resultado do primeiro CD4
+   *       dentro de 33 dias após a inscrição
+   *   <li>9.2. % de crianças HIV+ em TARV que tiveram conhecimento do resultado do primeiro CD4
+   *       dentro de 33 dias após a inscrição
+   * </ul>
+   *
+   * @param flag indicator number
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getMQ9Den(int flag) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    switch (flag) {
+      case 1:
+        cd.setName(
+            "% de adultos  HIV+ em TARV que tiveram conhecimento do resultado do primeiro CD4 dentro de 33 dias após a inscrição");
+        break;
+      case 2:
+        cd.setName(
+            "% de adultos HIV+ ≥ 15 anos que teve conhecimento do resultado do primeiro CD4 dentro de 33 dias após a data da primeira consulta clínica/abertura da Ficha Mestra");
+        break;
+      case 3:
+        cd.setName(
+            "% de crianças HIV+ ≤ 14 anos que teve registo de pedido do primeiro CD4 na data da primeira consulta clínica/abertura da Ficha Mestra");
+        break;
+      case 4:
+        cd.setName(
+            "% de crianças HIV+ ≤ 14 anos que teve conhecimento do resultado do primeiro CD4 dentro de 33 dias após a data da primeira consulta clínica/abertura da Ficha Mestra");
+        break;
+    }
+
+    if (flag == 1 || flag == 2) {
+      cd.addSearch(
+          "AGE",
+          EptsReportUtils.map(
+              genericCohortQueries.getAgeOnFirstClinicalConsultation(15, null),
+              "onOrAfter=${revisionEndDate-2m+1d},onOrBefore=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+    } else if (flag == 3 || flag == 4) {
+      cd.addSearch(
+          "AGE",
+          EptsReportUtils.map(
+              genericCohortQueries.getAgeOnFirstClinicalConsultation(0, 14),
+              "onOrAfter=${revisionEndDate-2m+1d},onOrBefore=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+    }
+
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String inclusionPeriodMappings =
+        "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}";
+
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getFirstClinicalConsultationDuringInclusionPeriod(),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPregnantORBreastfeeding(
+                commonMetadata.getPregnantConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            inclusionPeriodMappings));
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPregnantORBreastfeeding(
+                commonMetadata.getBreastfeeding().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            inclusionPeriodMappings));
+    cd.addSearch(
+        "E",
+        EptsReportUtils.map(
+            QualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
+            inclusionPeriodMappings));
+
+    cd.addSearch(
+        "pregnantOnPeriod",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getMOHPregnantORBreastfeedingOnClinicalConsultation(
+                commonMetadata.getPregnantConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            inclusionPeriodMappings));
+
+    cd.addSearch(
+        "breastfeedingOnPeriod",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getMOHPregnantORBreastfeedingOnClinicalConsultation(
+                commonMetadata.getBreastfeeding().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            inclusionPeriodMappings));
+
+    cd.setCompositionString(
+        "A AND NOT (C OR D OR E OR pregnantOnPeriod OR breastfeedingOnPeriod) AND AGE");
+    return cd;
+  }
+
+  /**
+   * <b>Categoria 9 Denominador - Pedido e Resultado de CD4 - MG</b>
+   * <li>Pedido de CD4 = “% de MG HIV+ que teve registo de pedido do primeiro CD4 na data da
+   *     primeira consulta clínica/abertura da Ficha Mestra”
+   * <li>Resultado de CD4 = “% de MG HIV+ que teve conhecimento do resultado do primeiro CD4 dentro
+   *     de 33 dias após a data da primeira CPN (primeira consulta com registo de Gravidez”
+   *
+   * @param flag parameter to receive the indicator numbe
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getCd4RequestAndResultForPregnantsCat9Den(int flag) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    switch (flag) {
+      case 5:
+        cd.setName(
+            "Pedido de CD4 = “% de MG HIV+ que teve registo de pedido do primeiro CD4 na data da primeira consulta clínica/abertura da Ficha Mestra”");
+        break;
+      case 6:
+        cd.setName(
+            "Resultado de CD4 = “% de MG HIV+ que teve conhecimento do resultado do primeiro CD4 dentro de 33 dias após a data da primeira CPN (primeira consulta com registo de Gravidez”");
+        break;
+    }
+
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String inclusionPeriodMappings =
+        "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}";
+
+    cd.addSearch(
+        "pregnantOnPeriod",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries
+                .getFirstPregnancyORBreastfeedingOnClinicalConsultation(
+                    commonMetadata.getPregnantConcept().getConceptId(),
+                    hivMetadata.getYesConcept().getConceptId()),
+            inclusionPeriodMappings));
+
+    cd.addSearch(
+        "transferredIn",
+        EptsReportUtils.map(
+            QualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.setCompositionString("pregnantOnPeriod AND NOT transferredIn");
+
+    return cd;
+  }
+
+  /**
+   * <b>MQ9Num: M&Q Report - Categoria 9 Numerador - Pedido de CD4 Adulto</b><br>
+   *
+   * <ul>
+   *   <li>9.1. % de adultos HIV+ ≥ 15 anos que teve registo de pedido do primeiro CD4 na data da
+   *       primeira consulta clínica/abertura da Ficha Mestra”
+   *   <li>9.2. % de crianças HIV+ em TARV que tiveram conhecimento do resultado do primeiro CD4
+   *       dentro de 33 dias após a inscrição
+   * </ul>
+   *
+   * @param flag indicator number
+   * @return CohortDefinition
+   */
+  public CohortDefinition getMQ9Num(int flag) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    switch (flag) {
+      case 1:
+        cd.setName(
+            "% de adultos HIV+ ≥ 15 anos que teve registo de pedido do primeiro CD4 na data da primeira consulta clínica/abertura da Ficha Mestra");
+        break;
+      case 2:
+        cd.setName(
+            "% de adultos HIV+ ≥ 15 anos que teve conhecimento do resultado do primeiro CD4 dentro de 33 dias após a data da primeira consulta clínica/abertura da Ficha Mestra");
+        break;
+      case 3:
+        cd.setName(
+            "% de crianças HIV+ ≤ 14 anos que teve registo de pedido do primeiro CD4 na data da primeira consulta clínica/abertura da Ficha Mestra");
+        break;
+      case 4:
+        cd.setName(
+            "% de crianças HIV+ ≤ 14 anos que teve conhecimento do resultado do primeiro CD4 dentro de 33 dias após a data da primeira consulta clínica/abertura da Ficha Mestra");
+        break;
+    }
+
+    if (flag == 1 || flag == 2) {
+      cd.addSearch(
+          "AGE",
+          EptsReportUtils.map(
+              genericCohortQueries.getAgeOnFirstClinicalConsultation(15, null),
+              "onOrAfter=${revisionEndDate-2m+1d},onOrBefore=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+    } else if (flag == 3 || flag == 4) {
+      cd.addSearch(
+          "AGE",
+          EptsReportUtils.map(
+              genericCohortQueries.getAgeOnFirstClinicalConsultation(0, 14),
+              "onOrAfter=${revisionEndDate-2m+1d},onOrBefore=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+    }
+
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String inclusionPeriodMappings =
+        "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}";
+
+    cd.addSearch(
+        "A",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getFirstClinicalConsultationDuringInclusionPeriod(),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+    cd.addSearch(
+        "C",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPregnantORBreastfeeding(
+                commonMetadata.getPregnantConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+    cd.addSearch(
+        "D",
+        EptsReportUtils.map(
+            commonCohortQueries.getMOHPregnantORBreastfeeding(
+                commonMetadata.getBreastfeeding().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+    cd.addSearch(
+        "E",
+        EptsReportUtils.map(
+            QualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "requestCd4",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries
+                .getRequestForCd4OnFirstClinicalConsultationDuringInclusionPeriod(),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "resultCd4",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries
+                .getCd4ResultAfterFirstConsultationOnInclusionPeriod(),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "pregnantOnPeriod",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getMOHPregnantORBreastfeedingOnClinicalConsultation(
+                commonMetadata.getPregnantConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            inclusionPeriodMappings));
+    cd.addSearch(
+        "breastfeedingOnPeriod",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getMOHPregnantORBreastfeedingOnClinicalConsultation(
+                commonMetadata.getBreastfeeding().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            inclusionPeriodMappings));
+
+    if (flag == 1 || flag == 3) {
+      cd.setCompositionString(
+          "A AND requestCd4 AND NOT (C OR D OR E OR pregnantOnPeriod OR breastfeedingOnPeriod) AND AGE");
+    } else if (flag == 2 || flag == 4) {
+      cd.setCompositionString(
+          "A AND resultCd4 AND NOT (C OR D OR E OR pregnantOnPeriod OR breastfeedingOnPeriod) AND AGE");
+    }
+
+    return cd;
+  }
+
+  /**
+   * O sistema irá produzir o Numerador para o indicador do pedido de CD4 para MG: “# de MG HIV+ em
+   * TARV com registo de pedido de CD4 na primeira CPN (Primeira consulta com registo Gravidez)”
+   *
+   * @param flag parameter to receive the indicator number
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getCd4RequestAndResultForPregnantsCat9Num(int flag) {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+
+    switch (flag) {
+      case 5:
+        cd.setName(
+            "Pedido de CD4 = “% de MG HIV+ que teve registo de pedido do primeiro CD4 na data da primeira consulta clínica/abertura da Ficha Mestra”");
+        break;
+      case 6:
+        cd.setName(
+            "Resultado de CD4 = “% de MG HIV+ que teve conhecimento do resultado do primeiro CD4 dentro de 33 dias após a data da primeira CPN (primeira consulta com registo de Gravidez”");
+        break;
+    }
+
+    cd.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    String inclusionPeriodMappings =
+        "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}";
+
+    cd.addSearch(
+        "pregnantOnPeriod",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries
+                .getFirstPregnancyORBreastfeedingOnClinicalConsultation(
+                    commonMetadata.getPregnantConcept().getConceptId(),
+                    hivMetadata.getYesConcept().getConceptId()),
+            inclusionPeriodMappings));
+
+    cd.addSearch(
+        "transferredIn",
+        EptsReportUtils.map(
+            QualityImprovement2020Queries.getTransferredInPatients(
+                hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+                commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+                hivMetadata.getPatientFoundYesConcept().getConceptId(),
+                hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+                hivMetadata.getArtStatus().getConceptId()),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},location=${location}"));
+
+    cd.addSearch(
+        "requestCd4ForPregnant",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries
+                .getRequestForCd4OnFirstClinicalConsultationOfPregnancy(
+                    commonMetadata.getPregnantConcept().getConceptId(),
+                    hivMetadata.getYesConcept().getConceptId(),
+                    hivMetadata.getApplicationForLaboratoryResearch().getConceptId(),
+                    hivMetadata.getCD4AbsoluteOBSConcept().getConceptId()),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "resultCd4ForPregnant",
+        EptsReportUtils.map(
+            qualityImprovement2020CohortQueries.getCd4ResultAfterFirstConsultationOfPregnancy(
+                commonMetadata.getPregnantConcept().getConceptId(),
+                hivMetadata.getYesConcept().getConceptId()),
+            "startDate=${revisionEndDate-2m+1d},endDate=${revisionEndDate-1m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    if (flag == 5) {
+      cd.setCompositionString("(pregnantOnPeriod AND requestCd4ForPregnant) AND NOT transferredIn");
+    } else if (flag == 6) {
+      cd.setCompositionString("(pregnantOnPeriod AND resultCd4ForPregnant) AND NOT transferredIn");
+    }
 
     return cd;
   }
