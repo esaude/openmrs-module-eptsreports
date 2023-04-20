@@ -1186,7 +1186,7 @@ public class TPTEligiblePatientListCohortQueries {
 
     EptsQueriesUtil unionBuilder = new EptsQueriesUtil();
 
-    // this will generate one union separeted query based on the given queries
+    // this will generate one union separated query based on the given queries
     String unionQuery =
         unionBuilder
             .unionBuilder(TPTEligiblePatientsQueries.getY1QueryWithPatientIdForB5())
@@ -1272,7 +1272,7 @@ public class TPTEligiblePatientListCohortQueries {
 
     EptsQueriesUtil unionBuilder = new EptsQueriesUtil();
 
-    // this will generate one union separeted query based on the given queries
+    // this will generate one union separated query based on the given queries
     String unionQuery =
         unionBuilder
             .unionBuilder(TPTEligiblePatientsQueries.getY1QueryWithPatientIdForB5())
@@ -1383,7 +1383,7 @@ public class TPTEligiblePatientListCohortQueries {
 
     EptsQueriesUtil unionBuilder = new EptsQueriesUtil();
 
-    // this will generate one union separeted query based on the given queries
+    // this will generate one union separated query based on the given queries
     String unionQuery =
         unionBuilder
             .unionBuilder(TPTEligiblePatientsQueries.getY1QueryWithPatientIdForB5())
@@ -1510,7 +1510,7 @@ public class TPTEligiblePatientListCohortQueries {
 
     EptsQueriesUtil unionBuilder = new EptsQueriesUtil();
 
-    // this will generate one union separeted query based on the given queries
+    // this will generate one union separated query based on the given queries
     String unionQuery =
         unionBuilder
             .unionBuilder(TPTEligiblePatientsQueries.getY4QueryWithPatientIdForB5())
@@ -1611,7 +1611,7 @@ public class TPTEligiblePatientListCohortQueries {
 
     EptsQueriesUtil unionBuilder = new EptsQueriesUtil();
 
-    // this will generate one union separeted query based on the given queries
+    // this will generate one union separated query based on the given queries
     String unionQuery =
         unionBuilder
             .unionBuilder(TPTEligiblePatientsQueries.getY4QueryWithPatientIdForB5())
@@ -1716,7 +1716,7 @@ public class TPTEligiblePatientListCohortQueries {
 
     EptsQueriesUtil unionBuilder = new EptsQueriesUtil();
 
-    // this will generate one union separeted query based on the given queries
+    // this will generate one union separated query based on the given queries
     String unionQuery =
         unionBuilder
             .unionBuilder(TPTEligiblePatientsQueries.getY4QueryWithPatientIdForB5())
@@ -1835,7 +1835,7 @@ public class TPTEligiblePatientListCohortQueries {
 
     EptsQueriesUtil unionBuilder = new EptsQueriesUtil();
 
-    // this will generate one union separeted query based on the given queries
+    // this will generate one union separated query based on the given queries
     String unionQuery =
         unionBuilder
             .unionBuilder(TPTEligiblePatientsQueries.getMpart1())
@@ -1933,7 +1933,7 @@ public class TPTEligiblePatientListCohortQueries {
 
     EptsQueriesUtil unionBuilder = new EptsQueriesUtil();
 
-    // this will generate one union separeted query based on the given queries
+    // this will generate one union separated query based on the given queries
     String unionQuery =
         unionBuilder
             .unionBuilder(TPTEligiblePatientsQueries.getMpart1())
@@ -2036,7 +2036,7 @@ public class TPTEligiblePatientListCohortQueries {
 
     EptsQueriesUtil unionBuilder = new EptsQueriesUtil();
 
-    // this will generate one union separeted query based on the given queries
+    // this will generate one union separated query based on the given queries
     String unionFiltQuery =
         unionBuilder
             .unionBuilder(TPTEligiblePatientsQueries.getMpart2())
@@ -2140,7 +2140,7 @@ public class TPTEligiblePatientListCohortQueries {
 
     EptsQueriesUtil unionBuilder = new EptsQueriesUtil();
 
-    // this will generate one union separeted query based on the given queries
+    // this will generate one union separated query based on the given queries
     String unionFiltQuery =
         unionBuilder
             .unionBuilder(TPTEligiblePatientsQueries.getMpart2())
