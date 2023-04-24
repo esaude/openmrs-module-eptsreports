@@ -121,23 +121,21 @@ public class CXCASCRNPositiveDataset extends BaseDataSet {
   private List<ColumnParameters> getColumnsForAge() {
 
     ColumnParameters fifteenTo19 =
-        new ColumnParameters("fifteenTo19", "15 - 19 female", "age=15-19", "01");
-    ColumnParameters twentyTo24 =
-        new ColumnParameters("twentyTo24", "20 - 24 female", "age=20-24", "02");
+        new ColumnParameters("fifteenTo19", "15 - 19", "age=15-19", "01");
+    ColumnParameters twentyTo24 = new ColumnParameters("twentyTo24", "20 - 24", "age=20-24", "02");
     ColumnParameters twenty5To29 =
-        new ColumnParameters("twenty4To29", "25 - 29 female", "age=25-29", "03");
-    ColumnParameters thirtyTo34 =
-        new ColumnParameters("thirtyTo34", "30 - 34 female", "age=30-34", "04");
+        new ColumnParameters("twenty4To29", "25 - 29", "age=25-29", "03");
+    ColumnParameters thirtyTo34 = new ColumnParameters("thirtyTo34", "30 - 34", "age=30-34", "04");
     ColumnParameters thirty5To39 =
-        new ColumnParameters("thirty5To39", "35 - 39 female", "age=35-39", "05");
-    ColumnParameters foutyTo44 =
-        new ColumnParameters("foutyTo44", "40 - 44 female", "age=40-44", "06");
-    ColumnParameters fouty5To49 =
-        new ColumnParameters("fouty5To49", "45 - 49 female", "age=45-49", "07");
-    ColumnParameters above50 = new ColumnParameters("above50", "50+ female", "age=50+", "08");
-    ColumnParameters unknown =
-        new ColumnParameters("unknown", "Unknown age female", "age=UK", "09");
-    ColumnParameters total = new ColumnParameters("totals", "Totals", "", "10");
+        new ColumnParameters("thirty5To39", "35 - 39", "age=35-39", "05");
+    ColumnParameters foutyTo44 = new ColumnParameters("foutyTo44", "40 - 44", "age=40-44", "06");
+    ColumnParameters fouty5To49 = new ColumnParameters("fouty5To49", "45 - 49", "age=45-49", "07");
+    ColumnParameters fiftyTo54 = new ColumnParameters("fiftyTo54", "50 - 54", "age=50-54", "08");
+    ColumnParameters fifty5To59 = new ColumnParameters("fifty5To59", "55 - 59", "age=55-59", "09");
+    ColumnParameters sixtyTo64 = new ColumnParameters("sixtyTo64", "60 - 64", "age=60-64", "10");
+    ColumnParameters above65 = new ColumnParameters("above65", "65+", "age=65+", "11");
+    ColumnParameters unknown = new ColumnParameters("unknown", "Unknown age", "age=UK", "12");
+    ColumnParameters total = new ColumnParameters("totals", "Totals", "", "13");
 
     return Arrays.asList(
         fifteenTo19,
@@ -147,7 +145,10 @@ public class CXCASCRNPositiveDataset extends BaseDataSet {
         thirty5To39,
         foutyTo44,
         fouty5To49,
-        above50,
+        fiftyTo54,
+        fifty5To59,
+        sixtyTo64,
+        above65,
         unknown,
         total);
   }

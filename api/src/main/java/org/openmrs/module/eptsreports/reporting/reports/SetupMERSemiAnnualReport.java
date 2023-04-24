@@ -94,7 +94,7 @@ public class SetupMERSemiAnnualReport extends EptsDataExportManager {
       reportDesign =
           createXlsReportDesign(
               reportDefinition,
-              "PEPFAR_MER_2.6_SEMIANNUAL.xls",
+              "Template_PEPFAR_MER_2.6.1_Semiannual_Report_v1.5.1.xls",
               "PEPFAR MER 2.6 Semi-Annual Report",
               getExcelDesignUuid(),
               null);
