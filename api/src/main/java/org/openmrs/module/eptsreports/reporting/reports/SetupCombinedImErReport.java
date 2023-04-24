@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Properties;
 import org.openmrs.module.eptsreports.reporting.library.cohorts.GenericCohortQueries;
 import org.openmrs.module.eptsreports.reporting.library.datasets.*;
+import org.openmrs.module.eptsreports.reporting.library.datasets.imer.ImerResumoMensalIndicatorsDatasetDefinition;
 import org.openmrs.module.eptsreports.reporting.reports.manager.EptsDataExportManager;
 import org.openmrs.module.eptsreports.reporting.utils.EptsReportUtils;
 import org.openmrs.module.reporting.ReportingException;
@@ -28,6 +29,9 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
   @Autowired private TxCurrDataset txCurrDataset;
 
   @Autowired private IMER1DataSet imer1DenominaorDataSet;
+
+  @Autowired
+  private ImerResumoMensalIndicatorsDatasetDefinition imerResumoMensalIndicatorsDatasetDefinition;
 
   @Override
   public String getExcelDesignUuid() {
@@ -68,7 +72,16 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
         "ERI4", Mapped.mapStraightThrough(eri4MonthsDataset.constructEri4MonthsDataset()));
     rd.addDataSetDefinition(
         "IMER1", Mapped.mapStraightThrough(imer1DenominaorDataSet.constructIMER1DataSet()));
+
+    rd.addDataSetDefinition(
+        "RM",
+        Mapped.mapStraightThrough(
+            imerResumoMensalIndicatorsDatasetDefinition
+                .constructImerResumoMensalIndicatorsDataset()));
+
     rd.addDataSetDefinition("DT", Mapped.mapStraightThrough(new DatimCodeDatasetDefinition()));
+    rd.addDataSetDefinition("SM", Mapped.mapStraightThrough(new SismaCodeDatasetDefinition()));
+
     // add a base cohort here to help in calculations running
     rd.setBaseCohortDefinition(
         EptsReportUtils.map(
@@ -88,7 +101,11 @@ public class SetupCombinedImErReport extends EptsDataExportManager {
     try {
       reportDesign =
           createXlsReportDesign(
-              reportDefinition, "IM_ER_v2.8.xls", "IM_ER-Report", getExcelDesignUuid(), null);
+              reportDefinition,
+              "Template_IM-ER_v3.0_OptionA.xls",
+              "IM_ER-Report",
+              getExcelDesignUuid(),
+              null);
       Properties props = new Properties();
       props.put("sortWeight", "5000");
       reportDesign.setProperties(props);
