@@ -104,6 +104,12 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
             eptsCommonDimension.ageBasedOnArtStartDateMOH(),
             "onOrAfter=${revisionEndDate-4m+1d},onOrBefore=${revisionEndDate-3m},location=${location}"));
     dataSetDefinition.addDimension(
+        "ageBasedOnArtCat18",
+        EptsReportUtils.map(
+            eptsCommonDimension.ageBasedOnArtStartDateMOH(),
+            "onOrAfter=${revisionEndDate-13m+1d},onOrBefore=${revisionEndDate-12m},location=${location}"));
+
+    dataSetDefinition.addDimension(
         "ageInMonths54",
         EptsReportUtils.map(
             eptsCommonDimension.ageInMonths(), "effectiveDate=${revisionEndDate-4m}"));
@@ -895,8 +901,6 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
-
-
 
     /**
      * *********************************** CATEGORY 12 *******************************************
@@ -1780,6 +1784,50 @@ public class IntensiveMonitoringDataSet extends BaseDataSet {
                 "revisionEndDate=${revisionEndDate},location=${location}"),
             "revisionEndDate=${revisionEndDate},location=${location}"),
         "");
+
+    // Category 18 Denominator
+
+    CohortIndicator MQ18DEN =
+        eptsGeneralIndicator.getIndicator(
+            "MI18DEN",
+            EptsReportUtils.map(
+                intensiveMonitoringCohortQueries.getPatientsOnMICat18Denominator(),
+                "endDate=${revisionEndDate},location=${location}"));
+
+    MQ18DEN.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+
+    dataSetDefinition.addColumn(
+        "MI18DEN89",
+        "Crianças dos 8 - 9 anos activos em TARV com RD Total  (T)",
+        EptsReportUtils.map(MQ18DEN, "revisionEndDate=${revisionEndDate},location=${location}"),
+        "ageBasedOnArtCat18=8-9");
+
+    dataSetDefinition.addColumn(
+        "MI18DEN1014",
+        "Crianças dos 10 - 14 anos activos em TARV com RD Total  (T)",
+        EptsReportUtils.map(MQ18DEN, "revisionEndDate=${revisionEndDate},location=${location}"),
+        "ageBasedOnArtCat18=10-14");
+    // MI Cat 18 Numerator
+    CohortIndicator MI18NUM =
+        eptsGeneralIndicator.getIndicator(
+            "MI18NUM",
+            EptsReportUtils.map(
+                intensiveMonitoringCohortQueries.getPatientsOnMICat18Numerator(),
+                "revisionEndDate=${revisionEndDate},location=${location}"));
+
+    MI18NUM.addParameter(new Parameter("revisionEndDate", "revisionEndDate", Date.class));
+
+    dataSetDefinition.addColumn(
+        "MI18NUM89",
+        "Crianças dos 8 - 9 anos activos em TARV com RD Total  (T) NUM",
+        EptsReportUtils.map(MI18NUM, "revisionEndDate=${revisionEndDate},location=${location}"),
+        "ageBasedOnArtCat18=8-9");
+
+    dataSetDefinition.addColumn(
+        "MI18NUM1014",
+        "Adolescentes de 10 - 14 anos activos em TARV com RD Total  (T) NUM",
+        EptsReportUtils.map(MI18NUM, "revisionEndDate=${revisionEndDate},location=${location}"),
+        "ageBasedOnArtCat18=10-14");
 
     return dataSetDefinition;
   }

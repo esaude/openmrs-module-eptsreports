@@ -31,6 +31,8 @@ public class IntensiveMonitoringCohortQueries {
 
   private TbMetadata tbMetadata;
 
+  private ResumoMensalCohortQueries resumoMensalCohortQueries;
+
   private GenericCohortQueries genericCohortQueries;
 
   private final String MAPPING2 =
@@ -48,13 +50,15 @@ public class IntensiveMonitoringCohortQueries {
       CommonCohortQueries commonCohortQueries,
       CommonMetadata commonMetadata,
       TbMetadata tbMetadata,
-      GenericCohortQueries genericCohortQueries) {
+      GenericCohortQueries genericCohortQueries,
+      ResumoMensalCohortQueries resumoMensalCohortQueries) {
     this.qualityImprovement2020CohortQueries = qualityImprovement2020CohortQueries;
     this.hivMetadata = hivMetadata;
     this.commonCohortQueries = commonCohortQueries;
     this.commonMetadata = commonMetadata;
     this.tbMetadata = tbMetadata;
     this.genericCohortQueries = genericCohortQueries;
+    this.resumoMensalCohortQueries = resumoMensalCohortQueries;
   }
 
   @PostConstruct
@@ -3476,6 +3480,65 @@ public class IntensiveMonitoringCohortQueries {
     } else if (flag == 6) {
       cd.setCompositionString("(pregnantOnPeriod AND resultCd4ForPregnant) AND NOT transferredIn");
     }
+
+    return cd;
+  }
+
+  public CohortDefinition getPatientsOnMICat18Denominator() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Cat 18 Denominator");
+    cd.addParameter(new Parameter("endDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    CohortDefinition startedArt = qualityImprovement2020CohortQueries.getMOHArtStartDate();
+    CohortDefinition inTarv = resumoMensalCohortQueries.getPatientsWhoWereActiveByEndOfMonthB13();
+    CohortDefinition transferredIn =
+        QualityImprovement2020Queries.getTransferredInPatients(
+            hivMetadata.getMasterCardEncounterType().getEncounterTypeId(),
+            commonMetadata.getTransferFromOtherFacilityConcept().getConceptId(),
+            hivMetadata.getPatientFoundYesConcept().getConceptId(),
+            hivMetadata.getTypeOfPatientTransferredFrom().getConceptId(),
+            hivMetadata.getArtStatus().getConceptId());
+
+    cd.addSearch(
+        "startedArt",
+        EptsReportUtils.map(
+            startedArt, "startDate=${endDate-13m+1d},endDate=${endDate-12m},location=${location}"));
+
+    cd.addSearch("inTarv", EptsReportUtils.map(inTarv, "endDate=${endDate},location=${location}"));
+    cd.addSearch(
+        "transferredIn",
+        EptsReportUtils.map(
+            transferredIn, "startDate=${endDate},endDate=${endDate},location=${location}"));
+
+    cd.setCompositionString("(startedArt AND inTarv) AND NOT transferredIn");
+
+    return cd;
+  }
+
+  public CohortDefinition getPatientsOnMICat18Numerator() {
+
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Cat 18 Numerator");
+    cd.addParameter(new Parameter("revisionEndDate", "endDate", Date.class));
+    cd.addParameter(new Parameter("location", "location", Location.class));
+
+    CohortDefinition denominator = getPatientsOnMICat18Denominator();
+    CohortDefinition diagnose =
+        QualityImprovement2020Queries.getDisclosureOfHIVDiagnosisToChildrenAdolescents();
+
+    cd.addSearch(
+        "denominator",
+        EptsReportUtils.map(denominator, "endDate=${revisionEndDate},location=${location}"));
+
+    cd.addSearch(
+        "diagnose",
+        EptsReportUtils.map(
+            diagnose,
+            "startDate=${revisionEndDate-13m+1d},endDate=${revisionEndDate-12m},revisionEndDate=${revisionEndDate},location=${location}"));
+
+    cd.setCompositionString("denominator AND diagnose");
 
     return cd;
   }
