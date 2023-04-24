@@ -2326,6 +2326,26 @@ public class QualityImprovement2020Queries {
         + " GROUP BY pa.patient_id ";
   }
 
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <ul>
+   *   <li>incluindo todos os utentes do sexo feminino que tiveram a primeira consulta clínica com
+   *       registo de grávida durante o período de inclusão (“Data 1ª Consulta Grávida” >= “Data
+   *       Início Inclusão” e <= “Data Fim Inclusão”) e três meses após o início TARV (“Data 1ª
+   *       Consulta Grávida”> “Data do Início TARV” + 3 meses).
+   *   <li>filtrando os utentes que têm o registo de “Pedido de Investigações Laboratoriais” igual a
+   *       “Carga Viral” na primeira consulta clínica com registo de grávida durante o período de
+   *       inclusão (“Data 1ª Consulta Grávida”).
+   *       <p>Nota 1: “Data 1ª Consulta Grávida” deve ser a primeira consulta de sempre com registo
+   *       de grávida e essa consulta deve ter ocorrido no período de inclusão. Nota 2: “Data do
+   *       Início TARV” é a data definida no RF5.
+   * </ul>
+   *
+   * <blockquote>
+   */
   public static String getPregnancyDuringPeriod() {
     return "       SELECT patient_id, first_gestante "
         + " FROM ("
