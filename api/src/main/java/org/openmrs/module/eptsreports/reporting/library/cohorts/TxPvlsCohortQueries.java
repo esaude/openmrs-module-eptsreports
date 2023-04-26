@@ -49,7 +49,11 @@ public class TxPvlsCohortQueries {
   private CommonQueries commonQueries;
 
   @Autowired
-  public TxPvlsCohortQueries(HivMetadata hivMetadata, CommonMetadata commonMetadata) {
+  public TxPvlsCohortQueries(
+      HivMetadata hivMetadata,
+      CommonMetadata commonMetadata,
+      HivCohortQueries hivCohortQueries,
+      CommonQueries commonQueries) {
     this.hivCohortQueries = hivCohortQueries;
     this.hivMetadata = hivMetadata;
     this.commonQueries = commonQueries;
