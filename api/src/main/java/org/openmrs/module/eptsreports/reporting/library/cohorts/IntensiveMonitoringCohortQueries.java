@@ -3504,7 +3504,7 @@ public class IntensiveMonitoringCohortQueries {
     cd.addSearch(
         "startedArt",
         EptsReportUtils.map(
-            startedArt, "startDate=${endDate-13m+1d},endDate=${endDate-12m},location=${location}"));
+            startedArt, "startDate=${endDate-14m+1d},endDate=${endDate-13m},location=${location}"));
 
     cd.addSearch("inTarv", EptsReportUtils.map(inTarv, "endDate=${endDate},location=${location}"));
     cd.addSearch(
@@ -3536,7 +3536,7 @@ public class IntensiveMonitoringCohortQueries {
         "diagnose",
         EptsReportUtils.map(
             diagnose,
-            "startDate=${revisionEndDate-13m+1d},endDate=${revisionEndDate-12m},revisionEndDate=${revisionEndDate},location=${location}"));
+            "startDate=${revisionEndDate-14m+1d},endDate=${revisionEndDate-13m},revisionEndDate=${revisionEndDate},location=${location}"));
 
     cd.setCompositionString("denominator AND diagnose");
 
