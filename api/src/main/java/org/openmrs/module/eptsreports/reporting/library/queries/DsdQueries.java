@@ -615,23 +615,23 @@ public class DsdQueries {
             + "                                        FROM  encounter e"
             + "                                        INNER JOIN obs o ON e.encounter_id=o.encounter_id"
             + "                                        WHERE e.voided = 0 "
-            + "                                        AND e.encounter_type = 18 "
+            + "                                        AND e.encounter_type = ${18} "
             + "                                        AND o.value_datetime =last_mdc.last_encounter"
-            + "                                        AND o.concept_id = 5096"
-            + "                                        AND e.encounter_datetime <= '2022-09-20' "
+            + "                                        AND o.concept_id = ${5096}"
+            + "                                        AND e.encounter_datetime <= :endDate "
             + "                                        AND e.patient_id = p.patient_id "
-            + "                                        AND e.location_id = 399"
+            + "                                        AND e.location_id = :location "
             + "                                        GROUP BY e.patient_id limit 1)) >= ${lower} "
             + "    AND Datediff(otype.value_datetime, (SELECT max(e.encounter_datetime)"
             + "                                        FROM  encounter e"
             + "                                        INNER JOIN obs o ON e.encounter_id=o.encounter_id"
             + "                                        WHERE e.voided = 0 "
-            + "                                        AND e.encounter_type = 18 "
+            + "                                        AND e.encounter_type = ${18} "
             + "                                        AND o.value_datetime =last_mdc.last_encounter"
-            + "                                        AND o.concept_id = 5096"
-            + "                                        AND e.encounter_datetime <= '2022-09-20' "
+            + "                                        AND o.concept_id = ${5096}"
+            + "                                        AND e.encounter_datetime <= :endDate "
             + "                                        AND e.patient_id = p.patient_id "
-            + "                                        AND e.location_id = 399"
+            + "                                        AND e.location_id = :location "
             + "                                        GROUP BY e.patient_id limit 1)) <= ${upper} ) "
             + "    OR ( e.encounter_type = ${6} "
             + "        AND e.encounter_datetime = last_mdc.last_encounter "
@@ -655,7 +655,7 @@ public class DsdQueries {
     // In case Dispensa Trimestral
     if (lowerBounded == 83 && upperBounded == 97)
       sql =
-          "    OR ( e.encounter_type = 6 "
+          "    OR ( e.encounter_type = ${6} "
               + "        AND e.encounter_datetime = last_mdc.last_encounter "
               + "        AND otype.concept_id = ${23739} "
               + "        AND e.encounter_datetime <= :endDate"
@@ -670,9 +670,9 @@ public class DsdQueries {
               + "                                    AND e.patient_id = p.patient_id "
               + "                                    AND e.location_id = :location "
               + "                                    AND o.concept_id = ${5096} ) ) );";
-    else if (lowerBounded == 173 && upperBounded == 187) // Incase dispensa semestral
+    else if (lowerBounded == 173 && upperBounded == 187) // In case Dispensa Semestral
     sql =
-          "    OR ( e.encounter_type = 6 "
+          "    OR ( e.encounter_type = ${6} "
               + "        AND e.encounter_datetime = last_mdc.last_encounter "
               + "        AND otype.concept_id = ${23739} "
               + "        AND e.encounter_datetime <= :endDate"
