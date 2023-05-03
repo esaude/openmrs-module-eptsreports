@@ -1086,7 +1086,7 @@ public class APSSResumoTrimestralCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getFichaAPSSAndMinArtStartDate() {
+  public CohortDefinition getFichaAPSSAndMinArtStartDate() {
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("All Patients Registered In Encounter Ficha APSS AND PP");
     cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
@@ -1094,9 +1094,7 @@ public class APSSResumoTrimestralCohortQueries {
     cd.addParameter(new Parameter("location", "Location", Location.class));
 
     Map<String, Integer> map = new HashMap<>();
-    map.put(
-        "prevencaoPositivaSeguimentoEncounterType",
-        hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
+
     map.put("yesConcept", hivMetadata.getPatientFoundYesConcept().getConceptId());
     map.put("memberShipPlanConcept", hivMetadata.getMemberShipPlanConcept().getConceptId());
     map.put(
@@ -1107,26 +1105,12 @@ public class APSSResumoTrimestralCohortQueries {
     map.put("goodConcept", hivMetadata.getPatientIsDead().getConceptId());
     map.put("arvAdherenceRiskConcept", hivMetadata.getArvAdherenceRiskConcept().getConceptId());
     map.put("badConcept", hivMetadata.getBadConcept().getConceptId());
-    map.put("artProgram", hivMetadata.getARTProgram().getProgramId());
     map.put(
-        "transferredFromOtherHealthFacilityWorkflowState",
-        hivMetadata
-            .getTransferredFromOtherHealthFacilityWorkflowState()
-            .getProgramWorkflowStateId());
-    map.put(
-        "adultoSeguimentoEncounterType",
-        hivMetadata.getAdultoSeguimentoEncounterType().getEncounterTypeId());
-    map.put(
-        "pediatriaSeguimentoEncounterType",
-        hivMetadata.getPediatriaSeguimentoEncounterType().getEncounterTypeId());
+                  "prevencaoPositivaSeguimentoEncounterType",
+                    hivMetadata.getPrevencaoPositivaSeguimentoEncounterType().getEncounterTypeId());
     map.put(
         "arvPharmaciaEncounterType",
         hivMetadata.getARVPharmaciaEncounterType().getEncounterTypeId());
-    map.put(
-        "masterCardEncounterType", hivMetadata.getMasterCardEncounterType().getEncounterTypeId());
-    map.put("arvStartDateConcept", hivMetadata.getARVStartDateConcept().getConceptId());
-    map.put("arvPlanConcept", hivMetadata.getARVPlanConcept().getConceptId());
-    map.put("startDrugs", hivMetadata.getStartDrugs().getConceptId());
     map.put(
         "masterCardDrugPickupEncounterType",
         hivMetadata.getMasterCardDrugPickupEncounterType().getEncounterTypeId());
@@ -1155,35 +1139,6 @@ public class APSSResumoTrimestralCohortQueries {
             + "        > (SELECT DATE_ADD(min(art_startdate.min_date), INTERVAL 30 DAY) as min_min_date  "
             + "FROM  "
             + "(  "
-            + "    SELECT  p.patient_id as patient_id, min(pp.date_enrolled) AS min_date  "
-            + "    FROM patient p  "
-            + "        INNER JOIN patient_program pp  "
-            + "            ON pp.patient_id = p.patient_id  "
-            + "        INNER JOIN program pgr  "
-            + "            ON pgr.program_id=pp.program_id  "
-            + "        INNER JOIN patient_state ps  "
-            + "            ON  ps.patient_program_id = pp.patient_program_id  "
-            + "    WHERE   "
-            + "        p.voided = 0  "
-            + "        AND ps.voided = 0  "
-            + "        AND pp.voided = 0  "
-            + "        AND pgr.program_id = ${artProgram}   "
-            + "        AND ps.state = ${transferredFromOtherHealthFacilityWorkflowState}   "
-            + "    GROUP BY p.patient_id  "
-            + "    UNION  "
-            + "    SELECT p.patient_id as patient_id, min(o.value_datetime)  AS min_date  "
-            + "    FROM patient p  "
-            + "        INNER JOIN encounter e  "
-            + "            ON e.patient_id = p.patient_id  "
-            + "        INNER JOIN obs o  "
-            + "            ON o.encounter_id=e.encounter_id  "
-            + "    WHERE p.voided = 0  "
-            + "        AND e.voided = 0  "
-            + "        AND o.voided = 0  "
-            + "        AND e.encounter_type IN (${adultoSeguimentoEncounterType}, ${pediatriaSeguimentoEncounterType}, ${arvPharmaciaEncounterType}, ${masterCardEncounterType})  "
-            + "        AND o.concept_id = ${arvStartDateConcept}  "
-            + "        GROUP BY p.patient_id  "
-            + "    UNION  "
             + "    SELECT p.patient_id as patient_id,  min(e.encounter_datetime) AS min_date  "
             + "    FROM patient p  "
             + "        INNER JOIN encounter e  "
@@ -1192,34 +1147,6 @@ public class APSSResumoTrimestralCohortQueries {
             + "        AND e.voided = 0  "
             + "        AND e.encounter_type  = ${arvPharmaciaEncounterType}  "
             + "        AND e.encounter_datetime <= :endDate  "
-            + "        GROUP BY p.patient_id  "
-            + "    UNION  "
-            + "    SELECT p.patient_id as patient_id, min(e.encounter_datetime)   "
-            + "    FROM patient p  "
-            + "        INNER JOIN encounter e  "
-            + "            ON e.patient_id = p.patient_id  "
-            + "        INNER JOIN obs o  "
-            + "            ON o.encounter_id=e.encounter_id  "
-            + "    WHERE p.voided = 0  "
-            + "        AND e.voided = 0  "
-            + "        AND o.voided = 0  "
-            + "        AND e.encounter_type  IN (${adultoSeguimentoEncounterType},${pediatriaSeguimentoEncounterType},${arvPharmaciaEncounterType})  "
-            + "        AND e.encounter_datetime <= :endDate  "
-            + "        AND o.concept_id = ${arvPlanConcept} AND o.value_coded = ${startDrugs}  "
-            + "        GROUP BY p.patient_id  "
-            + "    UNION  "
-            + "    SELECT p.patient_id as patient_id, min(e.encounter_datetime) AS min_date  "
-            + "    FROM patient p  "
-            + "        INNER JOIN encounter e  "
-            + "            ON e.patient_id = p.patient_id  "
-            + "        INNER JOIN obs o  "
-            + "            ON o.encounter_id=e.encounter_id  "
-            + "    WHERE p.voided = 0  "
-            + "        AND e.voided = 0  "
-            + "        AND o.voided = 0  "
-            + "        AND e.encounter_type  IN (${adultoSeguimentoEncounterType},${pediatriaSeguimentoEncounterType},${arvPharmaciaEncounterType})  "
-            + "        AND e.encounter_datetime <= :endDate  "
-            + "        AND o.concept_id = ${arvPlanConcept} AND o.value_coded = ${startDrugs}  "
             + "        GROUP BY p.patient_id  "
             + "    UNION  "
             + "    SELECT p.patient_id as patient_id,  min(o2.value_datetime) AS min_date  "
