@@ -1327,7 +1327,7 @@ public class TPTEligiblePatientListCohortQueries {
             + "                                 AND ee.encounter_datetime BETWEEN "
             + "                                     result.start_date AND "
             + "                         Date_add(result.start_date,   "
-            + "                         INTERVAL 5 MONTH)) >= 2 ) "
+            + "                         INTERVAL 5 MONTH) AND ee.encounter_datetime <= :endDate) >= 2 ) "
             + "               GROUP  BY result.patient_id";
 
     StringSubstitutor sb = new StringSubstitutor(map);
@@ -1426,7 +1426,8 @@ public class TPTEligiblePatientListCohortQueries {
             + "                                                    o2.concept_id = ${165308} "
             + "                                         AND        o2.value_coded IN (${1256}, ${1257}) ) ) "
             + "                   AND   o2.obs_datetime BETWEEN result.start_date AND  "
-            + "      date_add(result.start_date, interval 7 MONTH)) >= 3 "
+            + "      date_add(result.start_date, interval 7 MONTH)"
+            + " AND ee.encounter_datetime <= :endDate) >= 3 "
             + "                AND "
             + "                ( "
             + "                           SELECT     count(ee.patient_id) "
@@ -1452,7 +1453,8 @@ public class TPTEligiblePatientListCohortQueries {
             + "                                                 AND        o3.value_coded = ${23955}) ) "
             + "                           AND        result.patient_id = ee.patient_id "
             + "                           AND        ee.encounter_datetime BETWEEN result.start_date AND "
-            + "       date_add(result.start_date, interval 7 MONTH)) >= 1 ) "
+            + "       date_add(result.start_date, interval 7 MONTH)"
+            + " AND ee.encounter_datetime <= :endDate) >= 1 ) "
             + "            GROUP  BY result.patient_id ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
@@ -1555,7 +1557,7 @@ public class TPTEligiblePatientListCohortQueries {
             + "                      AND ee.encounter_datetime BETWEEN"
             + "                          tabela.start_date AND"
             + "              Date_add(tabela.start_date,"
-            + "              INTERVAL 7 MONTH)) >= 6 ))"
+            + "              INTERVAL 7 MONTH) AND ee.encounter_datetime <= :endDate) >= 6 ))"
             + "   GROUP  BY p.patient_id  ";
 
     StringSubstitutor sb = new StringSubstitutor(map);
@@ -1761,7 +1763,7 @@ public class TPTEligiblePatientListCohortQueries {
             + "                       AND ee.encounter_datetime BETWEEN"
             + "                           tabela.start_date AND"
             + "               Date_add(tabela.start_date,"
-            + "               INTERVAL 7 MONTH)) >= 3 )"
+            + "               INTERVAL 7 MONTH) AND ee.encounter_datetime <= :endDate) >= 3 )"
             + "             AND ( (SELECT Count(*)"
             + "                    FROM   patient pp"
             + "                           inner join encounter ee"
@@ -1786,7 +1788,7 @@ public class TPTEligiblePatientListCohortQueries {
             + "                           AND ee.encounter_datetime BETWEEN"
             + "                               tabela.start_date AND"
             + "                   Date_add(tabela.start_date,"
-            + "                   INTERVAL 7 MONTH)) >= 1 ) )"
+            + "                   INTERVAL 7 MONTH) AND ee.encounter_datetime <= :endDate) >= 1 ) )"
             + "   GROUP  BY p.patient_id  ";
 
     StringSubstitutor sb = new StringSubstitutor(map);

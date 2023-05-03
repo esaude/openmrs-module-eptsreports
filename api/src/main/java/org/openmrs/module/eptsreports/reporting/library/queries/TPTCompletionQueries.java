@@ -57,7 +57,7 @@ public class TPTCompletionQueries {
         + "                      AND (o.concept_id = ${23985} AND o.value_coded IN (${656}, ${23982})) "
         + "                      AND (o2.concept_id = ${23987} AND ( o2.value_coded = ${1257} OR o2.value_coded IS NULL )  "
         + "                        AND o2.obs_datetime <= :endDate )"
-        + "                      GROUP BY   p.patient_id ) AS filt "
+        + "                       ) AS filt "
         + "ON         filt.patient_id = p.patient_id "
         + "WHERE      p.patient_id NOT IN "
         + "           ( "
