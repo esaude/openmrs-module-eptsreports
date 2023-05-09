@@ -55,6 +55,8 @@ public class QualityImprovement2020CohortQueries {
 
   private TxMlCohortQueries txMlCohortQueries;
 
+  private TxCurrCohortQueries txCurrCohortQueries;
+
   private IntensiveMonitoringCohortQueries intensiveMonitoringCohortQueries;
 
   private final String MAPPING = "startDate=${startDate},endDate=${endDate},location=${location}";
@@ -6980,7 +6982,7 @@ public class QualityImprovement2020CohortQueries {
 
     CohortDefinition transferOut = getTranferredOutPatients();
 
-    CohortDefinition dead = resumoMensalCohortQueries.getPatientsWhoDied(false);
+    CohortDefinition dead = getDeadPatientsComposition();
 
     CohortDefinition nextPickupBetween83And97 =
         QualityImprovement2020Queries.getPatientsWithPickupOnFilaBetween(83, 97);
@@ -12279,5 +12281,64 @@ public class QualityImprovement2020CohortQueries {
     sqlCohortDefinition.setQuery(stringSubstitutor.replace(query));
 
     return sqlCohortDefinition;
+  }
+
+  /**
+   * <b>Technical Specs</b>
+   *
+   * <blockquote>
+   *
+   * <b>a.</b> com o último estado [“Mudança Estado Permanência TARV” (Coluna 21) = “O” (Óbito) na Ficha Clínica com “Data da Consulta Actual” (Coluna 1, durante a qual se fez o registo da mudança do estado de permanência TARV) <= “Data Fim de Revisão”; ou 
+   *
+   * <p><b>
+   *
+   * <p>b.</b> com último estado “Mudança Estado Permanência TARV” = “Óbito” na Ficha Resumo antes do fim do período de revisão (“Data de Óbito” <= “Data Fim de Revisão”); ou
+   *
+   * <p><b>
+   *
+   * <p>c.</b> como “‘Óbito” nos “Dados Demográficos do Utente” ou
+   *
+   * <p><b>
+   *
+   * <p>d.</b> como ‘Óbito’ (último estado de inscrição) no programa SERVIÇO TARV TRATAMENTO antes do fim do período de revisão (“Data de Óbito” <= Data Fim de revisão”;
+   *
+   * </blockquote>
+   *
+   * @return {@link CohortDefinition}
+   */
+  public CohortDefinition getDeadPatientsComposition() {
+    CompositionCohortDefinition cd = new CompositionCohortDefinition();
+    cd.setName("Get patients who are dead according to criteria a,b,c,d and e");
+    cd.addParameter(new Parameter("startDate", "Start Date", Date.class));
+    cd.addParameter(new Parameter("reportEndDate", "Report End Date", Date.class));
+    cd.addParameter(new Parameter("endDate", "End Date", Date.class));
+    cd.addParameter(new Parameter("location", "Location", Location.class));
+
+    cd.addSearch(
+        "deadByPatientProgramState",
+        EptsReportUtils.map(
+            txMlCohortQueries.getPatientsDeadInProgramStateByReportingEndDate(),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "deadByPatientDemographics",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getDeadPatientsInDemographiscByReportingEndDate(),
+            "onOrBefore=${endDate}"));
+    cd.addSearch(
+        "deadRegisteredInFichaResumoAndFichaClinicaMasterCard",
+        EptsReportUtils.map(
+            txCurrCohortQueries.getDeadPatientsInFichaResumeAndClinicaOfMasterCardByReportEndDate(),
+            "onOrBefore=${endDate},location=${location}"));
+    cd.addSearch(
+        "exclusion",
+        EptsReportUtils.map(
+            txMlCohortQueries.getExclusionForDeadOrSuspendedPatients(true),
+            "endDate=${endDate},reportEndDate=${endDate},location=${location}"));
+
+    cd.setCompositionString(
+        "(deadByPatientDemographics OR deadByPatientProgramState "
+            + " OR deadRegisteredInFichaResumoAndFichaClinicaMasterCard) AND NOT exclusion");
+
+    return cd;
   }
 }

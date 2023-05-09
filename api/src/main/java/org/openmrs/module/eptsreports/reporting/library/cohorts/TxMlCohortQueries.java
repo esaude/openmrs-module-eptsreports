@@ -766,7 +766,7 @@ public class TxMlCohortQueries {
     return cd;
   }
 
-  private CohortDefinition getExclusionForDeadOrSuspendedPatients(boolean exclusionForDead) {
+  public CohortDefinition getExclusionForDeadOrSuspendedPatients(boolean exclusionForDead) {
 
     SqlCohortDefinition cd = new SqlCohortDefinition();
     cd.setName("get Exclusion For Dead Or Suspended patients");
