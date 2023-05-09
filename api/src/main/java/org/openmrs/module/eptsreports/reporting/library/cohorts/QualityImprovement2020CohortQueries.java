@@ -6978,7 +6978,7 @@ public class QualityImprovement2020CohortQueries {
             Arrays.asList(
                 hivMetadata.getQuarterlyConcept(), hivMetadata.getSemiannualDispensation()));
 
-    CohortDefinition transferOut = commonCohortQueries.getTranferredOutPatients();
+    CohortDefinition transferOut = getTranferredOutPatients();
 
     CohortDefinition dead = resumoMensalCohortQueries.getPatientsWhoDied(false);
 
